@@ -22,6 +22,7 @@
         }
     ],
     "require": {
+        "mikehaertl/php-shellcommand": "~1.2",
     },
     "autoload": {
         "psr-4": {
