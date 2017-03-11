@@ -36,6 +36,8 @@ The `activeProcessors` array lets you specify which of the image optimization to
 
 The `imageProcessors` array specifies the path and options for each of the image optimization tools.
 
+See each image optimization tool's documentation for details on the options they allow you to use.
+
 ## Using ImageOptim
 
 Once ImageOptim is set up and configured, there's nothing left to do. It just works.
