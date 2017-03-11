@@ -1,0 +1,43 @@
+{
+    "name": "nystudio107/craft3-imageoptim",
+    "description": "Automatically optimize images after they've been transformed",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "imageoptim"
+    ],
+    "support": {
+        "docs": "https://github.com/nystudio107/craft3-imageoptim/blob/master/README.md",
+        "issues": "https://github.com/nystudio107/craft3-imageoptim/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nystudio107",
+            "homepage": "https://nystudio107.com"
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "psr-4": {
+          "nystudio107\\imageoptim\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "ImageOptim",
+        "handle": "imageOptim",
+        "schemaVersion": "1.0.0",
+        "hasSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptim/master/CHANGELOG.md",
+        "components": {
+            "optimize": "nystudio107\\imageoptim\\services\\Optimize"
+        },
+        "class": "nystudio107\\imageoptim\\ImageOptim"
+    }
+}
