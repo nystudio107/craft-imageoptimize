@@ -24,7 +24,7 @@ ImageOptim allows you to optimize the images created by Craft 3's Image Transfor
 
 It's important to create optimized images for frontend delivery, especially for mobile devices. If you want to learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
 
-Once ImageOptim is installed, optimized versions of image transforms are created with you having to do anything. This makes it great for client-proofing websites.
+Once ImageOptim is installed, optimized versions of image transforms are created without you having to do anything. This makes it great for client-proofing websites.
 
 ## Configuring ImageOptim
 
