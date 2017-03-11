@@ -54,10 +54,32 @@ class ImageOptim extends Plugin
                     $event->transformIndex,
                     $event->image
                 );
+                $originalFileSize = filesize($tempPath);
                 // Optimize the image
                 ImageOptim::$plugin->optimize->optimizeImage(
                     $event->transformIndex,
                     $tempPath
+                );
+                // Log the results of the image optimization
+                $optimizedFileSize = filesize($tempPath);
+                $index = $event->transformIndex;
+                Craft::info(
+                    pathinfo($index->filename, PATHINFO_FILENAME)
+                    .'.'.$index->detectedFormat
+                    . ' -> '
+                    . Craft::t('imageoptim', 'Original')
+                    . ': '
+                    . $this->humanFileSize($originalFileSize, 1)
+                    . ', '
+                    . Craft::t('imageoptim', 'Optimized')
+                    . ': '
+                    . $this->humanFileSize($optimizedFileSize, 1)
+                    . ' -- '
+                    . Craft::t('imageoptim', 'Savings')
+                    . ': '
+                    . number_format(abs((1 - ($originalFileSize / $optimizedFileSize )) * 100), 1)
+                    . '%',
+                    __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
                 $event->tempPath = $tempPath;
@@ -70,4 +92,10 @@ class ImageOptim extends Plugin
     // Protected Methods
     // =========================================================================
 
+    protected function humanFileSize($bytes, $decimals = 2): string
+    {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[intval($factor)];
+    }
 }
