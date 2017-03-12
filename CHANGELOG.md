@@ -1,5 +1,12 @@
 # ImageOptim Changelog
 
+## 1.0.4 - 2017.03.12
+### Added
+- Added code inspection typehinting for the plugin & services
+
+### Changed
+- Removed unused `resources/img`
+
 ## 1.0.3 - 2017.03.12
 ### Added
 - Added support for `gif` images via `gifsicle`

@@ -10,6 +10,8 @@
 
 namespace nystudio107\imageoptim;
 
+use nystudio107\imageoptim\services\Optimize as OptimizeService;
+
 use Craft;
 use craft\base\Plugin;
 use craft\services\AssetTransforms;
@@ -18,9 +20,13 @@ use craft\events\GenerateTransformEvent;
 use yii\base\Event;
 
 /**
+ * Class ImageOptim
+ *
  * @author    nystudio107
  * @package   ImageOptim
  * @since     1.0.0
+ *
+ * @property OptimizeService optimize
  */
 class ImageOptim extends Plugin
 {
@@ -28,7 +34,7 @@ class ImageOptim extends Plugin
     // =========================================================================
 
     /**
-     * @var static
+     * @var ImageOptim
      */
     public static $plugin;
 
