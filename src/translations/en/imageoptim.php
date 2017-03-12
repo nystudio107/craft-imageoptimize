@@ -14,9 +14,9 @@
  * @since     1.0.0
  */
 return [
-    'plugin loaded' => 'plugin loaded',
-    'does not exist' => 'does not exist',
-    'Original' => 'Original',
-    'Optimized' => 'Optimized',
-    'Savings' => 'Savings',
+    "plugin loaded" => "plugin loaded",
+    "does not exist" => "does not exist",
+    "Original" => "Original",
+    "Optimized" => "Optimized",
+    "Savings" => "Savings",
 ];

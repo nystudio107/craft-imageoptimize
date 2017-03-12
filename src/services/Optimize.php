@@ -39,10 +39,10 @@ class Optimize extends Component
      */
     public function saveTransformToTempFile(AssetTransformIndex $index, Image $image): string
     {
-        $tempFilename = uniqid(pathinfo($index->filename, PATHINFO_FILENAME), true).'.'.$index->detectedFormat;
-        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+        $tempFilename = uniqid(pathinfo($index->filename, PATHINFO_FILENAME), true) . "." . $index->detectedFormat;
+        $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
         $image->saveAs($tempPath);
-        Craft::info('Transformed image saved to: ' . $tempPath, __METHOD__);
+        Craft::info("Transformed image saved to: " . $tempPath, __METHOD__);
 
         return $tempPath;
     }
@@ -65,20 +65,20 @@ class Optimize extends Component
                 if (!empty($imageProcessors[$processor])) {
                     // Make sure the command exists
                     $thisProcessor = $imageProcessors[$processor];
-                    if (file_exists($thisProcessor['commandPath'])) {
+                    if (file_exists($thisProcessor["commandPath"])) {
                         // Build the command to execute
                         $cmd =
-                            $thisProcessor['commandPath']
-                            ." "
-                            .$thisProcessor['commandOptions']
-                            ." "
-                            .escapeshellarg($tempPath);
+                            $thisProcessor["commandPath"]
+                            . " "
+                            . $thisProcessor["commandOptions"]
+                            . " "
+                            . escapeshellarg($tempPath);
                         // Execute the command
                         $shellOutput = $this->_executeShellCommand($cmd);
-                        Craft::info($cmd."\n".$shellOutput, __METHOD__);
+                        Craft::info($cmd."\n" . $shellOutput, __METHOD__);
                     } else {
                         Craft::error(
-                            $thisProcessor['commandPath']
+                            $thisProcessor["commandPath"]
                             . " "
                             . Craft::t("imageoptim", "does not exist"),
                             __METHOD__
@@ -106,7 +106,7 @@ class Optimize extends Component
         $shellCommand->setCommand($command);
 
         // If we don't have proc_open, maybe we've got exec
-        if (!function_exists('proc_open') && function_exists('exec')) {
+        if (!function_exists("proc_open") && function_exists("exec")) {
             $shellCommand->useExec = true;
         }
 

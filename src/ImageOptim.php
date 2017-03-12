@@ -65,20 +65,21 @@ class ImageOptim extends Plugin
                 $index = $event->transformIndex;
                 Craft::info(
                     pathinfo($index->filename, PATHINFO_FILENAME)
-                    .'.'.$index->detectedFormat
-                    . ' -> '
-                    . Craft::t('imageoptim', 'Original')
-                    . ': '
+                    . "."
+                    . $index->detectedFormat
+                    . " -> "
+                    . Craft::t("imageoptim", "Original")
+                    . ": "
                     . $this->humanFileSize($originalFileSize, 1)
-                    . ', '
-                    . Craft::t('imageoptim', 'Optimized')
-                    . ': '
+                    . ", "
+                    . Craft::t("imageoptim", "Optimized")
+                    . ": "
                     . $this->humanFileSize($optimizedFileSize, 1)
-                    . ' -- '
-                    . Craft::t('imageoptim', 'Savings')
-                    . ': '
+                    . " -- "
+                    . Craft::t("imageoptim", "Savings")
+                    . ": "
                     . number_format(abs((1 - ($originalFileSize / $optimizedFileSize )) * 100), 1)
-                    . '%',
+                    . "%",
                     __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
@@ -86,7 +87,7 @@ class ImageOptim extends Plugin
             }
         );
 
-        Craft::info('ImageOptim ' . Craft::t('imageoptim', 'plugin loaded'), __METHOD__);
+        Craft::info("ImageOptim " . Craft::t("imageoptim", "plugin loaded"), __METHOD__);
     }
 
     // Protected Methods
@@ -94,7 +95,7 @@ class ImageOptim extends Plugin
 
     protected function humanFileSize($bytes, $decimals = 2): string
     {
-        $sz = 'BKMGTP';
+        $sz = "BKMGTP";
         $factor = floor((strlen($bytes) - 1) / 3);
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[intval($factor)];
     }
