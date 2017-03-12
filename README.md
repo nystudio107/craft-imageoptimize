@@ -28,6 +28,8 @@ It's important to create optimized images for frontend delivery, especially for 
 
 Once ImageOptim is installed, optimized versions of image transforms are created without you having to do anything. This makes it great for client-proofing websites.
 
+ImageOptim works equally well with both local and remote assets such as Amazon S3 buckets.
+
 ## Configuring ImageOptim
 
 The only configuration for ImageOptim is in the `config.php` file, which is a multi-environment friendly way to store the default settings.  Don't edit this file, instead copy it to `craft/config` as `imageoptim.php` and make your changes there.
