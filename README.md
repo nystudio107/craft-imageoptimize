@@ -17,12 +17,13 @@ ImageOptim won't do anything on its own; you'll need to also install the image o
 * **mozjpeg** - [Installing mozjpeg on Ubuntu 16.04 (Forge)](https://nystudio107.com/blog/installing-mozjpeg-on-ubuntu-16-04-forge)
 * **optipng** - `sudo apt-get install optipng`
 * **svgo** - `sudo npm install -g svgo`
+* **gifsicle** - `sudo npm install -g gifsicle`
 
 ## ImageOptim Overview
 
 ImageOptim allows you to optimize the images created by Craft 3's Image Transforms by automatically running a variety of image optimization tools on them. As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
-Out of the box, ImageOptim allows for the optimization of `JPG`, `PNG`, & `SVG` images, but you can add whatever additional types you want.
+Out of the box, ImageOptim allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want.
 
 It's important to create optimized images for frontend delivery, especially for mobile devices. If you want to learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
 
@@ -34,7 +35,7 @@ ImageOptim works equally well with both local and remote assets such as Amazon S
 
 The only configuration for ImageOptim is in the `config.php` file, which is a multi-environment friendly way to store the default settings.  Don't edit this file, instead copy it to `craft/config` as `imageoptim.php` and make your changes there.
 
-The `activeProcessors` array lets you specify which of the image optimization tools to use for which file types.
+The `activeImageProcessors` array lets you specify which of the image optimization tools to use for which file types.
 
 The `imageProcessors` array specifies the path and options for each of the image optimization tools.
 

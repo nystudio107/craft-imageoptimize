@@ -2,7 +2,7 @@
     "name": "nystudio107/craft3-imageoptim",
     "description": "Automatically optimize images after they've been transformed",
     "type": "craft-plugin",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "keywords": [
         "craft",
         "cms",
@@ -22,6 +22,7 @@
         }
     ],
     "require": {
+        "craftcms/cms": "~3.0.0-beta.1",
         "mikehaertl/php-shellcommand": "~1.2"
     },
     "autoload": {

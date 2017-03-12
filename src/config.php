@@ -26,7 +26,7 @@
 return [
 
     // Active image processors
-    "activeProcessors" => [
+    "activeImageProcessors" => [
         "jpg" => [
             "jpegoptim",
         ],
@@ -35,6 +35,9 @@ return [
         ],
         "svg" => [
             "svgo",
+        ],
+        "gif" => [
+            "gifsicle",
         ],
     ],
 
@@ -70,6 +73,11 @@ return [
         "svgo" => [
             "commandPath" => "/usr/bin/svgo",
             "commandOptions" => "",
+        ],
+        // gif optimizers
+        "gifsicle" => [
+            "commandPath" => "/usr/bin/gifsicle",
+            "commandOptions" => "-O3 -k 256",
         ],
     ],
 
