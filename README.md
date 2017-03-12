@@ -48,7 +48,7 @@ Once ImageOptim is set up and configured, there's nothing left to do. It just wo
 If you have `devMode` on, ImageOptim will log stats for images that it optimizes, e.g.:
 
 ```
-2017-03-11 10:45:26 [192.168.10.1][1][-][info][nystudio107\imageoptim\{closure}] zappa.png -> Original: 129.5K, Optimized: 100.8K -- Savings: 28.4%
+2017-03-12 07:49:27 [192.168.10.1][1][-][info][nystudio107\imageoptim\services\Optimize::handleGenerateTransformEvent] zappa.png -> Original: 129.5K, Optimized: 100.8K -> Savings: 28.4%
 ```
 
 ## ImageOptim Roadmap
