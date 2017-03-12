@@ -17,7 +17,7 @@ ImageOptim won't do anything on its own; you'll need to also install the image o
 * **mozjpeg** - [Installing mozjpeg on Ubuntu 16.04 (Forge)](https://nystudio107.com/blog/installing-mozjpeg-on-ubuntu-16-04-forge)
 * **optipng** - `sudo apt-get install optipng`
 * **svgo** - `sudo npm install -g svgo`
-* **gifsicle** - `sudo npm install -g gifsicle`
+* **gifsicle** - `sudo apt-get install gifsicle`
 
 ## ImageOptim Overview
 
