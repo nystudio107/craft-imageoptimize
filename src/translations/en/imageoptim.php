@@ -14,7 +14,7 @@
  * @since     1.0.0
  */
 return [
-    'plugin loaded' => 'plugin loaded',
+    'ImageOptim plugin loaded' => 'ImageOptim plugin loaded',
     'does not exist' => 'does not exist',
     'Original' => 'Original',
     'Optimized' => 'Optimized',

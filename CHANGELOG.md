@@ -1,5 +1,11 @@
 # ImageOptim Changelog
 
+## 1.0.5 - 2017.03.24
+### Changed
+* `hasSettings` -> `hasCpSettings` for Craft 3 beta 8 compatibility
+* Added Craft 3 beta 8 compatible settings
+* Modified config service calls for Craft 3 beta 8
+
 ## 1.0.4 - 2017.03.12
 ### Added
 - Added code inspection typehinting for the plugin & services

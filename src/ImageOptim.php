@@ -61,6 +61,13 @@ class ImageOptim extends Plugin
             }
         );
 
-        Craft::info('ImageOptim ' . Craft::t('imageoptim', 'plugin loaded'), __METHOD__);
+        Craft::info(
+            Craft::t(
+                'imageoptim',
+                '{name} plugin loaded',
+                ['name' => $this->name]
+            ),
+            __METHOD__
+        );
     }
 }

@@ -102,12 +102,13 @@ class Optimize extends Component
      */
     public function optimizeImage(AssetTransformIndex $index, string $tempPath)
     {
+        $settings = ImageOptim::$plugin->getSettings();
         // Get the active processors for the transform format
-        $activeImageProcessors = Craft::$app->config->get('activeImageProcessors', 'imageoptim');
+        $activeImageProcessors = $settings['activeImageProcessors'];
         $fileFormat = $index->detectedFormat;
         if (!empty($activeImageProcessors[$fileFormat])) {
             // Iterate through all of the processors for this format
-            $imageProcessors = Craft::$app->config->get('imageProcessors', 'imageoptim');
+            $imageProcessors = $settings['imageProcessors'];
             foreach ($activeImageProcessors[$fileFormat] as $processor) {
                 if (!empty($imageProcessors[$processor])) {
                     // Make sure the command exists
