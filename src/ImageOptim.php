@@ -70,4 +70,15 @@ class ImageOptim extends Plugin
             __METHOD__
         );
     }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new \nystudio107\imageoptim\models\Settings();
+    }
 }
