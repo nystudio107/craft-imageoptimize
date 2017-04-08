@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptim;
 
 use nystudio107\imageoptim\services\Optimize as OptimizeService;
+use nystudio107\imageoptim\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
@@ -69,5 +70,16 @@ class ImageOptim extends Plugin
             ),
             __METHOD__
         );
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
     }
 }

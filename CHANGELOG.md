@@ -1,5 +1,9 @@
 # ImageOptim Changelog
 
+## 1.0.6 - 2017.04.08
+### Changed
+* Added `createSettingsModel()` to the main plugin class
+
 ## 1.0.5 - 2017.03.24
 ### Changed
 * `hasSettings` -> `hasCpSettings` for Craft 3 beta 8 compatibility
