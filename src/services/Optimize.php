@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptim plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS 3.x
  *
  * Automatically optimize images after they've been transformed
  *
@@ -8,9 +8,9 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\imageoptim\services;
+namespace nystudio107\imageoptimize\services;
 
-use nystudio107\imageoptim\ImageOptim;
+use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\base\Component;
@@ -22,7 +22,7 @@ use mikehaertl\shellcommand\Command as ShellCommand;
 
 /**
  * @author    nystudio107
- * @package   ImageOptim
+ * @package   ImageOptimize
  * @since     1.0.0
  */
 class Optimize extends Component
@@ -58,15 +58,15 @@ class Optimize extends Component
             . '.'
             . $index->detectedFormat
             . ' -> '
-            . Craft::t('imageoptim', 'Original')
+            . Craft::t('imageoptimize', 'Original')
             . ': '
             . $this->humanFileSize($originalFileSize, 1)
             . ', '
-            . Craft::t('imageoptim', 'Optimized')
+            . Craft::t('imageoptimize', 'Optimized')
             . ': '
             . $this->humanFileSize($optimizedFileSize, 1)
             . ' -> '
-            . Craft::t('imageoptim', 'Savings')
+            . Craft::t('imageoptimize', 'Savings')
             . ': '
             . number_format(abs((1 - ($originalFileSize / $optimizedFileSize )) * 100), 1)
             . '%',
@@ -102,7 +102,7 @@ class Optimize extends Component
      */
     public function optimizeImage(AssetTransformIndex $index, string $tempPath)
     {
-        $settings = ImageOptim::$plugin->getSettings();
+        $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings['activeImageProcessors'];
         $fileFormat = $index->detectedFormat;
@@ -128,7 +128,7 @@ class Optimize extends Component
                         Craft::error(
                             $thisProcessor['commandPath']
                             . ' '
-                            . Craft::t('imageoptim', 'does not exist'),
+                            . Craft::t('imageoptimize', 'does not exist'),
                             __METHOD__
                         );
                     }

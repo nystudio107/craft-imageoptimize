@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptim plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS 3.x
  *
  * Automatically optimize images after they've been transformed
  *
@@ -8,15 +8,15 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\imageoptim\models;
+namespace nystudio107\imageoptimize\models;
 
 use craft\base\Model;
 
 /**
- * ImageOptim Settings model
+ * ImageOptimize Settings model
  *
  * @author    nystudio107
- * @package   ImageOptim
+ * @package   ImageOptimize
  * @since     1.0.0
  */
 class Settings extends Model

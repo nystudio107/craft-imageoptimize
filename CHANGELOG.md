@@ -1,4 +1,4 @@
-# ImageOptim Changelog
+# ImageOptimize Changelog
 
 ## 1.0.6 - 2017.04.08
 ### Changed

@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptim plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS 3.x
  *
  * Automatically optimize images after they've been transformed
  *
@@ -8,10 +8,10 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\imageoptim;
+namespace nystudio107\imageoptimize;
 
-use nystudio107\imageoptim\services\Optimize as OptimizeService;
-use nystudio107\imageoptim\models\Settings;
+use nystudio107\imageoptimize\services\Optimize as OptimizeService;
+use nystudio107\imageoptimize\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
@@ -21,21 +21,21 @@ use craft\events\GenerateTransformEvent;
 use yii\base\Event;
 
 /**
- * Class ImageOptim
+ * Class ImageOptimize
  *
  * @author    nystudio107
- * @package   ImageOptim
+ * @package   ImageOptimize
  * @since     1.0.0
  *
  * @property OptimizeService optimize
  */
-class ImageOptim extends Plugin
+class ImageOptimize extends Plugin
 {
     // Static Properties
     // =========================================================================
 
     /**
-     * @var ImageOptim
+     * @var ImageOptimize
      */
     public static $plugin;
 
@@ -56,7 +56,7 @@ class ImageOptim extends Plugin
             AssetTransforms::EVENT_GENERATE_TRANSFORM,
             function (GenerateTransformEvent $event) {
                 // Return the path to the optimized image to _createTransformForAsset()
-                $event->tempPath = ImageOptim::$plugin->optimize->handleGenerateTransformEvent(
+                $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
             }
@@ -64,7 +64,7 @@ class ImageOptim extends Plugin
 
         Craft::info(
             Craft::t(
-                'imageoptim',
+                'imageoptimize',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),

@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptim plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS 3.x
  *
  * Automatically optimize images after they've been transformed
  *
@@ -10,11 +10,11 @@
 
 /**
  * @author    nystudio107
- * @package   ImageOptim
+ * @package   ImageOptimize
  * @since     1.0.0
  */
 return [
-    'ImageOptim plugin loaded' => 'ImageOptim plugin loaded',
+    'ImageOptimize plugin loaded' => 'ImageOptimize plugin loaded',
     'does not exist' => 'does not exist',
     'Original' => 'Original',
     'Optimized' => 'Optimized',

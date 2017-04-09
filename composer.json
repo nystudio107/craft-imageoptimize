@@ -1,5 +1,5 @@
 {
-    "name": "nystudio107/craft3-imageoptim",
+    "name": "nystudio107/craft3-imageoptimize",
     "description": "Automatically optimize images after they've been transformed",
     "type": "craft-plugin",
     "version": "1.0.6",
@@ -8,11 +8,12 @@
         "cms",
         "craftcms",
         "craft-plugin",
-        "imageoptim"
+        "image",
+        "optimize"
     ],
     "support": {
-        "docs": "https://github.com/nystudio107/craft3-imageoptim/blob/master/README.md",
-        "issues": "https://github.com/nystudio107/craft3-imageoptim/issues"
+        "docs": "https://github.com/nystudio107/craft3-imageoptimize/blob/master/README.md",
+        "issues": "https://github.com/nystudio107/craft3-imageoptimize/issues"
     },
     "license": "MIT",
     "authors": [
@@ -27,19 +28,19 @@
     },
     "autoload": {
         "psr-4": {
-          "nystudio107\\imageoptim\\": "src/"
+          "nystudio107\\imageoptimize\\": "src/"
         }
     },
     "extra": {
-        "name": "ImageOptim",
-        "handle": "imageOptim",
+        "name": "ImageOptimize",
+        "handle": "imageOptimize",
         "schemaVersion": "1.0.0",
         "hasCpSettings": false,
         "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptim/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptimize/master/CHANGELOG.md",
         "components": {
-            "optimize": "nystudio107\\imageoptim\\services\\Optimize"
+            "optimize": "nystudio107\\imageoptimize\\services\\Optimize"
         },
-        "class": "nystudio107\\imageoptim\\ImageOptim"
+        "class": "nystudio107\\imageoptimize\\ImageOptimize"
     }
 }
