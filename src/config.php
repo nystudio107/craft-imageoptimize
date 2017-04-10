@@ -38,6 +38,9 @@ return [
         "gif" => [
             "gifsicle",
         ],
+        "webp" => [
+            "cwebp",
+        ],
     ],
 
     // Preset image processors
@@ -77,6 +80,11 @@ return [
         "gifsicle" => [
             "commandPath" => "/usr/bin/gifsicle",
             "commandOptions" => "-O3 -k 256",
+        ],
+        // webp optimizers
+        "cwebp" => [
+            "commandPath" => "/usr/bin/cwebp",
+            "commandOptions" => "",
         ],
     ],
 

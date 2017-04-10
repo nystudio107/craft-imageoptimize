@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.0.7 - 2017.04.10
+### Changed
+* Renamed the plugin from `ImageOptim` to `ImageOptimize`
+* Added `.webp` support
+
 ## 1.0.6 - 2017.04.08
 ### Changed
 * Added `createSettingsModel()` to the main plugin class

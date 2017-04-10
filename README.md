@@ -18,6 +18,7 @@ ImageOptimize won't do anything on its own; you'll need to also install the imag
 * **optipng** - `sudo apt-get install optipng`
 * **svgo** - `sudo npm install -g svgo`
 * **gifsicle** - `sudo apt-get install gifsicle`
+* **webp** - `sudo apt-get install webp`
 
 ## ImageOptimize Overview
 

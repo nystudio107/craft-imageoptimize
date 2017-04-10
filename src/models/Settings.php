@@ -42,6 +42,9 @@ class Settings extends Model
         'gif' => [
             'gifsicle',
         ],
+        'webp' => [
+            'cwebp',
+        ],
     ];
 
     /**
@@ -85,6 +88,11 @@ class Settings extends Model
         'gifsicle'  => [
             'commandPath'    => '/usr/bin/gifsicle',
             'commandOptions' => '-O3 -k 256',
+        ],
+        // webp optimizers
+        'cwebp'  => [
+            'commandPath'    => '/usr/bin/cwebp',
+            'commandOptions' => '',
         ],
     ];
 
