@@ -6,7 +6,7 @@ Automatically optimize images after they've been transformed
 
 To install ImageOptimize, follow these steps:
 
-1. Install with Composer via `composer require nystudio107/craft3-ImageOptimize`
+1. Install with Composer via `composer require nystudio107/craft3-imageoptimize`
 2. Install plugin in the Craft Control Panel under Settings > Plugins
 
 ImageOptimize works on Craft 3.x.

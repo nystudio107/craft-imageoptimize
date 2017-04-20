@@ -50,11 +50,15 @@ class ImageOptimize extends Plugin
         parent::init();
         self::$plugin = $this;
 
-        // Listen for image transform events
+        // Handler: AssetTransforms::EVENT_GENERATE_TRANSFORM
         Event::on(
             AssetTransforms::className(),
             AssetTransforms::EVENT_GENERATE_TRANSFORM,
             function (GenerateTransformEvent $event) {
+                Craft::trace(
+                    'AssetTransforms::EVENT_GENERATE_TRANSFORM',
+                    'imageoptimize'
+                );
                 // Return the path to the optimized image to _createTransformForAsset()
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event

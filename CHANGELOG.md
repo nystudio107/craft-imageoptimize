@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.0.8 - 2017.04.20
+### Changed
+* Fixed the packagist.org package name to coincide with the plugin renaming
+* Added debug `trace` logging in the event handler
+* Updated `README.md`
+
 ## 1.0.7 - 2017.04.10
 ### Changed
 * Renamed the plugin from `ImageOptim` to `ImageOptimize`
