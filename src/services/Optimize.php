@@ -58,15 +58,15 @@ class Optimize extends Component
             . '.'
             . $index->detectedFormat
             . ' -> '
-            . Craft::t('imageoptimize', 'Original')
+            . Craft::t('image-optimize', 'Original')
             . ': '
             . $this->humanFileSize($originalFileSize, 1)
             . ', '
-            . Craft::t('imageoptimize', 'Optimized')
+            . Craft::t('image-optimize', 'Optimized')
             . ': '
             . $this->humanFileSize($optimizedFileSize, 1)
             . ' -> '
-            . Craft::t('imageoptimize', 'Savings')
+            . Craft::t('image-optimize', 'Savings')
             . ': '
             . number_format(abs((1 - ($originalFileSize / $optimizedFileSize )) * 100), 1)
             . '%',
@@ -128,7 +128,7 @@ class Optimize extends Component
                         Craft::error(
                             $thisProcessor['commandPath']
                             . ' '
-                            . Craft::t('imageoptimize', 'does not exist'),
+                            . Craft::t('image-optimize', 'does not exist'),
                             __METHOD__
                         );
                     }
