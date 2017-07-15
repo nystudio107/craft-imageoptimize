@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.0.9 - 2017.07.15
+### Changed
+* Craft 3 beta 20 compatibility
+
 ## 1.0.8 - 2017.04.20
 ### Changed
 * Fixed the packagist.org package name to coincide with the plugin renaming

@@ -1,8 +1,9 @@
-The MIT License (MIT)
-
+ImageOptimize License
 Copyright (c) 2017 nystudio107
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person or entity obtaining a copy of this software and associated documentation files (the "Software"), to use the software in any capacity, including commercial and for-profit use.  Permission is also granted to alter, modify, or extend the Software for your own use, or commission a third-party to perform modifications for you.
+
+Permission is NOT granted to create derivative works, sublicense, and/or sell copies of the Software.  This is not FOSS software.
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
