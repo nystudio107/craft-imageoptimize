@@ -68,7 +68,7 @@ class ImageOptimize extends Plugin
 
         Craft::info(
             Craft::t(
-                'imageoptimize',
+                'image-optimize',
                 '{name} plugin loaded',
                 ['name' => $this->name]
             ),
