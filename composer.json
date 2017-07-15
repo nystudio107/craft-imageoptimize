@@ -23,7 +23,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "~3.0.0-beta.1",
+        "craftcms/cms": "~3.0.0-beta.20",
         "mikehaertl/php-shellcommand": "~1.2"
     },
     "autoload": {
@@ -33,7 +33,7 @@
     },
     "extra": {
         "name": "ImageOptimize",
-        "handle": "imageOptimize",
+        "handle": "image-optimize",
         "schemaVersion": "1.0.0",
         "hasCpSettings": false,
         "hasCpSection": false,
