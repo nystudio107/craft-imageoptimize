@@ -49,42 +49,51 @@ return [
         "jpegoptim" => [
             "commandPath" => "/usr/bin/jpegoptim",
             "commandOptions" => "-s",
+            "commandOutputFileFlag" => "",
         ],
         "mozjpeg" => [
             "commandPath" => "/usr/bin/mozjpeg",
             "commandOptions" => "-optimize -copy none",
+            "commandOutputFileFlag" => "-outfile",
         ],
         "jpegtran" => [
             "commandPath" => "/usr/bin/jpegtran",
             "commandOptions" => "-optimize -copy none",
+            "commandOutputFileFlag" => "",
         ],
         // png optimizers
         "optipng" => [
             "commandPath" => "/usr/bin/optipng",
             "commandOptions" => "-o7 -strip all",
+            "commandOutputFileFlag" => "",
         ],
         "pngcrush" => [
             "commandPath" => "/usr/bin/pngcrush",
             "commandOptions" => "-brute -ow",
+            "commandOutputFileFlag" => "",
         ],
         "pngquant" => [
             "commandPath" => "/usr/bin/pngquant",
             "commandOptions" => "--strip --skip-if-larger",
+            "commandOutputFileFlag" => "",
         ],
         // svg optimizers
         "svgo" => [
             "commandPath" => "/usr/bin/svgo",
             "commandOptions" => "",
+            "commandOutputFileFlag" => "",
         ],
         // gif optimizers
         "gifsicle" => [
             "commandPath" => "/usr/bin/gifsicle",
             "commandOptions" => "-O3 -k 256",
+            "commandOutputFileFlag" => "",
         ],
         // webp optimizers
         "cwebp" => [
             "commandPath" => "/usr/bin/cwebp",
             "commandOptions" => "",
+            "commandOutputFileFlag" => "",
         ],
     ],
 

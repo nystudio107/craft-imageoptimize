@@ -114,12 +114,22 @@ class Optimize extends Component
                     // Make sure the command exists
                     $thisProcessor = $imageProcessors[$processor];
                     if (file_exists($thisProcessor['commandPath'])) {
+                        // Redirect the command output if necessary for this processor
+                        $outputFileFlag = "";
+                        if (!empty($thisProcessor['commandOutputFileFlag'])) {
+                            $outputFileFlag =  ' '
+                                . $thisProcessor['commandOutputFileFlag']
+                                . ' '
+                                . escapeshellarg($tempPath)
+                                . ' ';
+                        }
                         // Build the command to execute
                         $cmd =
                             $thisProcessor['commandPath']
                             . ' '
                             . $thisProcessor['commandOptions']
                             . ' '
+                            . $outputFileFlag
                             . escapeshellarg($tempPath);
                         // Execute the command
                         $shellOutput = $this->executeShellCommand($cmd);
