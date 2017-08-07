@@ -42,7 +42,7 @@ The `imageProcessors` array specifies the path and options for each of the image
 
 The `activeImageVariantCreators` array lets you specify which of the image variant creators to use for which file types.
 
-The `imageVariantCreators` array specifies the path and options for each of the image optimization tools.
+The `imageVariantCreators` array specifies the path and options for each of the image variant creators.
 
 See each image optimization tool's documentation for details on the options they allow you to use.
 
