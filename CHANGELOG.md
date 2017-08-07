@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.1.0 - 2017.08.07
+### Changed
+* Added support for automatic `webp` image variant creation
+
 ## 1.0.10 - 2017.08.06
 ### Changed
 * Fixed support for the `mozjpeg` image processor
