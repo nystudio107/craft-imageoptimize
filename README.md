@@ -34,11 +34,15 @@ ImageOptimize works equally well with both local and remote assets such as Amazo
 
 ## Configuring ImageOptimize
 
-The only configuration for ImageOptimize is in the `config.php` file, which is a multi-environment friendly way to store the default settings.  Don't edit this file, instead copy it to `craft/config` as `ImageOptimize.php` and make your changes there.
+The only configuration for ImageOptimize is in the `config.php` file, which is a multi-environment friendly way to store the default settings.  Don't edit this file, instead copy it to `craft/config` as `image-optimize.php` and make your changes there.
 
 The `activeImageProcessors` array lets you specify which of the image optimization tools to use for which file types.
 
 The `imageProcessors` array specifies the path and options for each of the image optimization tools.
+
+The `activeImageVariantCreators` array lets you specify which of the image variant creators to use for which file types.
+
+The `imageVariantCreators` array specifies the path and options for each of the image optimization tools.
 
 See each image optimization tool's documentation for details on the options they allow you to use.
 
@@ -52,10 +56,30 @@ If you have `devMode` on, ImageOptimize will log stats for images that it optimi
 2017-03-12 07:49:27 [192.168.10.1][1][-][info][nystudio107\ImageOptimize\services\Optimize::handleGenerateTransformEvent] zappa.png -> Original: 129.5K, Optimized: 100.8K -> Savings: 28.4%
 ```
 
+## Image Variants
+
+ImageOptimize can also automatically create image variants for transformed images. Whenever an image transform is created, ImageTransform can create the same image in multiple file formats.
+
+This is especially useful when implementing [webp images](https://developers.google.com/speed/webp/), so that you can make `.webp` images available to browsers that support them, while falling back on traditional `.png` and `.jpg` images for browsers that don't.
+
+Here's an example of what it looks like for images with the transform `Some Transform` applied to them:
+
+![Screenshot](img/image-variants.png)
+
+The savings from using `.webp` can be significant, without sacrificing image quality:
+ 
+ ![Screenshot](img/image-variants-filesize.png)
+
+`webp` also supports transparency, so it can be used as a viable substitute for both `.jpg` and `.png`
+
+For `.webp` image variants, the suffix `.webp` is simply added to the name of the transformed image, so `painted-face.jpg` becomes `painted-face.jpg.webp`. So you can display the URL via `{{ entry.someAsset.first().getUrl('someTransform') ~ '.webp' }}`
+
+To serve up `.webp` variant images, you can either use the HTML5 [<picture> element](https://www.html5rocks.com/en/tutorials/responsive/picture-element/#toc-file-type) to let browser choose what to display, or you can have your web server [serve them up automatically](https://github.com/uhop/grunt-tight-sprite/wiki/Recipe:-serve-WebP-with-nginx-conditionally). Some CDNs even support [serving up .webp images automatically](https://www.maxcdn.com/blog//how-to-reduce-image-size-with-webp-automagically/).
+
 ## ImageOptimize Roadmap
 
 Some things to do, and ideas for potential features:
 
-* Add support for addition image optimization tools
+* Add support for additional image optimization tools
 
 Brought to you by [nystudio107](https://nystudio107.com)
