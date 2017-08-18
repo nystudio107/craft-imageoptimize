@@ -15,7 +15,7 @@
  * It does nothing on its own.
  *
  * Don't edit this file, instead copy it to 'craft/config' as
- * 'imageoptimize.php' and make your changes there to override default
+ * 'image-optimize.php' and make your changes there to override default
  * settings.
  *
  * Once copied to 'craft/config', this file will be multi-environment aware as
