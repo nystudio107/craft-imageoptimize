@@ -1,0 +1,23 @@
+{#
+/**
+ * Image Optimize plugin for Craft CMS 3.x
+ *
+ * ResponsiveImages Field Input
+ *
+ * @author    nystudio107
+ * @copyright Copyright (c) 2017 nystudio107
+ * @link      https://nystudio107.com
+ * @package   ImageOptimize
+ * @since     1.2.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+        label: 'Some Field',
+        instructions: 'Enter some text here.',
+        id: name,
+        name: name,
+        value: value})
+}}

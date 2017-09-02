@@ -10,15 +10,16 @@
 
 namespace nystudio107\imageoptimize;
 
-use nystudio107\imageoptimize\fields\ResponsiveAssets;
-use nystudio107\imageoptimize\services\Optimize as OptimizeService;
+use nystudio107\imageoptimize\fields\ResponsiveImages;
 use nystudio107\imageoptimize\models\Settings;
+use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 
 use Craft;
 use craft\base\Plugin;
 use craft\services\AssetTransforms;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\services\Elements;
 use craft\services\Fields;
 
 use yii\base\Event;
@@ -58,7 +59,7 @@ class ImageOptimize extends Plugin
             Fields::className(),
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = ResponsiveAssets::className();
+                $event->types[] = ResponsiveImages::className();
             }
         );
 
