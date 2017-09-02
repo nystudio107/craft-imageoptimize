@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize;
 
+use nystudio107\imageoptimize\fields\ResponsiveAssets;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\models\Settings;
 
@@ -17,6 +18,8 @@ use Craft;
 use craft\base\Plugin;
 use craft\services\AssetTransforms;
 use craft\events\GenerateTransformEvent;
+use craft\events\RegisterComponentTypesEvent;
+use craft\services\Fields;
 
 use yii\base\Event;
 
@@ -50,6 +53,15 @@ class ImageOptimize extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        // Register our Field
+        Event::on(
+            Fields::className(),
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = ResponsiveAssets::className();
+            }
+        );
+
         // Handler: AssetTransforms::EVENT_GENERATE_TRANSFORM
         Event::on(
             AssetTransforms::className(),
@@ -57,7 +69,7 @@ class ImageOptimize extends Plugin
             function (GenerateTransformEvent $event) {
                 Craft::trace(
                     'AssetTransforms::EVENT_GENERATE_TRANSFORM',
-                    'imageoptimize'
+                    'image-optimize'
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
