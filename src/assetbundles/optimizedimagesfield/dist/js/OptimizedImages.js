@@ -1,18 +1,18 @@
 /**
  * Image Optimize plugin for Craft CMS
  *
- * ResponsiveImages Field JS
+ * OptimizedImages Field JS
  *
  * @author    nystudio107
  * @copyright Copyright (c) 2017 nystudio107
  * @link      https://nystudio107.com
  * @package   ImageOptimize
- * @since     1.2.0ImageOptimizeResponsiveImages
+ * @since     1.2.0ImageOptimizeOptimizedImages
  */
 
  ;(function ( $, window, document, undefined ) {
 
-    var pluginName = "ImageOptimizeResponsiveImages",
+    var pluginName = "ImageOptimizeOptimizedImages",
         defaults = {
         };
 

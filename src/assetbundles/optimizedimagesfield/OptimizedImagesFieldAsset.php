@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\imageoptimize\assetbundles\responsiveimagesfield;
+namespace nystudio107\imageoptimize\assetbundles\optimizedimagesfield;
 
 use Craft;
 use craft\web\AssetBundle;
@@ -19,7 +19,7 @@ use craft\web\assets\cp\CpAsset;
  * @package   ImageOptimize
  * @since     1.2.0
  */
-class ResponsiveImagesFieldAsset extends AssetBundle
+class OptimizedImagesFieldAsset extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -29,18 +29,18 @@ class ResponsiveImagesFieldAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@nystudio107/imageoptimize/assetbundles/responsiveimagesfield/dist";
+        $this->sourcePath = "@nystudio107/imageoptimize/assetbundles/optimizedimagesfield/dist";
 
         $this->depends = [
             CpAsset::class,
         ];
 
         $this->js = [
-            'js/ResponsiveImages.js',
+            'js/OptimizedImages.js',
         ];
 
         $this->css = [
-            'css/ResponsiveImages.css',
+            'css/OptimizedImages.css',
         ];
 
         parent::init();

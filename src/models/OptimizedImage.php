@@ -14,13 +14,14 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\base\Model;
+use craft\validators\ArrayValidator;
 
 /**
  * @author    nystudio107
  * @package   ImageOptimize
  * @since     1.2.0
  */
-class ResponsiveImage extends Model
+class OptimizedImage extends Model
 {
     // Public Properties
     // =========================================================================
@@ -29,6 +30,16 @@ class ResponsiveImage extends Model
      * @var string
      */
     public $someAttribute = 'Some Default';
+
+    /**
+     * @var array
+     */
+    public $optimizedImageUrls = [];
+
+    /**
+     * @var array
+     */
+    public $optimizedWebPImageUrls = [];
 
     // Public Methods
     // =========================================================================
@@ -41,6 +52,8 @@ class ResponsiveImage extends Model
         return [
             ['someAttribute', 'string'],
             ['someAttribute', 'default', 'value' => 'Some Default'],
+            ['optimizedImageUrls', ArrayValidator::class],
+            ['optimizedWebPImageUrls', ArrayValidator::class],
         ];
     }
 }

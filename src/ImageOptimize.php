@@ -10,7 +10,7 @@
 
 namespace nystudio107\imageoptimize;
 
-use nystudio107\imageoptimize\fields\ResponsiveImages;
+use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 
@@ -59,7 +59,7 @@ class ImageOptimize extends Plugin
             Fields::className(),
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = ResponsiveImages::className();
+                $event->types[] = OptimizedImages::className();
             }
         );
 

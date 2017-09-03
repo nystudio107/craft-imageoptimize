@@ -2,7 +2,7 @@
 /**
  * Image Optimize plugin for Craft CMS 3.x
  *
- * ResponsiveImages Field Input
+ * OptimizedImages Field Input
  *
  * @author    nystudio107
  * @copyright Copyright (c) 2017 nystudio107
@@ -17,7 +17,8 @@
 {{ forms.textField({
         label: 'Some Field',
         instructions: 'Enter some text here.',
-        id: name,
-        name: name,
-        value: value})
+        id: id ~ 'name',
+        name: name ~ '[someAttribute]',
+        value: value.someAttribute
+    })
 }}
