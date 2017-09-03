@@ -11,15 +11,19 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\models\OptimizedImage;
 
 use Craft;
 use craft\base\Component;
 use craft\base\Image;
+use craft\base\Volume;
 use craft\elements\Asset;
 use craft\errors\VolumeObjectExistsException;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;
 use craft\models\AssetTransformIndex;
+use craft\models\AssetTransform;
+use craft\queue\jobs\ResaveElements;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
 
@@ -164,6 +168,59 @@ class Optimize extends Component
         }
     }
 
+    /**
+     * @param Asset          $element
+     * @param OptimizedImage $model
+     */
+    public function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
+    {
+        // Empty our the optimized image URLs
+        $model->optimizedImageUrls = [];
+        $model->optimizedWebPImageUrls = [];
+
+        $transform = new AssetTransform();
+
+        foreach ($model->variants as $variant) {
+            // Create the transform based on the variant
+            $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+            $width = $variant['width'];
+            $transform->width = $width;
+            $transform->format = $variant['format'];
+            $transform->height = intval($width / $aspectRatio);
+
+            // Generate the URLs to the optimized images
+            $url = $element->getUrl($transform);
+            $model->optimizedImageUrls[$width] = $url;
+            $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+
+            Craft::info(
+                'Created transforms for variant: ' . print_r($variant, true),
+                __METHOD__
+            );
+        }
+    }
+
+    /**
+     * Resave all of the Asset elements in the Volume $volume
+     *
+     * @param Volume $volume
+     */
+    public function resaveVolumeAssets(Volume $volume)
+    {
+        $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+
+        Craft::$app->getQueue()->push(new ResaveElements([
+            'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
+            'elementType' => Asset::class,
+            'criteria' => [
+                'siteId' => $siteId,
+                'volumeId' => $volume->id,
+                'status' => null,
+                'enabledForSite' => false,
+            ]
+        ]));
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -280,8 +337,7 @@ class Optimize extends Component
     protected function copyImageVariantToVolume(
         $variantCreatorCommand,
         Asset $asset,
-        AssetTransformIndex
-        $index,
+        AssetTransformIndex $index,
         $outputPath
     ) {
         // If the image variant creation succeeded, copy it into place

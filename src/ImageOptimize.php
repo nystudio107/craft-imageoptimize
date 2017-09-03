@@ -16,11 +16,15 @@ use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\AssetTransforms;
+use craft\base\Volume;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\VolumeEvent;
+use craft\models\FieldLayout;
+use craft\services\AssetTransforms;
 use craft\services\Elements;
 use craft\services\Fields;
+use craft\services\Volumes;
 
 use yii\base\Event;
 
@@ -56,16 +60,48 @@ class ImageOptimize extends Plugin
 
         // Register our Field
         Event::on(
-            Fields::className(),
+            Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = OptimizedImages::className();
+                $event->types[] = OptimizedImages::class;
+            }
+        );
+
+        // Handler: Volumes::EVENT_AFTER_SAVE_VOLUME
+        Event::on(
+            Volumes::class,
+            Volumes::EVENT_AFTER_SAVE_VOLUME,
+            function (VolumeEvent $event) {
+                Craft::trace(
+                    'Volumes::EVENT_AFTER_SAVE_VOLUME',
+                    'image-optimize'
+                );
+                // Only worry about this volume if it's not new
+                if (!$event->isNew) {
+                    $needToReSave = false;
+                    /** @var Volume $volume */
+                    $volume = $event->volume;
+                    /** @var FieldLayout $fieldLayout */
+                    $fieldLayout = $volume->getFieldLayout();
+                    // Loop through the fields in the layout to see if there is an OptimizedImages field
+                    if ($fieldLayout) {
+                        $fields = $fieldLayout->getFields();
+                        foreach ($fields as $field) {
+                            if ($field instanceof OptimizedImages) {
+                                $needToReSave = true;
+                            }
+                        }
+                    }
+                    if ($needToReSave) {
+                        ImageOptimize::$plugin->optimize->resaveVolumeAssets($volume);
+                    }
+                }
             }
         );
 
         // Handler: AssetTransforms::EVENT_GENERATE_TRANSFORM
         Event::on(
-            AssetTransforms::className(),
+            AssetTransforms::class,
             AssetTransforms::EVENT_GENERATE_TRANSFORM,
             function (GenerateTransformEvent $event) {
                 Craft::trace(

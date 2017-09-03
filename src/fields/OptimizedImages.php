@@ -19,7 +19,6 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
 use craft\helpers\Json;
-use craft\models\AssetTransform;
 
 use yii\db\Schema;
 
@@ -70,6 +69,7 @@ class OptimizedImages extends Field
             ['someAttribute', 'string'],
             ['someAttribute', 'default', 'value' => 'Some Default'],
         ]);
+
         return $rules;
     }
 
@@ -80,11 +80,12 @@ class OptimizedImages extends Field
     {
         // Only stash the currentAsset if this is not a new element
         if (!$isNew) {
-            /** @var Asset $value */
+            /** @var Asset $element */
             if ($element instanceof Asset) {
                 $this->currentAsset = $element;
             }
         }
+
         return parent::beforeElementSave($element, $isNew);
     }
 
@@ -135,7 +136,9 @@ class OptimizedImages extends Field
 
         // Create a new OptimizedImage model and populate it
         $model = new OptimizedImage($value);
-        $this->populateOptimizedImageModel($element, $model);
+        if (!empty($this->currentAsset)) {
+            ImageOptimize::$plugin->optimize->populateOptimizedImageModel($this->currentAsset, $model);
+        }
 
         return $model;
     }
@@ -176,11 +179,11 @@ class OptimizedImages extends Field
 
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
-            'id' => $id,
-            'name' => $this->handle,
+            'id'        => $id,
+            'name'      => $this->handle,
             'namespace' => $namespacedId,
-            'prefix' => Craft::$app->getView()->namespaceInputId(''),
-            ];
+            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
+        ];
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').ImageOptimizeOptimizedImages(" . $jsonVars . ");");
 
@@ -188,10 +191,10 @@ class OptimizedImages extends Field
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/fields/OptimizedImages_input',
             [
-                'name' => $this->handle,
-                'value' => $value,
-                'field' => $this,
-                'id' => $id,
+                'name'         => $this->handle,
+                'value'        => $value,
+                'field'        => $this,
+                'id'           => $id,
                 'namespacedId' => $namespacedId,
             ]
         );
@@ -200,43 +203,4 @@ class OptimizedImages extends Field
     // Protected Methods
     // =========================================================================
 
-    /**
-     * @param Asset $element
-     * @param                  $model
-     */
-    protected function populateOptimizedImageModel(Asset $element, $model)
-    {
-        if (!empty($this->currentAsset)) {
-            // Empty our the optimized image URLs
-            $model->optimizedImageUrls = [];
-            $model->optimizedWebPImageUrls = [];
-
-            Craft::info(
-                print_r('OptimizedImage creating transforms', true),
-                __METHOD__
-            );
-
-            $transform = new AssetTransform();
-
-            foreach ($model->variants as $variant) {
-
-                Craft::info(
-                    print_r(print_r($variant, true), true),
-                    __METHOD__
-                );
-
-                // Create the transform based on the variant
-                $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-                $width = $variant['width'];
-                $transform->width = $width;
-                $transform->format = $variant['format'];
-                $transform->height = intval($width / $aspectRatio);
-
-                // Generate the URLs to the optimized images
-                $url = $element->getUrl($transform);
-                $model->optimizedImageUrls[$width] = $url;
-                $model->optimizedWebPImageUrls[$width] = $url . '.webp';
-            }
-        }
-    }
 }
