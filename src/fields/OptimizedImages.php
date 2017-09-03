@@ -20,7 +20,6 @@ use craft\base\Field;
 use craft\elements\Asset;
 use craft\helpers\Json;
 use craft\models\AssetTransform;
-use craft\services\Elements;
 
 use yii\db\Schema;
 
@@ -108,7 +107,7 @@ class OptimizedImages extends Field
 
                 $success = Craft::$app->getElements()->saveElement($element, false);
                 Craft::info(
-                    print_r('OptimizedImage afterElementSave() - $element - ' . $success . ' ' . print_r($element, true), true),
+                    print_r('Re-saved new asset ' . $success, true),
                     __METHOD__
                 );
             }
@@ -130,51 +129,13 @@ class OptimizedImages extends Field
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        /** @var Asset $element */
-        Craft::info(
-            print_r('OptimizedImage normalizeValue() - $value - ' . print_r($value, true), true),
-            __METHOD__
-        );
-
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
 
-        if (is_array($value)) {
-            $model = new OptimizedImage($value);
-        } else {
-            $model = new OptimizedImage();
-        }
-
-        if (!empty($this->currentAsset)) {
-            $model->optimizedImageUrls = [];
-            $model->optimizedWebPImageUrls = [];
-            
-            Craft::info(
-                print_r('OptimizedImage creating transoforms', true),
-                __METHOD__
-            );
-
-            $transform = new AssetTransform();
-
-            $widths = [1170, 970, 750, 320];
-
-            foreach ($widths as $width) {
-                $aspectRatio = 4.0 / 3.0;
-
-                $transform->width = $width;
-                $transform->height = intval($transform->width / $aspectRatio);
-
-                $url = $element->getUrl($transform);
-                $model->optimizedImageUrls[] = $url;
-                $model->optimizedWebPImageUrls[] = $url . '.webp';
-            }
-        }
-
-        Craft::info(
-            print_r('OptimizedImage normalizeValue()' . print_r($model, true), true),
-            __METHOD__
-        );
+        // Create a new OptimizedImage model and populate it
+        $model = new OptimizedImage($value);
+        $this->populateOptimizedImageModel($element, $model);
 
         return $model;
     }
@@ -184,10 +145,6 @@ class OptimizedImages extends Field
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
-        Craft::info(
-            print_r('OptimizedImage serializeValue()' . print_r($value, true), true),
-            __METHOD__
-        );
         return parent::serializeValue($value, $element);
     }
 
@@ -238,5 +195,48 @@ class OptimizedImages extends Field
                 'namespacedId' => $namespacedId,
             ]
         );
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @param Asset $element
+     * @param                  $model
+     */
+    protected function populateOptimizedImageModel(Asset $element, $model)
+    {
+        if (!empty($this->currentAsset)) {
+            // Empty our the optimized image URLs
+            $model->optimizedImageUrls = [];
+            $model->optimizedWebPImageUrls = [];
+
+            Craft::info(
+                print_r('OptimizedImage creating transforms', true),
+                __METHOD__
+            );
+
+            $transform = new AssetTransform();
+
+            foreach ($model->variants as $variant) {
+
+                Craft::info(
+                    print_r(print_r($variant, true), true),
+                    __METHOD__
+                );
+
+                // Create the transform based on the variant
+                $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+                $width = $variant['width'];
+                $transform->width = $width;
+                $transform->format = $variant['format'];
+                $transform->height = intval($width / $aspectRatio);
+
+                // Generate the URLs to the optimized images
+                $url = $element->getUrl($transform);
+                $model->optimizedImageUrls[$width] = $url;
+                $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+            }
+        }
     }
 }
