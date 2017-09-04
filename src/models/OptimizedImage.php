@@ -85,6 +85,48 @@ class OptimizedImage extends Model
         return $header . rawurlencode($content);
     }
 
+    /**
+     * @param $url
+     *
+     * @return int|string
+     */
+    public function curlGetFileSize($url)
+    {
+        // Assume failure.
+        $result = -1;
+
+        $curl = curl_init($url);
+
+        // Issue a HEAD request and follow any redirects.
+        curl_setopt($curl, CURLOPT_NOBODY, true);
+        curl_setopt($curl, CURLOPT_HEADER, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+        $data = curl_exec($curl);
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        curl_close($curl);
+
+        if ($data) {
+            $content_length = "unknown";
+
+            if (preg_match("/Content-Length: (\d+)/", $data, $matches)) {
+                $content_length = (int)$matches[1];
+            }
+
+            // http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+            if ($status == 200 || ($status > 300 && $status <= 308)) {
+                if ($content_length != "unknown") {
+                    $result = ImageOptimize::$plugin->optimize->humanFileSize($content_length, 1);
+                }
+            }
+        }
+
+        return $result;
+    }
+
     // Protected Methods
     // =========================================================================
 

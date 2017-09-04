@@ -57,8 +57,8 @@ class OptimizedImages extends Field
         ],
         [
             'width' => 750,
-            'aspectRatioX' => 16.0,
-            'aspectRatioY' => 9.0,
+            'aspectRatioX' => 4.0,
+            'aspectRatioY' => 3.0,
             'format' => '',
         ],
         [

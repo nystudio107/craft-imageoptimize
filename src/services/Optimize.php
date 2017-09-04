@@ -189,6 +189,22 @@ class Optimize extends Component
         ]));
     }
 
+    /**
+     * Translate bytes into something human-readable
+     *
+     * @param     $bytes
+     * @param int $decimals
+     *
+     * @return string
+     */
+    public function humanFileSize($bytes, $decimals = 2): string
+    {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[intval($factor)];
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -338,22 +354,6 @@ class Optimize extends Component
                 __METHOD__
             );
         }
-    }
-
-    /**
-     * Translate bytes into something human-readable
-     *
-     * @param     $bytes
-     * @param int $decimals
-     *
-     * @return string
-     */
-    protected function humanFileSize($bytes, $decimals = 2): string
-    {
-        $sz = 'BKMGTP';
-        $factor = floor((strlen($bytes) - 1) / 3);
-
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[intval($factor)];
     }
 
     /**

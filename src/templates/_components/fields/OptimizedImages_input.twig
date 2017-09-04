@@ -25,38 +25,76 @@
         {% endif %}
     {% endfor  %}
 
+    {% set fileSuffixes = ['', '.webp'] %}
     {% for variant in variants %}
-        {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
-        {% set thisWidth = (variant.width * 200) / maxWidth %}
-        {% set thisHeight = thisWidth / aspectRatio %}
-        {% set thisFontSize = (variant.width * 30) / maxWidth %}
-        {% if thisFontSize < 12 %}
-            {% set thisFontSize = 12 %}
-        {% endif %}
-        {% set thisStrokeColor = '#999' %}
-        {% set thisFillColor = '#CCC' %}
-        <svg style="display: block;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
-            <rect fill="{{ thisFillColor }}" x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
-            </rect>
-            <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
-                {{ variant.aspectRatioX ~ ':' ~ variant.aspectRatioY }}
-            </text>
-        </svg>
-        {% set markerWidth = 4 %}
-        {% set markerHeight = 4 %}
-        <svg width="{{ thisWidth }}" height="20px">
-            <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
-                    refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
-                <polygon points="{{ markerWidth }} 0, {{ markerWidth }} {{ markerHeight }}, 0 {{ markerHeight / 2 }}" fill="{{ thisStrokeColor }}" />
-            </marker>
-            <marker id="{{ name }}endarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
-                    refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
-                <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
-            </marker>
-            <line x1="{{ markerWidth * 2 }}" y1="10" x2="{{ thisWidth - (markerWidth * 2) }}" y2="10" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ namespacedId }}endarrow)" marker-start="url(#{{ namespacedId }}startarrow)" />
-            <text x="{{ thisWidth / 2 }}" y="14" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ variant.width }}w</text>
-            <text x="{{ thisWidth / 2 }}" y="14" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ variant.width }}w</text>
-        </svg>
+        <div style="padding-bottom: 10px; width: 440px; text-align: center;">
+            {% for fileSuffix in fileSuffixes %}
+                <div style="display: inline-block; padding-right: 10px;">
+                    {% set thisUrl = "" %}
+                    {% if value.optimizedImageUrls |length %}
+                        {% set thisUrl = value.optimizedImageUrls[variant.width] ~ fileSuffix %}
+                    {% endif %}
+                    {% set thisFileSize = value.curlGetFileSize(thisUrl) %}
+                    {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
+                    {% set thisWidth = (variant.width * 200) / maxWidth %}
+                    {% set thisHeight = thisWidth / aspectRatio %}
+                    {% set thisFontSize = (variant.width * 30) / maxWidth %}
+                    {% if thisFontSize < 12 %}
+                        {% set thisFontSize = 12 %}
+                    {% endif %}
+                    {% set thisStrokeColor = '#AAA' %}
+                    {% set thisFillColor = '#DDD' %}
+
+                    {% set markerWidth = 4 %}
+                    {% set markerHeight = 4 %}
+                    {% set lineY = 12 %}
+                    <svg width="{{ thisWidth }}" height="20px">
+                        <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
+                                refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
+                            <polygon points="{{ markerWidth }} 0, {{ markerWidth }} {{ markerHeight }}, 0 {{ markerHeight / 2 }}" fill="{{ thisStrokeColor }}" />
+                        </marker>
+                        <marker id="{{ name }}endarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
+                                refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
+                            <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
+                        </marker>
+                        <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ namespacedId }}endarrow)" marker-start="url(#{{ namespacedId }}startarrow)" />
+                        <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ variant.width }}w</text>
+                        <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ variant.width }}w</text>
+                    </svg>
+
+                    {% if value.optimizedImageUrls |length and thisFileSize != -1 %}
+                        {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
+                        <div style="width: 200px; vertical-align: top;">
+                            <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                        </div>
+                        <div style="text-align: center; padding-top: 10px;">
+                            <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
+                                {{ aspectRatioText }}
+                                &middot;
+                                {{ thisUrl |split('.') |last }}
+                                &middot;
+                                {{ thisFileSize }}
+                            </span>
+                        </div>
+                    {% else %}
+                        <div style="width: 200px; vertical-align: top;">
+                            <svg style="margin: 0 auto; display: block;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
+                                <rect fill="{{ thisFillColor }}" x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
+                                </rect>
+                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                    {{ variant.aspectRatioX ~ ':' ~ variant.aspectRatioY }}
+                                </text>
+                            </svg>
+                        </div>
+                        <div style="text-align: center; padding-top: 10px;">
+                            <span style="color: {{ thisStrokeColor }}">
+                                <span style="text-transform: uppercase;">{{ thisUrl |split('.') |last }}</span> variant does not exist
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
     {% endfor  %}
 </div>
 
