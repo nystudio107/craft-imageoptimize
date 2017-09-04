@@ -34,7 +34,7 @@
                     {% if value.optimizedImageUrls |length %}
                         {% set thisUrl = value.optimizedImageUrls[variant.width] ~ fileSuffix %}
                     {% endif %}
-                    {% set thisFileSize = value.curlGetFileSize(thisUrl) %}
+                    {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
                     {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
                     {% set thisWidth = (variant.width * 200) / maxWidth %}
                     {% set thisHeight = thisWidth / aspectRatio %}

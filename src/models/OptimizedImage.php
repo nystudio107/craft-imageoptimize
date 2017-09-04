@@ -86,45 +86,48 @@ class OptimizedImage extends Model
     }
 
     /**
-     * @param $url
+     *  Get the file size of any remote resource (using curl),
+     *  either in bytes or - default - as human-readable formatted string.
      *
-     * @return int|string
+     *  @author  Stephan Schmitz <eyecatchup@gmail.com>
+     *  @license MIT <http://eyecatchup.mit-license.org/>
+     *  @url     <https://gist.github.com/eyecatchup/f26300ffd7e50a92bc4d>
+     *
+     * @param   string  $url        Takes the remote object's URL.
+     * @param   boolean $formatSize Whether to return size in bytes or
+     *                              formatted.
+     * @param   boolean $useHead    Whether to use HEAD requests. If false,
+     *                              uses GET.
+     *
+     * @return  int|mixed|string    Returns human-readable formatted size
+     *                              or size in bytes (default: formatted).
      */
-    public function curlGetFileSize($url)
+    public function getRemoteFileSize($url, $formatSize = true, $useHead = true)
     {
-        // Assume failure.
-        $result = -1;
-
-        $curl = curl_init($url);
-
-        // Issue a HEAD request and follow any redirects.
-        curl_setopt($curl, CURLOPT_NOBODY, true);
-        curl_setopt($curl, CURLOPT_HEADER, true);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
-
-        $data = curl_exec($curl);
-        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
-
-        if ($data) {
-            $content_length = "unknown";
-
-            if (preg_match("/Content-Length: (\d+)/", $data, $matches)) {
-                $content_length = (int)$matches[1];
-            }
-
-            // http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-            if ($status == 200 || ($status > 300 && $status <= 308)) {
-                if ($content_length != "unknown") {
-                    $result = ImageOptimize::$plugin->optimize->humanFileSize($content_length, 1);
-                }
-            }
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_FOLLOWLOCATION => 1,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_NOBODY         => 1,
+        ]);
+        if (false !== $useHead) {
+            curl_setopt($ch, CURLOPT_NOBODY, 1);
+        }
+        curl_exec($ch);
+        // content-length of download (in bytes), read from Content-Length: field
+        $contentLength = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+        curl_close($ch);
+        // cannot retrieve file size, return "-1"
+        if (!$contentLength) {
+            return -1;
+        }
+        // return size in bytes
+        if (!$formatSize) {
+            return $contentLength;
         }
 
-        return $result;
+        return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
     // Protected Methods
