@@ -169,38 +169,6 @@ class Optimize extends Component
     }
 
     /**
-     * @param Asset          $element
-     * @param OptimizedImage $model
-     */
-    public function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
-    {
-        // Empty our the optimized image URLs
-        $model->optimizedImageUrls = [];
-        $model->optimizedWebPImageUrls = [];
-
-        $transform = new AssetTransform();
-
-        foreach ($model->variants as $variant) {
-            // Create the transform based on the variant
-            $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-            $width = $variant['width'];
-            $transform->width = $width;
-            $transform->format = $variant['format'];
-            $transform->height = intval($width / $aspectRatio);
-
-            // Generate the URLs to the optimized images
-            $url = $element->getUrl($transform);
-            $model->optimizedImageUrls[$width] = $url;
-            $model->optimizedWebPImageUrls[$width] = $url . '.webp';
-
-            Craft::info(
-                'Created transforms for variant: ' . print_r($variant, true),
-                __METHOD__
-            );
-        }
-    }
-
-    /**
      * Resave all of the Asset elements in the Volume $volume
      *
      * @param Volume $volume

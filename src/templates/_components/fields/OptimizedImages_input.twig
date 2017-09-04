@@ -19,13 +19,13 @@
         <label>Optimized Image Variants:</label>
     </div>
     {% set maxWidth = 0 %}
-    {% for variant in value.variants %}
+    {% for variant in variants %}
         {% if variant.width > maxWidth %}
             {% set maxWidth = variant.width %}
         {% endif %}
     {% endfor  %}
 
-    {% for variant in value.variants %}
+    {% for variant in variants %}
         {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
         {% set thisWidth = (variant.width * 200) / maxWidth %}
         {% set thisHeight = thisWidth / aspectRatio %}

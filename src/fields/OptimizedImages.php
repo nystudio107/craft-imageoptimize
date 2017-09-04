@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\fields;
 
+use craft\models\AssetTransform;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\models\OptimizedImage;
@@ -19,6 +20,7 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
 use craft\helpers\Json;
+use craft\validators\ArrayValidator;
 
 use yii\db\Schema;
 
@@ -36,6 +38,36 @@ class OptimizedImages extends Field
      * @var string
      */
     public $someAttribute = 'Some Default';
+
+    /**
+     * @var array
+     */
+    public $variants = [
+        [
+            'width' => 1170,
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'format' => '',
+        ],
+        [
+            'width' => 970,
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'format' => '',
+        ],
+        [
+            'width' => 750,
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'format' => '',
+        ],
+        [
+            'width' => 320,
+            'aspectRatioX' => 4.0,
+            'aspectRatioY' => 3.0,
+            'format' => '',
+        ],
+    ];
 
     // Private Properties
     // =========================================================================
@@ -68,6 +100,7 @@ class OptimizedImages extends Field
         $rules = array_merge($rules, [
             ['someAttribute', 'string'],
             ['someAttribute', 'default', 'value' => 'Some Default'],
+            ['variants', ArrayValidator::class],
         ]);
 
         return $rules;
@@ -137,7 +170,7 @@ class OptimizedImages extends Field
         // Create a new OptimizedImage model and populate it
         $model = new OptimizedImage($value);
         if (!empty($this->currentAsset)) {
-            ImageOptimize::$plugin->optimize->populateOptimizedImageModel($this->currentAsset, $model);
+            $this->populateOptimizedImageModel($this->currentAsset, $model);
         }
 
         return $model;
@@ -193,6 +226,7 @@ class OptimizedImages extends Field
             [
                 'name'         => $this->handle,
                 'value'        => $value,
+                'variants'     => $this->variants,
                 'field'        => $this,
                 'id'           => $id,
                 'namespacedId' => $namespacedId,
@@ -202,5 +236,38 @@ class OptimizedImages extends Field
 
     // Protected Methods
     // =========================================================================
+
+    /**
+     * @param Asset          $element
+     * @param OptimizedImage $model
+     */
+    protected function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
+    {
+        // Empty our the optimized image URLs
+        $model->optimizedImageUrls = [];
+        $model->optimizedWebPImageUrls = [];
+
+        /** @var AssetTransform $transform */
+        $transform = new AssetTransform();
+
+        foreach ($this->variants as $variant) {
+            // Create the transform based on the variant
+            $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+            $width = $variant['width'];
+            $transform->width = $width;
+            $transform->format = $variant['format'];
+            $transform->height = intval($width / $aspectRatio);
+
+            // Generate the URLs to the optimized images
+            $url = $element->getUrl($transform);
+            $model->optimizedImageUrls[$width] = $url;
+            $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+
+            Craft::info(
+                'Created transforms for variant: ' . print_r($variant, true),
+                __METHOD__
+            );
+        }
+    }
 
 }

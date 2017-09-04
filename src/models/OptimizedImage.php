@@ -29,35 +29,6 @@ class OptimizedImage extends Model
     /**
      * @var array
      */
-    public $variants = [
-        [
-            'width' => 1170,
-            'aspectRatioX' => 16.0,
-            'aspectRatioY' => 9.0,
-            'format' => '',
-        ],
-        [
-            'width' => 970,
-            'aspectRatioX' => 16.0,
-            'aspectRatioY' => 9.0,
-            'format' => '',
-        ],
-        [
-            'width' => 750,
-            'aspectRatioX' => 16.0,
-            'aspectRatioY' => 9.0,
-            'format' => '',
-        ],
-        [
-            'width' => 320,
-            'aspectRatioX' => 4.0,
-            'aspectRatioY' => 3.0,
-            'format' => '',
-        ],
-    ];
-    /**
-     * @var array
-     */
     public $optimizedImageUrls = [];
 
     /**
@@ -74,8 +45,6 @@ class OptimizedImage extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
             ['optimizedImageUrls', ArrayValidator::class],
             ['optimizedWebPImageUrls', ArrayValidator::class],
         ];
@@ -88,7 +57,6 @@ class OptimizedImage extends Model
      */
     public function srcset(): string
     {
-        Craft::dd($this);
         return $this->getSrcsetFromArray($this->optimizedImageUrls);
     }
 
@@ -109,7 +77,7 @@ class OptimizedImage extends Model
      *
      * @return string
      */
-    public function placeholderImage($width = 1, $height = 1, $color = 'transparent')
+    public function placeholderImage($width = 1, $height = 1, $color = '#CCC')
     {
         $header = 'data:image/svg+xml;charset=utf-8,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' width='$width' height='$height' style='background:$color'/>";
