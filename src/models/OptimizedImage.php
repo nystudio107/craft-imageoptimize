@@ -88,6 +88,7 @@ class OptimizedImage extends Model
      */
     public function srcset(): string
     {
+        Craft::dd($this);
         return $this->getSrcsetFromArray($this->optimizedImageUrls);
     }
 

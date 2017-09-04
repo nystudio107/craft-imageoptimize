@@ -15,8 +15,10 @@ use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 
 use Craft;
+use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
+use craft\events\FieldEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\VolumeEvent;
@@ -63,7 +65,48 @@ class ImageOptimize extends Plugin
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
+                Craft::trace(
+                    'Fields::EVENT_REGISTER_FIELD_TYPES',
+                    'image-optimize'
+                );
                 $event->types[] = OptimizedImages::class;
+            }
+        );
+
+        // Handler: Fields::EVENT_AFTER_SAVE_FIELD
+        Event::on(
+            Fields::class,
+            Fields::EVENT_AFTER_SAVE_FIELD,
+            function (FieldEvent $event) {
+                Craft::trace(
+                    'Fields::EVENT_AFTER_SAVE_FIELD',
+                    'image-optimize'
+                );
+                /** @var Field $field */
+                if (!$event->isNew) {
+                    $thisField = $event->field;
+                    if ($thisField instanceof OptimizedImages) {
+                        $volumes = Craft::$app->getVolumes()->getAllVolumes();
+                        foreach ($volumes as $volume) {
+                            $needToReSave = false;
+                            /** @var FieldLayout $fieldLayout */
+                            /** @var Volume $volume */
+                            $fieldLayout = $volume->getFieldLayout();
+                            // Loop through the fields in the layout to see if it contains our field
+                            if ($fieldLayout) {
+                                $fields = $fieldLayout->getFields();
+                                foreach ($fields as $field) {
+                                    if ($thisField->handle == $field->handle) {
+                                        $needToReSave = true;
+                                    }
+                                }
+                                if ($needToReSave) {
+                                    ImageOptimize::$plugin->optimize->resaveVolumeAssets($volume);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         );
 
