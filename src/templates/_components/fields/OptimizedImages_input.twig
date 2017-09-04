@@ -65,7 +65,9 @@
                     {% if value.optimizedImageUrls |length and thisFileSize != -1 %}
                         {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
                         <div style="width: 200px; vertical-align: top;">
-                            <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                            <a href="{{ thisUrl }}" target="_blank">
+                                <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                            </a>
                         </div>
                         <div style="text-align: center; padding-top: 10px;">
                             <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
