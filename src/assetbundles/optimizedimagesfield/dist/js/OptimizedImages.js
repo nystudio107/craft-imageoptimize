@@ -79,52 +79,67 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             this.$addBlockBtnContainer = this.$container.children('.buttons');
             this.$addBlockBtnGroup = this.$addBlockBtnContainer.children('.btngroup');
             this.$addBlockBtnGroupBtns = this.$addBlockBtnGroup.children('.btn');
-            this.$addBlockMenuBtn = this.$addBlockBtnContainer.children('.menubtn');
+
+            // Create our action button menus
+            var _this = this;
+            this.$blockContainer.find('> > .actions > .settings').each(function (index, value) {
+                var $value = $(value);
+                var menuBtn;
+                if ($value.data('menubtn')) {
+                    menuBtn = $value.data('menubtn');
+                } else {
+                    menuBtn = new Garnish.MenuBtn(value);
+                }
+                menuBtn.menu.settings.onOptionSelect = $.proxy(_this, 'onMenuOptionSelect');
+            });
 
             var $blocks = this.$blockContainer.children();
 
             this.blockSort = new Garnish.DragSort($blocks, {
                 handle: '> .actions > .move',
                 axis: 'y',
-                filter: $.proxy(function() {
-                    // Only return all the selected items if the target item is selected
-                    if (this.blockSort.$targetItem.hasClass('sel')) {
-                        return this.blockSelect.getSelectedItems();
-                    }
-                    else {
-                        return this.blockSort.$targetItem;
-                    }
-                }, this),
                 collapseDraggees: true,
                 magnetStrength: 4,
                 helperLagBase: 1.5,
                 helperOpacity: 0.9,
                 onSortChange: $.proxy(function() {
-                    this.blockSelect.resetItemOrder();
-
+                    this.resetVariantBlockOrder();
                 }, this)
             });
 
             this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
                 var type = $(ev.target).data('type');
-                this.addBlock(type);
+                this.addVariantBlock(type);
             });
 
-            new Garnish.MenuBtn(this.$addBlockMenuBtn,
-                {
-                    onOptionSelect: $.proxy(function(option) {
-                        var type = $(option).data('type');
-                        this.addBlock(type);
-                    }, this)
-                });
         },
 
+        onMenuOptionSelect: function(option) {
+            var $option = $(option);
 
-        getHiddenBlockCss: function($block) {
-            return {
-                opacity: 0,
-                marginBottom: -($block.outerHeight())
-            };
+            switch ($option.data('action')) {
+                case 'add': {
+                    this.addVariantBlock();
+                    break;
+                }
+
+                case 'delete': {
+                    this.deleteVariantBlock();
+                    break;
+                }
+            }
         },
+
+        addVariantBlock: function(items) {
+            alert('you add me');
+        },
+
+        deleteVariantBlock: function(items) {
+            alert('you delete me');
+        },
+
+        resetVariantBlockOrder: function() {
+            alert('you move me');
+        }
 
     });
