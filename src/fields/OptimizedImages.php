@@ -189,11 +189,24 @@ class OptimizedImages extends Field
      */
     public function getSettingsHtml()
     {
+        $reflect = new \ReflectionClass($this);
+        $thisId = $reflect->getShortName();
+        $id = Craft::$app->getView()->formatInputId($thisId);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
+            '"'. $namespacedId .'", '.
+            '"'. $namespacePrefix .'"'.
+            ');');
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/fields/OptimizedImages_settings',
             [
-                'field' => $this,
+                'field'     => $this,
+                'id'        => $id,
+                'name'      => $this->handle,
+                'namespace' => $namespacedId,
             ]
         );
     }

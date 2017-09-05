@@ -15,11 +15,87 @@
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
+{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
 {{ forms.textField({
     label: 'Some Attribute',
     instructions: 'Enter some attribute here.',
     id: 'someAttribute',
     name: 'someAttribute',
-    value: field['someAttribute']})
-}}
+    value: field['someAttribute']
+}) }}
+
+<div class="field" id="{{ id }}-fields">
+    <div class="heading">
+        <label id="variants-label" for="variants">Optimized Image Variants</label>
+    </div>
+    <div class="input ltr">
+        <input type="hidden" name="variants" value="">
+
+        <div class="matrix matrix-field" id="{{ id }}" style="position: relative;">
+            <div class="variant-blocks">
+                {% for variant in field.variants %}
+                    <div class="matrixblock" data-id="{{ loop.index }}" data-type="normal" {% if loop.first %}tabindex="0" {% endif %}style="opacity: 1;">
+                        <div class="titlebar">
+                            <div class="blocktype"></div>
+                            <div class="preview"></div>
+                        </div>
+                        <div class="actions">
+                            <div class="status off" title="{{ 'Disabled'|t('app') }}"></div>
+                            <a class="settings icon menubtn" title="{{ 'Actions'|t('app') }}" role="button"></a>
+                            <div class="menu">
+                                <ul class="padded">
+                                    <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
+                                </ul>
+                                <hr class="padded">
+                                <ul class="padded">
+                                    <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
+                                </ul>
+                            </div>
+                            <a class="move icon" title="{{ 'Reorder'|t('app') }}" role="button"></a>
+                        </div>
+                        <div class="fields">
+                            <!-- width -->
+                            {{ forms.textField({
+                                label: 'Width',
+                                instructions: 'Enter the transform width here.',
+                                id: 'variants-' ~ loop.index0 ~ '-width',
+                                name: 'variants[' ~ loop.index0 ~ '][width]',
+                                value: field.variants[loop.index0]['width']
+                            }) }}
+                            <!-- aspectRatioX -->
+                            {{ forms.textField({
+                                label: 'aspectRatioX',
+                                instructions: 'Enter the transform aspectRatioX here.',
+                                id: 'variants-' ~ loop.index0 ~ '-aspectRatioX',
+                                name: 'variants[' ~ loop.index0 ~ '][aspectRatioX]',
+                                value: field.variants[loop.index0]['aspectRatioX']
+                            }) }}
+                            <!-- aspectRatioY -->
+                            {{ forms.textField({
+                                label: 'aspectRatioY',
+                                instructions: 'Enter the transform aspectRatioY here.',
+                                id: 'variants-' ~ loop.index0 ~ '-aspectRatioY',
+                                name: 'variants[' ~ loop.index0 ~ '][aspectRatioY]',
+                                value: field.variants[loop.index0]['aspectRatioY']
+                            }) }}
+                            <!-- format -->
+                            {{ forms.textField({
+                                label: 'Format',
+                                instructions: 'Enter the transform format here.',
+                                id: 'variants-' ~ loop.index0 ~ '-format',
+                                name: 'variants[' ~ loop.index0 ~ '][format]',
+                                value: field.variants[loop.index0]['format']
+                            }) }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="buttons">
+                <div class="btngroup">
+                    <div class="btn add icon">{{ 'Add Variant' |t('image-optimize') }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -53,3 +53,78 @@
     };
 
 })( jQuery, window, document );
+
+Craft.OptimizedImagesInput = Garnish.Base.extend(
+    {
+        id: null,
+        inputNamePrefix: null,
+        inputIdPrefix: null,
+
+        $container: null,
+        $blockContainer: null,
+        $addBlockBtnContainer: null,
+        $addBlockBtnGroup: null,
+        $addBlockBtnGroupBtns: null,
+
+        blockSort: null,
+        blockSelect: null,
+
+        init: function(id, inputNamePrefix) {
+            this.id = id;
+            this.inputNamePrefix = inputNamePrefix;
+            this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);
+
+            this.$container = $('#' + this.id);
+            this.$blockContainer = this.$container.children('.variant-blocks');
+            this.$addBlockBtnContainer = this.$container.children('.buttons');
+            this.$addBlockBtnGroup = this.$addBlockBtnContainer.children('.btngroup');
+            this.$addBlockBtnGroupBtns = this.$addBlockBtnGroup.children('.btn');
+            this.$addBlockMenuBtn = this.$addBlockBtnContainer.children('.menubtn');
+
+            var $blocks = this.$blockContainer.children();
+
+            this.blockSort = new Garnish.DragSort($blocks, {
+                handle: '> .actions > .move',
+                axis: 'y',
+                filter: $.proxy(function() {
+                    // Only return all the selected items if the target item is selected
+                    if (this.blockSort.$targetItem.hasClass('sel')) {
+                        return this.blockSelect.getSelectedItems();
+                    }
+                    else {
+                        return this.blockSort.$targetItem;
+                    }
+                }, this),
+                collapseDraggees: true,
+                magnetStrength: 4,
+                helperLagBase: 1.5,
+                helperOpacity: 0.9,
+                onSortChange: $.proxy(function() {
+                    this.blockSelect.resetItemOrder();
+
+                }, this)
+            });
+
+            this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
+                var type = $(ev.target).data('type');
+                this.addBlock(type);
+            });
+
+            new Garnish.MenuBtn(this.$addBlockMenuBtn,
+                {
+                    onOptionSelect: $.proxy(function(option) {
+                        var type = $(option).data('type');
+                        this.addBlock(type);
+                    }, this)
+                });
+        },
+
+
+        getHiddenBlockCss: function($block) {
+            return {
+                opacity: 0,
+                marginBottom: -($block.outerHeight())
+            };
+        },
+
+    });
