@@ -169,6 +169,70 @@ class Optimize extends Component
     }
 
     /**
+     * Return an array of active image processors
+     *
+     * @return array
+     */
+    public function getActiveImageProcessors(): array
+    {
+        $result = [];
+        $settings = ImageOptimize::$plugin->getSettings();
+        // Get the active processors for the transform format
+        $activeImageProcessors = $settings['activeImageProcessors'];
+        foreach ($activeImageProcessors as $imageFormat => $imageProcessor) {
+            // Iterate through all of the processors for this format
+            $imageProcessors = $settings['imageProcessors'];
+            foreach ($activeImageProcessors[$imageFormat] as $processor) {
+                if (!empty($imageProcessors[$processor])) {
+                    $thisImageProcessor = $imageProcessors[$processor];
+                    $result[] = [
+                        'format'  => $imageFormat,
+                        'creator' => $processor,
+                        'command' => $thisImageProcessor['commandPath']
+                            . ' '
+                            . $thisImageProcessor['commandOptions'],
+                        'installed' => file_exists($thisImageProcessor['commandPath']),
+                    ];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return an array of active image variant creators
+     *
+     * @return array
+     */
+    public function getActiveVariantCreators(): array
+    {
+        $result = [];
+        $settings = ImageOptimize::$plugin->getSettings();
+        // Get the active image variant creators
+        $activeImageVariantCreators = $settings['activeImageVariantCreators'];
+        foreach ($activeImageVariantCreators as $imageFormat => $imageCreator) {
+            // Iterate through all of the image variant creators for this format
+            $imageVariantCreators = $settings['imageVariantCreators'];
+            foreach ($activeImageVariantCreators[$imageFormat] as $variantCreator) {
+                if (!empty($imageVariantCreators[$variantCreator])) {
+                    $thisVariantCreator = $imageVariantCreators[$variantCreator];
+                    $result[] = [
+                        'format'  => $imageFormat,
+                        'creator' => $variantCreator,
+                        'command' => $thisVariantCreator['commandPath']
+                            . ' '
+                            . $thisVariantCreator['commandOptions'],
+                        'installed' => file_exists($thisVariantCreator['commandPath']),
+                    ];
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Resave all of the Asset elements in the Volume $volume
      *
      * @param Volume $volume
@@ -180,12 +244,12 @@ class Optimize extends Component
         Craft::$app->getQueue()->push(new ResaveElements([
             'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
             'elementType' => Asset::class,
-            'criteria' => [
-                'siteId' => $siteId,
-                'volumeId' => $volume->id,
-                'status' => null,
+            'criteria'    => [
+                'siteId'         => $siteId,
+                'volumeId'       => $volume->id,
+                'status'         => null,
                 'enabledForSite' => false,
-            ]
+            ],
         ]));
     }
 

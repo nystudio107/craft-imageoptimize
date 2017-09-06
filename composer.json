@@ -35,7 +35,7 @@
         "name": "ImageOptimize",
         "handle": "image-optimize",
         "schemaVersion": "1.0.0",
-        "hasCpSettings": false,
+        "hasCpSettings": true,
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptimize/master/CHANGELOG.md",
         "components": {

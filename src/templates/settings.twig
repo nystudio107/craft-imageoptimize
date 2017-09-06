@@ -16,10 +16,80 @@
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
-{{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
-}}
+{% if imageProcessors is defined and imageProcessors |length %}
+    <h2>{{ 'Image Processors' }}</h2>
+    <table id="imageProcessors" class="data fullwidth collapsible">
+        <thead>
+            <th scope="col">{{ "File Format"|t('image-optimize') }}</th>
+            <th scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
+            <td class="col">{{ "Command"|t('image-optimize') }}</td>
+            <td class="thin">{{ "Installed"|t('image-optimize') }}</td>
+        </thead>
+        <tbody>
+        {% for imageProcessor in imageProcessors %}
+            <tr data-id="{{ loop.index0 }}" data-name="{{ imageProcessor.format }}">
+                <td data-title="{{ "File Format"|t('image-optimize') }}">
+                    {{ imageProcessor.format }}
+                </td>
+                <td data-title="{{ "Variant Creator"|t('image-optimize') }}">
+                    {{ imageProcessor.creator }}
+                </td>
+                <td data-title="{{ "Command"|t('image-optimize') }}">
+                    <code>{{ imageProcessor.command }}</code>
+                </td>
+                <td class="thin">
+                    {%  if imageProcessor.installed %}
+                        <span class="success" title="{{ 'Installed'|t('image-optimize') }}" data-icon="check"></span>
+                    {% else %}
+                        <span class="warning" title="{{ 'Not Installed'|t('image-optimize') }}" data-icon="alert"></span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+{% if variantCreators is defined and variantCreators |length %}
+    <h2>{{ 'Image Variant Creators' }}</h2>
+    <table id="variantCreators" class="data fullwidth collapsible">
+        <thead>
+        <th scope="col">{{ "File Format"|t('image-optimize') }}</th>
+        <th scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
+        <td class="col">{{ "Command"|t('image-optimize') }}</td>
+        <td class="thin">{{ "Installed"|t('image-optimize') }}</td>
+        </thead>
+        <tbody>
+        {% for variantCreator in variantCreators %}
+            <tr data-id="{{ loop.index0 }}" data-name="{{ variantCreator.format }}">
+                <td data-title="{{ "File Format"|t('image-optimize') }}">
+                    {{ variantCreator.format }}
+                </td>
+                <td data-title="{{ "Variant Creator"|t('image-optimize') }}">
+                    {{ variantCreator.creator }}
+                </td>
+                <td data-title="{{ "Command"|t('image-optimize') }}">
+                    <code>{{ variantCreator.command }}</code>
+                </td>
+                <td class="thin">
+                    {%  if variantCreator.installed %}
+                        <span class="success" title="{{ 'Installed'|t('image-optimize') }}" data-icon="check"></span>
+                    {% else %}
+                        <span class="warning" title="{{ 'Not Installed'|t('image-optimize') }}" data-icon="alert"></span>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
+
+{% js %}
+new Craft.AdminTable({
+    tableSelector: '#imageProcessors',
+});
+new Craft.AdminTable({
+    tableSelector: '#variantCreators',
+});
+{% endjs %}

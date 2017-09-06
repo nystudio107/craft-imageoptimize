@@ -168,6 +168,24 @@ class ImageOptimize extends Plugin
         );
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function settingsHtml()
+    {
+        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        // Render the settings template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/settings',
+            [
+                'settings' => $this->getSettings(),
+                'imageProcessors' => $imageProcessors,
+                'variantCreators' => $variantCreators,
+            ]
+        );
+    }
+
     // Protected Methods
     // =========================================================================
 
