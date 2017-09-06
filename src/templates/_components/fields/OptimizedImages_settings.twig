@@ -31,13 +31,14 @@
         fill: currentColor;
         stroke: currentColor;
     }
+
     .io-selected-ar-box {
-        box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(91,157,217, 1.0);
+        box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.075), 0 0 6px rgba(91,157,217, 0.6);
     }
 
-    .io-selected-ar-box .io-select-ar-box {
-        fill: rgba(91,157,217, .3);
-        stroke: rgba(91,157,217, .6);
+    .io-select-ar-box.io-selected-ar-box {
+        fill: rgba(91,157,217, .2);
+        stroke: rgba(91,157,217, .5);
     }
 
 </style>
@@ -107,8 +108,6 @@
                                         {% endif %}
                                         {% set thisHeight = 75 %}
                                         {% set thisWidth = thisHeight * thisAspectRatio %}
-                                        {% set thisStrokeColor = '#AAA' %}
-                                        {% set thisFillColor = '#DDD' %}
                                         {% set thisFontSize = 24 %}
                                         {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
 
@@ -124,9 +123,9 @@
                                         {% endif %}
                                         <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}">
                                             <svg class="select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
-                                                <rect x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
+                                                <rect x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="4">
                                                 </rect>
-                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
                                                     {{ thisText }}
                                                 </text>
                                             </svg>
