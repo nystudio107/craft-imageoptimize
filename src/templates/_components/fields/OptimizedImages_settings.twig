@@ -17,14 +17,6 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
-{{ forms.textField({
-    label: 'Some Attribute',
-    instructions: 'Enter some attribute here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: field['someAttribute']
-}) }}
-
 <div class="field" id="{{ id }}-fields">
     <div class="heading">
         <label id="variants-label" for="variants">Optimized Image Variants</label>
@@ -58,7 +50,7 @@
                             <!-- width -->
                             {{ forms.textField({
                                 label: 'Width',
-                                instructions: 'Enter the transform width here.',
+                                instructions: "The width of the transformed images."|t('image-optimize'),
                                 id: 'variants-' ~ loop.index0 ~ '-width',
                                 name: 'variants[' ~ loop.index0 ~ '][width]',
                                 value: field.variants[loop.index0]['width']
@@ -66,7 +58,7 @@
                             <!-- aspectRatioX -->
                             {{ forms.textField({
                                 label: 'aspectRatioX',
-                                instructions: 'Enter the transform aspectRatioX here.',
+                                instructions: "The aspectRatioX of the transformed images."|t('image-optimize'),
                                 id: 'variants-' ~ loop.index0 ~ '-aspectRatioX',
                                 name: 'variants[' ~ loop.index0 ~ '][aspectRatioX]',
                                 value: field.variants[loop.index0]['aspectRatioX']
@@ -74,18 +66,41 @@
                             <!-- aspectRatioY -->
                             {{ forms.textField({
                                 label: 'aspectRatioY',
-                                instructions: 'Enter the transform aspectRatioY here.',
+                                instructions: "The aspectRatioY of the transformed images."|t('image-optimize'),
                                 id: 'variants-' ~ loop.index0 ~ '-aspectRatioY',
                                 name: 'variants[' ~ loop.index0 ~ '][aspectRatioY]',
                                 value: field.variants[loop.index0]['aspectRatioY']
                             }) }}
+                            <!-- quality -->
+                            {{ forms.selectField({
+                                label: "Quality"|t('app'),
+                                instructions: "The quality of the transformed images."|t('image-optimize'),
+                                id: 'variants-' ~ loop.index0 ~ '-quality',
+                                name: 'variants[' ~ loop.index0 ~ '][quality]',
+                                value: (field.variants[loop.index0]['quality'] ?? 82),
+                                options: {
+                                    '0': "Auto"|t('app'),
+                                    '10': "Low"|t('app'),
+                                    '30': "Medium"|t('app'),
+                                    '60': "High"|t('app'),
+                                    '82': "Very High (Recommended)"|t('app'),
+                                    '100': "Maximum"|t('app')
+                                },
+                            }) }}
                             <!-- format -->
-                            {{ forms.textField({
-                                label: 'Format',
-                                instructions: 'Enter the transform format here.',
+                            {% set formatOptions = [
+                                {label: 'Auto', value: null},
+                                {label: 'jpg', value: 'jpg'},
+                                {label: 'png', value: 'png'},
+                                {label: 'gif', value: 'gif'},
+                            ] %}
+                            {{ forms.selectField({
+                                label: "Image Format"|t('app'),
+                                instructions: "The image format that transformed images should use."|t('app'),
                                 id: 'variants-' ~ loop.index0 ~ '-format',
                                 name: 'variants[' ~ loop.index0 ~ '][format]',
-                                value: field.variants[loop.index0]['format']
+                                value: (field.variants[loop.index0]['format'] ?? null),
+                                options: formatOptions,
                             }) }}
                         </div>
                     </div>

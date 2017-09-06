@@ -90,7 +90,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 } else {
                     menuBtn = new Garnish.MenuBtn(value);
                 }
-                menuBtn.menu.settings.onOptionSelect = $.proxy(_this, 'onMenuOptionSelect');
+                menuBtn.menu.settings.onOptionSelect = $.proxy(function(option) {
+                    this.onMenuOptionSelect(option, menuBtn);
+                }, _this);
             });
 
             var $blocks = this.$blockContainer.children();
@@ -114,32 +116,74 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
         },
 
-        onMenuOptionSelect: function(option) {
+        onMenuOptionSelect: function(option, menuBtn) {
             var $option = $(option);
+            var container = menuBtn.$btn.closest('.matrixblock');
 
             switch ($option.data('action')) {
                 case 'add': {
                     this.addVariantBlock();
                     break;
                 }
-
                 case 'delete': {
-                    this.deleteVariantBlock();
+                    this.deleteVariantBlock(container);
                     break;
                 }
             }
         },
 
-        addVariantBlock: function(items) {
-            alert('you add me');
+        getHiddenBlockCss: function($block) {
+            return {
+                opacity: 0,
+                marginBottom: -($block.outerHeight())
+            };
         },
 
-        deleteVariantBlock: function(items) {
-            alert('you delete me');
+        // Re-index all of the variant blocks
+        reIndexVariants: function() {
+            var $blocks = this.$blockContainer.children();
+            $blocks.each(function (index, value) {
+                var variantIndex = index;
+                var $value = $(value);
+                var elements = $value.find('div .field, label, input');
+
+                // Re-index all of the element attributes
+                $(elements).each(function (index, value) {
+                    // id attributes
+                    var str = $(value).attr('id');
+                    if (str) {
+                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex +"-");
+                        $(value).attr('id', str);
+                    }
+                    // for attributes
+                    str = $(value).attr('for');
+                    if (str) {
+                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex +"-");
+                        $(value).attr('for', str);
+                    }
+                    // Name attributes
+                    str = $(value).attr('name');
+                    if (str) {
+                        str = str.replace(/\[([0-9]+)\]/g, "[" + variantIndex +"]");
+                        $(value).attr('name', str);
+                    }
+                });
+            });
+        },
+
+        addVariantBlock: function(container) {
+            this.reIndexVariants();
+        },
+
+        deleteVariantBlock: function(container) {
+            container.velocity(this.getHiddenBlockCss(container), 'fast', $.proxy(function() {
+                container.remove();
+            }, this));
+            this.reIndexVariants();
         },
 
         resetVariantBlockOrder: function() {
-            alert('you move me');
+            this.reIndexVariants();
         }
 
     });

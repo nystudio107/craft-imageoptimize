@@ -35,11 +35,6 @@ class OptimizedImages extends Field
     // =========================================================================
 
     /**
-     * @var string
-     */
-    public $someAttribute = 'Some Default';
-
-    /**
      * @var array
      */
     public $variants = [
@@ -47,25 +42,29 @@ class OptimizedImages extends Field
             'width' => 1170,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
-            'format' => '',
+            'quality' => 0,
+            'format' => null,
         ],
         [
             'width' => 970,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
-            'format' => '',
+            'quality' => 0,
+            'format' => null,
         ],
         [
             'width' => 750,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
-            'format' => '',
+            'quality' => 0,
+            'format' => null,
         ],
         [
             'width' => 320,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
-            'format' => '',
+            'quality' => 0,
+            'format' => null,
         ],
     ];
 
@@ -98,8 +97,6 @@ class OptimizedImages extends Field
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
             ['variants', ArrayValidator::class],
         ]);
 
@@ -268,8 +265,9 @@ class OptimizedImages extends Field
             $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
             $width = $variant['width'];
             $transform->width = $width;
-            $transform->format = $variant['format'];
             $transform->height = intval($width / $aspectRatio);
+            $transform->quality = $variant['quality'];
+            $transform->format = $variant['format'];
 
             // Generate the URLs to the optimized images
             $url = $element->getUrl($transform);
