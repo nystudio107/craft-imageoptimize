@@ -17,12 +17,12 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
 {% if imageProcessors is defined and imageProcessors |length %}
-    <h2>{{ 'Image Processors' }}</h2>
+    <h2>{{ 'Active Image Processors' }}</h2>
     <table id="imageProcessors" class="data fullwidth collapsible">
         <thead>
-            <th scope="col">{{ "File Format"|t('image-optimize') }}</th>
-            <th scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
-            <td class="col">{{ "Command"|t('image-optimize') }}</td>
+            <th class="col io-format-column" scope="col">{{ "File Format"|t('image-optimize') }}</th>
+            <th class="col io-name-column" scope="col">{{ "Image Processor"|t('image-optimize') }}</th>
+            <td class="col io-command-column">{{ "Command"|t('image-optimize') }}</td>
             <td class="thin">{{ "Installed"|t('image-optimize') }}</td>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@
                 <td data-title="{{ "File Format"|t('image-optimize') }}">
                     {{ imageProcessor.format }}
                 </td>
-                <td data-title="{{ "Variant Creator"|t('image-optimize') }}">
+                <td data-title="{{ "Image Processor"|t('image-optimize') }}">
                     {{ imageProcessor.creator }}
                 </td>
                 <td data-title="{{ "Command"|t('image-optimize') }}">
@@ -51,12 +51,12 @@
 {% endif %}
 
 {% if variantCreators is defined and variantCreators |length %}
-    <h2>{{ 'Image Variant Creators' }}</h2>
+    <h2>{{ 'Active Image Variant Creators' }}</h2>
     <table id="variantCreators" class="data fullwidth collapsible">
         <thead>
-        <th scope="col">{{ "File Format"|t('image-optimize') }}</th>
-        <th scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
-        <td class="col">{{ "Command"|t('image-optimize') }}</td>
+        <th class="col io-format-column" scope="col">{{ "File Format"|t('image-optimize') }}</th>
+        <th class="col io-name-column" scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
+        <td class="col io-command-column">{{ "Command"|t('image-optimize') }}</td>
         <td class="thin">{{ "Installed"|t('image-optimize') }}</td>
         </thead>
         <tbody>

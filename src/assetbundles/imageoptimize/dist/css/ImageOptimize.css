@@ -9,3 +9,15 @@
  * @package   ImageOptimize
  * @since     1.2.0
  */
+
+table.data thead th.io-format-column {
+    width: 20%;
+}
+
+table.data thead th.io-name-column {
+    width: 20%;
+}
+
+table.data thead th.io-command-column {
+    width: 50%;
+}
