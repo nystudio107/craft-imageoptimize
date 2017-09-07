@@ -12,6 +12,9 @@
  */
 #}
 
+{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/optimizedimagesfield/dist', true) %}
+
 {% import "_includes/forms" as forms %}
 
 <div class="field">
@@ -98,6 +101,10 @@
             {% endfor %}
         </div>
     {% endfor  %}
+    <p style="color: #AAA">
+        <img src="{{ baseAssetsUrl }}/img/focal-point.svg" height="16" width="16" style="vertical-align: middle" style="color: #AAA"/>
+        <span>Focal Point set</span>
+    </p>
 </div>
 
 {#

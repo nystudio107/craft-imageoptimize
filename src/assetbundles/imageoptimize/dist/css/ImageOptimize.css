@@ -10,6 +10,20 @@
  * @since     1.2.0
  */
 
+table.image-optimize {
+    table-layout: fixed;
+}
+
+table.data thead th.io-headline-row  {
+    padding-top: 24px;
+    padding-bottom: 24px;
+}
+
+.image-optimize h2 {
+    font-weight: bold;
+    color: #29323d;
+}
+
 table.data thead th.io-format-column {
     width: 20%;
 }
@@ -19,5 +33,9 @@ table.data thead th.io-name-column {
 }
 
 table.data thead th.io-command-column {
+    width: 50%;
+}
+
+table.data thead th.io-installed-column {
     width: 50%;
 }
