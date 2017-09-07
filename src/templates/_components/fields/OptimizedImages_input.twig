@@ -43,7 +43,7 @@
     {% for variant in variants %}
         <div style="padding-bottom: 10px; width: 440px; text-align: center;">
             {% for fileSuffix in fileSuffixes %}
-                <div style="display: inline-block; padding-right: 10px;">
+                <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
                     {% set thisUrl = "" %}
                     {% if value.optimizedImageUrls |length %}
                         {% set thisUrl = value.optimizedImageUrls[variant.width] ~ fileSuffix %}
@@ -91,6 +91,11 @@
                                 &middot;
                                 {{ thisFileSize }}
                             </span>
+                            {% if value.originalImageWidth < variant.width or value.originalImageHeight < (variant.width / aspectRatio) %}
+                                <br />
+                                <span class="warning" title="{{ 'This image is upscaled'|t('image-optimize') }}" data-icon="alert"></span>
+                                <span style="color: {{ thisStrokeColor }};">This image is upscaled</span>
+                            {% endif %}
                         </div>
                     {% else %}
                         <div style="width: 200px; vertical-align: top;">
@@ -104,7 +109,9 @@
                         </div>
                         <div style="text-align: center; padding-top: 10px;">
                             <span style="color: {{ thisStrokeColor }}">
-                                <span style="text-transform: uppercase;">{{ thisUrl |split('.') |last }}</span> variant does not exist
+                                {% set thisFormat = thisUrl |split('.') |last %}
+                                <span class="warning" title="{{ thisFormat ~ ' variant does not exist' |t('image-optimize') }}" data-icon="alert"></span>
+                                <span style="text-transform: uppercase;">{{ thisFormat }}</span> variant does not exist
                             </span>
                         </div>
                     {% endif %}

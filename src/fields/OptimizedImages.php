@@ -274,6 +274,8 @@ class OptimizedImages extends Field
             $model->optimizedImageUrls[$width] = $url;
             $model->optimizedWebPImageUrls[$width] = $url . '.webp';
             $model->focalPoint = $element->focalPoint;
+            $model->originalImageWidth = $element->width;
+            $model->originalImageHeight = $element->height;
 
             Craft::info(
                 'Created transforms for variant: ' . print_r($variant, true),

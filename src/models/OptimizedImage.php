@@ -41,6 +41,16 @@ class OptimizedImage extends Model
      */
     public $focalPoint;
 
+    /**
+     * @var int
+     */
+    public $originalImageWidth;
+
+    /**
+     * @var int
+     */
+    public $originalImageHeight;
+
     // Public Methods
     // =========================================================================
 
