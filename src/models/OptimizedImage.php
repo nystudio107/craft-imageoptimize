@@ -36,6 +36,11 @@ class OptimizedImage extends Model
      */
     public $optimizedWebPImageUrls = [];
 
+    /**
+     * @var array
+     */
+    public $focalPoint;
+
     // Public Methods
     // =========================================================================
 
@@ -47,6 +52,7 @@ class OptimizedImage extends Model
         return [
             ['optimizedImageUrls', ArrayValidator::class],
             ['optimizedWebPImageUrls', ArrayValidator::class],
+            ['focalPoint', 'safe'],
         ];
     }
 

@@ -20,6 +20,17 @@
 <div class="field">
     <div class="heading">
         <label>Optimized Image Variants:</label>
+        <p style="fill: #AAA; color: #AAA;">
+            {% if value.focalPoint |length %}
+                <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
+                {{ source('image-optimize/_components/fields/focal-point.svg') }}
+                <span>Focal Point set</span>
+            {% else %}
+                <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
+                {{ source('image-optimize/_components/fields/focal-point.svg') }}
+                <span>Focal Point not set</span>
+            {% endif %}
+        </p>
     </div>
     {% set maxWidth = 0 %}
     {% for variant in variants %}
@@ -101,10 +112,6 @@
             {% endfor %}
         </div>
     {% endfor  %}
-    <p style="color: #AAA">
-        <img src="{{ baseAssetsUrl }}/img/focal-point.svg" height="16" width="16" style="vertical-align: middle" style="color: #AAA"/>
-        <span>Focal Point set</span>
-    </p>
 </div>
 
 {#
