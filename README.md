@@ -165,7 +165,7 @@ To use `<picture>` in your templates, you can just do:
 
 This assumes you have `WEBP` image variants configured. This lets the browser choose what to display, if it can handle `.webp`, it'll pick that (because `.webp` images are far more efficient than `.jpg` images), otherwise it'll just use the regular image.
 
-The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like. For information on how `srcset` works, check out the excellent [Built-in Browser Support for Responsive Images](https://www.html5rocks.com/en/tutorials/responsive/picture-element/) article.
+The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like. For information on how `<picture>` works, check out the excellent [Built-in Browser Support for Responsive Images](https://www.html5rocks.com/en/tutorials/responsive/picture-element/) article.
 
 If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
