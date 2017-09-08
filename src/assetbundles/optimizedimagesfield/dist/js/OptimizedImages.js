@@ -142,6 +142,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
         // Re-index all of the variant blocks
         reIndexVariants: function() {
+            this.$blockContainer = this.$container.children('.variant-blocks');
             var $blocks = this.$blockContainer.children();
             $blocks.each(function (index, value) {
                 var variantIndex = index;
