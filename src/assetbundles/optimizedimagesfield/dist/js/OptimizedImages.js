@@ -111,9 +111,10 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
             this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
                 var type = $(ev.target).data('type');
-                this.addVariantBlock(type);
+                this.addVariantBlock(null);
             });
 
+            this.addAspectRatioHandlers();
         },
 
         onMenuOptionSelect: function(option, menuBtn) {
@@ -122,7 +123,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
             switch ($option.data('action')) {
                 case 'add': {
-                    this.addVariantBlock();
+                    this.addVariantBlock(container);
                     break;
                 }
                 case 'delete': {
@@ -171,8 +172,84 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             });
         },
 
+        addAspectRatioHandlers: function () {
+            this.addListener($('.io-select-ar-box'), 'click', function(ev) {
+                $target = $(ev.target);
+                var x = $(ev.target).data('x'),
+                    y = $(ev.target).data('y'),
+                    custom = $(ev.target).data('custom'),
+                    field, $block;
+                // Select the appropriate aspect ratio
+                $block = $target.closest('.matrixblock');
+                $block.find('.io-select-ar-box').each(function (index, value) {
+                    $(value).removeClass('io-selected-ar-box');
+                });
+                $target.addClass('io-selected-ar-box');
+
+                // Handle setting the actual field values
+                if (custom) {
+                    $block.find('.io-custom-ar-wrapper').slideDown();
+                } else {
+                    $block.find('.io-custom-ar-wrapper').slideUp();
+                    field = $block.find('input')[1];
+                    $(field).val(x);
+                    field = $block.find('input')[2];
+                    $(field).val(y);
+                }
+            });
+        },
+
         addVariantBlock: function(container) {
-            this.reIndexVariants();
+            var _this = this;
+            $block = $(this.$blockContainer.children()[0]).clone();
+            // Reset to default values
+            $block.find('.io-select-ar-box').each(function (index, value) {
+                if (index === 4) {
+                    $(value).addClass('io-selected-ar-box');
+                } else {
+                    $(value).removeClass('io-selected-ar-box');
+                }
+            });
+            $block.find('.io-custom-ar-wrapper').hide();
+            field = $block.find('input')[0];
+            $(field).val(1170);
+            field = $block.find('input')[1];
+            $(field).val(16);
+            field = $block.find('input')[2];
+            $(field).val(9);
+            field = $block.find('select')[0];
+            $(field).val(0);
+            field = $block.find('select')[1];
+            $(field).val(null);
+            $block.css(this.getHiddenBlockCss($block)).velocity({
+                opacity: 1,
+                'margin-bottom': 10
+            }, 'fast', $.proxy(function() {
+
+                // Insert the block in the right place
+                if (container) {
+                    $block.insertBefore(container);
+                } else {
+                    $block.appendTo(this.$blockContainer);
+                }
+                // Update the Garnish UI controls
+                this.blockSort.addItems($block);
+                this.addAspectRatioHandlers();
+                $block.find('.settings').each(function (index, value) {
+                    var $value = $(value),
+                        menuBtn,
+                        menu;
+
+                    menu = _this.$container.find('.io-menu-clone > .menu').clone();
+                    $(menu).insertAfter($value);
+                    menuBtn = new Garnish.MenuBtn(value);
+
+                    menuBtn.menu.settings.onOptionSelect = $.proxy(function(option) {
+                        _this.onMenuOptionSelect(option, menuBtn);
+                    }, this);
+                });
+                this.reIndexVariants();
+            }, this));
         },
 
         deleteVariantBlock: function(container) {

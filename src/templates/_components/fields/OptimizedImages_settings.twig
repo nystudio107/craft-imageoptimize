@@ -17,38 +17,13 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
-<style>
-    .io-select-ar-box {
-        padding: 0px;
-        margin: 5px;
-        display: inline-block;
-        cursor: pointer;
-        fill: #DDD;
-        stroke: #AAA;
-    }
-
-    .io-select-ar-svg {
-        fill: currentColor;
-        stroke: currentColor;
-    }
-
-    .io-selected-ar-box {
-        box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.075), 0 0 6px rgba(91,157,217, 0.6);
-    }
-
-    .io-select-ar-box.io-selected-ar-box {
-        fill: rgba(91,157,217, .2);
-        stroke: rgba(91,157,217, .5);
-    }
-
-</style>
 {% set aspectRatios = [
     {'x': 1, 'y': 1},
     {'x': 5, 'y': 4},
     {'x': 4, 'y': 3},
     {'x': 8, 'y': 5},
     {'x': 16, 'y': 9},
-    {'x': 1, 'y': 1, 'custom': true},
+    {'x': 2, 'y': 2, 'custom': true},
 ] %}
 <div class="field" id="{{ id }}-fields">
     <div class="heading">
@@ -58,6 +33,17 @@
         <input type="hidden" name="variants" value="">
 
         <div class="matrix matrix-field" id="{{ id }}" style="position: relative;">
+            <div class="io-menu-clone" style="display: none;">
+                <div class="menu">
+                    <ul class="padded">
+                        <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
+                    </ul>
+                    <hr class="padded">
+                    <ul class="padded">
+                        <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
+                    </ul>
+                </div>
+            </div>
             <div class="variant-blocks">
                 {% for variant in field.variants %}
                     <div class="matrixblock" data-id="{{ loop.index }}" data-type="normal" {% if loop.first %}tabindex="0" {% endif %}style="opacity: 1;">
@@ -82,6 +68,7 @@
                         <div class="fields">
                             <!-- width -->
                             {{ forms.textField({
+                                size: 5,
                                 label: 'Width',
                                 instructions: "The width of the optimized image variant in pixels. This should match your `@media` queries."|t('image-optimize'),
                                 id: 'variants-' ~ loop.index0 ~ '-width',
@@ -121,8 +108,8 @@
                                                 {% set selectedClass = 'io-selected-ar-box' %}
                                             {% endif %}
                                         {% endif %}
-                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}">
-                                            <svg class="select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
+                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
+                                            <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
                                                 <rect x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="4">
                                                 </rect>
                                                 <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
@@ -132,9 +119,10 @@
                                         </div>
                                     {% endfor %}
 
-                                    <div style="{% if selectedAspectRatio is not same as(false) %}display: none;{% endif %}">
+                                    <div class="io-custom-ar-wrapper" style="{% if selectedAspectRatio is not same as(false) %}display: none;{% endif %}">
                                         <!-- aspectRatioX -->
                                         {{ forms.textField({
+                                            size: 5,
                                             label: 'aspectRatioX',
                                             instructions: "The aspectRatioX of the transformed images."|t('image-optimize'),
                                             id: 'variants-' ~ loop.index0 ~ '-aspectRatioX',
@@ -143,6 +131,7 @@
                                         }) }}
                                         <!-- aspectRatioY -->
                                         {{ forms.textField({
+                                            size: 5,
                                             label: 'aspectRatioY',
                                             instructions: "The aspectRatioY of the transformed images."|t('image-optimize'),
                                             id: 'variants-' ~ loop.index0 ~ '-aspectRatioY',

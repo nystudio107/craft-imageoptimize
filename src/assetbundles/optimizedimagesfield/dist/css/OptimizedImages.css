@@ -9,3 +9,35 @@
  * @package   ImageOptimize
  * @since     1.2.0
  */
+
+.io-select-ar-box {
+    padding: 0px;
+    margin: 5px;
+    display: inline-block;
+    cursor: pointer;
+    fill: #DDD;
+    stroke: #AAA;
+}
+
+.io-select-ar-box text {
+    fill: #AAA;
+    stroke: none;
+}
+
+.io-select-ar-svg {
+    pointer-events: none;
+}
+
+.io-selected-ar-box {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.075), 0 0 6px rgba(91,157,217, 0.6);
+}
+
+.io-select-ar-box.io-selected-ar-box {
+    fill: rgba(91,157,217, .2);
+    stroke: rgba(91,157,217, .5);
+}
+
+.io-select-ar-box.io-selected-ar-box text {
+    fill: rgba(91,157,217, .5);
+    stroke: none;
+}
