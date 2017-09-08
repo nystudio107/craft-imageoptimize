@@ -217,6 +217,7 @@ To serve up `.webp` variant images, you can either use the HTML5 [&lt;picture&gt
 
 Some things to do, and ideas for potential features:
 
+* Consider supporting image optimization services like ImageOptim, Imgix, and Cloudinary
 * Add support for additional image optimization tools
 
 Brought to you by [nystudio107](https://nystudio107.com)
