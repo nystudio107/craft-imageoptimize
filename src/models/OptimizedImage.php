@@ -13,6 +13,7 @@ namespace nystudio107\imageoptimize\models;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
+use craft\helpers\UrlHelper;
 use craft\base\Model;
 use craft\validators\ArrayValidator;
 
@@ -120,6 +121,11 @@ class OptimizedImage extends Model
      */
     public function getRemoteFileSize($url, $formatSize = true, $useHead = true)
     {
+        // Make this a full URL / aaw -- 2017.09.08
+        if (!UrlHelper::isAbsoluteUrl($url)) {
+            $url = UrlHelper::siteUrl($url);
+        }
+
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => 1,

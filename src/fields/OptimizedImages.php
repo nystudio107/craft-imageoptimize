@@ -269,8 +269,15 @@ class OptimizedImages extends Field
             $transform->quality = $variant['quality'];
             $transform->format = $variant['format'];
 
+            // Force generateTransformsBeforePageLoad = true to generate the images now
+            $generalConfig = Craft::$app->getConfig()->getGeneral();
+            $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
+            $generalConfig->generateTransformsBeforePageLoad = true;
             // Generate the URLs to the optimized images
             $url = $element->getUrl($transform);
+            $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
+
+            // Update the model
             $model->optimizedImageUrls[$width] = $url;
             $model->optimizedWebPImageUrls[$width] = $url . '.webp';
             $model->focalPoint = $element->focalPoint;
