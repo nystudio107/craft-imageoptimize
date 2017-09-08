@@ -1,6 +1,6 @@
 {
     "name": "nystudio107/craft3-imageoptimize",
-    "description": "Automatically optimize images after they've been transformed",
+    "description": "Automatically create & optimize responsive image transforms",
     "type": "craft-plugin",
     "version": "1.2.0",
     "keywords": [

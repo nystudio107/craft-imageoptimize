@@ -1,6 +1,6 @@
 # ImageOptimize plugin for Craft CMS 3.x
 
-Automatically optimize images after they've been transformed
+Automatically create & optimize responsive image transforms
 
 ## Installation
 
@@ -11,7 +11,7 @@ To install ImageOptimize, follow these steps:
 
 ImageOptimize works on Craft 3.x.
 
-ImageOptimize won't do anything on its own; you'll need to also install the image optimization tools of your choice. Here's how to install a few on Ubuntu 16.04:
+To create client-proof optimized images, you'll need to also install the image optimization tools of your choice. Here's how to install a few on Ubuntu 16.04:
 
 * **jpegoptim** - `sudo apt-get install jpegoptim`
 * **mozjpeg** - [Installing mozjpeg on Ubuntu 16.04 (Forge)](https://nystudio107.com/blog/installing-mozjpeg-on-ubuntu-16-04-forge)
@@ -20,9 +20,13 @@ ImageOptimize won't do anything on its own; you'll need to also install the imag
 * **gifsicle** - `sudo apt-get install gifsicle`
 * **webp** - `sudo apt-get install webp`
 
+ImageOptimize's responsive image transforms will work without these tools installed, but it's recommended that you use them to ensure the images are fully optimized.
+
 ## ImageOptimize Overview
 
-ImageOptimize allows you to optimize the images created by Craft 3's Image Transforms by automatically running a variety of image optimization tools on them. As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
+ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets.  This makes creating responsive image sizes for `<img srcset="">` or `<picture>` elements sublimely easy. These responsive image transforms are created when an asset is _saved_, rather than at page load time, to ensure that frontend performance is optimal.
+
+It will also optimize all of your image transforms automatically by running a variety of image optimization tools on them. As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
 Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want.
 
@@ -46,9 +50,142 @@ The `imageVariantCreators` array specifies the path and options for each of the 
 
 See each image optimization tool's documentation for details on the options they allow you to use.
 
+The ImageOptimize plugin Settings page will show you the status of your installed image optimization tools:
+
+![Screenshot](screenshots/image-optimize-settings.png)
+
+
 ## Using ImageOptimize
 
-Once ImageOptimize is set up and configured, there's nothing left to do. It just works.
+### Using the Optimized Images Field
+
+#### In the AdminCP
+
+To create responsive image variants for all of your images, create an **OptimzedImages** Field. The field settings let you create as many Optimized Image Variants as you like:
+
+![Screenshot](screenshots/field-settings.png)
+
+You can add, delete, and re-order the Optimized Image Variants just like you can Matrix blocks.
+
+For each Optimized Image Variant, set:
+ 
+ * **Width**: The width of the image, which should correspond to your CSS `@media` query breakpoints or container sizes. For performance, we want to images to be the exact size that they will be displayed on-screen.
+ * **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
+ * **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
+ * **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image's file format. It's recommended that you set this to `jpg` for most images, for client-proofing purposes.
+ 
+ Once you have set up your field, add it to your asset Volume's layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
+
+Whenever you add an OptimizedImages field to an asset Volume's layout, or make changes to an existing OptimizedImages field's settings, it will automatically generate your responsive image variants for you.
+
+If you double-click on an asset (or click on an asset, and choose **Edit Asset** from the gear menu), you will now see all of your responsive image variants for that image:
+
+![Screenshot](screenshots/image-variant-field.png)
+
+You'll see the responsive width of each image variant above each thumbnail, with the aspect ratio, file format, and file size below it. If you have `.webp` image variants configured, you will see them here as well.
+
+If you click on an image thumbnail, it will open up the full size image in a new browser tab.
+
+The OptimizedImages field also helps content editors by pointing out potential problems as well:
+
+![Screenshot](screenshots/image-variant-warnings.png)
+
+In this example, no **Focal Point** has been set via Craft 3's built-in image editor. The **Focal Point** lets content editors choose what portion of the image is most important, and should be kept in the center of any transformed images:
+
+![Screenshot](screenshots/image-editor-focal-point.png)
+
+There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn't been configured, so there are no `.webp` variants created.
+
+#### In your Templates
+
+ImageOptimize makes it easy to create responsive images in your frontend templates. There are two primary ways to create responsive images: using the `<img srcset="">` element or using the `<picture>` element.
+
+To use `<img srcset="">` elements in your templates, you can just do:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    <img srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+         sizes="100vw" />
+```
+
+...where `someAsset` is your Assets field handle, and `optimizedImages` is the handle to your OptimizedImages field. This will result in HTML like this being generated for you:
+
+```
+    <img srcset="/assets/_1170x658_crop_center-center/painted-face.jpg 1170w,
+                 /assets/_970x545_crop_center-center/painted-face.jpg 970w,
+                 /assets/_750x562_crop_center-center/painted-face.jpg 750w,
+                 /assets/_320x240_crop_center-center/painted-face.jpg 320w"
+                 sizes="100vw" />
+```
+
+The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like. For information on how `srcset` works, check out the excellent [Srcset and sizes](https://ericportis.com/posts/2014/srcset-sizes/) article.
+
+If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    <img src="{{ someAsset.one().optimizedImages.placeholderImage()"
+         data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+         data-sizes="100vw" />
+```
+
+The `placeholderImage()` method generates an inline SVG to display while the image is being lazy loaded. The method signature is `placeholderImage(width, height, color)`
+
+To use `<picture>` in your templates, you can just do:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    <picture>
+        <sources srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
+                 sizes="100vw"
+                 type="image/webp" />
+        <img srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+             sizes="100vw" />
+     </picture>
+```
+
+...where `someAsset` is your Assets field handle, and `optimizedImages` is the handle to your OptimizedImages field. This will result in HTML like this being generated for you:
+
+```
+    <picture>
+        <sources srcset="/assets/_1170x658_crop_center-center/painted-face.jpg.webp 1170w,
+                         /assets/_970x545_crop_center-center/painted-face.jpg.webp 970w,
+                         /assets/_750x562_crop_center-center/painted-face.jpg.webp 750w,
+                         /assets/_320x240_crop_center-center/painted-face.jpg.webp 320w"
+                 sizes="100vw"
+                 type="image/webp" />
+        <img srcset="/assets/_1170x658_crop_center-center/painted-face.jpg 1170w,
+                     /assets/_970x545_crop_center-center/painted-face.jpg 970w,
+                     /assets/_750x562_crop_center-center/painted-face.jpg 750w,
+                     /assets/_320x240_crop_center-center/painted-face.jpg 320w"
+                     sizes="100vw" />
+    </picture>
+```
+
+
+This assumes you have `WEBP` image variants configured. This lets the browser choose what to display, if it can handle `.webp`, it'll pick that (because `.webp` images are far more efficient than `.jpg` images), otherwise it'll just use the regular image.
+
+The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like. For information on how `srcset` works, check out the excellent [Built-in Browser Support for Responsive Images](https://www.html5rocks.com/en/tutorials/responsive/picture-element/) article.
+
+If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    <picture>
+        <sources data-srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
+                 data-sizes="100vw"
+                 type="image/webp" />
+        <img src="{{ someAsset.one().optimizedImages.placeholderImage()"
+             data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+             data-sizes="100vw" />
+     </picture>
+```
+
+The `placeholderImage()` method generates an inline SVG to display while the image is being lazy loaded. The method signature is `placeholderImage(width, height, color)`
+
+### Using Optimized Image Transforms
+
+Once ImageOptimize is set up and configured, there's nothing left to do for optimizing your image transforms. It just works.
 
 If you have `devMode` on, ImageOptimize will log stats for images that it optimizes, e.g.:
 
@@ -64,11 +201,11 @@ This is especially useful when implementing [webp images](https://developers.goo
 
 Here's an example of what it looks like for images with the transform `Some Transform` applied to them:
 
-![Screenshot](img/image-variants.png)
+![Screenshot](screenshots/image-variants.png)
 
 The savings from using `.webp` can be significant, without sacrificing image quality:
  
- ![Screenshot](img/image-variants-filesize.png)
+ ![Screenshot](screenshots/image-variants-filesize.png)
 
 `webp` also supports transparency, so it can be used as a viable substitute for both `.jpg` and `.png`
 
