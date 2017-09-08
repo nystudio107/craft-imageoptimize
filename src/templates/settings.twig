@@ -12,10 +12,16 @@
  */
 #}
 
+<style>
+    #extra-headers {
+        display: none;
+    }
+</style>
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
+{% block body %}
 <div class="readable">
 
     <div class="textline">
@@ -106,6 +112,8 @@
         </div>
     {% endif %}
 </div>
+
+{% endblock %}
 
 {% js %}
 new Craft.AdminTable({
