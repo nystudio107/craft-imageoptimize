@@ -1,7 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.2.0 - 2017.09.08
+### Added
+* Added `OptimzedImages` Field
+* Updated `README.md`
+
 ## 1.1.0 - 2017.08.07
-### Changed
+### Added
 * Added support for automatic `webp` image variant creation
 
 ## 1.0.10 - 2017.08.06
