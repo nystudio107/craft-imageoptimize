@@ -70,7 +70,7 @@
                             {{ forms.textField({
                                 size: 5,
                                 label: 'Width',
-                                instructions: "The width of the optimized image variant in pixels. This should match your `@media` queries."|t('image-optimize'),
+                                instructions: "The width of the optimized image variant in pixels. This should match your `@media` query breakpoints."|t('image-optimize'),
                                 id: 'variants-' ~ loop.index0 ~ '-width',
                                 name: 'variants[' ~ loop.index0 ~ '][width]',
                                 value: field.variants[loop.index0]['width']
