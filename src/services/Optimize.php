@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\models\OptimizedImage;
 
 use Craft;
 use craft\base\Component;
@@ -22,7 +21,6 @@ use craft\errors\VolumeObjectExistsException;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;
 use craft\models\AssetTransformIndex;
-use craft\models\AssetTransform;
 use craft\queue\jobs\ResaveElements;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
