@@ -2,6 +2,10 @@
 
 Automatically create & optimize responsive image transforms
 
+**Note**: This plugin may become a paid add-on when the Craft Plugin store becomes available.
+
+![Screenshot](screenshots/image-variant-field.png)
+
 ## Installation
 
 To install ImageOptimize, follow these steps:
