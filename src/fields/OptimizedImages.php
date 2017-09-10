@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\fields;
 
 use craft\models\AssetTransform;
-use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
@@ -23,6 +22,8 @@ use craft\helpers\Json;
 use craft\validators\ArrayValidator;
 
 use yii\db\Schema;
+
+/** @noinspection MissingPropertyAnnotationsInspection */
 
 /**
  * @author    nystudio107
@@ -124,10 +125,10 @@ class OptimizedImages extends Field
      */
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        // If this is a new element, resave it so that it as an id for our asset transforms
-        if ($isNew) {
-            /** @var Asset $element */
-            if ($element instanceof Asset) {
+        /** @var Asset $element */
+        if ($element instanceof Asset) {
+            // If this is a new element, resave it so that it as an id for our asset transforms
+            if ($isNew) {
                 // Initialize our field with defaults
                 $this->currentAsset = $element;
                 $defaultData = $this->normalizeValue(null, $element);
@@ -138,21 +139,17 @@ class OptimizedImages extends Field
 
                 $success = Craft::$app->getElements()->saveElement($element, false);
                 Craft::info(
-                    print_r('Re-saved new asset ' . $success, true),
+                    print_r('Re-saved new asset '.$success, true),
                     __METHOD__
                 );
+            } else {
+                // Otherwise create a dummy model, and populate it, to recreate any asset transforms
+                $model = new OptimizedImage();
+                $this->populateOptimizedImageModel($element, $model);
             }
         }
 
         parent::afterElementSave($element, $isNew);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getContentColumnType(): string
-    {
-        return Schema::TYPE_TEXT;
     }
 
     /**
@@ -172,80 +169,6 @@ class OptimizedImages extends Field
 
         return $model;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function serializeValue($value, ElementInterface $element = null)
-    {
-        return parent::serializeValue($value, $element);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSettingsHtml()
-    {
-        $reflect = new \ReflectionClass($this);
-        $thisId = $reflect->getShortName();
-        $id = Craft::$app->getView()->formatInputId($thisId);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
-            '"'. $namespacedId .'", '.
-            '"'. $namespacePrefix .'"'.
-            ');');
-
-        // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_settings',
-            [
-                'field'     => $this,
-                'id'        => $id,
-                'name'      => $this->handle,
-                'namespace' => $namespacedId,
-            ]
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getInputHtml($value, ElementInterface $element = null): string
-    {
-        // Register our asset bundle
-        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
-
-        // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id'        => $id,
-            'name'      => $this->handle,
-            'namespace' => $namespacedId,
-            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
-        ];
-        $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').ImageOptimizeOptimizedImages(" . $jsonVars . ");");
-
-        // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_input',
-            [
-                'name'         => $this->handle,
-                'value'        => $value,
-                'variants'     => $this->variants,
-                'field'        => $this,
-                'id'           => $id,
-                'namespacedId' => $namespacedId,
-            ]
-        );
-    }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * @param Asset          $element
@@ -279,16 +202,97 @@ class OptimizedImages extends Field
 
             // Update the model
             $model->optimizedImageUrls[$width] = $url;
-            $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+            $model->optimizedWebPImageUrls[$width] = $url.'.webp';
             $model->focalPoint = $element->focalPoint;
             $model->originalImageWidth = $element->width;
             $model->originalImageHeight = $element->height;
 
             Craft::info(
-                'Created transforms for variant: ' . print_r($variant, true),
+                'Created transforms for variant: '.print_r($variant, true),
                 __METHOD__
             );
         }
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        return parent::serializeValue($value, $element);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentColumnType(): string
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        $reflect = new \ReflectionClass($this);
+        $thisId = $reflect->getShortName();
+        $id = Craft::$app->getView()->formatInputId($thisId);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
+            '"'.$namespacedId.'", '.
+            '"'.$namespacePrefix.'"'.
+            ');');
+
+        // Render the settings template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/_components/fields/OptimizedImages_settings',
+            [
+                'field' => $this,
+                'id' => $id,
+                'name' => $this->handle,
+                'namespace' => $namespacedId,
+            ]
+        );
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml($value, ElementInterface $element = null): string
+    {
+        // Register our asset bundle
+        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+
+        // Get our id and namespace
+        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
+
+        // Variables to pass down to our field JavaScript to let it namespace properly
+        $jsonVars = [
+            'id' => $id,
+            'name' => $this->handle,
+            'namespace' => $nameSpaceId,
+            'prefix' => Craft::$app->getView()->namespaceInputId(''),
+        ];
+        $jsonVars = Json::encode($jsonVars);
+        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+
+        // Render the input template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/_components/fields/OptimizedImages_input',
+            [
+                'name' => $this->handle,
+                'value' => $value,
+                'variants' => $this->variants,
+                'field' => $this,
+                'id' => $id,
+                'nameSpaceId' => $nameSpaceId,
+            ]
+        );
+    }
 }
