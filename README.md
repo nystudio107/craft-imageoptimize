@@ -187,6 +187,31 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 
 The `placeholderImage()` method generates an inline SVG to display while the image is being lazy loaded. The method signature is `placeholderImage(width, height, color)`
 
+Should you want to iterate through the URLs individually, you can do that via:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    {% for url in someAsset.optimizedImages.optimizedImageUrls %}
+        {{ url }}
+    {% endfor %}
+    {% for url in someAsset.optimizedImages.optimizedWebPImageUrls %}
+        {{ url }}
+    {% endfor %}
+```
+
+Or to get the `width` as well as the `url`, you can do:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    {% for width,url in someAsset.optimizedImages.optimizedImageUrls %}
+        {{ width ~ ' - ' ~ url }}
+    {% endfor %}
+    {% for width,url in someAsset.optimizedImages.optimizedWebPImageUrls %}
+        {{ width ~ ' - ' ~ url }}
+    {% endfor %}
+
+```
+
 ### Using Optimized Image Transforms
 
 Once ImageOptimize is set up and configured, there's nothing left to do for optimizing your image transforms. It just works.
