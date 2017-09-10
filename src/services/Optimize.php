@@ -26,6 +26,8 @@ use craft\queue\jobs\ResaveElements;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
 
+/** @noinspection MissingPropertyAnnotationsInspection */
+
 /**
  * @author    nystudio107
  * @package   ImageOptimize
@@ -236,7 +238,8 @@ class Optimize extends Component
             foreach ($activeImageVariantCreators[$fileFormat] as $variantCreator) {
                 if (!empty($imageVariantCreators[$variantCreator])) {
                     // Create the image variant in a temporary folder
-                    $quality = $index->transform->quality ?: Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
+                    $generalConfig = Craft::$app->getConfig()->getGeneral();
+                    $quality = $index->transform->quality ?: $generalConfig->defaultImageQuality;
                     $outputPath = $this->executeVariantCreator(
                         $imageVariantCreators[$variantCreator],
                         $tempPath,
@@ -278,7 +281,6 @@ class Optimize extends Component
                         $index,
                         $outputPath
                     );
-
                 }
             }
         }

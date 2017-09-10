@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\fields;
 
 use craft\models\AssetTransform;
-use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
@@ -23,6 +22,8 @@ use craft\helpers\Json;
 use craft\validators\ArrayValidator;
 
 use yii\db\Schema;
+
+/** @noinspection MissingPropertyAnnotationsInspection */
 
 /**
  * @author    nystudio107
@@ -269,17 +270,17 @@ class OptimizedImages extends Field
 
         // Get our id and namespace
         $id = Craft::$app->getView()->formatInputId($this->handle);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
 
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
             'id' => $id,
             'name' => $this->handle,
-            'namespace' => $namespacedId,
+            'namespace' => $nameSpaceId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
         ];
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
 
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
@@ -290,9 +291,8 @@ class OptimizedImages extends Field
                 'variants' => $this->variants,
                 'field' => $this,
                 'id' => $id,
-                'namespacedId' => $namespacedId,
+                'nameSpaceId' => $nameSpaceId,
             ]
         );
     }
-
 }

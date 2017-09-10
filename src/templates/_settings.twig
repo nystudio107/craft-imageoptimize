@@ -1,0 +1,18 @@
+{% requireAdmin %}
+
+{% set crumbs = [
+    { label: "Settings"|t('app'), url: url('settings') },
+    { label: "Plugins"|t('app'), url: url('settings/plugins') }
+] %}
+
+{% set fullPageForm = false %}
+
+{% extends "_layouts/cp" %}
+{% set title = plugin.name %}
+{% set docTitle = title ~ ' - ' ~ "Plugins"|t('app') %}
+
+{% block content %}
+    {% namespace 'settings' %}
+    {{ settingsHtml|raw }}
+    {% endnamespace %}
+{% endblock %}

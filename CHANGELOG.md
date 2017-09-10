@@ -1,10 +1,11 @@
 # ImageOptimize Changelog
 
-## 1.2.1 - 2017.09.09
+## 1.2.1 - 2017.09.10
 ### Changed
 * Fixed an issue that could leave stale image variants around
 * Ensure that the optimized image variants are re-created if the image is edited
 * Added logging to show the savings for image variants
+* Fixed the way the Settings page is rendered
 * Updated `README.md`
 
 ## 1.2.0 - 2017.09.08

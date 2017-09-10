@@ -71,7 +71,7 @@
                                 refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
                             <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
                         </marker>
-                        <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ namespacedId }}endarrow)" marker-start="url(#{{ namespacedId }}startarrow)" />
+                        <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ nameSpaceId }}endarrow)" marker-start="url(#{{ nameSpaceId }}startarrow)" />
                         <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ variant.width }}w</text>
                         <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ variant.width }}w</text>
                     </svg>

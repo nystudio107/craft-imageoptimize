@@ -12,7 +12,6 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 
-use Craft;
 use craft\helpers\UrlHelper;
 use craft\base\Model;
 use craft\validators\ArrayValidator;

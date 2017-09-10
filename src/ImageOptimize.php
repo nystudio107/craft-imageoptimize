@@ -24,11 +24,13 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\VolumeEvent;
 use craft\models\FieldLayout;
 use craft\services\AssetTransforms;
-use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Volumes;
+use craft\web\Controller;
 
 use yii\base\Event;
+
+/** @noinspection MissingPropertyAnnotationsInspection */
 
 /**
  * Class ImageOptimize
@@ -166,6 +168,26 @@ class ImageOptimize extends Plugin
             ),
             __METHOD__
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsResponse()
+    {
+        $view = Craft::$app->getView();
+        $namespace = $view->getNamespace();
+        $view->setNamespace('settings');
+        $settingsHtml = $this->settingsHtml();
+        $view->setNamespace($namespace);
+
+        /** @var Controller $controller */
+        $controller = Craft::$app->controller;
+
+        return $controller->renderTemplate('image-optimize/_settings', [
+            'plugin' => $this,
+            'settingsHtml' => $settingsHtml
+        ]);
     }
 
     /**
