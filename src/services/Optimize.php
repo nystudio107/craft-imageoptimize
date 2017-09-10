@@ -77,7 +77,7 @@ class Optimize extends Component
             .' -> '
             .Craft::t('image-optimize', 'Savings')
             .': '
-            .number_format(abs((1 - ($originalFileSize / $optimizedFileSize)) * 100), 1)
+            .number_format(abs(100 - (($optimizedFileSize  * 100) / $originalFileSize)), 1)
             .'%',
             __METHOD__
         );
@@ -269,7 +269,7 @@ class Optimize extends Component
                         .' -> '
                         .Craft::t('image-optimize', 'Savings')
                         .': '
-                        .number_format(abs((1 - ($originalFileSize / $variantFileSize)) * 100), 1)
+                        .number_format(abs(100 -(($variantFileSize  * 100) / $originalFileSize)), 1)
                         .'%',
                         __METHOD__
                     );
