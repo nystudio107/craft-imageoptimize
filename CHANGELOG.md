@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.2.2 - 2017.09.11
+### Changed
+* Responsive Image Variants now default to `jpg` as a file format, for client-proofing purposes
+* Fixed an issue where re-arranging to adding/deleting Responsive Image Variants could cause issues
+* Fixed an issue with non-manipulatable images like `PDF`
+
 ## 1.2.1 - 2017.09.10
 ### Changed
 * Fixed an issue that could leave stale image variants around

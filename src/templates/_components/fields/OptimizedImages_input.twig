@@ -45,8 +45,11 @@
             {% for fileSuffix in fileSuffixes %}
                 <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
                     {% set thisUrl = "" %}
-                    {% if value.optimizedImageUrls |length %}
+                    {% set errorMessage = ' variant does not exist' %}
+                    {% if value.optimizedImageUrls |length and value.optimizedImageUrls[variant.width] is defined %}
                         {% set thisUrl = value.optimizedImageUrls[variant.width] ~ fileSuffix %}
+                    {% else %}
+                        {% set errorMessage = " this file format isn't maniputable" %}
                     {% endif %}
                     {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
                     {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
@@ -110,8 +113,8 @@
                         <div style="text-align: center; padding-top: 10px;">
                             <span style="color: {{ thisStrokeColor }}">
                                 {% set thisFormat = thisUrl |split('.') |last %}
-                                <span class="warning" title="{{ thisFormat ~ ' variant does not exist' |t('image-optimize') }}" data-icon="alert"></span>
-                                <span style="text-transform: uppercase;">{{ thisFormat }}</span> variant does not exist
+                                <span class="warning" title="{{ thisFormat ~ errorMessage |t('image-optimize') }}" data-icon="alert"></span>
+                                <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage }}
                             </span>
                         </div>
                     {% endif %}

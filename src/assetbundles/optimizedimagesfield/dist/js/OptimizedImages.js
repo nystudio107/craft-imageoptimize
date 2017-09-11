@@ -147,7 +147,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             $blocks.each(function (index, value) {
                 var variantIndex = index;
                 var $value = $(value);
-                var elements = $value.find('div .field, label, input');
+                var elements = $value.find('div .field, label, input, select');
 
                 // Re-index all of the element attributes
                 $(elements).each(function (index, value) {
@@ -219,9 +219,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             field = $block.find('input')[2];
             $(field).val(9);
             field = $block.find('select')[0];
-            $(field).val(0);
+            $(field).val(82);
             field = $block.find('select')[1];
-            $(field).val(null);
+            $(field).val('jpg');
             $block.css(this.getHiddenBlockCss($block)).velocity({
                 opacity: 1,
                 'margin-bottom': 10

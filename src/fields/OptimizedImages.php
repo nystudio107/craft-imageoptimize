@@ -18,6 +18,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
+use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\validators\ArrayValidator;
 
@@ -43,29 +44,29 @@ class OptimizedImages extends Field
             'width' => 1170,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
-            'quality' => 0,
-            'format' => null,
+            'quality' => 82,
+            'format' => 'jpg',
         ],
         [
             'width' => 970,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
-            'quality' => 0,
-            'format' => null,
+            'quality' => 82,
+            'format' => 'jpg',
         ],
         [
             'width' => 750,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
-            'quality' => 0,
-            'format' => null,
+            'quality' => 60,
+            'format' => 'jpg',
         ],
         [
             'width' => 320,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
-            'quality' => 0,
-            'format' => null,
+            'quality' => 60,
+            'format' => 'jpg',
         ],
     ];
 
@@ -192,25 +193,28 @@ class OptimizedImages extends Field
             $transform->quality = $variant['quality'];
             $transform->format = $variant['format'];
 
-            // Force generateTransformsBeforePageLoad = true to generate the images now
-            $generalConfig = Craft::$app->getConfig()->getGeneral();
-            $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
-            $generalConfig->generateTransformsBeforePageLoad = true;
-            // Generate the URLs to the optimized images
-            $url = $element->getUrl($transform);
-            $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
+            // Only do this if the transform will actually work for this format
+            if (Image::canManipulateAsImage($variant['format'])) {
+                // Force generateTransformsBeforePageLoad = true to generate the images now
+                $generalConfig = Craft::$app->getConfig()->getGeneral();
+                $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
+                $generalConfig->generateTransformsBeforePageLoad = true;
+                // Generate the URLs to the optimized images
+                $url = $element->getUrl($transform);
+                $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
 
-            // Update the model
-            $model->optimizedImageUrls[$width] = $url;
-            $model->optimizedWebPImageUrls[$width] = $url.'.webp';
-            $model->focalPoint = $element->focalPoint;
-            $model->originalImageWidth = $element->width;
-            $model->originalImageHeight = $element->height;
+                // Update the model
+                $model->optimizedImageUrls[$width] = $url;
+                $model->optimizedWebPImageUrls[$width] = $url.'.webp';
+                $model->focalPoint = $element->focalPoint;
+                $model->originalImageWidth = $element->width;
+                $model->originalImageHeight = $element->height;
 
-            Craft::info(
-                'Created transforms for variant: '.print_r($variant, true),
-                __METHOD__
-            );
+                Craft::info(
+                    'Created transforms for variant: '.print_r($variant, true),
+                    __METHOD__
+                );
+            }
         }
     }
 
