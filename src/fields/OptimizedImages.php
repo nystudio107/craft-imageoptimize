@@ -18,6 +18,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
+use craft\errors\AssetLogicException;
 use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\validators\ArrayValidator;
@@ -41,32 +42,32 @@ class OptimizedImages extends Field
      */
     public $variants = [
         [
-            'width' => 1170,
+            'width'        => 1170,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
-            'quality' => 82,
-            'format' => 'jpg',
+            'quality'      => 82,
+            'format'       => 'jpg',
         ],
         [
-            'width' => 970,
+            'width'        => 970,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
-            'quality' => 82,
-            'format' => 'jpg',
+            'quality'      => 82,
+            'format'       => 'jpg',
         ],
         [
-            'width' => 750,
+            'width'        => 750,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
-            'quality' => 60,
-            'format' => 'jpg',
+            'quality'      => 60,
+            'format'       => 'jpg',
         ],
         [
-            'width' => 320,
+            'width'        => 320,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
-            'quality' => 60,
-            'format' => 'jpg',
+            'quality'      => 60,
+            'format'       => 'jpg',
         ],
     ];
 
@@ -140,7 +141,7 @@ class OptimizedImages extends Field
 
                 $success = Craft::$app->getElements()->saveElement($element, false);
                 Craft::info(
-                    print_r('Re-saved new asset '.$success, true),
+                    print_r('Re-saved new asset ' . $success, true),
                     __METHOD__
                 );
             } else {
@@ -193,28 +194,38 @@ class OptimizedImages extends Field
             $transform->quality = $variant['quality'];
             $transform->format = $variant['format'];
 
-            // Only do this if the transform will actually work for this format
-            if (Image::canManipulateAsImage($variant['format'])) {
+            $finalFormat = $transform->format == null ? $element->getExtension() : $transform->format;
+
+            // Only try the transform if it's possible
+            if (Image::canManipulateAsImage($finalFormat) && Image::canManipulateAsImage($element->getExtension())) {
                 // Force generateTransformsBeforePageLoad = true to generate the images now
                 $generalConfig = Craft::$app->getConfig()->getGeneral();
                 $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
                 $generalConfig->generateTransformsBeforePageLoad = true;
-                // Generate the URLs to the optimized images
-                $url = $element->getUrl($transform);
+                $url = '';
+                try {
+                    // Generate the URLs to the optimized images
+                    $url = $element->getUrl($transform);
+                } catch (AssetLogicException $e) {
+                    // This isn't an image or an image format that can be transformed
+                    $url = '';
+                }
                 $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
 
                 // Update the model
-                $model->optimizedImageUrls[$width] = $url;
-                $model->optimizedWebPImageUrls[$width] = $url.'.webp';
+                if (!empty($url)) {
+                    $model->optimizedImageUrls[$width] = $url;
+                    $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+                }
                 $model->focalPoint = $element->focalPoint;
                 $model->originalImageWidth = $element->width;
                 $model->originalImageHeight = $element->height;
-
-                Craft::info(
-                    'Created transforms for variant: '.print_r($variant, true),
-                    __METHOD__
-                );
             }
+
+            Craft::info(
+                'Created transforms for variant: ' . print_r($variant, true),
+                __METHOD__
+            );
         }
     }
 
@@ -244,18 +255,18 @@ class OptimizedImages extends Field
         $id = Craft::$app->getView()->formatInputId($thisId);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
-            '"'.$namespacedId.'", '.
-            '"'.$namespacePrefix.'"'.
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput(' .
+            '"' . $namespacedId . '", ' .
+            '"' . $namespacePrefix . '"' .
             ');');
 
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/fields/OptimizedImages_settings',
             [
-                'field' => $this,
-                'id' => $id,
-                'name' => $this->handle,
+                'field'     => $this,
+                'id'        => $id,
+                'name'      => $this->handle,
                 'namespace' => $namespacedId,
             ]
         );
@@ -278,23 +289,23 @@ class OptimizedImages extends Field
 
         // Variables to pass down to our field JavaScript to let it namespace properly
         $jsonVars = [
-            'id' => $id,
-            'name' => $this->handle,
+            'id'        => $id,
+            'name'      => $this->handle,
             'namespace' => $nameSpaceId,
-            'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
         ];
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" . $jsonVars . ");");
 
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/fields/OptimizedImages_input',
             [
-                'name' => $this->handle,
-                'value' => $value,
-                'variants' => $this->variants,
-                'field' => $this,
-                'id' => $id,
+                'name'        => $this->handle,
+                'value'       => $value,
+                'variants'    => $this->variants,
+                'field'       => $this,
+                'id'          => $id,
                 'nameSpaceId' => $nameSpaceId,
             ]
         );
