@@ -17,6 +17,7 @@
 
 {% import "_includes/forms" as forms %}
 
+{% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
 <div class="field">
     <div class="heading">
         <label>Optimized Image Variants:</label>
@@ -24,11 +25,11 @@
             {% if value.focalPoint |length %}
                 <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
                 {{ source('image-optimize/_components/fields/focal-point.svg') }}
-                <span>Focal Point set</span>
+                <span>{{ 'Focal Point set' |t('image-optimize') }}</span>
             {% else %}
                 <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
                 {{ source('image-optimize/_components/fields/focal-point.svg') }}
-                <span>Focal Point not set</span>
+                <span>{{ 'Focal Point not set' |t('image-optimize') }}</span>
             {% endif %}
         </p>
     </div>
@@ -46,10 +47,10 @@
                 <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
                     {% set thisUrl = "" %}
                     {% set errorMessage = ' variant does not exist' %}
-                    {% if value.optimizedImageUrls |length and value.optimizedImageUrls[variant.width] is defined %}
+                    {% if value.optimizedImageUrls |length and value.optimizedImageUrls[variant.width] is defined and value.optimizedImageUrls[variant.width] |length %}
                         {% set thisUrl = value.optimizedImageUrls[variant.width] ~ fileSuffix %}
                     {% else %}
-                        {% set errorMessage = " this file format isn't maniputable" %}
+                        {% set errorMessage = " format cannot be manipulated" %}
                     {% endif %}
                     {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
                     {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
@@ -79,7 +80,7 @@
                         <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ variant.width }}w</text>
                     </svg>
 
-                    {% if value.optimizedImageUrls |length and thisFileSize != -1 %}
+                    {% if value.optimizedImageUrls |length and thisFileSize != -1 and thisUrl |length %}
                         {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
                         <div style="width: 200px; vertical-align: top;">
                             <a href="{{ thisUrl }}" target="_blank">
@@ -113,8 +114,8 @@
                         <div style="text-align: center; padding-top: 10px;">
                             <span style="color: {{ thisStrokeColor }}">
                                 {% set thisFormat = thisUrl |split('.') |last %}
-                                <span class="warning" title="{{ thisFormat ~ errorMessage |t('image-optimize') }}" data-icon="alert"></span>
-                                <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage }}
+                                <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
+                                <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
                             </span>
                         </div>
                     {% endif %}
@@ -123,3 +124,14 @@
         </div>
     {% endfor  %}
 </div>
+{% else %}
+<div class="field">
+    <div class="heading">
+        <label>Optimized Image Variants:</label>
+        <p>
+            <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
+            <span>{{ 'This is not an image that can be manipulated' |t('image-optimize') }}</span>
+        </p>
+    </div>
+</div>
+{% endif %}
