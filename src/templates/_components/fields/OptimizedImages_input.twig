@@ -33,95 +33,111 @@
             {% endif %}
         </p>
     </div>
+    {% set retinaSizes = [] %}
     {% set maxWidth = 0 %}
     {% for variant in variants %}
-        {% if variant.width > maxWidth %}
-            {% set maxWidth = variant.width %}
-        {% endif %}
+        {% set retinaSizes = ['1'] %}
+        {% for retinaSize in retinaSizes %}
+            {% set retinaWidth = variant.width * retinaSize %}
+            {% if retinaWidth > maxWidth %}
+                {% set maxWidth = retinaWidth %}
+            {% endif %}
+        {% endfor  %}
     {% endfor  %}
 
+    {% set retinaSizes = [] %}
     {% set fileSuffixes = ['', '.webp'] %}
     {% for variant in variants %}
-        <div style="padding-bottom: 10px; width: 440px; text-align: center;">
-            {% for fileSuffix in fileSuffixes %}
-                <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
-                    {% set thisUrl = "" %}
-                    {% set errorMessage = ' variant does not exist' %}
-                    {% if value.optimizedImageUrls |length and value.optimizedImageUrls[variant.width] is defined and value.optimizedImageUrls[variant.width] |length %}
-                        {% set thisUrl = value.optimizedImageUrls[variant.width] ~ fileSuffix %}
-                    {% else %}
-                        {% set errorMessage = " format cannot be manipulated" %}
-                    {% endif %}
-                    {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
-                    {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
-                    {% set thisWidth = (variant.width * 200) / maxWidth %}
-                    {% set thisHeight = thisWidth / aspectRatio %}
-                    {% set thisFontSize = (variant.width * 30) / maxWidth %}
-                    {% if thisFontSize < 12 %}
-                        {% set thisFontSize = 12 %}
-                    {% endif %}
-                    {% set thisStrokeColor = '#AAA' %}
-                    {% set thisFillColor = '#DDD' %}
+        {% set retinaSizes = ['1'] %}
+        {% if variant.retinaSizes is defined and variant.retinaSizes|length %}
+            {% set retinaSizes = variant.retinaSizes %}
+        {% endif %}
+        {% for retinaSize in retinaSizes %}
+            {% set realWidth = variant.width %}
+            {% set retinaWidth = variant.width * retinaSize %}
+            <div style="padding-bottom: 10px; width: 440px; text-align: center;">
+                {% for fileSuffix in fileSuffixes %}
+                    <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
+                        {% set thisUrl = "" %}
+                        {% set errorMessage = ' variant does not exist' %}
+                        {% if value.optimizedImageUrls |length and value.optimizedImageUrls[retinaWidth] is defined and value.optimizedImageUrls[retinaWidth] |length %}
+                            {% set thisUrl = value.optimizedImageUrls[retinaWidth] ~ fileSuffix %}
+                        {% else %}
+                            {% set errorMessage = " format cannot be manipulated" %}
+                        {% endif %}
+                        {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
+                        {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
+                        {% set thisWidth = (realWidth * 200) / maxWidth %}
+                        {% set thisHeight = thisWidth / aspectRatio %}
+                        {% set thisFontSize = (realWidth * 30) / maxWidth %}
+                        {% if thisFontSize < 12 %}
+                            {% set thisFontSize = 12 %}
+                        {% endif %}
+                        {% set thisStrokeColor = '#AAA' %}
+                        {% set thisFillColor = '#DDD' %}
 
-                    {% set markerWidth = 4 %}
-                    {% set markerHeight = 4 %}
-                    {% set lineY = 12 %}
-                    <svg width="{{ thisWidth }}" height="20px">
-                        <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
-                                refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
-                            <polygon points="{{ markerWidth }} 0, {{ markerWidth }} {{ markerHeight }}, 0 {{ markerHeight / 2 }}" fill="{{ thisStrokeColor }}" />
-                        </marker>
-                        <marker id="{{ name }}endarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
-                                refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
-                            <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
-                        </marker>
-                        <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ nameSpaceId }}endarrow)" marker-start="url(#{{ nameSpaceId }}startarrow)" />
-                        <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ variant.width }}w</text>
-                        <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ variant.width }}w</text>
-                    </svg>
+                        {% set markerWidth = 4 %}
+                        {% set markerHeight = 4 %}
+                        {% set lineY = 12 %}
+                        <svg width="{{ thisWidth }}" height="20px">
+                            <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
+                                    refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
+                                <polygon points="{{ markerWidth }} 0, {{ markerWidth }} {{ markerHeight }}, 0 {{ markerHeight / 2 }}" fill="{{ thisStrokeColor }}" />
+                            </marker>
+                            <marker id="{{ name }}endarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
+                                    refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
+                                <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
+                            </marker>
+                            <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ nameSpaceId }}endarrow)" marker-start="url(#{{ nameSpaceId }}startarrow)" />
+                            <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ retinaWidth }}w</text>
+                            <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ retinaWidth }}w</text>
+                        </svg>
 
-                    {% if value.optimizedImageUrls |length and thisFileSize != -1 and thisUrl |length %}
-                        {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
-                        <div style="width: 200px; vertical-align: top;">
-                            <a href="{{ thisUrl }}" target="_blank">
-                                <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
-                            </a>
-                        </div>
-                        <div style="text-align: center; padding-top: 10px;">
-                            <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
-                                {{ aspectRatioText }}
-                                &middot;
-                                {{ thisUrl |split('.') |last }}
-                                &middot;
-                                {{ thisFileSize }}
-                            </span>
-                            {% if value.originalImageWidth < variant.width or value.originalImageHeight < (variant.width / aspectRatio) %}
-                                <br />
-                                <span class="warning" title="{{ 'This image is upscaled'|t('image-optimize') }}" data-icon="alert"></span>
-                                <span style="color: {{ thisStrokeColor }};">This image is upscaled</span>
-                            {% endif %}
-                        </div>
-                    {% else %}
-                        <div style="width: 200px; vertical-align: top;">
-                            <svg style="margin: 0 auto; display: block;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
-                                <rect fill="{{ thisFillColor }}" x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
-                                </rect>
-                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
-                                    {{ variant.aspectRatioX ~ ':' ~ variant.aspectRatioY }}
-                                </text>
-                            </svg>
-                        </div>
-                        <div style="text-align: center; padding-top: 10px;">
-                            <span style="color: {{ thisStrokeColor }}">
-                                {% set thisFormat = thisUrl |split('.') |last %}
-                                <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
-                                <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
-                            </span>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
+                        {% if value.optimizedImageUrls |length and thisFileSize != -1 and thisUrl |length %}
+                            {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
+                            <div style="width: 200px; vertical-align: top;">
+                                <a href="{{ thisUrl }}" target="_blank">
+                                    <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                </a>
+                            </div>
+                            <div style="text-align: center; padding-top: 10px;">
+                                <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
+                                    {{ aspectRatioText }}
+                                    &middot;
+                                    <span style="text-transform: none">{{ retinaSize ~ 'x' }}</span>
+                                    &middot;
+                                    {{ thisUrl |split('.') |last }}
+                                    &middot;
+                                    {{ thisFileSize }}
+                                </span>
+                                {% if value.originalImageWidth < retinaWidth or value.originalImageHeight < (retinaWidth / aspectRatio) %}
+                                    <br />
+                                    <span class="warning" title="{{ 'This image is upscaled'|t('image-optimize') }}" data-icon="alert"></span>
+                                    <span style="color: {{ thisStrokeColor }};">This image is upscaled</span>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div style="width: 200px; vertical-align: top;">
+                                <svg style="margin: 0 auto; display: block;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
+                                    <rect fill="{{ thisFillColor }}" x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
+                                    </rect>
+                                    <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                        {{ variant.aspectRatioX ~ ':' ~ variant.aspectRatioY }}
+                                    </text>
+                                </svg>
+                            </div>
+                            <div style="text-align: center; padding-top: 10px;">
+                                <span style="color: {{ thisStrokeColor }}">
+                                    {% set thisFormat = thisUrl |split('.') |last %}
+                                    <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
+                                    <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
     {% endfor  %}
 </div>
 {% else %}

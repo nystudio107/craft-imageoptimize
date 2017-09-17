@@ -17,6 +17,12 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
+{% macro checkboxGroupField(config) %}
+    {% import "_includes/forms" as forms %}
+    {{ forms.field(config, forms.checkboxGroup(config)) }}
+{% endmacro %}
+{% import _self as self %}
+
 {% set aspectRatios = [
     {'x': 1, 'y': 1},
     {'x': 5, 'y': 4},
@@ -141,6 +147,26 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Retina Sizes -->
+                            <div class="io-retina-sizes-wrapper">
+                                {% set retinaOptions = [
+                                    {label: '1x', value: '1', disabled: true },
+                                    {label: '2x', value: '2'},
+                                    {label: '3x', value: '3'},
+                                ] %}
+                                {% set retinaValues = ['1'] %}
+                                {% if field.variants[loop.index0]['retinaSizes'] is defined and field.variants[loop.index0]['retinaSizes'] |length %}
+                                    {% set retinaValues = field.variants[loop.index0]['retinaSizes'] %}
+                                {% endif %}
+                                {{ self.checkboxGroupField({
+                                    label: "Retina Sizes"|t('image-optimize'),
+                                    instructions: "The additional retina sizes that should be created for this variant."|t('image-optimize'),
+                                    id: 'variants-' ~ loop.index0 ~ '-retinaSizes',
+                                    name: 'variants[' ~ loop.index0 ~ '][retinaSizes]',
+                                    values: retinaValues,
+                                    options: retinaOptions,
+                                }) }}
+                            </div>
                             <!-- quality -->
                             {{ forms.selectField({
                                 label: "Quality"|t('app'),
@@ -184,3 +210,10 @@
         </div>
     </div>
 </div>
+
+{% set js %}
+    $('div .io-retina-sizes-wrapper').each(function(){
+        $(this).find('input:checkbox').first().parent().hide();
+    });
+{% endset %}
+{% includeJs js %}
