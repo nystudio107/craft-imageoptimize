@@ -41,3 +41,13 @@
     fill: rgba(91,157,217, .5);
     stroke: none;
 }
+
+h4.io-retina-size-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: white;
+    background-color: #AAA;
+    border-radius: 5px;
+    padding: 0px 5px;
+}

@@ -1,5 +1,13 @@
 # ImageOptimize Changelog
 
+## 1.2.3 - 2017.09.16
+### Added
+* Added support for 2x and 3x retina images
+* Added a `.src()` method to get the default responsive variant
+
+### Changed
+* Updated the README.md to be more descriptive
+
 ## 1.2.2 - 2017.09.11
 ### Changed
 * Responsive Image Variants now default to `jpg` as a file format, for client-proofing purposes

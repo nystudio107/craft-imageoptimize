@@ -45,6 +45,7 @@ class OptimizedImages extends Field
             'width'        => 1170,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
+            'retinaSizes'  => ['1'],
             'quality'      => 82,
             'format'       => 'jpg',
         ],
@@ -52,6 +53,7 @@ class OptimizedImages extends Field
             'width'        => 970,
             'aspectRatioX' => 16.0,
             'aspectRatioY' => 9.0,
+            'retinaSizes'  => ['1'],
             'quality'      => 82,
             'format'       => 'jpg',
         ],
@@ -59,6 +61,7 @@ class OptimizedImages extends Field
             'width'        => 750,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
+            'retinaSizes'  => ['1'],
             'quality'      => 60,
             'format'       => 'jpg',
         ],
@@ -66,6 +69,7 @@ class OptimizedImages extends Field
             'width'        => 320,
             'aspectRatioX' => 4.0,
             'aspectRatioY' => 3.0,
+            'retinaSizes'  => ['1'],
             'quality'      => 60,
             'format'       => 'jpg',
         ],
@@ -186,46 +190,51 @@ class OptimizedImages extends Field
         $transform = new AssetTransform();
 
         foreach ($this->variants as $variant) {
-            // Create the transform based on the variant
-            $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-            $width = $variant['width'];
-            $transform->width = $width;
-            $transform->height = intval($width / $aspectRatio);
-            $transform->quality = $variant['quality'];
-            $transform->format = $variant['format'];
-
-            $finalFormat = $transform->format == null ? $element->getExtension() : $transform->format;
-
-            // Only try the transform if it's possible
-            if (Image::canManipulateAsImage($finalFormat) && Image::canManipulateAsImage($element->getExtension())) {
-                // Force generateTransformsBeforePageLoad = true to generate the images now
-                $generalConfig = Craft::$app->getConfig()->getGeneral();
-                $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
-                $generalConfig->generateTransformsBeforePageLoad = true;
-                $url = '';
-                try {
-                    // Generate the URLs to the optimized images
-                    $url = $element->getUrl($transform);
-                } catch (AssetLogicException $e) {
-                    // This isn't an image or an image format that can be transformed
-                    $url = '';
-                }
-                $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
-
-                // Update the model
-                if (!empty($url)) {
-                    $model->optimizedImageUrls[$width] = $url;
-                    $model->optimizedWebPImageUrls[$width] = $url . '.webp';
-                }
-                $model->focalPoint = $element->focalPoint;
-                $model->originalImageWidth = $element->width;
-                $model->originalImageHeight = $element->height;
+            $retinaSizes = ['1'];
+            if (!empty($variant['retinaSizes'])) {
+                $retinaSizes = $variant['retinaSizes'];
             }
+            foreach ($retinaSizes as $retinaSize) {
+                // Create the transform based on the variant
+                $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+                $width = $variant['width'] * $retinaSize;
+                $transform->width = $width;
+                $transform->height = intval($width / $aspectRatio);
+                $transform->quality = $variant['quality'];
+                $transform->format = $variant['format'];
 
-            Craft::info(
-                'Created transforms for variant: ' . print_r($variant, true),
-                __METHOD__
-            );
+                $finalFormat = $transform->format == null ? $element->getExtension() : $transform->format;
+
+                // Only try the transform if it's possible
+                if (Image::canManipulateAsImage($finalFormat) && Image::canManipulateAsImage($element->getExtension())) {
+                    // Force generateTransformsBeforePageLoad = true to generate the images now
+                    $generalConfig = Craft::$app->getConfig()->getGeneral();
+                    $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
+                    $generalConfig->generateTransformsBeforePageLoad = true;
+                    $url = '';
+                    try {
+                        // Generate the URLs to the optimized images
+                        $url = $element->getUrl($transform);
+                    } catch (AssetLogicException $e) {
+                        // This isn't an image or an image format that can be transformed
+                    }
+                    $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
+
+                    // Update the model
+                    if (!empty($url)) {
+                        $model->optimizedImageUrls[$width] = $url;
+                        $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+                    }
+                    $model->focalPoint = $element->focalPoint;
+                    $model->originalImageWidth = $element->width;
+                    $model->originalImageHeight = $element->height;
+                }
+
+                Craft::info(
+                    'Created transforms for variant: ' . print_r($variant, true),
+                    __METHOD__
+                );
+            }
         }
     }
 

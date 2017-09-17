@@ -4,7 +4,7 @@ Automatically create & optimize responsive image transforms
 
 **Note**: This plugin may become a paid add-on when the Craft Plugin store becomes available.
 
-![Screenshot](screenshots/image-variant-field.png)
+![Screenshot](screenshots/image-optimize-splash.png)
 
 ## Installation
 
@@ -75,6 +75,7 @@ For each Optimized Image Variant, set:
  
  * **Width**: The width of the image, which should correspond to your CSS `@media` query breakpoints or container sizes. For performance, we want to images to be the exact size that they will be displayed on-screen.
  * **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
+ * **Retina Sizes**: Check any additional retina sizes to create for this variant. For instance, a `100x60` image with with a `2x` retina size would _also_ create a `200x100` image.
  * **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
  * **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image's file format. It's recommended that you set this to `jpg` for most images, for client-proofing purposes.
  
@@ -108,21 +109,27 @@ To use `<img srcset="">` elements in your templates, you can just do:
 
 ```
     {% set someAsset = entry.myAssetField %}
-    <img srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+    <img src="someAsset.one().optimizedImages.src()"
+         srcset="{{ someAsset.one().optimizedImages.srcset() }}"
          sizes="100vw" />
 ```
 
 ...where `someAsset` is your Assets field handle, and `optimizedImages` is the handle to your OptimizedImages field. This will result in HTML like this being generated for you:
 
 ```
-    <img srcset="/assets/_1170x658_crop_center-center/painted-face.jpg 1170w,
+    <img src="/assets/_1170x658_crop_center-center/painted-face.jpg"
+         srcset="/assets/_1170x658_crop_center-center/painted-face.jpg 1170w,
                  /assets/_970x545_crop_center-center/painted-face.jpg 970w,
                  /assets/_750x562_crop_center-center/painted-face.jpg 750w,
                  /assets/_320x240_crop_center-center/painted-face.jpg 320w"
                  sizes="100vw" />
 ```
 
-The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like. For information on how `srcset` works, check out the excellent [Srcset and sizes](https://ericportis.com/posts/2014/srcset-sizes/) article.
+The `.src()` method simply displays the first responsive image variant, and is typically just used as a fallback for browsers that don't support srcset.
+
+The `.srcset()` method displays all of the responsive image variants, with their associated source widths.
+
+The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `srcset` works, check out the excellent [Responsive Images - The srcset and sizes Attributes](https://bitsofco.de/the-srcset-and-sizes-attributes/) article.
 
 If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
@@ -143,7 +150,8 @@ To use `<picture>` in your templates, you can just do:
         <sources srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
                  sizes="100vw"
                  type="image/webp" />
-        <img srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+        <img src="someAsset.one().optimizedImages.src()"
+             srcset="{{ someAsset.one().optimizedImages.srcset() }}"
              sizes="100vw" />
      </picture>
 ```
@@ -158,7 +166,8 @@ To use `<picture>` in your templates, you can just do:
                          /assets/_320x240_crop_center-center/painted-face.jpg.webp 320w"
                  sizes="100vw"
                  type="image/webp" />
-        <img srcset="/assets/_1170x658_crop_center-center/painted-face.jpg 1170w,
+        <img src="/assets/_1170x658_crop_center-center/painted-face.jpg"
+             srcset="/assets/_1170x658_crop_center-center/painted-face.jpg 1170w,
                      /assets/_970x545_crop_center-center/painted-face.jpg 970w,
                      /assets/_750x562_crop_center-center/painted-face.jpg 750w,
                      /assets/_320x240_crop_center-center/painted-face.jpg 320w"
@@ -169,7 +178,7 @@ To use `<picture>` in your templates, you can just do:
 
 This assumes you have `WEBP` image variants configured. This lets the browser choose what to display, if it can handle `.webp`, it'll pick that (because `.webp` images are far more efficient than `.jpg` images), otherwise it'll just use the regular image.
 
-The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like. For information on how `<picture>` works, check out the excellent [Built-in Browser Support for Responsive Images](https://www.html5rocks.com/en/tutorials/responsive/picture-element/) article.
+The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like  (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `<picture>` works, check out the excellent [Built-in Browser Support for Responsive Images](https://www.html5rocks.com/en/tutorials/responsive/picture-element/) article.
 
 If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
