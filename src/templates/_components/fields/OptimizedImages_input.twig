@@ -97,14 +97,19 @@
                             {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
                             <div style="width: 200px; vertical-align: top;">
                                 <a href="{{ thisUrl }}" target="_blank">
-                                    <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                    <div style="position: relative;">
+                                        <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                        {% if (retinaSizes |length) > 1 %}
+                                            <h4 class="io-retina-size-badge">
+                                                {{ retinaSize }}x
+                                            </h4>
+                                        {% endif %}
+                                    </div>
                                 </a>
                             </div>
                             <div style="text-align: center; padding-top: 10px;">
                                 <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
                                     {{ aspectRatioText }}
-                                    &middot;
-                                    <span style="text-transform: none">{{ retinaSize ~ 'x' }}</span>
                                     &middot;
                                     {{ thisUrl |split('.') |last }}
                                     &middot;

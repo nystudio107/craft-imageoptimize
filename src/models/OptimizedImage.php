@@ -63,7 +63,19 @@ class OptimizedImage extends Model
             ['optimizedImageUrls', ArrayValidator::class],
             ['optimizedWebPImageUrls', ArrayValidator::class],
             ['focalPoint', 'safe'],
+            ['originalImageWidth', 'integer'],
+            ['originalImageHeight', 'integer'],
         ];
+    }
+
+    /**
+     * Return the first image variant URL
+     *
+     * @return string
+     */
+    public function src(): string
+    {
+        return reset($this->optimizedImageUrls);
     }
 
     /**
