@@ -142,7 +142,17 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
          data-sizes="100vw" />
 ```
 
-The `placeholderImage()` method generates an inline SVG to display while the image is being lazy loaded. The method signature is `placeholderImage(width, height, color)`
+The `placeholderImage()` uses an Instagram-style low resolution placeholder image to display while the image is being lazy loaded. The method signature is `placeholderImage()`
+
+![Screenshot](screenshots/placeholder_image.png)
+
+Placeholder Image
+
+![Screenshot](screenshots/normal_image.png)
+
+Normal Image
+
+If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
 
 To use `<picture>` in your templates, you can just do:
 
@@ -205,6 +215,8 @@ Placeholder Image
 ![Screenshot](screenshots/normal_image.png)
 
 Normal Image
+
+If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
 
 Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
 

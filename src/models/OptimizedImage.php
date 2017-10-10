@@ -112,7 +112,8 @@ class OptimizedImage extends Model
      */
     public function placeholderImage($width = 1, $height = 1, $color = '#CCC')
     {
-        if (!empty($this->placeholder)) {
+        $useSvgPlaceholder = ($width != 1 && $height != 1);
+        if (!empty($this->placeholder) && !$useSvgPlaceholder) {
             $header = 'data:image/jpeg;base64,';
             $content = $this->placeholder;
         } else {
