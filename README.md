@@ -152,6 +152,8 @@ Placeholder Image
 
 Normal Image
 
+Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
+
 If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
 
 To use `<picture>` in your templates, you can just do:
@@ -216,9 +218,9 @@ Placeholder Image
 
 Normal Image
 
-If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
-
 Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
+
+If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
 
 Should you want to iterate through the URLs individually, you can do that via:
 
