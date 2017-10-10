@@ -51,6 +51,11 @@ class OptimizedImage extends Model
      */
     public $originalImageHeight;
 
+    /**
+     * @var string
+     */
+    public $placeholder;
+
     // Public Methods
     // =========================================================================
 
@@ -107,8 +112,17 @@ class OptimizedImage extends Model
      */
     public function placeholderImage($width = 1, $height = 1, $color = '#CCC')
     {
-        $header = 'data:image/svg+xml;charset=utf-8,';
-        $content = "<svg xmlns='http://www.w3.org/2000/svg' width='$width' height='$height' style='background:$color'/>";
+        if (!empty($this->placeholder)) {
+            $header = 'data:image/jpeg;base64,';
+            $content = $this->placeholder;
+        } else {
+            $header = 'data:image/svg+xml;charset=utf-8,';
+            $content = "<svg xmlns='http://www.w3.org/2000/svg' "
+                ."width='$width' "
+                ."height='$height' "
+                ."style='background:$color' "
+                ."/>";
+        }
 
         return $header . rawurlencode($content);
     }

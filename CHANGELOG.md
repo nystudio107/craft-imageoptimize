@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.2.4 - 2017.10.10
+### Added
+* Added automatic generation of Instagram-style low resolution placeholder images for lazing loading
+
 ## 1.2.3 - 2017.09.16
 ### Added
 * Added support for 2x and 3x retina images

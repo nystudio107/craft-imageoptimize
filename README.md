@@ -30,6 +30,8 @@ ImageOptimize's responsive image transforms will work without these tools instal
 
 ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets.  This makes creating responsive image sizes for `<img srcset="">` or `<picture>` elements sublimely easy. These responsive image transforms are created when an asset is _saved_, rather than at page load time, to ensure that frontend performance is optimal.
 
+Because ImageOptimize has already pre-generated and saved the URLs to your optimized image variants, no additional database requests are needed to fetch this information (unlike with Assets or Transforms).
+
 It will also optimize all of your image transforms automatically by running a variety of image optimization tools on them. As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
 Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want.
@@ -194,7 +196,17 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
      </picture>
 ```
 
-The `placeholderImage()` method generates an inline SVG to display while the image is being lazy loaded. The method signature is `placeholderImage(width, height, color)`
+The `placeholderImage()` uses an Instagram-style low resolution placeholder image to display while the image is being lazy loaded. The method signature is `placeholderImage()`
+
+![Screenshot](screenshots/placeholder_image.png)
+
+Placeholder Image
+
+![Screenshot](screenshots/normal_image.png)
+
+Normal Image
+
+Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
 
 Should you want to iterate through the URLs individually, you can do that via:
 

@@ -10,7 +10,6 @@
 
 namespace nystudio107\imageoptimize\fields;
 
-use craft\models\AssetTransform;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
@@ -21,6 +20,10 @@ use craft\elements\Asset;
 use craft\errors\AssetLogicException;
 use craft\helpers\Image;
 use craft\helpers\Json;
+use craft\helpers\FileHelper;
+use craft\helpers\StringHelper;
+use craft\image\Raster;
+use craft\models\AssetTransform;
 use craft\validators\ArrayValidator;
 
 use yii\db\Schema;
@@ -34,6 +37,13 @@ use yii\db\Schema;
  */
 class OptimizedImages extends Field
 {
+
+    // Constants
+    // =========================================================================
+
+    const PLACEHOLDER_WIDTH = 16;
+    const PLACEHOLDER_QUALITY = 50;
+
     // Public Properties
     // =========================================================================
 
@@ -188,7 +198,7 @@ class OptimizedImages extends Field
 
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
-
+        $placeholderMade = false;
         foreach ($this->variants as $variant) {
             $retinaSizes = ['1'];
             if (!empty($variant['retinaSizes'])) {
@@ -228,6 +238,11 @@ class OptimizedImages extends Field
                     $model->focalPoint = $element->focalPoint;
                     $model->originalImageWidth = $element->width;
                     $model->originalImageHeight = $element->height;
+                    if (!$placeholderMade) {
+                        // Generate our placeholder image
+                        $model->placeholder = $this->generatePlaceholderImage($element, $aspectRatio);
+                        $placeholderMade = true;
+                    }
                 }
 
                 Craft::info(
@@ -281,9 +296,6 @@ class OptimizedImages extends Field
         );
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -319,4 +331,46 @@ class OptimizedImages extends Field
             ]
         );
     }
+
+    // Protected Methods
+    // =========================================================================
+
+    protected function generatePlaceholderImage(Asset $asset, float $aspectRatio): string
+    {
+        $result = '';
+        $width = self::PLACEHOLDER_WIDTH;
+        $height = intval($width / $aspectRatio);
+        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
+            $images = Craft::$app->getImages();
+            $imageSource = $asset->getTransformSource();
+            /** @var Image $image */
+            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
+                $image = $images->loadImage($imageSource, true, $width);
+            } else {
+                $image = $images->loadImage($imageSource);
+            }
+
+            if ($image instanceof Raster) {
+                $image->setQuality(self::PLACEHOLDER_QUALITY);
+            }
+
+            // Scale and crop the placeholder image
+            if ($asset->focalPoint) {
+                $position = $asset->getFocalPoint();
+            } else {
+                $position = 'center-center';
+            }
+            $image->scaleAndCrop($width, $height, true, $position);
+
+            // Save the image out to a temp file, then return its contents
+            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
+            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+            clearstatcache(true, $tempPath);
+            $image->saveAs($tempPath);
+            $result = base64_encode(file_get_contents($tempPath));
+            unlink($tempPath);
+        }
+        return $result;
+    }
+
 }
