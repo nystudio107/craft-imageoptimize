@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.2.5 - 2017.10.11
+### Added
+* Added the ability to automatically set the placeholder color to the image's dominant color
+* Added the ability to extract the 5 dominant colors from an image
+
 ## 1.2.4 - 2017.10.10
 ### Added
 * Added automatic generation of Instagram-style low resolution placeholder images for lazing loading
