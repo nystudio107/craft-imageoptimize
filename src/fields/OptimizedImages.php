@@ -13,6 +13,8 @@ namespace nystudio107\imageoptimize\fields;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
+use ColorThief\ColorThief;
+
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -43,6 +45,9 @@ class OptimizedImages extends Field
 
     const PLACEHOLDER_WIDTH = 16;
     const PLACEHOLDER_QUALITY = 50;
+
+    const COLOR_PALETTE_WIDTH = 200;
+    const COLOR_PALETTE_QUALITY = 75;
 
     // Public Properties
     // =========================================================================
@@ -238,9 +243,14 @@ class OptimizedImages extends Field
                     $model->focalPoint = $element->focalPoint;
                     $model->originalImageWidth = $element->width;
                     $model->originalImageHeight = $element->height;
+                    // Make our placeholder image once, from the first variant
                     if (!$placeholderMade) {
+                        $model->placeholderWidth = $transform->width;
+                        $model->placeholderHeight = $transform->height;
                         // Generate our placeholder image
                         $model->placeholder = $this->generatePlaceholderImage($element, $aspectRatio);
+                        // Generate the color palette for the image
+                        $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
                         $placeholderMade = true;
                     }
                 }
@@ -335,6 +345,66 @@ class OptimizedImages extends Field
     // Protected Methods
     // =========================================================================
 
+    /**
+     * Generate a color palette from the image
+     *
+     * @param Asset $asset
+     * @param float $aspectRatio
+     *
+     * @return array
+     */
+    protected function generateColorPalette(Asset $asset, float $aspectRatio): array
+    {
+        $colorPalette = [];
+        $width = self::COLOR_PALETTE_WIDTH;
+        $height = intval($width / $aspectRatio);
+        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
+            $images = Craft::$app->getImages();
+            $imageSource = $asset->getTransformSource();
+            /** @var Image $image */
+            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
+                $image = $images->loadImage($imageSource, true, $width);
+            } else {
+                $image = $images->loadImage($imageSource);
+            }
+
+            if ($image instanceof Raster) {
+                $image->setQuality(self::COLOR_PALETTE_QUALITY);
+            }
+
+            // Scale and crop the placeholder image
+            if ($asset->focalPoint) {
+                $position = $asset->getFocalPoint();
+            } else {
+                $position = 'center-center';
+            }
+            $image->scaleAndCrop($width, $height, true, $position);
+
+            // Save the image out to a temp file, then return its contents
+            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
+            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+            clearstatcache(true, $tempPath);
+            $image->saveAs($tempPath);
+            // Extract the color palette
+            $palette = ColorThief::getPalette($tempPath, 5);
+            // Convert RGB to hex color
+            foreach ($palette as $colors) {
+                $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
+            }
+            unlink($tempPath);
+        }
+
+        return $colorPalette;
+    }
+
+    /**
+     * Generate a base64-encoded placeholder image
+     *
+     * @param Asset $asset
+     * @param float $aspectRatio
+     *
+     * @return string
+     */
     protected function generatePlaceholderImage(Asset $asset, float $aspectRatio): string
     {
         $result = '';

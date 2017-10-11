@@ -56,6 +56,21 @@ class OptimizedImage extends Model
      */
     public $placeholder;
 
+    /**
+     * @var array
+     */
+    public $colorPalette = [];
+
+    /**
+     * @var int
+     */
+    public $placeholderWidth;
+
+    /**
+     * @var int
+     */
+    public $placeholderHeight;
+
     // Public Methods
     // =========================================================================
 
@@ -104,19 +119,22 @@ class OptimizedImage extends Model
     /**
      * Return a base64-encoded placeholder image
      *
-     * @param int    $width
-     * @param int    $height
+     * @param bool   $useImage
      * @param string $color
      *
      * @return string
+     * @internal param int $width
+     * @internal param int $height
      */
-    public function placeholderImage($width = 1, $height = 1, $color = '#CCC')
+    public function placeholderImage(bool $useImage = true, $color = null)
     {
-        $useSvgPlaceholder = ($width != 1 && $height != 1);
-        if (!empty($this->placeholder) && !$useSvgPlaceholder) {
+        if (!empty($this->placeholder) && $useImage) {
             $header = 'data:image/jpeg;base64,';
             $content = $this->placeholder;
         } else {
+            $width = $this->placeholderWidth ?? 1;
+            $height = $this->placeholderHeight ?? 1;
+            $color = $color ?? $this->colorPalette[0] ?? '#CCC';
             $header = 'data:image/svg+xml;charset=utf-8,';
             $content = "<svg xmlns='http://www.w3.org/2000/svg' "
                 ."width='$width' "

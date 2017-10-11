@@ -107,6 +107,8 @@ There are also warnings indicating that the original image is too small, and is 
 
 ImageOptimize makes it easy to create responsive images in your frontend templates. There are two primary ways to create responsive images: using the `<img srcset="">` element or using the `<picture>` element.
 
+##### Img srcset
+
 To use `<img srcset="">` elements in your templates, you can just do:
 
 ```
@@ -142,19 +144,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
          data-sizes="100vw" />
 ```
 
-The `placeholderImage()` uses an Instagram-style low resolution placeholder image to display while the image is being lazy loaded. The method signature is `placeholderImage()`
-
-![Screenshot](screenshots/placeholder_image.png)
-
-Placeholder Image
-
-![Screenshot](screenshots/normal_image.png)
-
-Normal Image
-
-Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
-
-If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
+##### Picture Elements
 
 To use `<picture>` in your templates, you can just do:
 
@@ -189,7 +179,6 @@ To use `<picture>` in your templates, you can just do:
     </picture>
 ```
 
-
 This assumes you have `WEBP` image variants configured. This lets the browser choose what to display, if it can handle `.webp`, it'll pick that (because `.webp` images are far more efficient than `.jpg` images), otherwise it'll just use the regular image.
 
 The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like  (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `<picture>` works, check out the excellent [Responsive Images 101, Part 6: Picture Element](https://cloudfour.com/thinks/responsive-images-101-part-6-picture-element/) article.
@@ -208,7 +197,9 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
      </picture>
 ```
 
-The `placeholderImage()` uses an Instagram-style low resolution placeholder image to display while the image is being lazy loaded. The method signature is `placeholderImage()`
+##### Placeholder Images
+
+The `placeholderImage()` method uses an Instagram-style low resolution placeholder image to display while the image is being lazy loaded. The method signature is `placeholderImage()`
 
 ![Screenshot](screenshots/placeholder_image.png)
 
@@ -220,7 +211,32 @@ Normal Image
 
 Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
 
-If instead you'd prefer to use a plain colored box, pass in a `width`, `height`, and optional HTML `color` to `placeholderImage(width, height, color)`
+If instead you'd prefer to use a plain colored box, pass in a `false`, and optional HTML `color` to `placeholderImage(false, color)`
+
+If you don't specify a color, ImageOptimize will use the dominant color of the image automatically, e.g.: `placeholderImage(false)`
+
+#### Advanced Usage
+
+##### Color Palette
+
+ImageOptimize extracts a color palette composed of the 5 most dominant colors used by an image that you can access from your templates:
+
+```
+    {% set someAsset = entry.myAssetField %}
+    {% for color in someAsset.optimizedImages.colorPalette %}
+        <div style="background-color: {{ color }}">
+        </div>
+    {% endfor %}
+
+```
+
+![Screenshot](screenshots/color-palette.png)
+
+Dominant Color Palette
+
+These colors are sorted by color dominance, and can be used to style other HTML elements with complimentary colors.
+
+##### Iterating Through URLs
 
 Should you want to iterate through the URLs individually, you can do that via:
 
