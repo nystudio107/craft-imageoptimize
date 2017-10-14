@@ -82,6 +82,15 @@
                                 value: field.variants[loop.index0]['width']
                             }) }}
 
+                            {% set useAspectRatio = field.variants[loop.index0]['useAspectRatio'] ?? true %}
+                            {{ forms.lightswitchField({
+                                label: 'Enforce Aspect Ratio',
+                                instructions: 'Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio',
+                                id: 'variants-' ~ loop.index0 ~ '-useAspectRatio',
+                                name: 'variants[' ~ loop.index0 ~ '][useAspectRatio]',
+                                on: useAspectRatio,
+                            }) }}
+
                             <div class="field">
                                 <div class="heading">
                                     <label id="variants-{{ loop.index0 }}-aspectRatio-label" for="variants-{{ loop.index0 }}-aspectRatio">
