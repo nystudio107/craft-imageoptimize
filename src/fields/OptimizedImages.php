@@ -11,7 +11,9 @@
 namespace nystudio107\imageoptimize\fields;
 
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
+use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
+use nystudio107\imageoptimize\models\Settings;
 
 use ColorThief\ColorThief;
 
@@ -55,44 +57,7 @@ class OptimizedImages extends Field
     /**
      * @var array
      */
-    public $variants = [
-        [
-            'width'          => 1170,
-            'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
-        ],
-        [
-            'width'          => 970,
-            'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
-        ],
-        [
-            'width'          => 750,
-            'useAspectRatio' => true,
-            'aspectRatioX'   => 4.0,
-            'aspectRatioY'   => 3.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 60,
-            'format'         => 'jpg',
-        ],
-        [
-            'width'          => 320,
-            'useAspectRatio' => true,
-            'aspectRatioX'   => 4.0,
-            'aspectRatioY'   => 3.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 60,
-            'format'         => 'jpg',
-            'useAspectRatio' => true,],
-    ];
+    public $variants = [];
 
     // Private Properties
     // =========================================================================
@@ -115,6 +80,15 @@ class OptimizedImages extends Field
 
     // Public Methods
     // =========================================================================
+
+    public function init()
+    {
+        parent::init();
+
+        /** @var Settings $settings */
+        $settings = ImageOptimize::$plugin->getSettings();
+        $this->variants = $settings->defaultVariants;
+    }
 
     /**
      * @inheritdoc
@@ -214,27 +188,23 @@ class OptimizedImages extends Field
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
-                // Create the transform based on the variant
-                $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
-                if ($useAspectRatio) {
-                    $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-                } else {
-                    if ($element->height != 0) {
-                        $aspectRatio = $element->width / $element->height;
-                    } else {
-                        $aspectRatio = 1.0;
-                    }
-                }
-                $width = $variant['width'] * $retinaSize;
-                $transform->width = $width;
-                $transform->height = intval($width / $aspectRatio);
-                $transform->quality = $variant['quality'];
                 $transform->format = $variant['format'];
-
                 $finalFormat = $transform->format == null ? $element->getExtension() : $transform->format;
-
                 // Only try the transform if it's possible
-                if (Image::canManipulateAsImage($finalFormat) && Image::canManipulateAsImage($element->getExtension())) {
+                if (Image::canManipulateAsImage($finalFormat)
+                    && Image::canManipulateAsImage($element->getExtension())
+                    && $element->height > 0) {
+                    // Create the transform based on the variant
+                    $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
+                    if ($useAspectRatio) {
+                        $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+                    } else {
+                        $aspectRatio = $element->width / $element->height;
+                    }
+                    $width = $variant['width'] * $retinaSize;
+                    $transform->width = $width;
+                    $transform->height = intval($width / $aspectRatio);
+                    $transform->quality = $variant['quality'];
                     // Force generateTransformsBeforePageLoad = true to generate the images now
                     $generalConfig = Craft::$app->getConfig()->getGeneral();
                     $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
@@ -251,7 +221,7 @@ class OptimizedImages extends Field
                     // Update the model
                     if (!empty($url)) {
                         $model->optimizedImageUrls[$width] = $url;
-                        $model->optimizedWebPImageUrls[$width] = $url.'.webp';
+                        $model->optimizedWebPImageUrls[$width] = $url . '.webp';
                     }
                     $model->focalPoint = $element->focalPoint;
                     $model->originalImageWidth = $element->width;

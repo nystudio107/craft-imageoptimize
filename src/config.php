@@ -26,6 +26,46 @@
 
 return [
 
+    // Default image variants
+    'defaultVariants'            => [
+        [
+            'width'          => 1170,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 16.0,
+            'aspectRatioY'   => 9.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 82,
+            'format'         => 'jpg',
+        ],
+        [
+            'width'          => 970,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 16.0,
+            'aspectRatioY'   => 9.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 82,
+            'format'         => 'jpg',
+        ],
+        [
+            'width'          => 750,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 4.0,
+            'aspectRatioY'   => 3.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 60,
+            'format'         => 'jpg',
+        ],
+        [
+            'width'          => 320,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 4.0,
+            'aspectRatioY'   => 3.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 60,
+            'format'         => 'jpg',
+        ],
+    ],
+
     // Active image processors
     'activeImageProcessors'      => [
         'jpg' => [
@@ -59,46 +99,46 @@ return [
     'imageProcessors'            => [
         // jpeg optimizers
         'jpegoptim' => [
-            'commandPath'           => '/usr/bin/jpegoptim',
-            'commandOptions'        => '-s',
+            'commandPath'           => ' / usr / bin / jpegoptim',
+            'commandOptions'        => ' - s',
             'commandOutputFileFlag' => '',
         ],
         'mozjpeg'   => [
-            'commandPath'           => '/usr/bin/mozjpeg',
-            'commandOptions'        => '-optimize -copy none',
-            'commandOutputFileFlag' => '-outfile',
+            'commandPath'           => ' / usr / bin / mozjpeg',
+            'commandOptions'        => ' - optimize - copy none',
+            'commandOutputFileFlag' => ' - outfile',
         ],
         'jpegtran'  => [
-            'commandPath'           => '/usr/bin/jpegtran',
-            'commandOptions'        => '-optimize -copy none',
+            'commandPath'           => ' / usr / bin / jpegtran',
+            'commandOptions'        => ' - optimize - copy none',
             'commandOutputFileFlag' => '',
         ],
         // png optimizers
         'optipng'   => [
-            'commandPath'           => '/usr/bin/optipng',
-            'commandOptions'        => '-o7 -strip all',
+            'commandPath'           => ' / usr / bin / optipng',
+            'commandOptions'        => ' - o7 - strip all',
             'commandOutputFileFlag' => '',
         ],
         'pngcrush'  => [
-            'commandPath'           => '/usr/bin/pngcrush',
-            'commandOptions'        => '-brute -ow',
+            'commandPath'           => ' / usr / bin / pngcrush',
+            'commandOptions'        => ' - brute - ow',
             'commandOutputFileFlag' => '',
         ],
         'pngquant'  => [
-            'commandPath'           => '/usr/bin/pngquant',
-            'commandOptions'        => '--strip --skip-if-larger',
+            'commandPath'           => ' / usr / bin / pngquant',
+            'commandOptions'        => '--strip--skip -if-larger',
             'commandOutputFileFlag' => '',
         ],
         // svg optimizers
         'svgo'      => [
-            'commandPath'           => '/usr/bin/svgo',
+            'commandPath'           => ' / usr / bin / svgo',
             'commandOptions'        => '',
             'commandOutputFileFlag' => '',
         ],
         // gif optimizers
         'gifsicle'  => [
-            'commandPath'           => '/usr/bin/gifsicle',
-            'commandOptions'        => '-O3 -k 256',
+            'commandPath'           => ' / usr / bin / gifsicle',
+            'commandOptions'        => ' - O3 - k 256',
             'commandOutputFileFlag' => '',
         ],
     ],
@@ -106,10 +146,10 @@ return [
     'imageVariantCreators' => [
         // webp variant creator
         'cwebp' => [
-            'commandPath'           => '/usr/bin/cwebp',
+            'commandPath'           => ' / usr / bin / cwebp',
             'commandOptions'        => '',
-            'commandOutputFileFlag' => '-o',
-            'commandQualityFlag'    => '-q',
+            'commandOutputFileFlag' => ' - o',
+            'commandQualityFlag'    => ' - q',
             'imageVariantExtension' => 'webp',
         ],
     ],

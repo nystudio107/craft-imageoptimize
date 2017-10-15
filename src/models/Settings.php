@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\models;
 
 use craft\base\Model;
+use craft\validators\ArrayValidator;
 
 /**
  * ImageOptimize Settings model
@@ -23,6 +24,50 @@ class Settings extends Model
 {
     // Public Properties
     // =========================================================================
+
+    /**
+     * Default variants
+     *
+     * @var array
+     */
+    public $defaultVariants = [
+        [
+            'width'          => 1170,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 16.0,
+            'aspectRatioY'   => 9.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 82,
+            'format'         => 'jpg',
+        ],
+        [
+            'width'          => 970,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 16.0,
+            'aspectRatioY'   => 9.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 82,
+            'format'         => 'jpg',
+        ],
+        [
+            'width'          => 750,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 4.0,
+            'aspectRatioY'   => 3.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 60,
+            'format'         => 'jpg',
+        ],
+        [
+            'width'          => 320,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 4.0,
+            'aspectRatioY'   => 3.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 60,
+            'format'         => 'jpg',
+        ],
+    ];
 
     /**
      * Active image processors
@@ -133,10 +178,26 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['activeImageProcessors', 'required'],
-            ['activeImageVariantCreators', 'required'],
-            ['imageProcessors', 'required'],
-            ['imageVariantCreators', 'required'],
+            [
+                [
+                    'defaultVariants',
+                    'activeImageProcessors',
+                    'activeImageVariantCreators',
+                    'imageProcessors',
+                    'imageVariantCreators',
+                ],
+                'required'
+            ],
+            [
+                [
+                    'defaultVariants',
+                    'activeImageProcessors',
+                    'activeImageVariantCreators',
+                    'imageProcessors',
+                    'imageVariantCreators',
+                ],
+                ArrayValidator::class
+            ],
         ];
     }
 }
