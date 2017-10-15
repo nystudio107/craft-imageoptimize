@@ -89,9 +89,10 @@
                                 id: 'variants-' ~ loop.index0 ~ '-useAspectRatio',
                                 name: 'variants[' ~ loop.index0 ~ '][useAspectRatio]',
                                 on: useAspectRatio,
+                                class: 'io-use-aspect-ratio'
                             }) }}
 
-                            <div class="field">
+                            <div class="field io-aspect-ratio-wrapper" style="{% if useAspectRatio != true %}display: none;{% endif %}">
                                 <div class="heading">
                                     <label id="variants-{{ loop.index0 }}-aspectRatio-label" for="variants-{{ loop.index0 }}-aspectRatio">
                                         Aspect Ratio

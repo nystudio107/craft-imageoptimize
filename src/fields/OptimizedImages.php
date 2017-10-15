@@ -87,7 +87,9 @@ class OptimizedImages extends Field
 
         /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
-        $this->variants = $settings->defaultVariants;
+        if (empty($this->variants)) {
+            $this->variants = $settings->defaultVariants;
+        }
     }
 
     /**
