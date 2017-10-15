@@ -215,7 +215,7 @@ class OptimizedImages extends Field
             }
             foreach ($retinaSizes as $retinaSize) {
                 // Create the transform based on the variant
-                $useAspectRatio = empty($variant['useAspectRatio']) ? true : $variant['useAspectRatio'];
+                $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
                 if ($useAspectRatio) {
                     $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
                 } else {
