@@ -219,15 +219,15 @@ class OptimizedImages extends Field
                 if ($useAspectRatio) {
                     $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
                 } else {
-                    $aspectRatio = 0.0;
+                    if ($element->height != 0) {
+                        $aspectRatio = $element->width / $element->height;
+                    } else {
+                        $aspectRatio = 1.0;
+                    }
                 }
                 $width = $variant['width'] * $retinaSize;
                 $transform->width = $width;
-                if ($useAspectRatio) {
-                    $transform->height = intval($width / $aspectRatio);
-                } else {
-                    $transform->height = null;
-                }
+                $transform->height = intval($width / $aspectRatio);
                 $transform->quality = $variant['quality'];
                 $transform->format = $variant['format'];
 
@@ -288,11 +288,7 @@ class OptimizedImages extends Field
     {
         $result = '';
         $width = self::PLACEHOLDER_WIDTH;
-        if ($aspectRatio == 0.0) {
-            $height = null;
-        } else {
-            $height = intval($width / $aspectRatio);
-        }
+        $height = intval($width / $aspectRatio);
         $tempPath = $this->createImageFromAsset($asset, $width, $height, self::PLACEHOLDER_QUALITY);
         if (!empty($tempPath)) {
             $result = base64_encode(file_get_contents($tempPath));
@@ -314,11 +310,7 @@ class OptimizedImages extends Field
     {
         $colorPalette = [];
         $width = self::COLOR_PALETTE_WIDTH;
-        if ($aspectRatio == 0.0) {
-            $height = null;
-        } else {
-            $height = intval($width / $aspectRatio);
-        }
+        $height = intval($width / $aspectRatio);
         $tempPath = $this->createImageFromAsset($asset, $width, $height, self::COLOR_PALETTE_QUALITY);
         if (!empty($tempPath)) {
             // Extract the color palette
