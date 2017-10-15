@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.2.6 - 2017.10.16
+### Changed
+* Moved the default variants to the `config.php` and Settings model, so they can be overriden
+
+### Added
+* Added the variant setting **Enforce Aspect Ratio** to allow for images with no fixed aspect ratio
+
 ## 1.2.5 - 2017.10.11
 ### Added
 * Added the ability to automatically set the placeholder color to the image's dominant color

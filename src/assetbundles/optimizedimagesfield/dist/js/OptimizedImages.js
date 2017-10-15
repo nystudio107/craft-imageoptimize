@@ -174,8 +174,13 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         addAspectRatioHandlers: function () {
+            this.addListener($('.lightswitch'), 'click', function(ev) {
+                var $target = $(ev.target);
+                var $block = $target.closest('.matrixblock');
+                $block.find('.io-aspect-ratio-wrapper').slideToggle();
+            });
             this.addListener($('.io-select-ar-box'), 'click', function(ev) {
-                $target = $(ev.target);
+                var $target = $(ev.target);
                 var x = $(ev.target).data('x'),
                     y = $(ev.target).data('y'),
                     custom = $(ev.target).data('custom'),

@@ -11,7 +11,9 @@
 namespace nystudio107\imageoptimize\fields;
 
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
+use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
+use nystudio107\imageoptimize\models\Settings;
 
 use ColorThief\ColorThief;
 
@@ -55,40 +57,7 @@ class OptimizedImages extends Field
     /**
      * @var array
      */
-    public $variants = [
-        [
-            'width'        => 1170,
-            'aspectRatioX' => 16.0,
-            'aspectRatioY' => 9.0,
-            'retinaSizes'  => ['1'],
-            'quality'      => 82,
-            'format'       => 'jpg',
-        ],
-        [
-            'width'        => 970,
-            'aspectRatioX' => 16.0,
-            'aspectRatioY' => 9.0,
-            'retinaSizes'  => ['1'],
-            'quality'      => 82,
-            'format'       => 'jpg',
-        ],
-        [
-            'width'        => 750,
-            'aspectRatioX' => 4.0,
-            'aspectRatioY' => 3.0,
-            'retinaSizes'  => ['1'],
-            'quality'      => 60,
-            'format'       => 'jpg',
-        ],
-        [
-            'width'        => 320,
-            'aspectRatioX' => 4.0,
-            'aspectRatioY' => 3.0,
-            'retinaSizes'  => ['1'],
-            'quality'      => 60,
-            'format'       => 'jpg',
-        ],
-    ];
+    public $variants = [];
 
     // Private Properties
     // =========================================================================
@@ -111,6 +80,17 @@ class OptimizedImages extends Field
 
     // Public Methods
     // =========================================================================
+
+    public function init()
+    {
+        parent::init();
+
+        /** @var Settings $settings */
+        $settings = ImageOptimize::$plugin->getSettings();
+        if (empty($this->variants)) {
+            $this->variants = $settings->defaultVariants;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -160,7 +140,7 @@ class OptimizedImages extends Field
 
                 $success = Craft::$app->getElements()->saveElement($element, false);
                 Craft::info(
-                    print_r('Re-saved new asset ' . $success, true),
+                    print_r('Re-saved new asset '.$success, true),
                     __METHOD__
                 );
             } else {
@@ -210,18 +190,23 @@ class OptimizedImages extends Field
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
-                // Create the transform based on the variant
-                $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-                $width = $variant['width'] * $retinaSize;
-                $transform->width = $width;
-                $transform->height = intval($width / $aspectRatio);
-                $transform->quality = $variant['quality'];
                 $transform->format = $variant['format'];
-
                 $finalFormat = $transform->format == null ? $element->getExtension() : $transform->format;
-
                 // Only try the transform if it's possible
-                if (Image::canManipulateAsImage($finalFormat) && Image::canManipulateAsImage($element->getExtension())) {
+                if (Image::canManipulateAsImage($finalFormat)
+                    && Image::canManipulateAsImage($element->getExtension())
+                    && $element->height > 0) {
+                    // Create the transform based on the variant
+                    $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
+                    if ($useAspectRatio) {
+                        $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+                    } else {
+                        $aspectRatio = $element->width / $element->height;
+                    }
+                    $width = $variant['width'] * $retinaSize;
+                    $transform->width = $width;
+                    $transform->height = intval($width / $aspectRatio);
+                    $transform->quality = $variant['quality'];
                     // Force generateTransformsBeforePageLoad = true to generate the images now
                     $generalConfig = Craft::$app->getConfig()->getGeneral();
                     $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
@@ -256,11 +241,103 @@ class OptimizedImages extends Field
                 }
 
                 Craft::info(
-                    'Created transforms for variant: ' . print_r($variant, true),
+                    'Created transforms for variant: '.print_r($variant, true),
                     __METHOD__
                 );
             }
         }
+    }
+
+    /**
+     * Generate a base64-encoded placeholder image
+     *
+     * @param Asset $asset
+     * @param float $aspectRatio
+     *
+     * @return string
+     */
+    protected function generatePlaceholderImage(Asset $asset, float $aspectRatio): string
+    {
+        $result = '';
+        $width = self::PLACEHOLDER_WIDTH;
+        $height = intval($width / $aspectRatio);
+        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::PLACEHOLDER_QUALITY);
+        if (!empty($tempPath)) {
+            $result = base64_encode(file_get_contents($tempPath));
+            unlink($tempPath);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Generate a color palette from the image
+     *
+     * @param Asset $asset
+     * @param float $aspectRatio
+     *
+     * @return array
+     */
+    protected function generateColorPalette(Asset $asset, float $aspectRatio): array
+    {
+        $colorPalette = [];
+        $width = self::COLOR_PALETTE_WIDTH;
+        $height = intval($width / $aspectRatio);
+        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::COLOR_PALETTE_QUALITY);
+        if (!empty($tempPath)) {
+            // Extract the color palette
+            $palette = ColorThief::getPalette($tempPath, 5);
+            // Convert RGB to hex color
+            foreach ($palette as $colors) {
+                $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
+            }
+            unlink($tempPath);
+        }
+
+        return $colorPalette;
+    }
+
+    /**
+     * @param Asset $asset
+     * @param int   $width
+     * @param int   $height
+     * @param int   $quality
+     *
+     * @return string
+     */
+    protected function createImageFromAsset(Asset $asset, int $width, int $height, int $quality)
+    {
+        $tempPath = '';
+        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
+            $images = Craft::$app->getImages();
+            $imageSource = $asset->getTransformSource();
+            /** @var Image $image */
+            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
+                $image = $images->loadImage($imageSource, true, $width);
+            } else {
+                $image = $images->loadImage($imageSource);
+            }
+
+            if ($image instanceof Raster) {
+                $image->setQuality($quality);
+            }
+
+            // Scale and crop the placeholder image
+            if ($asset->focalPoint) {
+                $position = $asset->getFocalPoint();
+            } else {
+                $position = 'center-center';
+            }
+            $image->scaleAndCrop($width, $height, true, $position);
+
+            // Save the image out to a temp file, then return its contents
+            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
+            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+            clearstatcache(true, $tempPath);
+            $image->saveAs($tempPath);
+        }
+
+        return $tempPath;
     }
 
     /**
@@ -279,6 +356,9 @@ class OptimizedImages extends Field
         return Schema::TYPE_TEXT;
     }
 
+    // Protected Methods
+    // =========================================================================
+
     /**
      * @inheritdoc
      */
@@ -289,9 +369,9 @@ class OptimizedImages extends Field
         $id = Craft::$app->getView()->formatInputId($thisId);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput(' .
-            '"' . $namespacedId . '", ' .
-            '"' . $namespacePrefix . '"' .
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
+            '"'.$namespacedId.'", '.
+            '"'.$namespacePrefix.'"'.
             ');');
 
         // Render the settings template
@@ -326,7 +406,7 @@ class OptimizedImages extends Field
             'prefix'    => Craft::$app->getView()->namespaceInputId(''),
         ];
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" . $jsonVars . ");");
+        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
 
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
@@ -340,107 +420,6 @@ class OptimizedImages extends Field
                 'nameSpaceId' => $nameSpaceId,
             ]
         );
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * Generate a color palette from the image
-     *
-     * @param Asset $asset
-     * @param float $aspectRatio
-     *
-     * @return array
-     */
-    protected function generateColorPalette(Asset $asset, float $aspectRatio): array
-    {
-        $colorPalette = [];
-        $width = self::COLOR_PALETTE_WIDTH;
-        $height = intval($width / $aspectRatio);
-        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
-            $images = Craft::$app->getImages();
-            $imageSource = $asset->getTransformSource();
-            /** @var Image $image */
-            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
-                $image = $images->loadImage($imageSource, true, $width);
-            } else {
-                $image = $images->loadImage($imageSource);
-            }
-
-            if ($image instanceof Raster) {
-                $image->setQuality(self::COLOR_PALETTE_QUALITY);
-            }
-
-            // Scale and crop the placeholder image
-            if ($asset->focalPoint) {
-                $position = $asset->getFocalPoint();
-            } else {
-                $position = 'center-center';
-            }
-            $image->scaleAndCrop($width, $height, true, $position);
-
-            // Save the image out to a temp file, then return its contents
-            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
-            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
-            clearstatcache(true, $tempPath);
-            $image->saveAs($tempPath);
-            // Extract the color palette
-            $palette = ColorThief::getPalette($tempPath, 5);
-            // Convert RGB to hex color
-            foreach ($palette as $colors) {
-                $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
-            }
-            unlink($tempPath);
-        }
-
-        return $colorPalette;
-    }
-
-    /**
-     * Generate a base64-encoded placeholder image
-     *
-     * @param Asset $asset
-     * @param float $aspectRatio
-     *
-     * @return string
-     */
-    protected function generatePlaceholderImage(Asset $asset, float $aspectRatio): string
-    {
-        $result = '';
-        $width = self::PLACEHOLDER_WIDTH;
-        $height = intval($width / $aspectRatio);
-        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
-            $images = Craft::$app->getImages();
-            $imageSource = $asset->getTransformSource();
-            /** @var Image $image */
-            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
-                $image = $images->loadImage($imageSource, true, $width);
-            } else {
-                $image = $images->loadImage($imageSource);
-            }
-
-            if ($image instanceof Raster) {
-                $image->setQuality(self::PLACEHOLDER_QUALITY);
-            }
-
-            // Scale and crop the placeholder image
-            if ($asset->focalPoint) {
-                $position = $asset->getFocalPoint();
-            } else {
-                $position = 'center-center';
-            }
-            $image->scaleAndCrop($width, $height, true, $position);
-
-            // Save the image out to a temp file, then return its contents
-            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
-            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
-            clearstatcache(true, $tempPath);
-            $image->saveAs($tempPath);
-            $result = base64_encode(file_get_contents($tempPath));
-            unlink($tempPath);
-        }
-        return $result;
     }
 
 }
