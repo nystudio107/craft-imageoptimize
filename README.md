@@ -212,6 +212,17 @@ Normal Image
 
 Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
 
+The image itself will only be 16px wide, so apply CSS styles to it such as:
+
+```
+.responsive-img {
+    width: 100%;
+    height: auto;
+}
+```
+
+For extra visual lusciousness, you could also apply a [CSS blur filter](https://css-tricks.com/almanac/properties/f/filter/) to the `.lazyload` class.
+
 If instead you'd prefer to use a plain colored box, pass in a `false`, and optional HTML `color` to `placeholderImage(false, color)`
 
 If you don't specify a color, ImageOptimize will use the dominant color of the image automatically, e.g.: `placeholderImage(false)`
