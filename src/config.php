@@ -26,7 +26,7 @@
 
 return [
 
-    // Should image variant be created on Asset save (aka PageLoad)
+    // Should image variant be created on Asset save (aka BeforePageLoad)
     'generateTransformsBeforePageLoad' => true,
 
     // Controls whether a dominant color palette should be created for image variants

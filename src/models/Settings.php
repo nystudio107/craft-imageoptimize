@@ -26,7 +26,7 @@ class Settings extends Model
     // =========================================================================
 
     /**
-     * Should image variant be created on Asset save (aka PageLoad)
+     * Should image variant be created on Asset save (aka BeforePageLoad)
      *
      * @var bool
      */
