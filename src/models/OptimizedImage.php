@@ -57,6 +57,11 @@ class OptimizedImage extends Model
     public $placeholder;
 
     /**
+     * @var
+     */
+    public $placeholderSvg;
+
+    /**
      * @var array
      */
     public $colorPalette = [];
@@ -119,28 +124,52 @@ class OptimizedImage extends Model
     /**
      * Return a base64-encoded placeholder image
      *
-     * @param bool   $useImage
-     * @param string $color
+     * @return string
+     */
+    public function placeholderImage()
+    {
+        $content = '';
+        $header = 'data:image/jpeg;base64,';
+        if (!empty($this->placeholder)) {
+            $content = $this->placeholder;
+        }
+
+        return $header . rawurlencode($content);
+    }
+
+    /**
+     * Return an SVG box as a placeholder image
+     *
+     * @param null $color
      *
      * @return string
-     * @internal param int $width
-     * @internal param int $height
      */
-    public function placeholderImage(bool $useImage = true, $color = null)
+    public function placeholderBox($color = null)
     {
-        if (!empty($this->placeholder) && $useImage) {
-            $header = 'data:image/jpeg;base64,';
-            $content = $this->placeholder;
-        } else {
-            $width = $this->placeholderWidth ?? 1;
-            $height = $this->placeholderHeight ?? 1;
-            $color = $color ?? $this->colorPalette[0] ?? '#CCC';
-            $header = 'data:image/svg+xml;charset=utf-8,';
-            $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-                ."width='$width' "
-                ."height='$height' "
-                ."style='background:$color' "
-                ."/>";
+        $width = $this->placeholderWidth ?? 1;
+        $height = $this->placeholderHeight ?? 1;
+        $color = $color ?? $this->colorPalette[0] ?? '#CCC';
+        $header = 'data:image/svg+xml;charset=utf-8,';
+        $content = "<svg xmlns='http://www.w3.org/2000/svg' "
+            . "width='$width' "
+            . "height='$height' "
+            . "style='background:$color' "
+            . "/>";
+
+        return $header . rawurlencode($content);
+    }
+
+    /**
+     * Return a silhouette of the image as an SVG placeholder
+     *
+     * @return string
+     */
+    public function placeholderSilhouette()
+    {
+        $content = '';
+        $header = 'data:image/svg+xml;charset=utf-8,';
+        if (!empty($this->placeholderSvg)) {
+            $content = $this->placeholderSvg;
         }
 
         return $header . rawurlencode($content);
@@ -150,9 +179,9 @@ class OptimizedImage extends Model
      *  Get the file size of any remote resource (using curl),
      *  either in bytes or - default - as human-readable formatted string.
      *
-     *  @author  Stephan Schmitz <eyecatchup@gmail.com>
-     *  @license MIT <http://eyecatchup.mit-license.org/>
-     *  @url     <https://gist.github.com/eyecatchup/f26300ffd7e50a92bc4d>
+     * @author  Stephan Schmitz <eyecatchup@gmail.com>
+     * @license MIT <http://eyecatchup.mit-license.org/>
+     * @url     <https://gist.github.com/eyecatchup/f26300ffd7e50a92bc4d>
      *
      * @param   string  $url        Takes the remote object's URL.
      * @param   boolean $formatSize Whether to return size in bytes or

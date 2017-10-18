@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.2.7 - 2017.10.18
+### Added
+* Added the ability to make inline SVG silhouette images as placeholder images for lazing loading
+
 ## 1.2.6 - 2017.10.16
 ### Changed
 * Moved the default variants to the `config.php` and Settings model, so they can be overriden
