@@ -77,7 +77,7 @@ class Optimize extends Component
             .' -> '
             .Craft::t('image-optimize', 'Savings')
             .': '
-            .number_format(abs(100 - (($optimizedFileSize  * 100) / $originalFileSize)), 1)
+            .number_format(abs(100 - (($optimizedFileSize * 100) / $originalFileSize)), 1)
             .'%',
             __METHOD__
         );
@@ -124,9 +124,11 @@ class Optimize extends Component
         if (!empty($activeImageProcessors[$fileFormat])) {
             // Iterate through all of the processors for this format
             $imageProcessors = $settings['imageProcessors'];
-            foreach ($activeImageProcessors[$fileFormat] as $processor) {
-                if (!empty($imageProcessors[$processor])) {
-                    $this->executeImageProcessor($imageProcessors[$processor], $tempPath);
+            if (!empty($activeImageProcessors[$fileFormat])) {
+                foreach ($activeImageProcessors[$fileFormat] as $processor) {
+                    if (!empty($processor) && !empty($imageProcessors[$processor])) {
+                        $this->executeImageProcessor($imageProcessors[$processor], $tempPath);
+                    }
                 }
             }
         }
@@ -235,52 +237,54 @@ class Optimize extends Component
         if (!empty($activeImageVariantCreators[$fileFormat])) {
             // Iterate through all of the image variant creators for this format
             $imageVariantCreators = $settings['imageVariantCreators'];
-            foreach ($activeImageVariantCreators[$fileFormat] as $variantCreator) {
-                if (!empty($imageVariantCreators[$variantCreator])) {
-                    // Create the image variant in a temporary folder
-                    $generalConfig = Craft::$app->getConfig()->getGeneral();
-                    $quality = $index->transform->quality ?: $generalConfig->defaultImageQuality;
-                    $outputPath = $this->executeVariantCreator(
-                        $imageVariantCreators[$variantCreator],
-                        $tempPath,
-                        $quality
-                    );
+            if (!empty($activeImageVariantCreators[$fileFormat])) {
+                foreach ($activeImageVariantCreators[$fileFormat] as $variantCreator) {
+                    if (!empty($variantCreator) && !empty($imageVariantCreators[$variantCreator])) {
+                        // Create the image variant in a temporary folder
+                        $generalConfig = Craft::$app->getConfig()->getGeneral();
+                        $quality = $index->transform->quality ?: $generalConfig->defaultImageQuality;
+                        $outputPath = $this->executeVariantCreator(
+                            $imageVariantCreators[$variantCreator],
+                            $tempPath,
+                            $quality
+                        );
 
-                    // Get info on the original and the created variant
-                    $originalFileSize = filesize($tempPath);
-                    $variantFileSize = filesize($outputPath);
+                        // Get info on the original and the created variant
+                        $originalFileSize = filesize($tempPath);
+                        $variantFileSize = filesize($outputPath);
 
-                    Craft::info(
-                        pathinfo($tempPath, PATHINFO_FILENAME)
-                        .'.'
-                        .pathinfo($tempPath, PATHINFO_EXTENSION)
-                        .' -> '
-                        .pathinfo($outputPath, PATHINFO_FILENAME)
-                        .'.'
-                        .pathinfo($outputPath, PATHINFO_EXTENSION)
-                        .' -> '
-                        .Craft::t('image-optimize', 'Original')
-                        .': '
-                        .$this->humanFileSize($originalFileSize, 1)
-                        .', '
-                        .Craft::t('image-optimize', 'Variant')
-                        .': '
-                        .$this->humanFileSize($variantFileSize, 1)
-                        .' -> '
-                        .Craft::t('image-optimize', 'Savings')
-                        .': '
-                        .number_format(abs(100 -(($variantFileSize  * 100) / $originalFileSize)), 1)
-                        .'%',
-                        __METHOD__
-                    );
+                        Craft::info(
+                            pathinfo($tempPath, PATHINFO_FILENAME)
+                            .'.'
+                            .pathinfo($tempPath, PATHINFO_EXTENSION)
+                            .' -> '
+                            .pathinfo($outputPath, PATHINFO_FILENAME)
+                            .'.'
+                            .pathinfo($outputPath, PATHINFO_EXTENSION)
+                            .' -> '
+                            .Craft::t('image-optimize', 'Original')
+                            .': '
+                            .$this->humanFileSize($originalFileSize, 1)
+                            .', '
+                            .Craft::t('image-optimize', 'Variant')
+                            .': '
+                            .$this->humanFileSize($variantFileSize, 1)
+                            .' -> '
+                            .Craft::t('image-optimize', 'Savings')
+                            .': '
+                            .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
+                            .'%',
+                            __METHOD__
+                        );
 
-                    // Copy the image variant into place
-                    $this->copyImageVariantToVolume(
-                        $imageVariantCreators[$variantCreator],
-                        $asset,
-                        $index,
-                        $outputPath
-                    );
+                        // Copy the image variant into place
+                        $this->copyImageVariantToVolume(
+                            $imageVariantCreators[$variantCreator],
+                            $asset,
+                            $index,
+                            $outputPath
+                        );
+                    }
                 }
             }
         }
@@ -415,9 +419,9 @@ class Optimize extends Component
                 if (!empty($imageProcessors[$processor])) {
                     $thisImageProcessor = $imageProcessors[$processor];
                     $result[] = [
-                        'format' => $imageFormat,
-                        'creator' => $processor,
-                        'command' => $thisImageProcessor['commandPath']
+                        'format'    => $imageFormat,
+                        'creator'   => $processor,
+                        'command'   => $thisImageProcessor['commandPath']
                             .' '
                             .$thisImageProcessor['commandOptions'],
                         'installed' => file_exists($thisImageProcessor['commandPath']),
@@ -447,9 +451,9 @@ class Optimize extends Component
                 if (!empty($imageVariantCreators[$variantCreator])) {
                     $thisVariantCreator = $imageVariantCreators[$variantCreator];
                     $result[] = [
-                        'format' => $imageFormat,
-                        'creator' => $variantCreator,
-                        'command' => $thisVariantCreator['commandPath']
+                        'format'    => $imageFormat,
+                        'creator'   => $variantCreator,
+                        'command'   => $thisVariantCreator['commandPath']
                             .' '
                             .$thisVariantCreator['commandOptions'],
                         'installed' => file_exists($thisVariantCreator['commandPath']),
@@ -473,10 +477,10 @@ class Optimize extends Component
         Craft::$app->getQueue()->push(new ResaveElements([
             'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
             'elementType' => Asset::class,
-            'criteria' => [
-                'siteId' => $siteId,
-                'volumeId' => $volume->id,
-                'status' => null,
+            'criteria'    => [
+                'siteId'         => $siteId,
+                'volumeId'       => $volume->id,
+                'status'         => null,
                 'enabledForSite' => false,
             ],
         ]));
