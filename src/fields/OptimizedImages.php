@@ -244,9 +244,13 @@ class OptimizedImages extends Field
                         // Generate our placeholder image
                         $model->placeholder = $this->generatePlaceholderImage($element, $aspectRatio);
                         // Generate the color palette for the image
-                        $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
+                        if ($settings['createColorPalette']) {
+                            $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
+                        }
                         // Generate the Potrace SVG
-                        $model->placeholderSvg = $this->generatePlaceholderSvg($element, $aspectRatio);
+                        if ($settings['createPlaceholderSilhouettes']) {
+                            $model->placeholderSvg = $this->generatePlaceholderSvg($element, $aspectRatio);
+                        }
                         $placeholderMade = true;
                     }
                 }

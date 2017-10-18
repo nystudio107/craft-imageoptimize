@@ -33,6 +33,22 @@ class Settings extends Model
     public $generateTransformsBeforePageLoad = true;
 
     /**
+     * Controls whether a dominant color palette should be created for image variants
+     * It takes a bit of time, so if you never plan to use it, you can turn it off
+     *
+     * @var bool
+     */
+    public $createColorPalette = true;
+
+    /**
+     * Controls whether SVG placeholder silhouettes should be created for image variants
+     * It takes a bit of time, so if you never plan to use them, you can turn it off
+     *
+     * @var bool
+     */
+    public $createPlaceholderSilhouettes = true;
+
+    /**
      * Default variants
      *
      * @var array

@@ -6,6 +6,8 @@
 
 ### Added
 * Added the ability to control when image variants are created via `generateTransformsBeforePageLoad` `config.php` setting
+* Added a `createColorPalette` in `config.php` to control dominant color palette creation
+* Added a `createPlaceholderSilhouettes` in `config.php` to control silhouette placeholder image creation
 
 ## 1.2.7 - 2017.10.18
 ### Added

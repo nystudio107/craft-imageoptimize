@@ -29,6 +29,14 @@ return [
     // Should image variant be created on Asset save (aka PageLoad)
     'generateTransformsBeforePageLoad' => true,
 
+    // Controls whether a dominant color palette should be created for image variants
+    // It takes a bit of time, so if you never plan to use it, you can turn it off
+    'createColorPalette' => true,
+
+     // Controls whether SVG placeholder silhouettes should be created for image variants
+     // It takes a bit of time, so if you never plan to use them, you can turn it off
+    'createPlaceholderSilhouettes' => true,
+
     // Default image variants
     'defaultVariants'            => [
         [
