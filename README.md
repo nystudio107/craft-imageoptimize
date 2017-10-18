@@ -204,12 +204,12 @@ Image Optimize offers three different flavors of placeholder images you can disp
 
 All of the placeholder images are stored in the Optimized Image field itself, so no http request is needed to fetch it, and the inline data used to generate them is very small.
  
-The first is `placeholderImageBox()` which displays a simple inline SVG with the background color set to the dominant color of the image:
+The first is `.placeholderBox()` which displays a simple inline SVG with the background color set to the dominant color of the image:
 
 ![Screenshot](screenshots/placeholder-image-box.png)
 (Placholder on the left, actual image on the right)
 
-The second is `placeholderImageSilhouette()` which displays an inline SVG silhouette generated from the original image:
+The second is `.placeholderSilhouette()` which displays an inline SVG silhouette generated from the original image:
 
 ![Screenshot](screenshots/placeholder-image-silhouette.png)
 (Placholder on the left, actual image on the right)
@@ -223,7 +223,7 @@ The SVG image itself will only be 300px wide, so apply CSS styles to it such as:
 }
 ```
 
-The third is `placeholderImage()`, which displays a tiny Instagram-style low resolution placeholder image to display while the image is being lazy loaded.
+The third is `.placeholderImage()`, which displays a tiny Instagram-style low resolution placeholder image to display while the image is being lazy loaded.
 
 ![Screenshot](screenshots/placeholder-image.png)
 (Placholder on the left, actual image on the right)
