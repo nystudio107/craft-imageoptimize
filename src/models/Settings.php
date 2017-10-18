@@ -26,6 +26,13 @@ class Settings extends Model
     // =========================================================================
 
     /**
+     * Should image variant be created on Asset save (aka PageLoad)
+     *
+     * @var bool
+     */
+    public $generateTransformsBeforePageLoad = true;
+
+    /**
      * Default variants
      *
      * @var array

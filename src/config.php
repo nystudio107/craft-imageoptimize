@@ -26,6 +26,9 @@
 
 return [
 
+    // Should image variant be created on Asset save (aka PageLoad)
+    'generateTransformsBeforePageLoad' => true,
+
     // Default image variants
     'defaultVariants'            => [
         [

@@ -1,12 +1,19 @@
 # ImageOptimize Changelog
 
+## 1.2.8 - 2017.10.19
+### Changed
+* More paranoid sanity checking of the `activeImageProcessors` and `activeImageVariantCreators` `config.php` settings
+
+### Added
+* Added the ability to control when image variants are created via `generateTransformsBeforePageLoad` `config.php` setting
+
 ## 1.2.7 - 2017.10.18
 ### Added
 * Added the ability to make inline SVG silhouette images as placeholder images for lazing loading
 
 ## 1.2.6 - 2017.10.16
 ### Changed
-* Moved the default variants to the `config.php` and Settings model, so they can be overriden
+* Moved the default variants to the `config.php` and Settings model, so they can be overridden
 
 ### Added
 * Added the variant setting **Enforce Aspect Ratio** to allow for images with no fixed aspect ratio

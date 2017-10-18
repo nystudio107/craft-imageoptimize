@@ -188,6 +188,11 @@ class OptimizedImages extends Field
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
         $placeholderMade = false;
+        // Get our $generateTransformsBeforePageLoad setting
+        $settings = ImageOptimize::$plugin->getSettings();
+        $generateTransformsBeforePageLoad = isset($settings['generateTransformsBeforePageLoad'])
+            ? $settings['generateTransformsBeforePageLoad']
+            : true ;
         foreach ($this->variants as $variant) {
             $retinaSizes = ['1'];
             if (!empty($variant['retinaSizes'])) {
@@ -214,7 +219,7 @@ class OptimizedImages extends Field
                     // Force generateTransformsBeforePageLoad = true to generate the images now
                     $generalConfig = Craft::$app->getConfig()->getGeneral();
                     $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
-                    $generalConfig->generateTransformsBeforePageLoad = true;
+                    $generalConfig->generateTransformsBeforePageLoad = $generateTransformsBeforePageLoad;
                     $url = '';
                     try {
                         // Generate the URLs to the optimized images
