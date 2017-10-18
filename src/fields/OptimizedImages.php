@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\fields;
 
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\lib\Potracio;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use nystudio107\imageoptimize\models\Settings;
 
@@ -47,6 +48,9 @@ class OptimizedImages extends Field
 
     const PLACEHOLDER_WIDTH = 16;
     const PLACEHOLDER_QUALITY = 50;
+
+    const SVG_PLACEHOLDER_WIDTH = 300;
+    const SVG_PLACEHOLDER_QUALITY = 75;
 
     const COLOR_PALETTE_WIDTH = 200;
     const COLOR_PALETTE_QUALITY = 75;
@@ -236,6 +240,8 @@ class OptimizedImages extends Field
                         $model->placeholder = $this->generatePlaceholderImage($element, $aspectRatio);
                         // Generate the color palette for the image
                         $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
+                        // Generate the Potrace SVG
+                        $model->placeholderSvg = $this->generatePlaceholderSvg($element, $aspectRatio);
                         $placeholderMade = true;
                     }
                 }
@@ -295,6 +301,32 @@ class OptimizedImages extends Field
         }
 
         return $colorPalette;
+    }
+
+    /**
+     * Generate an SVG image via Potrace
+     *
+     * @param Asset $asset
+     * @param float $aspectRatio
+     *
+     * @return string
+     */
+    protected function generatePlaceholderSvg(Asset $asset, float $aspectRatio): string
+    {
+        $result = '';
+        $width = self::SVG_PLACEHOLDER_WIDTH;
+        $height = intval($width / $aspectRatio);
+        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::SVG_PLACEHOLDER_QUALITY);
+        if (!empty($tempPath)) {
+            $pot = new Potracio();
+            $pot->loadImageFromFile($tempPath);
+            $pot->process();
+
+            $result = $pot->getSVG(1);
+            unlink($tempPath);
+        }
+
+        return $result;
     }
 
     /**

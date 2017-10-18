@@ -140,7 +140,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 
 ```
     {% set someAsset = entry.myAssetField %}
-    <img src="{{ someAsset.one().optimizedImages.placeholderImage()"
+    <img src="{{ someAsset.one().optimizedImages.placeholderBox()"
          data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
          data-sizes="100vw" />
 ```
@@ -192,7 +192,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
         <sources data-srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
                  data-sizes="100vw"
                  type="image/webp" />
-        <img src="{{ someAsset.one().optimizedImages.placeholderImage()"
+        <img src="{{ someAsset.one().optimizedImages.placeholderBox()"
              data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
              data-sizes="100vw" />
      </picture>
@@ -200,17 +200,33 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 
 ##### Placeholder Images
 
-The `placeholderImage()` method uses an Instagram-style low resolution placeholder image to display while the image is being lazy loaded. The method signature is `placeholderImage()`
+Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`. 
 
-![Screenshot](screenshots/placeholder_image.png)
+All of the placeholder images are stored in the Optimized Image field itself, so no http request is needed to fetch it, and the inline data used to generate them is very small.
+ 
+The first is `placeholderImageBox()` which displays a simple inline SVG with the background color set to the dominant color of the image:
 
-Placeholder Image
+![Screenshot](screenshots/placeholder-image-box.png)
+(Placholder on the left, actual image on the right)
 
-![Screenshot](screenshots/normal_image.png)
+The second is `placeholderImageSilhouette()` which displays an inline SVG silhouette generated from the original image:
 
-Normal Image
+![Screenshot](screenshots/placeholder-image-silhouette.png)
+(Placholder on the left, actual image on the right)
 
-Because the placeholder image is stored in the Optimized Image field itself, no http request is needed to fetch it, and the inline data used to generate it is very small.
+The SVG image itself will only be 300px wide, so apply CSS styles to it such as:
+
+```
+.responsive-img {
+    width: 100%;
+    height: auto;
+}
+```
+
+The third is `placeholderImage()`, which displays a tiny Instagram-style low resolution placeholder image to display while the image is being lazy loaded.
+
+![Screenshot](screenshots/placeholder-image.png)
+(Placholder on the left, actual image on the right)
 
 The image itself will only be 16px wide, so apply CSS styles to it such as:
 
@@ -222,10 +238,6 @@ The image itself will only be 16px wide, so apply CSS styles to it such as:
 ```
 
 For extra visual lusciousness, you could also apply a [CSS blur filter](https://css-tricks.com/almanac/properties/f/filter/) to the `.lazyload` class.
-
-If instead you'd prefer to use a plain colored box, pass in a `false`, and optional HTML `color` to `placeholderImage(false, color)`
-
-If you don't specify a color, ImageOptimize will use the dominant color of the image automatically, e.g.: `placeholderImage(false)`
 
 #### Advanced Usage
 
