@@ -114,7 +114,7 @@ To use `<img srcset="">` elements in your templates, you can just do:
 
 ```
     {% set someAsset = entry.myAssetField %}
-    <img src="someAsset.one().optimizedImages.src()"
+    <img src="{{ someAsset.one().optimizedImages.src() }}"
          srcset="{{ someAsset.one().optimizedImages.srcset() }}"
          sizes="100vw" />
 ```
@@ -140,7 +140,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 
 ```
     {% set someAsset = entry.myAssetField %}
-    <img src="{{ someAsset.one().optimizedImages.placeholderBox()"
+    <img src="{{ someAsset.one().optimizedImages.placeholderBox() }}"
          data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
          data-sizes="100vw" />
 ```
@@ -155,7 +155,7 @@ To use `<picture>` in your templates, you can just do:
         <sources srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
                  sizes="100vw"
                  type="image/webp" />
-        <img src="someAsset.one().optimizedImages.src()"
+        <img src="{{ someAsset.one().optimizedImages.src() }}"
              srcset="{{ someAsset.one().optimizedImages.srcset() }}"
              sizes="100vw" />
      </picture>
@@ -192,7 +192,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
         <sources data-srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
                  data-sizes="100vw"
                  type="image/webp" />
-        <img src="{{ someAsset.one().optimizedImages.placeholderBox()"
+        <img src="{{ someAsset.one().optimizedImages.placeholderBox() }}"
              data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
              data-sizes="100vw" />
      </picture>
