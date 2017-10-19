@@ -67,7 +67,7 @@ The ImageOptimize plugin Settings page will show you the status of your installe
 
 #### In the AdminCP
 
-To create responsive image variants for all of your images, create an **OptimzedImages** Field. The field settings let you create as many Optimized Image Variants as you like:
+To create responsive image variants for all of your images, create an **OptimizedImages** Field. The field settings let you create as many Optimized Image Variants as you like:
 
 ![Screenshot](screenshots/field-settings.png)
 

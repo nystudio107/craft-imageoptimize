@@ -188,6 +188,11 @@ class OptimizedImages extends Field
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
         $placeholderMade = false;
+        // Get our $generateTransformsBeforePageLoad setting
+        $settings = ImageOptimize::$plugin->getSettings();
+        $generateTransformsBeforePageLoad = isset($settings['generateTransformsBeforePageLoad'])
+            ? $settings['generateTransformsBeforePageLoad']
+            : true ;
         foreach ($this->variants as $variant) {
             $retinaSizes = ['1'];
             if (!empty($variant['retinaSizes'])) {
@@ -214,7 +219,7 @@ class OptimizedImages extends Field
                     // Force generateTransformsBeforePageLoad = true to generate the images now
                     $generalConfig = Craft::$app->getConfig()->getGeneral();
                     $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
-                    $generalConfig->generateTransformsBeforePageLoad = true;
+                    $generalConfig->generateTransformsBeforePageLoad = $generateTransformsBeforePageLoad;
                     $url = '';
                     try {
                         // Generate the URLs to the optimized images
@@ -239,9 +244,13 @@ class OptimizedImages extends Field
                         // Generate our placeholder image
                         $model->placeholder = $this->generatePlaceholderImage($element, $aspectRatio);
                         // Generate the color palette for the image
-                        $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
+                        if ($settings['createColorPalette']) {
+                            $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
+                        }
                         // Generate the Potrace SVG
-                        $model->placeholderSvg = $this->generatePlaceholderSvg($element, $aspectRatio);
+                        if ($settings['createPlaceholderSilhouettes']) {
+                            $model->placeholderSvg = $this->generatePlaceholderSvg($element, $aspectRatio);
+                        }
                         $placeholderMade = true;
                     }
                 }
