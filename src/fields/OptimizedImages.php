@@ -91,8 +91,10 @@ class OptimizedImages extends Field
 
         /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
-        if (empty($this->variants)) {
-            $this->variants = $settings->defaultVariants;
+        if ($settings) {
+            if (empty($this->variants)) {
+                $this->variants = $settings->defaultVariants;
+            }
         }
     }
 
@@ -216,6 +218,7 @@ class OptimizedImages extends Field
                     $transform->width = $width;
                     $transform->height = intval($width / $aspectRatio);
                     $transform->quality = $variant['quality'];
+                    $transform->interlace = 'line';
                     // Force generateTransformsBeforePageLoad = true to generate the images now
                     $generalConfig = Craft::$app->getConfig()->getGeneral();
                     $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
