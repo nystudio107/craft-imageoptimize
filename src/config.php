@@ -126,7 +126,7 @@ return [
         ],
         // png optimizers
         'optipng'   => [
-            'commandPath'           => ' /usr/bin/optipng',
+            'commandPath'           => '/usr/bin/optipng',
             'commandOptions'        => '-o7 -strip all',
             'commandOutputFileFlag' => '',
         ],
