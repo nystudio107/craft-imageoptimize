@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.2.9 - 2017.10.31
+### Changed
+* Switched over to using `ResaveElements` queue to handle newly uploaded Assets
+* Implemented optimized SVG data URIs, which can shave 15% off of the size of the SVG size
+
 ## 1.2.8 - 2017.10.19
 ### Changed
 * More paranoid sanity checking of the `activeImageProcessors` and `activeImageVariantCreators` `config.php` settings
