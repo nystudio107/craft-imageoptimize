@@ -149,14 +149,14 @@ class OptimizedImage extends Model
         $width = $this->placeholderWidth ?? 1;
         $height = $this->placeholderHeight ?? 1;
         $color = $color ?? $this->colorPalette[0] ?? '#CCC';
-        $header = 'data:image/svg+xml;charset=utf-8,';
+        $header = 'data:image/svg+xml,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' "
             . "width='$width' "
             . "height='$height' "
             . "style='background:$color' "
             . "/>";
 
-        return $header . rawurlencode($content);
+        return $header . ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($content);
     }
 
     /**
@@ -167,12 +167,12 @@ class OptimizedImage extends Model
     public function placeholderSilhouette()
     {
         $content = '';
-        $header = 'data:image/svg+xml;charset=utf-8,';
+        $header = 'data:image/svg+xml,';
         if (!empty($this->placeholderSvg)) {
             $content = $this->placeholderSvg;
         }
 
-        return $header . rawurlencode($content);
+        return $header . $content;
     }
 
     /**

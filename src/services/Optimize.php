@@ -351,56 +351,6 @@ class Optimize extends Component
         return $outputPath;
     }
 
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @param                     $variantCreatorCommand
-     * @param Asset               $asset
-     * @param AssetTransformIndex $index
-     * @param                     $outputPath
-     */
-    protected function copyImageVariantToVolume(
-        $variantCreatorCommand,
-        Asset $asset,
-        AssetTransformIndex $index,
-        $outputPath
-    ) {
-        // If the image variant creation succeeded, copy it into place
-        if (!empty($outputPath) && file_exists($outputPath)) {
-            // Figure out the resulting path for the image variant
-            $volume = $asset->getVolume();
-            $assetTransforms = Craft::$app->getAssetTransforms();
-            $transformPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath($asset, $index);
-            $variantPath = $transformPath.'.'.$variantCreatorCommand['imageVariantExtension'];
-
-            // Delete the variant file in case it is stale
-            try {
-                $volume->deleteFile($variantPath);
-            } catch (VolumeException $e) {
-                // We're fine with that.
-            }
-
-            clearstatcache(true, $outputPath);
-            $stream = fopen($outputPath, 'rb');
-
-            // Now create it
-            try {
-                $volume->createFileByStream($variantPath, $stream, []);
-            } catch (VolumeObjectExistsException $e) {
-                // We're fine with that.
-            }
-
-            FileHelper::removeFile($outputPath);
-        } else {
-            Craft::error(
-                Craft::t('image-optimize', 'Failed to create image variant at: ')
-                .$outputPath,
-                __METHOD__
-            );
-        }
-    }
-
     /**
      * Return an array of active image processors
      *
@@ -466,7 +416,7 @@ class Optimize extends Component
     }
 
     /**
-     * Resave all of the Asset elements in the Volume $volume
+     * Re-save all of the Asset elements in the Volume $volume
      *
      * @param Volume $volume
      */
@@ -484,6 +434,107 @@ class Optimize extends Component
                 'enabledForSite' => false,
             ],
         ]));
+    }
+
+    /**
+     * Re-save an individual asset
+     *
+     * @param int $id
+     */
+    public function resaveAsset(int $id)
+    {
+        Craft::$app->getQueue()->push(new ResaveElements([
+            'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
+            'elementType' => Asset::class,
+            'criteria'    => [
+                'id'             => $id,
+                'status'         => null,
+                'enabledForSite' => false,
+            ],
+        ]));
+    }
+
+    /**
+     * Create an optimized SVG data uri
+     * See: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
+     *
+     * @param string $uri
+     *
+     * @return string
+     */
+    public function encodeOptimizedSVGDataUri(string $uri): string
+    {
+        // First, uri encode everything
+        $uri = rawurlencode($uri);
+        $replacements = [
+            // remove newlines
+            '/%0A/' => '',
+            // put spaces back in
+            '/%20/' => ' ',
+            // put equals signs back in
+            '/%3D/' => '=',
+            // put colons back in
+            '/%3A/' => ':',
+            // put slashes back in
+            '/%2F/' => '/',
+            // replace quotes with apostrophes (may break certain SVGs)
+            '/%22/' => "'",
+        ];
+        foreach ($replacements as $pattern => $replacement) {
+            $uri = preg_replace($pattern, $replacement, $uri);
+        }
+
+        return $uri;
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @param                     $variantCreatorCommand
+     * @param Asset               $asset
+     * @param AssetTransformIndex $index
+     * @param                     $outputPath
+     */
+    protected function copyImageVariantToVolume(
+        $variantCreatorCommand,
+        Asset $asset,
+        AssetTransformIndex $index,
+        $outputPath
+    ) {
+        // If the image variant creation succeeded, copy it into place
+        if (!empty($outputPath) && file_exists($outputPath)) {
+            // Figure out the resulting path for the image variant
+            $volume = $asset->getVolume();
+            $assetTransforms = Craft::$app->getAssetTransforms();
+            $transformPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath($asset, $index);
+            $variantPath = $transformPath.'.'.$variantCreatorCommand['imageVariantExtension'];
+
+            // Delete the variant file in case it is stale
+            try {
+                $volume->deleteFile($variantPath);
+            } catch (VolumeException $e) {
+                // We're fine with that.
+            }
+
+            clearstatcache(true, $outputPath);
+            $stream = fopen($outputPath, 'rb');
+
+            // Now create it
+            try {
+                $volume->createFileByStream($variantPath, $stream, []);
+            } catch (VolumeObjectExistsException $e) {
+                // We're fine with that.
+            }
+
+            FileHelper::removeFile($outputPath);
+        } else {
+            Craft::error(
+                Craft::t('image-optimize', 'Failed to create image variant at: ')
+                .$outputPath,
+                __METHOD__
+            );
+        }
     }
 
     /**
