@@ -116,6 +116,7 @@ class OptimizedImages extends Field
      */
     public function beforeElementSave(ElementInterface $element, bool $isNew): bool
     {
+        $this->currentAsset = null;
         // Only stash the currentAsset if this is not a new element
         if (!$isNew) {
             /** @var Asset $element */
@@ -136,23 +137,9 @@ class OptimizedImages extends Field
         if ($element instanceof Asset) {
             // If this is a new element, resave it so that it as an id for our asset transforms
             if ($isNew) {
-                // Initialize our field with defaults
-                $this->currentAsset = $element;
-                $defaultData = $this->normalizeValue(null, $element);
-                $defaultSerializedData = $this->serializeValue($defaultData, $element);
-                $element->setFieldValues([
-                    $this->handle => $defaultSerializedData,
-                ]);
-
-                $success = Craft::$app->getElements()->saveElement($element, false);
-                Craft::info(
-                    print_r('Re-saved new asset '.$success, true),
-                    __METHOD__
-                );
+                ImageOptimize::$plugin->optimize->resaveAsset($element->id);
             } else {
-                // Otherwise create a dummy model, and populate it, to recreate any asset transforms
-                $model = new OptimizedImage();
-                $this->populateOptimizedImageModel($element, $model);
+                // Otherwise do nothing, we've already been saved via the call to `normalizeValue`
             }
         }
 
@@ -338,7 +325,7 @@ class OptimizedImages extends Field
             unlink($tempPath);
         }
 
-        return $result;
+        return ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
     }
 
     /**
