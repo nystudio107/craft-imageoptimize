@@ -40,7 +40,8 @@ class OptimizedImages extends Field
     // =========================================================================
 
     const IMAGE_TRANSFORM_MAP = [
-        'craft' => 'nystudio107\imageoptimize\imagetransforms\CraftImageTransform'
+        'craft' => 'nystudio107\imageoptimize\imagetransforms\CraftImageTransform',
+        'imgix' => 'nystudio107\imageoptimize\imagetransforms\ImgixImageTransform',
     ];
 
     // Public Properties

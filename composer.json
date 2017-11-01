@@ -24,8 +24,9 @@
     ],
     "require": {
         "craftcms/cms": "~3.0.0-beta.20",
-        "mikehaertl/php-shellcommand": "~1.2",
-        "ksubileau/color-thief-php": "^1.3"
+        "imgix/imgix-php": "dev-master",
+        "ksubileau/color-thief-php": "^1.3",
+        "mikehaertl/php-shellcommand": "~1.2"
     },
     "autoload": {
         "psr-4": {
