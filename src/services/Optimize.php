@@ -10,7 +10,6 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use craft\errors\VolumeException;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
@@ -18,6 +17,7 @@ use craft\base\Component;
 use craft\base\Image;
 use craft\base\Volume;
 use craft\elements\Asset;
+use craft\errors\VolumeException;
 use craft\errors\VolumeObjectExistsException;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;

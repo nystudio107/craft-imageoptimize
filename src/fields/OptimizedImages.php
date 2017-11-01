@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\fields;
 
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\lib\Potracio;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use nystudio107\imageoptimize\models\Settings;
@@ -22,10 +23,8 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
-use craft\errors\AssetLogicException;
 use craft\helpers\Image;
 use craft\helpers\Json;
-use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use craft\image\Raster;
 use craft\models\AssetTransform;
@@ -54,6 +53,10 @@ class OptimizedImages extends Field
 
     const COLOR_PALETTE_WIDTH = 200;
     const COLOR_PALETTE_QUALITY = 75;
+
+    const IMAGE_TRANSFORM_MAP = [
+        'craft' => 'nystudio107\imageoptimize\imagetransforms\CraftImageTransform'
+    ];
 
     // Public Properties
     // =========================================================================
@@ -170,6 +173,9 @@ class OptimizedImages extends Field
      */
     protected function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
     {
+        /** @var ImageTransformInterface $transformClass */
+        $transformClass = self::IMAGE_TRANSFORM_MAP['craft'];
+
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
         $model->optimizedWebPImageUrls = [];
@@ -205,20 +211,17 @@ class OptimizedImages extends Field
                     $transform->width = $width;
                     $transform->height = intval($width / $aspectRatio);
                     $transform->quality = $variant['quality'];
-                    $transform->interlace = 'line';
-                    // Force generateTransformsBeforePageLoad = true to generate the images now
-                    $generalConfig = Craft::$app->getConfig()->getGeneral();
-                    $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
-                    $generalConfig->generateTransformsBeforePageLoad = $generateTransformsBeforePageLoad;
-                    $url = '';
-                    try {
-                        // Generate the URLs to the optimized images
-                        $url = $element->getUrl($transform);
-                    } catch (AssetLogicException $e) {
-                        // This isn't an image or an image format that can be transformed
+                    if (property_exists($transform, 'interlace')) {
+                        $transform->interlace = 'line';
                     }
-                    $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
-
+                    // Generate an image transform url
+                    $url = $transformClass::getTransformUrl(
+                        $element,
+                        $transform,
+                        [
+                            'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
+                        ]
+                    );
                     // Update the model
                     if (!empty($url)) {
                         $model->optimizedImageUrls[$width] = $url;
