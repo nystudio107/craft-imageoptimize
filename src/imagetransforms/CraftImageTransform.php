@@ -54,5 +54,4 @@ class CraftImageTransform implements ImageTransformInterface
 
         return $url;
     }
-
 }

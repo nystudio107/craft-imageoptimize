@@ -129,8 +129,6 @@ class OptimizedImages extends Field
             // If this is a new element, resave it so that it as an id for our asset transforms
             if ($isNew) {
                 ImageOptimize::$plugin->optimize->resaveAsset($element->id);
-            } else {
-                // Otherwise do nothing, we've already been saved via the call to `normalizeValue`
             }
         }
 
@@ -145,7 +143,6 @@ class OptimizedImages extends Field
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
-
         // Create a new OptimizedImage model and populate it
         $model = new OptimizedImage($value);
         if (!empty($this->currentAsset)) {

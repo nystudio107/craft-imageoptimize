@@ -20,7 +20,6 @@ use craft\models\AssetTransform;
  */
 interface ImageTransformInterface
 {
-
     // Constants
     // =========================================================================
 
@@ -37,5 +36,4 @@ interface ImageTransformInterface
      * @return string
      */
     public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string;
-
 }
