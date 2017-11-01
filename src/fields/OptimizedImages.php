@@ -252,9 +252,10 @@ class OptimizedImages extends Field
         $transform = new AssetTransform();
         $placeholderMade = false;
         // Get our $generateTransformsBeforePageLoad setting
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
-        $generateTransformsBeforePageLoad = isset($settings['generateTransformsBeforePageLoad'])
-            ? $settings['generateTransformsBeforePageLoad']
+        $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
+            ? $settings->generateTransformsBeforePageLoad
             : true ;
         foreach ($this->variants as $variant) {
             $retinaSizes = ['1'];
@@ -323,16 +324,17 @@ class OptimizedImages extends Field
      */
     protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         $placeholder = ImageOptimize::$plugin->placeholder;
         // Generate our placeholder image
         $model->placeholder = $placeholder->generatePlaceholderImage($element, $aspectRatio);
         // Generate the color palette for the image
-        if ($settings['createColorPalette']) {
+        if ($settings->createColorPalette) {
             $model->colorPalette = $placeholder->generateColorPalette($element, $aspectRatio);
         }
         // Generate the Potrace SVG
-        if ($settings['createPlaceholderSilhouettes']) {
+        if ($settings->createPlaceholderSilhouettes) {
             $model->placeholderSvg = $placeholder->generatePlaceholderSvg($element, $aspectRatio);
         }
     }

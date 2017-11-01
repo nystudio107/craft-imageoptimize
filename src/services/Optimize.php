@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\models\Settings;
 
 use Craft;
 use craft\base\Component;
@@ -117,13 +118,14 @@ class Optimize extends Component
      */
     public function optimizeImage(AssetTransformIndex $index, string $tempPath)
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
-        $activeImageProcessors = $settings['activeImageProcessors'];
+        $activeImageProcessors = $settings->activeImageProcessors;
         $fileFormat = $index->detectedFormat;
         if (!empty($activeImageProcessors[$fileFormat])) {
             // Iterate through all of the processors for this format
-            $imageProcessors = $settings['imageProcessors'];
+            $imageProcessors = $settings->imageProcessors;
             if (!empty($activeImageProcessors[$fileFormat])) {
                 foreach ($activeImageProcessors[$fileFormat] as $processor) {
                     if (!empty($processor) && !empty($imageProcessors[$processor])) {
@@ -230,13 +232,14 @@ class Optimize extends Component
      */
     public function createImageVariants(AssetTransformIndex $index, Asset $asset, string $tempPath)
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
-        $activeImageVariantCreators = $settings['activeImageVariantCreators'];
+        $activeImageVariantCreators = $settings->activeImageVariantCreators;
         $fileFormat = $index->detectedFormat;
         if (!empty($activeImageVariantCreators[$fileFormat])) {
             // Iterate through all of the image variant creators for this format
-            $imageVariantCreators = $settings['imageVariantCreators'];
+            $imageVariantCreators = $settings->imageVariantCreators;
             if (!empty($activeImageVariantCreators[$fileFormat])) {
                 foreach ($activeImageVariantCreators[$fileFormat] as $variantCreator) {
                     if (!empty($variantCreator) && !empty($imageVariantCreators[$variantCreator])) {
@@ -359,12 +362,13 @@ class Optimize extends Component
     public function getActiveImageProcessors(): array
     {
         $result = [];
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
-        $activeImageProcessors = $settings['activeImageProcessors'];
+        $activeImageProcessors = $settings->activeImageProcessors;
         foreach ($activeImageProcessors as $imageFormat => $imageProcessor) {
             // Iterate through all of the processors for this format
-            $imageProcessors = $settings['imageProcessors'];
+            $imageProcessors = $settings->imageProcessors;
             foreach ($activeImageProcessors[$imageFormat] as $processor) {
                 if (!empty($imageProcessors[$processor])) {
                     $thisImageProcessor = $imageProcessors[$processor];
@@ -391,12 +395,13 @@ class Optimize extends Component
     public function getActiveVariantCreators(): array
     {
         $result = [];
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
-        $activeImageVariantCreators = $settings['activeImageVariantCreators'];
+        $activeImageVariantCreators = $settings->activeImageVariantCreators;
         foreach ($activeImageVariantCreators as $imageFormat => $imageCreator) {
             // Iterate through all of the image variant creators for this format
-            $imageVariantCreators = $settings['imageVariantCreators'];
+            $imageVariantCreators = $settings->imageVariantCreators;
             foreach ($activeImageVariantCreators[$imageFormat] as $variantCreator) {
                 if (!empty($imageVariantCreators[$variantCreator])) {
                     $thisVariantCreator = $imageVariantCreators[$variantCreator];
