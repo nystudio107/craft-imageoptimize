@@ -48,9 +48,25 @@ class ImgixImageTransform implements ImageTransformInterface
     public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string
     {
         $url = '';
+        $params = [];
 
         $builder = new UrlBuilder($domain);
-        $builder->setUseHttps(true);
+        if ($asset && $builder) {
+            $builder->setUseHttps(true);
+            // Map the transform properties
+            foreach (self::TRANSFORM_ATTRIBUTES_MAP as $key => $value) {
+                if (!empty($transform[$key])) {
+                    $params[$value] = $transform[$key];
+                }
+            }
+            // Handle the focal point
+            $focalPoint = $asset->getFocalPoint();
+            if (!empty($focalPoint)) {
+                $params['fp-x'] = $focalPoint['x'];
+                $params['fp-y'] = $focalPoint['y'];
+            }
+            $url = $builder->createURL($asset->filename, $params);
+        }
 
         return $url;
     }
