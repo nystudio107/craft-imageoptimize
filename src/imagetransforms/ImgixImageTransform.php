@@ -50,6 +50,9 @@ class ImgixImageTransform implements ImageTransformInterface
         $url = '';
         $params = [];
 
+        $domain = isset($params['domain'])
+            ? $params['domain']
+            : 'demos.imgix.net' ;
         $builder = new UrlBuilder($domain);
         if ($asset && $builder) {
             $builder->setUseHttps(true);
