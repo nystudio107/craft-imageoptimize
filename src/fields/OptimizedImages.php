@@ -13,11 +13,8 @@ namespace nystudio107\imageoptimize\fields;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
-use nystudio107\imageoptimize\lib\Potracio;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use nystudio107\imageoptimize\models\Settings;
-
-use ColorThief\ColorThief;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -25,8 +22,6 @@ use craft\base\Field;
 use craft\elements\Asset;
 use craft\helpers\Image;
 use craft\helpers\Json;
-use craft\helpers\StringHelper;
-use craft\image\Raster;
 use craft\models\AssetTransform;
 use craft\validators\ArrayValidator;
 
@@ -41,18 +36,8 @@ use yii\db\Schema;
  */
 class OptimizedImages extends Field
 {
-
     // Constants
     // =========================================================================
-
-    const PLACEHOLDER_WIDTH = 16;
-    const PLACEHOLDER_QUALITY = 50;
-
-    const SVG_PLACEHOLDER_WIDTH = 300;
-    const SVG_PLACEHOLDER_QUALITY = 75;
-
-    const COLOR_PALETTE_WIDTH = 200;
-    const COLOR_PALETTE_QUALITY = 75;
 
     const IMAGE_TRANSFORM_MAP = [
         'craft' => 'nystudio107\imageoptimize\imagetransforms\CraftImageTransform'
@@ -92,11 +77,14 @@ class OptimizedImages extends Field
     {
         parent::init();
 
-        /** @var Settings $settings */
-        $settings = ImageOptimize::$plugin->getSettings();
-        if ($settings) {
-            if (empty($this->variants)) {
-                $this->variants = $settings->defaultVariants;
+        // Handle cases where the plugin has been uninstalled
+        if (!empty(ImageOptimize::$plugin)) {
+            /** @var Settings $settings */
+            $settings = ImageOptimize::$plugin->getSettings();
+            if ($settings) {
+                if (empty($this->variants)) {
+                    $this->variants = $settings->defaultVariants;
+                }
             }
         }
     }
@@ -168,6 +156,88 @@ class OptimizedImages extends Field
     }
 
     /**
+     * @inheritdoc
+     */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        return parent::serializeValue($value, $element);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentColumnType(): string
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        $reflect = new \ReflectionClass($this);
+        $thisId = $reflect->getShortName();
+        $id = Craft::$app->getView()->formatInputId($thisId);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
+            '"'.$namespacedId.'", '.
+            '"'.$namespacePrefix.'"'.
+            ');');
+
+        // Render the settings template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/_components/fields/OptimizedImages_settings',
+            [
+                'field'     => $this,
+                'id'        => $id,
+                'name'      => $this->handle,
+                'namespace' => $namespacedId,
+            ]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml($value, ElementInterface $element = null): string
+    {
+        // Register our asset bundle
+        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+
+        // Get our id and namespace
+        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
+
+        // Variables to pass down to our field JavaScript to let it namespace properly
+        $jsonVars = [
+            'id'        => $id,
+            'name'      => $this->handle,
+            'namespace' => $nameSpaceId,
+            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
+        ];
+        $jsonVars = Json::encode($jsonVars);
+        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+
+        // Render the input template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/_components/fields/OptimizedImages_input',
+            [
+                'name'        => $this->handle,
+                'value'       => $value,
+                'variants'    => $this->variants,
+                'field'       => $this,
+                'id'          => $id,
+                'nameSpaceId' => $nameSpaceId,
+            ]
+        );
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
      * @param Asset          $element
      * @param OptimizedImage $model
      */
@@ -234,16 +304,7 @@ class OptimizedImages extends Field
                     if (!$placeholderMade) {
                         $model->placeholderWidth = $transform->width;
                         $model->placeholderHeight = $transform->height;
-                        // Generate our placeholder image
-                        $model->placeholder = $this->generatePlaceholderImage($element, $aspectRatio);
-                        // Generate the color palette for the image
-                        if ($settings['createColorPalette']) {
-                            $model->colorPalette = $this->generateColorPalette($element, $aspectRatio);
-                        }
-                        // Generate the Potrace SVG
-                        if ($settings['createPlaceholderSilhouettes']) {
-                            $model->placeholderSvg = $this->generatePlaceholderSvg($element, $aspectRatio);
-                        }
+                        $this->generatePlaceholders($element, $model, $aspectRatio);
                         $placeholderMade = true;
                     }
                 }
@@ -257,203 +318,25 @@ class OptimizedImages extends Field
     }
 
     /**
-     * Generate a base64-encoded placeholder image
-     *
-     * @param Asset $asset
-     * @param float $aspectRatio
-     *
-     * @return string
+     * @param Asset          $element
+     * @param OptimizedImage $model
+     * @param                $transform
+     * @param                $aspectRatio
      */
-    protected function generatePlaceholderImage(Asset $asset, float $aspectRatio): string
+    protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
-        $result = '';
-        $width = self::PLACEHOLDER_WIDTH;
-        $height = intval($width / $aspectRatio);
-        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::PLACEHOLDER_QUALITY);
-        if (!empty($tempPath)) {
-            $result = base64_encode(file_get_contents($tempPath));
-            unlink($tempPath);
+        $settings = ImageOptimize::$plugin->getSettings();
+        $placeholder = ImageOptimize::$plugin->placeholder;
+        // Generate our placeholder image
+        $model->placeholder = $placeholder->generatePlaceholderImage($element, $aspectRatio);
+        // Generate the color palette for the image
+        if ($settings['createColorPalette']) {
+            $model->colorPalette = $placeholder->generateColorPalette($element, $aspectRatio);
         }
-
-        return $result;
-    }
-
-    /**
-     * Generate a color palette from the image
-     *
-     * @param Asset $asset
-     * @param float $aspectRatio
-     *
-     * @return array
-     */
-    protected function generateColorPalette(Asset $asset, float $aspectRatio): array
-    {
-        $colorPalette = [];
-        $width = self::COLOR_PALETTE_WIDTH;
-        $height = intval($width / $aspectRatio);
-        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::COLOR_PALETTE_QUALITY);
-        if (!empty($tempPath)) {
-            // Extract the color palette
-            $palette = ColorThief::getPalette($tempPath, 5);
-            // Convert RGB to hex color
-            foreach ($palette as $colors) {
-                $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
-            }
-            unlink($tempPath);
+        // Generate the Potrace SVG
+        if ($settings['createPlaceholderSilhouettes']) {
+            $model->placeholderSvg = $placeholder->generatePlaceholderSvg($element, $aspectRatio);
         }
-
-        return $colorPalette;
-    }
-
-    /**
-     * Generate an SVG image via Potrace
-     *
-     * @param Asset $asset
-     * @param float $aspectRatio
-     *
-     * @return string
-     */
-    protected function generatePlaceholderSvg(Asset $asset, float $aspectRatio): string
-    {
-        $result = '';
-        $width = self::SVG_PLACEHOLDER_WIDTH;
-        $height = intval($width / $aspectRatio);
-        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::SVG_PLACEHOLDER_QUALITY);
-        if (!empty($tempPath)) {
-            $pot = new Potracio();
-            $pot->loadImageFromFile($tempPath);
-            $pot->process();
-
-            $result = $pot->getSVG(1);
-            unlink($tempPath);
-        }
-
-        return ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
-    }
-
-    /**
-     * @param Asset $asset
-     * @param int   $width
-     * @param int   $height
-     * @param int   $quality
-     *
-     * @return string
-     */
-    protected function createImageFromAsset(Asset $asset, int $width, int $height, int $quality)
-    {
-        $tempPath = '';
-        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
-            $images = Craft::$app->getImages();
-            $imageSource = $asset->getTransformSource();
-            /** @var Image $image */
-            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
-                $image = $images->loadImage($imageSource, true, $width);
-            } else {
-                $image = $images->loadImage($imageSource);
-            }
-
-            if ($image instanceof Raster) {
-                $image->setQuality($quality);
-            }
-
-            // Scale and crop the placeholder image
-            if ($asset->focalPoint) {
-                $position = $asset->getFocalPoint();
-            } else {
-                $position = 'center-center';
-            }
-            $image->scaleAndCrop($width, $height, true, $position);
-
-            // Save the image out to a temp file, then return its contents
-            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
-            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
-            clearstatcache(true, $tempPath);
-            $image->saveAs($tempPath);
-        }
-
-        return $tempPath;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function serializeValue($value, ElementInterface $element = null)
-    {
-        return parent::serializeValue($value, $element);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getContentColumnType(): string
-    {
-        return Schema::TYPE_TEXT;
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function getSettingsHtml()
-    {
-        $reflect = new \ReflectionClass($this);
-        $thisId = $reflect->getShortName();
-        $id = Craft::$app->getView()->formatInputId($thisId);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
-            '"'.$namespacedId.'", '.
-            '"'.$namespacePrefix.'"'.
-            ');');
-
-        // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_settings',
-            [
-                'field'     => $this,
-                'id'        => $id,
-                'name'      => $this->handle,
-                'namespace' => $namespacedId,
-            ]
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getInputHtml($value, ElementInterface $element = null): string
-    {
-        // Register our asset bundle
-        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
-
-        // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
-
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id'        => $id,
-            'name'      => $this->handle,
-            'namespace' => $nameSpaceId,
-            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
-        ];
-        $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
-
-        // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_input',
-            [
-                'name'        => $this->handle,
-                'value'       => $value,
-                'variants'    => $this->variants,
-                'field'       => $this,
-                'id'          => $id,
-                'nameSpaceId' => $nameSpaceId,
-            ]
-        );
     }
 
 }

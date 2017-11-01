@@ -40,7 +40,8 @@
         "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptimize/master/CHANGELOG.md",
         "components": {
-            "optimize": "nystudio107\\imageoptimize\\services\\Optimize"
+            "optimize": "nystudio107\\imageoptimize\\services\\Optimize",
+            "placeholder": "nystudio107\\imageoptimize\\services\\Placeholder"
         },
         "class": "nystudio107\\imageoptimize\\ImageOptimize"
     }

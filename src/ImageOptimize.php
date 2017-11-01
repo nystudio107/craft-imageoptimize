@@ -13,6 +13,7 @@ namespace nystudio107\imageoptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
+use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 
 use Craft;
 use craft\base\Field;
@@ -39,7 +40,8 @@ use yii\base\Event;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService optimize
+ * @property OptimizeService    optimize
+ * @property PlaceholderService placeholder
  */
 class ImageOptimize extends Plugin
 {
@@ -185,8 +187,8 @@ class ImageOptimize extends Plugin
         $controller = Craft::$app->controller;
 
         return $controller->renderTemplate('image-optimize/_settings', [
-            'plugin' => $this,
-            'settingsHtml' => $settingsHtml
+            'plugin'       => $this,
+            'settingsHtml' => $settingsHtml,
         ]);
     }
 
@@ -197,11 +199,12 @@ class ImageOptimize extends Plugin
     {
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/settings',
             [
-                'settings' => $this->getSettings(),
+                'settings'        => $this->getSettings(),
                 'imageProcessors' => $imageProcessors,
                 'variantCreators' => $variantCreators,
             ]
