@@ -153,8 +153,8 @@ class Placeholder extends Component
             $image->scaleAndCrop($width, $height, true, $position);
 
             // Save the image out to a temp file, then return its contents
-            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true).'.'.'jpg';
-            $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true) . '.' . 'jpg';
+            $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
             clearstatcache(true, $tempPath);
             $image->saveAs($tempPath);
         }

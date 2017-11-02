@@ -14,7 +14,6 @@ use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesF
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
-use nystudio107\imageoptimize\models\Settings;
 
 use Craft;
 use craft\base\ElementInterface;
@@ -80,7 +79,6 @@ class OptimizedImages extends Field
 
         // Handle cases where the plugin has been uninstalled
         if (!empty(ImageOptimize::$plugin)) {
-            /** @var Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
                 if (empty($this->variants)) {
@@ -179,9 +177,9 @@ class OptimizedImages extends Field
         $id = Craft::$app->getView()->formatInputId($thisId);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
-            '"'.$namespacedId.'", '.
-            '"'.$namespacePrefix.'"'.
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput(' .
+            '"' . $namespacedId . '", ' .
+            '"' . $namespacePrefix . '"' .
             ');');
 
         // Render the settings template
@@ -216,7 +214,8 @@ class OptimizedImages extends Field
             'prefix'    => Craft::$app->getView()->namespaceInputId(''),
         ];
         $jsonVars = Json::encode($jsonVars);
-        Craft::$app->getView()->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+        $view = Craft::$app->getView();
+        $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" . $jsonVars . ");");
 
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
@@ -241,8 +240,10 @@ class OptimizedImages extends Field
      */
     protected function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
     {
+        $transformMethod = 'craft';
         /** @var ImageTransformInterface $transformClass */
-        $transformClass = self::IMAGE_TRANSFORM_MAP['craft'];
+        $transformClass = self::IMAGE_TRANSFORM_MAP[$transformMethod];
+        $params = $this->getTransformParams($transformMethod);
 
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
@@ -251,12 +252,6 @@ class OptimizedImages extends Field
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
         $placeholderMade = false;
-        // Get our $generateTransformsBeforePageLoad setting
-        /** @var Settings $settings */
-        $settings = ImageOptimize::$plugin->getSettings();
-        $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
-            ? $settings->generateTransformsBeforePageLoad
-            : true ;
         foreach ($this->variants as $variant) {
             $retinaSizes = ['1'];
             if (!empty($variant['retinaSizes'])) {
@@ -287,9 +282,7 @@ class OptimizedImages extends Field
                     $url = $transformClass::getTransformUrl(
                         $element,
                         $transform,
-                        [
-                            'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
-                        ]
+                        $params
                     );
                     // Update the model
                     if (!empty($url)) {
@@ -309,7 +302,7 @@ class OptimizedImages extends Field
                 }
 
                 Craft::info(
-                    'Created transforms for variant: '.print_r($variant, true),
+                    'Created transforms for variant: ' . print_r($variant, true),
                     __METHOD__
                 );
             }
@@ -317,14 +310,43 @@ class OptimizedImages extends Field
     }
 
     /**
+     * @param string $transformMethod
+     *
+     * @return array
+     */
+    protected function getTransformParams(string $transformMethod): array
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        switch ($transformMethod) {
+            case 'imgix':
+                $domain = '';
+                $params = [
+                    'domain' => $domain,
+                ];
+                break;
+
+            case 'craft':
+            default:
+                // Get our $generateTransformsBeforePageLoad setting
+                $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
+                    ? $settings->generateTransformsBeforePageLoad
+                    : true;
+                $params = [
+                    'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
+                ];
+                break;
+        }
+
+        return $params;
+    }
+
+    /**
      * @param Asset          $element
      * @param OptimizedImage $model
-     * @param                $transform
      * @param                $aspectRatio
      */
     protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
-        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         $placeholder = ImageOptimize::$plugin->placeholder;
         // Generate our placeholder image
@@ -338,5 +360,4 @@ class OptimizedImages extends Field
             $model->placeholderSvg = $placeholder->generatePlaceholderSvg($element, $aspectRatio);
         }
     }
-
 }

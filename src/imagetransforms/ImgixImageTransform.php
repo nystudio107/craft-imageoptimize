@@ -10,9 +10,6 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\ImageOptimize;
-
-use Craft;
 use craft\elements\Asset;
 use craft\models\AssetTransform;
 
@@ -52,7 +49,7 @@ class ImgixImageTransform implements ImageTransformInterface
 
         $domain = isset($params['domain'])
             ? $params['domain']
-            : 'demos.imgix.net' ;
+            : 'demos.imgix.net';
         $builder = new UrlBuilder($domain);
         if ($asset && $builder) {
             $builder->setUseHttps(true);

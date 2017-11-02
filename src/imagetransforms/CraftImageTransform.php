@@ -10,8 +10,6 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\ImageOptimize;
-
 use Craft;
 use craft\elements\Asset;
 use craft\errors\AssetLogicException;
@@ -38,7 +36,7 @@ class CraftImageTransform implements ImageTransformInterface
     {
         $generateTransformsBeforePageLoad = isset($params['generateTransformsBeforePageLoad'])
             ? $params['generateTransformsBeforePageLoad']
-            : true ;
+            : true;
         // Force generateTransformsBeforePageLoad = true to generate the images now
         $generalConfig = Craft::$app->getConfig()->getGeneral();
         $oldSetting = $generalConfig->generateTransformsBeforePageLoad;

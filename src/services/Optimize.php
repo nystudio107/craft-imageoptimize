@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\models\Settings;
 
 use Craft;
 use craft\base\Component;
@@ -65,21 +64,21 @@ class Optimize extends Component
         $index = $event->transformIndex;
         Craft::info(
             pathinfo($index->filename, PATHINFO_FILENAME)
-            .'.'
-            .$index->detectedFormat
-            .' -> '
-            .Craft::t('image-optimize', 'Original')
-            .': '
-            .$this->humanFileSize($originalFileSize, 1)
-            .', '
-            .Craft::t('image-optimize', 'Optimized')
-            .': '
-            .$this->humanFileSize($optimizedFileSize, 1)
-            .' -> '
-            .Craft::t('image-optimize', 'Savings')
-            .': '
-            .number_format(abs(100 - (($optimizedFileSize * 100) / $originalFileSize)), 1)
-            .'%',
+            . '.'
+            . $index->detectedFormat
+            . ' -> '
+            . Craft::t('image-optimize', 'Original')
+            . ': '
+            . $this->humanFileSize($originalFileSize, 1)
+            . ', '
+            . Craft::t('image-optimize', 'Optimized')
+            . ': '
+            . $this->humanFileSize($optimizedFileSize, 1)
+            . ' -> '
+            . Craft::t('image-optimize', 'Savings')
+            . ': '
+            . number_format(abs(100 - (($optimizedFileSize * 100) / $originalFileSize)), 1)
+            . '%',
             __METHOD__
         );
         // Create any image variants
@@ -102,10 +101,10 @@ class Optimize extends Component
      */
     public function saveTransformToTempFile(AssetTransformIndex $index, Image $image): string
     {
-        $tempFilename = uniqid(pathinfo($index->filename, PATHINFO_FILENAME), true).'.'.$index->detectedFormat;
-        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+        $tempFilename = uniqid(pathinfo($index->filename, PATHINFO_FILENAME), true) . '.' . $index->detectedFormat;
+        $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
         $image->saveAs($tempPath);
-        Craft::info('Transformed image saved to: '.$tempPath, __METHOD__);
+        Craft::info('Transformed image saved to: ' . $tempPath, __METHOD__);
 
         return $tempPath;
     }
@@ -118,7 +117,6 @@ class Optimize extends Component
      */
     public function optimizeImage(AssetTransformIndex $index, string $tempPath)
     {
-        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
@@ -148,32 +146,32 @@ class Optimize extends Component
             $commandOptions = '';
             if (!empty($thisProcessor['commandOptions'])) {
                 $commandOptions = ' '
-                    .$thisProcessor['commandOptions']
-                    .' ';
+                    . $thisProcessor['commandOptions']
+                    . ' ';
             }
             // Redirect the command output if necessary for this processor
             $outputFileFlag = '';
             if (!empty($thisProcessor['commandOutputFileFlag'])) {
                 $outputFileFlag = ' '
-                    .$thisProcessor['commandOutputFileFlag']
-                    .' '
-                    .escapeshellarg($tempPath)
-                    .' ';
+                    . $thisProcessor['commandOutputFileFlag']
+                    . ' '
+                    . escapeshellarg($tempPath)
+                    . ' ';
             }
             // Build the command to execute
             $cmd =
                 $thisProcessor['commandPath']
-                .$commandOptions
-                .$outputFileFlag
-                .escapeshellarg($tempPath);
+                . $commandOptions
+                . $outputFileFlag
+                . escapeshellarg($tempPath);
             // Execute the command
             $shellOutput = $this->executeShellCommand($cmd);
-            Craft::info($cmd."\n".$shellOutput, __METHOD__);
+            Craft::info($cmd . "\n" . $shellOutput, __METHOD__);
         } else {
             Craft::error(
                 $thisProcessor['commandPath']
-                .' '
-                .Craft::t('image-optimize', 'does not exist'),
+                . ' '
+                . Craft::t('image-optimize', 'does not exist'),
                 __METHOD__
             );
         }
@@ -220,7 +218,7 @@ class Optimize extends Component
         $sz = 'BKMGTP';
         $factor = floor((strlen($bytes) - 1) / 3);
 
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).@$sz[intval($factor)];
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[intval($factor)];
     }
 
     /**
@@ -232,7 +230,6 @@ class Optimize extends Component
      */
     public function createImageVariants(AssetTransformIndex $index, Asset $asset, string $tempPath)
     {
-        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
@@ -258,25 +255,25 @@ class Optimize extends Component
 
                         Craft::info(
                             pathinfo($tempPath, PATHINFO_FILENAME)
-                            .'.'
-                            .pathinfo($tempPath, PATHINFO_EXTENSION)
-                            .' -> '
-                            .pathinfo($outputPath, PATHINFO_FILENAME)
-                            .'.'
-                            .pathinfo($outputPath, PATHINFO_EXTENSION)
-                            .' -> '
-                            .Craft::t('image-optimize', 'Original')
-                            .': '
-                            .$this->humanFileSize($originalFileSize, 1)
-                            .', '
-                            .Craft::t('image-optimize', 'Variant')
-                            .': '
-                            .$this->humanFileSize($variantFileSize, 1)
-                            .' -> '
-                            .Craft::t('image-optimize', 'Savings')
-                            .': '
-                            .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
-                            .'%',
+                            . '.'
+                            . pathinfo($tempPath, PATHINFO_EXTENSION)
+                            . ' -> '
+                            . pathinfo($outputPath, PATHINFO_FILENAME)
+                            . '.'
+                            . pathinfo($outputPath, PATHINFO_EXTENSION)
+                            . ' -> '
+                            . Craft::t('image-optimize', 'Original')
+                            . ': '
+                            . $this->humanFileSize($originalFileSize, 1)
+                            . ', '
+                            . Craft::t('image-optimize', 'Variant')
+                            . ': '
+                            . $this->humanFileSize($variantFileSize, 1)
+                            . ' -> '
+                            . Craft::t('image-optimize', 'Savings')
+                            . ': '
+                            . number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
+                            . '%',
                             __METHOD__
                         );
 
@@ -306,47 +303,47 @@ class Optimize extends Component
         // Make sure the command exists
         if (file_exists($variantCreatorCommand['commandPath'])) {
             // Get the output file for this image variant
-            $outputPath .= '.'.$variantCreatorCommand['imageVariantExtension'];
+            $outputPath .= '.' . $variantCreatorCommand['imageVariantExtension'];
             // Set any options for the command
             $commandOptions = '';
             if (!empty($variantCreatorCommand['commandOptions'])) {
                 $commandOptions = ' '
-                    .$variantCreatorCommand['commandOptions']
-                    .' ';
+                    . $variantCreatorCommand['commandOptions']
+                    . ' ';
             }
             // Redirect the command output if necessary for this variantCreator
             $outputFileFlag = '';
             if (!empty($variantCreatorCommand['commandOutputFileFlag'])) {
                 $outputFileFlag = ' '
-                    .$variantCreatorCommand['commandOutputFileFlag']
-                    .' '
-                    .escapeshellarg($outputPath)
-                    .' ';
+                    . $variantCreatorCommand['commandOutputFileFlag']
+                    . ' '
+                    . escapeshellarg($outputPath)
+                    . ' ';
             }
             // Get the quality setting of this transform
             $commandQualityFlag = '';
             if (!empty($variantCreatorCommand['commandQualityFlag'])) {
                 $commandQualityFlag = ' '
-                    .$variantCreatorCommand['commandQualityFlag']
-                    .' '
-                    .$imageQuality
-                    .' ';
+                    . $variantCreatorCommand['commandQualityFlag']
+                    . ' '
+                    . $imageQuality
+                    . ' ';
             }
             // Build the command to execute
             $cmd =
                 $variantCreatorCommand['commandPath']
-                .$commandOptions
-                .$commandQualityFlag
-                .$outputFileFlag
-                .escapeshellarg($tempPath);
+                . $commandOptions
+                . $commandQualityFlag
+                . $outputFileFlag
+                . escapeshellarg($tempPath);
             // Execute the command
             $shellOutput = $this->executeShellCommand($cmd);
-            Craft::info($cmd."\n".$shellOutput, __METHOD__);
+            Craft::info($cmd . "\n" . $shellOutput, __METHOD__);
         } else {
             Craft::error(
                 $variantCreatorCommand['commandPath']
-                .' '
-                .Craft::t('image-optimize', 'does not exist'),
+                . ' '
+                . Craft::t('image-optimize', 'does not exist'),
                 __METHOD__
             );
         }
@@ -362,7 +359,6 @@ class Optimize extends Component
     public function getActiveImageProcessors(): array
     {
         $result = [];
-        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
@@ -376,8 +372,8 @@ class Optimize extends Component
                         'format'    => $imageFormat,
                         'creator'   => $processor,
                         'command'   => $thisImageProcessor['commandPath']
-                            .' '
-                            .$thisImageProcessor['commandOptions'],
+                            . ' '
+                            . $thisImageProcessor['commandOptions'],
                         'installed' => file_exists($thisImageProcessor['commandPath']),
                     ];
                 }
@@ -395,7 +391,6 @@ class Optimize extends Component
     public function getActiveVariantCreators(): array
     {
         $result = [];
-        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
@@ -409,8 +404,8 @@ class Optimize extends Component
                         'format'    => $imageFormat,
                         'creator'   => $variantCreator,
                         'command'   => $thisVariantCreator['commandPath']
-                            .' '
-                            .$thisVariantCreator['commandOptions'],
+                            . ' '
+                            . $thisVariantCreator['commandOptions'],
                         'installed' => file_exists($thisVariantCreator['commandPath']),
                     ];
                 }
@@ -512,8 +507,8 @@ class Optimize extends Component
             // Figure out the resulting path for the image variant
             $volume = $asset->getVolume();
             $assetTransforms = Craft::$app->getAssetTransforms();
-            $transformPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath($asset, $index);
-            $variantPath = $transformPath.'.'.$variantCreatorCommand['imageVariantExtension'];
+            $transformPath = $asset->getFolder()->path . $assetTransforms->getTransformSubpath($asset, $index);
+            $variantPath = $transformPath . '.' . $variantCreatorCommand['imageVariantExtension'];
 
             // Delete the variant file in case it is stale
             try {
@@ -536,7 +531,7 @@ class Optimize extends Component
         } else {
             Craft::error(
                 Craft::t('image-optimize', 'Failed to create image variant at: ')
-                .$outputPath,
+                . $outputPath,
                 __METHOD__
             );
         }
@@ -551,9 +546,9 @@ class Optimize extends Component
     protected function swapPathExtension(string $path, string $extension): string
     {
         $pathParts = pathinfo($path);
-        $newPath = $pathParts['filename'].'.'.$extension;
+        $newPath = $pathParts['filename'] . '.' . $extension;
         if (!empty($pathParts['dirname']) && $pathParts['dirname'] !== '.') {
-            $newPath = $pathParts['dirname'].DIRECTORY_SEPARATOR.$newPath;
+            $newPath = $pathParts['dirname'] . DIRECTORY_SEPARATOR . $newPath;
             $newPath = preg_replace('#/+#', '/', $newPath);
         }
 
