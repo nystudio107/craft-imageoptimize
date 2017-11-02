@@ -43,7 +43,7 @@ use yii\base\Event;
  * @property OptimizeService    optimize
  * @property PlaceholderService placeholder
  * @property Settings           $settings
- * @method Settings getSettings()
+ * @method   Settings           getSettings()
  */
 class ImageOptimize extends Plugin
 {
