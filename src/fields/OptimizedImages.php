@@ -51,6 +51,16 @@ class OptimizedImages extends Field
      */
     public $variants = [];
 
+    /**
+     * @var string
+     */
+    public $transformMethod = 'craft';
+
+    /**
+     * @var string
+     */
+    public $imgixDomain = '';
+
     // Private Properties
     // =========================================================================
 
@@ -95,6 +105,10 @@ class OptimizedImages extends Field
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
+            ['transformMethod', 'string'],
+            ['transformMethod', 'default', 'value' => 'craft'],
+            ['imgixDomain', 'string'],
+            ['imgixDomain', 'default', 'value' => ''],
             ['variants', ArrayValidator::class],
         ]);
 
@@ -240,10 +254,9 @@ class OptimizedImages extends Field
      */
     protected function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
     {
-        $transformMethod = 'craft';
         /** @var ImageTransformInterface $transformClass */
-        $transformClass = self::IMAGE_TRANSFORM_MAP[$transformMethod];
-        $params = $this->getTransformParams($transformMethod);
+        $transformClass = self::IMAGE_TRANSFORM_MAP[$this->transformMethod];
+        $params = $this->getTransformParams($this->transformMethod);
 
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
@@ -319,14 +332,12 @@ class OptimizedImages extends Field
         $settings = ImageOptimize::$plugin->getSettings();
         switch ($transformMethod) {
             case 'imgix':
-                $domain = '';
                 $params = [
-                    'domain' => $domain,
+                    'domain' => $this->imgixDomain,
                 ];
                 break;
 
             case 'craft':
-            default:
                 // Get our $generateTransformsBeforePageLoad setting
                 $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
                     ? $settings->generateTransformsBeforePageLoad
@@ -334,6 +345,10 @@ class OptimizedImages extends Field
                 $params = [
                     'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
                 ];
+                break;
+
+            default:
+                $params = [];
                 break;
         }
 
