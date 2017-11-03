@@ -109,6 +109,11 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 }, this)
             });
 
+            this.addListener($('#'+this.id+'transformMethod'), 'change', function(ev) {
+                $('.io-method-settings').hide();
+                var value = 'io-' + $(ev.target).val() + '-method';
+                $('.' + value).slideToggle();
+            });
             this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
                 var type = $(ev.target).data('type');
                 this.addVariantBlock(null);

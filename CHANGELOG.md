@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
-## 1.2.9 - 2017.10.31
+## 1.2.9 - 2017.11.03
+### Added
+* Added support for using [Imgix](https://www.imgix.com/) to create the responsive image transforms
+
 ### Changed
 * Switched over to using `ResaveElements` queue to handle newly uploaded Assets
 * Implemented optimized SVG data URIs, which can shave 15% off of the size of the SVG size

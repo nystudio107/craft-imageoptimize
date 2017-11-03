@@ -46,7 +46,7 @@
     {% endfor  %}
 
     {% set retinaSizes = [] %}
-    {% set fileSuffixes = ['', '.webp'] %}
+    {% set imageSources = [value.optimizedImageUrls, value.optimizedWebPImageUrls] %}
     {% for variant in variants %}
         {% set retinaSizes = ['1'] %}
         {% if variant.retinaSizes is defined and variant.retinaSizes|length %}
@@ -56,12 +56,12 @@
             {% set realWidth = variant.width %}
             {% set retinaWidth = variant.width * retinaSize %}
             <div style="padding-bottom: 10px; width: 440px; text-align: center;">
-                {% for fileSuffix in fileSuffixes %}
+                {% for imageSource in imageSources %}
                     <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
                         {% set thisUrl = "" %}
                         {% set errorMessage = ' variant does not exist' %}
-                        {% if value.optimizedImageUrls |length and value.optimizedImageUrls[retinaWidth] is defined and value.optimizedImageUrls[retinaWidth] |length %}
-                            {% set thisUrl = value.optimizedImageUrls[retinaWidth] ~ fileSuffix %}
+                        {% if imageSource |length and imageSource[retinaWidth] is defined and imageSource[retinaWidth] |length %}
+                            {% set thisUrl = imageSource[retinaWidth] %}
                         {% else %}
                             {% set errorMessage = " format cannot be manipulated" %}
                         {% endif %}
@@ -101,7 +101,7 @@
                         {% if useAspectRatio != true %}
                             {% set aspectRatioText = 'N/A' %}
                         {% endif %}
-                        {% if value.optimizedImageUrls |length and thisFileSize != -1 and thisUrl |length %}
+                        {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
                             <div style="width: 200px; vertical-align: top;">
                                 <a href="{{ thisUrl }}" target="_blank">
                                     <div style="position: relative;">
@@ -114,11 +114,19 @@
                                     </div>
                                 </a>
                             </div>
+                            {% if variant.format == null %}
+                                {% set thisFormat = thisUrl |split('.') |last %}
+                            {% else %}
+                                {% set thisFormat = variant.format %}
+                            {% endif %}
+                            {% if imageSource == value.optimizedWebPImageUrls %}
+                                {% set thisFormat = ".webp" %}
+                            {% endif %}
                             <div style="text-align: center; padding-top: 10px;">
                                 <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
                                     {{ aspectRatioText }}
                                     &middot;
-                                    {{ thisUrl |split('.') |last }}
+                                    {{ thisFormat }}
                                     &middot;
                                     {{ thisFileSize }}
                                 </span>

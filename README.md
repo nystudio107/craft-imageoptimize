@@ -34,7 +34,7 @@ Because ImageOptimize has already pre-generated and saved the URLs to your optim
 
 It will also optimize all of your image transforms automatically by running a variety of image optimization tools on them. As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
-Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want.
+Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [Imgix](https://www.imgix.com/) to create the responsive image transforms.
 
 It's important to create optimized images for frontend delivery, especially for mobile devices. If you want to learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
 
@@ -60,14 +60,17 @@ The ImageOptimize plugin Settings page will show you the status of your installe
 
 ![Screenshot](screenshots/image-optimize-settings.png)
 
-
 ## Using ImageOptimize
 
 ### Using the Optimized Images Field
 
 #### In the AdminCP
 
-To create responsive image variants for all of your images, create an **OptimizedImages** Field. The field settings let you create as many Optimized Image Variants as you like:
+To create responsive image variants for all of your images, create an **OptimizedImages** Field.
+
+**Transform Method** let you choose to use the built-in Craft transforms or a service like [Imgix](https://www.imgix.com/) for the responsive image variants.
+
+You can then create as many Optimized Image Variants as you like:
 
 ![Screenshot](screenshots/field-settings.png)
 

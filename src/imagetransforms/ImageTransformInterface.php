@@ -36,4 +36,11 @@ interface ImageTransformInterface
      * @return string
      */
     public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string;
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function getWebPUrl(string $url): string;
 }

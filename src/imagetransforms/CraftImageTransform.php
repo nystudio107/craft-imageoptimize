@@ -34,6 +34,8 @@ class CraftImageTransform implements ImageTransformInterface
      */
     public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string
     {
+        $url = '';
+
         $generateTransformsBeforePageLoad = isset($params['generateTransformsBeforePageLoad'])
             ? $params['generateTransformsBeforePageLoad']
             : true;
@@ -41,7 +43,6 @@ class CraftImageTransform implements ImageTransformInterface
         $generalConfig = Craft::$app->getConfig()->getGeneral();
         $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
         $generalConfig->generateTransformsBeforePageLoad = $generateTransformsBeforePageLoad;
-        $url = '';
         try {
             // Generate the URLs to the optimized images
             $url = $asset->getUrl($transform);
@@ -49,6 +50,18 @@ class CraftImageTransform implements ImageTransformInterface
             // This isn't an image or an image format that can be transformed
         }
         $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
+
+        return $url;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function getWebPUrl(string $url): string
+    {
+        $url = $url . ".webp";
 
         return $url;
     }

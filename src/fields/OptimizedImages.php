@@ -188,7 +188,7 @@ class OptimizedImages extends Field
     {
         $reflect = new \ReflectionClass($this);
         $thisId = $reflect->getShortName();
-        $id = Craft::$app->getView()->formatInputId($thisId);
+        $id = Craft::$app->getView()->formatInputId('');
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
         Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput(' .
@@ -300,7 +300,7 @@ class OptimizedImages extends Field
                     // Update the model
                     if (!empty($url)) {
                         $model->optimizedImageUrls[$width] = $url;
-                        $model->optimizedWebPImageUrls[$width] = $url . '.webp';
+                        $model->optimizedWebPImageUrls[$width] = $transformClass::getWebPUrl($url);
                     }
                     $model->focalPoint = $element->focalPoint;
                     $model->originalImageWidth = $element->width;
@@ -313,7 +313,6 @@ class OptimizedImages extends Field
                         $placeholderMade = true;
                     }
                 }
-
                 Craft::info(
                     'Created transforms for variant: ' . print_r($variant, true),
                     __METHOD__
