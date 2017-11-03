@@ -95,7 +95,7 @@ class ImgixImageTransform implements ImageTransformInterface
      */
     protected static function downloadRemoteFile($url)
     {
-        // Make this a full URL / aaw -- 2017.09.08
+        // Make this a full
         if (!UrlHelper::isAbsoluteUrl($url)) {
             $url = UrlHelper::siteUrl($url);
         }
@@ -105,6 +105,7 @@ class ImgixImageTransform implements ImageTransformInterface
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_NOBODY         => 1,
         ]);
         curl_exec($ch);
         curl_close($ch);

@@ -204,9 +204,8 @@ class OptimizedImage extends Model
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_NOBODY         => 1,
         ]);
-        if (false !== $useHead) {
+        if ($useHead) {
             curl_setopt($ch, CURLOPT_NOBODY, 1);
         }
         curl_exec($ch);
