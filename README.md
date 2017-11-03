@@ -330,7 +330,7 @@ If you have `devMode` on, ImageOptimize will log stats for images that it create
 
 Some things to do, and ideas for potential features:
 
-* Consider supporting image optimization services like ImageOptim, Imgix, and Cloudinary
+* Consider supporting image optimization services like ImageOptim and Cloudinary
 * Add support for additional image optimization tools
 
 Brought to you by [nystudio107](https://nystudio107.com)
