@@ -9,7 +9,10 @@
         "craftcms",
         "craft-plugin",
         "image",
-        "optimize"
+        "optimize",
+        "image-variants",
+        "optimize-images",
+        "imgix"
     ],
     "support": {
         "docs": "https://github.com/nystudio107/craft3-imageoptimize/blob/master/README.md",

@@ -20,11 +20,6 @@ use craft\models\AssetTransform;
  */
 interface ImageTransformInterface
 {
-    // Constants
-    // =========================================================================
-
-    const TRANSFORM_TYPE = 'Generic';
-
     // Static Methods
     // =========================================================================
 
@@ -43,4 +38,9 @@ interface ImageTransformInterface
      * @return string
      */
     public static function getWebPUrl(string $url): string;
+
+    /**
+     * @param string $url
+     */
+    public static function prefetchRemoteFile($url);
 }

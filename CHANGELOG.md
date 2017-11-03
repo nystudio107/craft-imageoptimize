@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.2.10 - 2017.11.04
+### Changed
+* Fixed broken OptimizedImages Field settings
+* Fixed `optipng` path in `config.php`
+* Implemented an abstract `ImageTransform` class & interface
+
 ## 1.2.9 - 2017.11.03
 ### Added
 * Added support for using [Imgix](https://www.imgix.com/) to create the responsive image transforms

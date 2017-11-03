@@ -20,7 +20,7 @@ use craft\models\AssetTransform;
  * @package   ImageOptimize
  * @since     1.0.0
  */
-class CraftImageTransform implements ImageTransformInterface
+class CraftImageTransform extends ImageTransform implements ImageTransformInterface
 {
     // Static Methods
     // =========================================================================

@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\imagetransforms;
 
 use craft\elements\Asset;
-use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
 
 use Imgix\UrlBuilder;
@@ -21,7 +20,7 @@ use Imgix\UrlBuilder;
  * @package   ImageOptimize
  * @since     1.0.0
  */
-class ImgixImageTransform implements ImageTransformInterface
+class ImgixImageTransform extends ImageTransform implements ImageTransformInterface
 {
     // Constants
     // =========================================================================
@@ -70,7 +69,7 @@ class ImgixImageTransform implements ImageTransformInterface
             }
             $url = $builder->createURL($asset->filename, $params);
             // Prime the pump by downloading the image
-            self::downloadRemoteFile($url);
+            self::prefetchRemoteFile($url);
         }
 
         return $url;
@@ -85,29 +84,8 @@ class ImgixImageTransform implements ImageTransformInterface
     {
         $url = preg_replace('/fm=[^&]*/', 'fmt=webp', $url);
         // Prime the pump by downloading the image
-        self::downloadRemoteFile($url);
+        self::prefetchRemoteFile($url);
 
         return $url;
-    }
-
-    /**
-     * @param $url
-     */
-    protected static function downloadRemoteFile($url)
-    {
-        // Make this a full
-        if (!UrlHelper::isAbsoluteUrl($url)) {
-            $url = UrlHelper::siteUrl($url);
-        }
-
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_FOLLOWLOCATION => 1,
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_NOBODY         => 1,
-        ]);
-        curl_exec($ch);
-        curl_close($ch);
     }
 }
