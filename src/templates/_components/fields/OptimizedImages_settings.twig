@@ -53,190 +53,190 @@
     </div>
     <!-- variants -->
     <div class="field">
-        <div class="heading">
-            <label id="variants-label" for="variants">Optimized Image Variants</label>
-        </div>
-        <div class="input ltr">
-            <input type="hidden" name="variants" value="">
+    </div>
+    <div class="heading">
+        <label id="variants-label" for="variants">Optimized Image Variants</label>
+    </div>
+    <div class="input ltr">
+        <input type="hidden" name="variants" value="">
 
-            <div class="matrix matrix-field" id="{{ id }}" style="position: relative;">
-                <div class="io-menu-clone" style="display: none;">
-                    <div class="menu">
-                        <ul class="padded">
-                            <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
-                        </ul>
-                        <hr class="padded">
-                        <ul class="padded">
-                            <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
-                        </ul>
-                    </div>
+        <div class="matrix matrix-field" id="{{ id }}" style="position: relative;">
+            <div class="io-menu-clone" style="display: none;">
+                <div class="menu">
+                    <ul class="padded">
+                        <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
+                    </ul>
+                    <hr class="padded">
+                    <ul class="padded">
+                        <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
+                    </ul>
                 </div>
-                <div class="variant-blocks">
-                    {% for variant in field.variants %}
-                        <div class="matrixblock" data-id="{{ loop.index }}" data-type="normal" {% if loop.first %}tabindex="0" {% endif %}style="opacity: 1;">
-                            <div class="titlebar">
-                                <div class="blocktype"></div>
-                                <div class="preview"></div>
-                            </div>
-                            <div class="actions">
-                                <div class="status off" title="{{ 'Disabled'|t('app') }}"></div>
-                                <a class="settings icon menubtn" title="{{ 'Actions'|t('app') }}" role="button"></a>
-                                <div class="menu">
-                                    <ul class="padded">
-                                        <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
-                                    </ul>
-                                    <hr class="padded">
-                                    <ul class="padded">
-                                        <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
-                                    </ul>
-                                </div>
-                                <a class="move icon" title="{{ 'Reorder'|t('app') }}" role="button"></a>
-                            </div>
-                            <div class="fields">
-                                <!-- width -->
-                                {{ forms.textField({
-                                    size: 5,
-                                    label: 'Width',
-                                    instructions: "The width of the optimized image variant in pixels. This should match your `@media` query breakpoints."|t('image-optimize'),
-                                    id: 'variants-' ~ loop.index0 ~ '-width',
-                                    name: 'variants[' ~ loop.index0 ~ '][width]',
-                                    value: field.variants[loop.index0]['width']
-                                }) }}
-
-                                {% set useAspectRatio = field.variants[loop.index0]['useAspectRatio'] ?? true %}
-                                {{ forms.lightswitchField({
-                                    label: 'Enforce Aspect Ratio',
-                                    instructions: 'Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio',
-                                    id: 'variants-' ~ loop.index0 ~ '-useAspectRatio',
-                                    name: 'variants[' ~ loop.index0 ~ '][useAspectRatio]',
-                                    on: useAspectRatio,
-                                    class: 'io-use-aspect-ratio'
-                                }) }}
-
-                                <div class="field io-aspect-ratio-wrapper"{% if useAspectRatio != true %} style="display: none;"{% endif %}>
-                                    <div class="heading">
-                                        <label id="variants-{{ loop.index0 }}-aspectRatio-label" for="variants-{{ loop.index0 }}-aspectRatio">
-                                            Aspect Ratio
-                                        </label>
-                                        <div class="instructions"><p>The aspect ratio of the optimized image variant.</p>
-                                        </div>
-                                    </div>
-                                    <div id="variants-{{ loop.index0 }}-aspectRatio">
-                                        {% set selectedAspectRatio = false %}
-                                        {% set currentAspectRatioX = field.variants[loop.index0]['aspectRatioX'] %}
-                                        {% set currentAspectRatioY = field.variants[loop.index0]['aspectRatioY'] %}
-                                        {% for aspectRatio in aspectRatios %}
-                                            {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
-                                            {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
-                                                {% set selectedAspectRatio = loop.index0 %}
-                                            {% endif %}
-                                            {% set thisHeight = 75 %}
-                                            {% set thisWidth = thisHeight * thisAspectRatio %}
-                                            {% set thisFontSize = 24 %}
-                                            {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
-
-                                            {% set selectedClass = '' %}
-                                            {% if selectedAspectRatio is same as(false) %}
-                                                {% if loop.last %}
-                                                    {% set selectedClass = 'io-selected-ar-box' %}
-                                                {% endif %}
-                                            {% else %}
-                                                {% if selectedAspectRatio == loop.index0 %}
-                                                    {% set selectedClass = 'io-selected-ar-box' %}
-                                                {% endif %}
-                                            {% endif %}
-                                            <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
-                                                <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
-                                                    <rect x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="4">
-                                                    </rect>
-                                                    <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
-                                                        {{ thisText }}
-                                                    </text>
-                                                </svg>
-                                            </div>
-                                        {% endfor %}
-
-                                        <div class="io-custom-ar-wrapper"{% if selectedAspectRatio is not same as(false) %} style="display: none;"{% endif %}>
-                                            <!-- aspectRatioX -->
-                                            {{ forms.textField({
-                                                size: 5,
-                                                label: 'aspectRatioX',
-                                                instructions: "The aspectRatioX of the transformed images."|t('image-optimize'),
-                                                id: 'variants-' ~ loop.index0 ~ '-aspectRatioX',
-                                                name: 'variants[' ~ loop.index0 ~ '][aspectRatioX]',
-                                                value: field.variants[loop.index0]['aspectRatioX']
-                                            }) }}
-                                            <!-- aspectRatioY -->
-                                            {{ forms.textField({
-                                                size: 5,
-                                                label: 'aspectRatioY',
-                                                instructions: "The aspectRatioY of the transformed images."|t('image-optimize'),
-                                                id: 'variants-' ~ loop.index0 ~ '-aspectRatioY',
-                                                name: 'variants[' ~ loop.index0 ~ '][aspectRatioY]',
-                                                value: field.variants[loop.index0]['aspectRatioY']
-                                            }) }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Retina Sizes -->
-                                <div class="io-retina-sizes-wrapper">
-                                    {% set retinaOptions = [
-                                        {label: '1x', value: '1'},
-                                        {label: '2x', value: '2'},
-                                        {label: '3x', value: '3'},
-                                    ] %}
-                                    {% set retinaValues = ['1'] %}
-                                    {% if field.variants[loop.index0]['retinaSizes'] is defined and field.variants[loop.index0]['retinaSizes'] |length %}
-                                        {% set retinaValues = field.variants[loop.index0]['retinaSizes'] %}
-                                    {% endif %}
-                                    {{ forms.checkboxGroupField({
-                                        label: "Retina Sizes"|t('image-optimize'),
-                                        instructions: "The additional retina sizes that should be created for this variant."|t('image-optimize'),
-                                        id: 'variants-' ~ loop.index0 ~ '-retinaSizes',
-                                        name: 'variants[' ~ loop.index0 ~ '][retinaSizes]',
-                                        values: retinaValues,
-                                        options: retinaOptions,
-                                    }) }}
-                                </div>
-                                <!-- quality -->
-                                {{ forms.selectField({
-                                    label: "Quality"|t('app'),
-                                    instructions: "The quality of the optimized image variant."|t('image-optimize'),
-                                    id: 'variants-' ~ loop.index0 ~ '-quality',
-                                    name: 'variants[' ~ loop.index0 ~ '][quality]',
-                                    value: (field.variants[loop.index0]['quality'] ?? 82),
-                                    options: {
-                                        '0': "Auto"|t('app'),
-                                        '10': "Low"|t('app'),
-                                        '30': "Medium"|t('app'),
-                                        '60': "High"|t('app'),
-                                        '82': "Very High (Recommended)"|t('app'),
-                                        '100': "Maximum"|t('app')
-                                    },
-                                }) }}
-                                <!-- format -->
-                                {% set formatOptions = [
-                                    {label: 'Auto', value: null},
-                                    {label: 'jpg', value: 'jpg'},
-                                    {label: 'png', value: 'png'},
-                                    {label: 'gif', value: 'gif'},
-                                ] %}
-                                {{ forms.selectField({
-                                    label: "Image Format"|t('app'),
-                                    instructions: "The image format that transformed images should use."|t('app'),
-                                    id: 'variants-' ~ loop.index0 ~ '-format',
-                                    name: 'variants[' ~ loop.index0 ~ '][format]',
-                                    value: (field.variants[loop.index0]['format'] ?? null),
-                                    options: formatOptions,
-                                }) }}
-                            </div>
+            </div>
+            <div class="variant-blocks">
+                {% for variant in field.variants %}
+                    <div class="matrixblock" data-id="{{ loop.index }}" data-type="normal" {% if loop.first %}tabindex="0" {% endif %}style="opacity: 1;">
+                        <div class="titlebar">
+                            <div class="blocktype"></div>
+                            <div class="preview"></div>
                         </div>
-                    {% endfor %}
-                </div>
-                <div class="buttons">
-                    <div class="btngroup">
-                        <div class="btn add icon">{{ 'Add Variant' |t('image-optimize') }}</div>
+                        <div class="actions">
+                            <div class="status off" title="{{ 'Disabled'|t('app') }}"></div>
+                            <a class="settings icon menubtn" title="{{ 'Actions'|t('app') }}" role="button"></a>
+                            <div class="menu">
+                                <ul class="padded">
+                                    <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
+                                </ul>
+                                <hr class="padded">
+                                <ul class="padded">
+                                    <li><a data-icon="remove" data-action="delete">{{ "Delete"|t('app') }}</a></li>
+                                </ul>
+                            </div>
+                            <a class="move icon" title="{{ 'Reorder'|t('app') }}" role="button"></a>
+                        </div>
+                        <div class="fields">
+                            <!-- width -->
+                            {{ forms.textField({
+                                size: 5,
+                                label: 'Width',
+                                instructions: "The width of the optimized image variant in pixels. This should match your `@media` query breakpoints."|t('image-optimize'),
+                                id: 'variants-' ~ loop.index0 ~ '-width',
+                                name: 'variants[' ~ loop.index0 ~ '][width]',
+                                value: field.variants[loop.index0]['width']
+                            }) }}
+
+                            {% set useAspectRatio = field.variants[loop.index0]['useAspectRatio'] ?? true %}
+                            {{ forms.lightswitchField({
+                                label: 'Enforce Aspect Ratio',
+                                instructions: 'Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio',
+                                id: 'variants-' ~ loop.index0 ~ '-useAspectRatio',
+                                name: 'variants[' ~ loop.index0 ~ '][useAspectRatio]',
+                                on: useAspectRatio,
+                                class: 'io-use-aspect-ratio'
+                            }) }}
+
+                            <div class="field io-aspect-ratio-wrapper"{% if useAspectRatio != true %} style="display: none;"{% endif %}>
+                                <div class="heading">
+                                    <label id="variants-{{ loop.index0 }}-aspectRatio-label" for="variants-{{ loop.index0 }}-aspectRatio">
+                                        Aspect Ratio
+                                    </label>
+                                    <div class="instructions"><p>The aspect ratio of the optimized image variant.</p>
+                                    </div>
+                                </div>
+                                <div id="variants-{{ loop.index0 }}-aspectRatio">
+                                    {% set selectedAspectRatio = false %}
+                                    {% set currentAspectRatioX = field.variants[loop.index0]['aspectRatioX'] %}
+                                    {% set currentAspectRatioY = field.variants[loop.index0]['aspectRatioY'] %}
+                                    {% for aspectRatio in aspectRatios %}
+                                        {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
+                                        {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
+                                            {% set selectedAspectRatio = loop.index0 %}
+                                        {% endif %}
+                                        {% set thisHeight = 75 %}
+                                        {% set thisWidth = thisHeight * thisAspectRatio %}
+                                        {% set thisFontSize = 24 %}
+                                        {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
+
+                                        {% set selectedClass = '' %}
+                                        {% if selectedAspectRatio is same as(false) %}
+                                            {% if loop.last %}
+                                                {% set selectedClass = 'io-selected-ar-box' %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% if selectedAspectRatio == loop.index0 %}
+                                                {% set selectedClass = 'io-selected-ar-box' %}
+                                            {% endif %}
+                                        {% endif %}
+                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
+                                            <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
+                                                <rect x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="4">
+                                                </rect>
+                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                                    {{ thisText }}
+                                                </text>
+                                            </svg>
+                                        </div>
+                                    {% endfor %}
+
+                                    <div class="io-custom-ar-wrapper"{% if selectedAspectRatio is not same as(false) %} style="display: none;"{% endif %}>
+                                        <!-- aspectRatioX -->
+                                        {{ forms.textField({
+                                            size: 5,
+                                            label: 'aspectRatioX',
+                                            instructions: "The aspectRatioX of the transformed images."|t('image-optimize'),
+                                            id: 'variants-' ~ loop.index0 ~ '-aspectRatioX',
+                                            name: 'variants[' ~ loop.index0 ~ '][aspectRatioX]',
+                                            value: field.variants[loop.index0]['aspectRatioX']
+                                        }) }}
+                                        <!-- aspectRatioY -->
+                                        {{ forms.textField({
+                                            size: 5,
+                                            label: 'aspectRatioY',
+                                            instructions: "The aspectRatioY of the transformed images."|t('image-optimize'),
+                                            id: 'variants-' ~ loop.index0 ~ '-aspectRatioY',
+                                            name: 'variants[' ~ loop.index0 ~ '][aspectRatioY]',
+                                            value: field.variants[loop.index0]['aspectRatioY']
+                                        }) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Retina Sizes -->
+                            <div class="io-retina-sizes-wrapper">
+                                {% set retinaOptions = [
+                                    {label: '1x', value: '1'},
+                                    {label: '2x', value: '2'},
+                                    {label: '3x', value: '3'},
+                                ] %}
+                                {% set retinaValues = ['1'] %}
+                                {% if field.variants[loop.index0]['retinaSizes'] is defined and field.variants[loop.index0]['retinaSizes'] |length %}
+                                    {% set retinaValues = field.variants[loop.index0]['retinaSizes'] %}
+                                {% endif %}
+                                {{ forms.checkboxGroupField({
+                                    label: "Retina Sizes"|t('image-optimize'),
+                                    instructions: "The additional retina sizes that should be created for this variant."|t('image-optimize'),
+                                    id: 'variants-' ~ loop.index0 ~ '-retinaSizes',
+                                    name: 'variants[' ~ loop.index0 ~ '][retinaSizes]',
+                                    values: retinaValues,
+                                    options: retinaOptions,
+                                }) }}
+                            </div>
+                            <!-- quality -->
+                            {{ forms.selectField({
+                                label: "Quality"|t('app'),
+                                instructions: "The quality of the optimized image variant."|t('image-optimize'),
+                                id: 'variants-' ~ loop.index0 ~ '-quality',
+                                name: 'variants[' ~ loop.index0 ~ '][quality]',
+                                value: (field.variants[loop.index0]['quality'] ?? 82),
+                                options: {
+                                    '0': "Auto"|t('app'),
+                                    '10': "Low"|t('app'),
+                                    '30': "Medium"|t('app'),
+                                    '60': "High"|t('app'),
+                                    '82': "Very High (Recommended)"|t('app'),
+                                    '100': "Maximum"|t('app')
+                                },
+                            }) }}
+                            <!-- format -->
+                            {% set formatOptions = [
+                                {label: 'Auto', value: null},
+                                {label: 'jpg', value: 'jpg'},
+                                {label: 'png', value: 'png'},
+                                {label: 'gif', value: 'gif'},
+                            ] %}
+                            {{ forms.selectField({
+                                label: "Image Format"|t('app'),
+                                instructions: "The image format that transformed images should use."|t('app'),
+                                id: 'variants-' ~ loop.index0 ~ '-format',
+                                name: 'variants[' ~ loop.index0 ~ '][format]',
+                                value: (field.variants[loop.index0]['format'] ?? null),
+                                options: formatOptions,
+                            }) }}
+                        </div>
                     </div>
+                {% endfor %}
+            </div>
+            <div class="buttons">
+                <div class="btngroup">
+                    <div class="btn add icon">{{ 'Add Variant' |t('image-optimize') }}</div>
                 </div>
             </div>
         </div>
