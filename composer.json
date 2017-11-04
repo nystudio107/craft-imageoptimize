@@ -2,7 +2,7 @@
     "name": "nystudio107/craft3-imageoptimize",
     "description": "Automatically create & optimize responsive image transforms",
     "type": "craft-plugin",
-    "version": "1.2.10",
+    "version": "1.2.11",
     "keywords": [
         "craft",
         "cms",
@@ -29,6 +29,8 @@
     "prefer-stable": true,
     "require": {
         "craftcms/cms": "~3.0.0-beta.20",
+        "cloudinary/cloudinary_php": "^1.8.0",
+        "imageoptim/imageoptim": "^1.0.0",
         "imgix/imgix-php": "@dev",
         "ksubileau/color-thief-php": "^1.3",
         "mikehaertl/php-shellcommand": "~1.2"
