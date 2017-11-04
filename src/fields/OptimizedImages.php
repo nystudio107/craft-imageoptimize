@@ -43,6 +43,7 @@ class OptimizedImages extends Field
         'imgix' => 'nystudio107\imageoptimize\imagetransforms\ImgixImageTransform',
         'cloudinary' => 'nystudio107\imageoptimize\imagetransforms\CloudinaryImageTransform',
         'image-optim' => 'nystudio107\imageoptimize\imagetransforms\ImageOptimImageTransform',
+        'kraken' => 'nystudio107\imageoptimize\imagetransforms\KrakenOptimImageTransform',
     ];
 
     // Public Properties
