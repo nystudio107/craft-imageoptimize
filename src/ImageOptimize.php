@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize;
 
 use nystudio107\imageoptimize\fields\OptimizedImages;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
@@ -20,10 +21,12 @@ use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
 use craft\events\FieldEvent;
+use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\VolumeEvent;
 use craft\models\FieldLayout;
+use craft\services\Assets;
 use craft\services\AssetTransforms;
 use craft\services\Fields;
 use craft\services\Volumes;
@@ -55,6 +58,16 @@ class ImageOptimize extends Plugin
      */
     public static $plugin;
 
+    /**
+     * @var ImageTransformInterface
+     */
+    public static $transformClass;
+
+    /**
+     * @var array
+     */
+    public static $transformParams;
+
     // Public Methods
     // =========================================================================
 
@@ -65,6 +78,11 @@ class ImageOptimize extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+
+        // Cache some settings
+        $settings = $this->getSettings();
+        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
+        self::$transformParams = self::$transformClass::getTransformParams();
 
         // Register our Field
         Event::on(
@@ -148,6 +166,22 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Handler: Assets::EVENT_GET_ASSET_URL
+        Event::on(
+            Assets::class,
+            Assets::EVENT_GET_ASSET_URL,
+            function (GetAssetUrlEvent $event) {
+                Craft::trace(
+                    'Assets::EVENT_GET_ASSET_URL',
+                    __METHOD__
+                );
+                // Return the URL to the asset URL or '' to let Craft handle it
+                $event->url = ImageOptimize::$plugin->optimize->handleGetAssetUrlEvent(
+                    $event
+                );
+            }
+        );
+
         // Handler: AssetTransforms::EVENT_GENERATE_TRANSFORM
         Event::on(
             AssetTransforms::class,
@@ -155,7 +189,7 @@ class ImageOptimize extends Plugin
             function (GenerateTransformEvent $event) {
                 Craft::trace(
                     'AssetTransforms::EVENT_GENERATE_TRANSFORM',
-                    'image-optimize'
+                    __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
@@ -202,11 +236,14 @@ class ImageOptimize extends Plugin
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
 
+        // Get only the user-editable settings
+        $settings = $this->getSettings();
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/settings',
             [
-                'settings'        => $this->getSettings(),
+                'settings'        => $settings,
                 'imageProcessors' => $imageProcessors,
                 'variantCreators' => $variantCreators,
             ]

@@ -10,6 +10,8 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
+use nystudio107\imageoptimize\ImageOptimize;
+
 use craft\elements\Asset;
 use craft\models\AssetTransform;
 
@@ -26,10 +28,10 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
     // =========================================================================
 
     const TRANSFORM_ATTRIBUTES_MAP = [
-        'width' => 'w',
-        'height' => 'h',
+        'width'   => 'w',
+        'height'  => 'h',
         'quality' => 'q',
-        'format' => 'fm',
+        'format'  => 'fm',
     ];
 
     // Static Methods
@@ -87,5 +89,18 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
         self::prefetchRemoteFile($url);
 
         return $url;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTransformParams(): array
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        $params = [
+            'domain' => $settings->imgixDomain,
+        ];
+
+        return $params;
     }
 }

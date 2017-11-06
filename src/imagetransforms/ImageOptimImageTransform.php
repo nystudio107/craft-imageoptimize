@@ -57,4 +57,16 @@ class ImageOptimImageTransform extends ImageTransform implements ImageTransformI
     {
         return $url;
     }
+
+    /**
+     * @return array
+     */
+    public static function getTransformParams(): array
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        $params = [
+        ];
+
+        return $params;
+    }
 }

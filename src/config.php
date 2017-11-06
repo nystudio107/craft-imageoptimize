@@ -25,6 +25,11 @@
  */
 
 return [
+    //  What transform method should be used for image transforms?
+    'transformMethod' => 'craft',
+
+    // Domain for the Imgix transform service
+    'imgixDomain' => '',
 
     // Should image variant be created on Asset save (aka BeforePageLoad)
     'generateTransformsBeforePageLoad' => true,

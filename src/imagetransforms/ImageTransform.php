@@ -49,6 +49,17 @@ abstract class ImageTransform implements ImageTransformInterface
     }
 
     /**
+     * @return array
+     */
+    public static function getTransformParams(): array
+    {
+        $params = [
+        ];
+
+        return $params;
+    }
+
+    /**
      * @param string $url
      */
     public static function prefetchRemoteFile($url)

@@ -26,6 +26,20 @@ class Settings extends Model
     // =========================================================================
 
     /**
+     * What transform method should be used for image transforms?
+     *
+     * @var string
+     */
+    public $transformMethod = 'craft';
+
+    /**
+     * Domain for the Imgix transform service
+     *
+     * @var string
+     */
+    public $imgixDomain = '';
+
+    /**
      * Should image variant be created on Asset save (aka BeforePageLoad)
      *
      * @var bool
@@ -203,6 +217,21 @@ class Settings extends Model
     public function rules()
     {
         return [
+            ['transformMethod', 'string'],
+            ['transformMethod', 'default', 'value' => 'craft'],
+            ['imgixDomain', 'string'],
+            ['imgixDomain', 'default', 'value' => ''],
+            [
+                [
+                    'generateTransformsBeforePageLoad',
+                    'createColorPalette',
+                    'createPlaceholderSilhouettes',
+                ],
+                'boolean'
+            ],
+            ['generateTransformsBeforePageLoad', 'default', 'value' => true],
+            ['createColorPalette', 'default', 'value' => true],
+            ['createPlaceholderSilhouettes', 'default', 'value' => true],
             [
                 [
                     'defaultVariants',
@@ -225,4 +254,19 @@ class Settings extends Model
             ],
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function fields()
+    {
+        // Only return user-editable settings
+        $fields = [
+            'transformMethod',
+            'imgixDomain'
+        ];
+
+        return $fields;
+    }
+
 }

@@ -19,6 +19,7 @@ use craft\base\Volume;
 use craft\elements\Asset;
 use craft\errors\VolumeException;
 use craft\errors\VolumeObjectExistsException;
+use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;
 use craft\models\AssetTransformIndex;
@@ -38,6 +39,19 @@ class Optimize extends Component
     // Public Methods
     // =========================================================================
 
+    /**
+     * Handle responding to EVENT_GET_ASSET_URL events
+     *
+     * @param GetAssetUrlEvent $event
+     *
+     * @return string
+     */
+    public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
+    {
+        $url = '';
+
+        return $url;
+    }
     /**
      * Handle responding to EVENT_GENERATE_TRANSFORM events
      *

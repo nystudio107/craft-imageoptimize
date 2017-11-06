@@ -26,31 +26,6 @@
     {'x': 2, 'y': 2, 'custom': true},
 ] %}
 <div class="field" id="{{ id }}-fields">
-    <!-- transformMethod -->
-    {{ forms.selectField({
-        label: "Transform Method"|t('image-optimize'),
-        instructions: "Choose from Craft native transforms or an image transform service for the responsive image variants."|t('image-optimize'),
-        id: 'transformMethod',
-        name: 'transformMethod',
-        value: field.transformMethod,
-        options: {
-            'craft': 'Craft'|t('image-optimize'),
-            'imgix': "Imgix"|t('image-optimize'),
-        },
-        class: 'io-transform-method'
-    }) }}
-    <div class="io-method-settings io-craft-method"{% if field.transformMethod != 'craft' %} style="display: none;"{% endif %}>
-    </div>
-    <div class="io-method-settings io-imgix-method"{% if field.transformMethod != 'imgix' %} style="display: none;"{% endif %}>
-        <!-- imgixDomain -->
-        {{ forms.textField({
-            label: 'Imgix Source Domain',
-            instructions: "The source domain to use for the Imgix transforms."|t('image-optimize'),
-            id: 'imgixDomain',
-            name: 'imgixDomain',
-            value: field.imgixDomain
-        }) }}
-    </div>
     <!-- variants -->
     <div class="field">
     </div>

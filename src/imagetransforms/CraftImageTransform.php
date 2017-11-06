@@ -10,6 +10,8 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
+use nystudio107\imageoptimize\ImageOptimize;
+
 use Craft;
 use craft\elements\Asset;
 use craft\errors\AssetLogicException;
@@ -61,8 +63,26 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
      */
     public static function getWebPUrl(string $url): string
     {
-        $url = $url . ".webp";
+        $url = $url.".webp";
 
         return $url;
     }
+
+    /**
+     * @return array
+     */
+    public static function getTransformParams(): array
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        // Get our $generateTransformsBeforePageLoad setting
+        $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
+            ? $settings->generateTransformsBeforePageLoad
+            : true;
+        $params = [
+            'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
+        ];
+
+        return $params;
+    }
+
 }

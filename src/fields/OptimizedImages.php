@@ -12,7 +12,6 @@ namespace nystudio107\imageoptimize\fields;
 
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
 use Craft;
@@ -35,17 +34,6 @@ use yii\db\Schema;
  */
 class OptimizedImages extends Field
 {
-    // Constants
-    // =========================================================================
-
-    const IMAGE_TRANSFORM_MAP = [
-        'craft' => 'nystudio107\imageoptimize\imagetransforms\CraftImageTransform',
-        'imgix' => 'nystudio107\imageoptimize\imagetransforms\ImgixImageTransform',
-        'cloudinary' => 'nystudio107\imageoptimize\imagetransforms\CloudinaryImageTransform',
-        'image-optim' => 'nystudio107\imageoptimize\imagetransforms\ImageOptimImageTransform',
-        'kraken' => 'nystudio107\imageoptimize\imagetransforms\KrakenOptimImageTransform',
-    ];
-
     // Public Properties
     // =========================================================================
 
@@ -53,16 +41,6 @@ class OptimizedImages extends Field
      * @var array
      */
     public $variants = [];
-
-    /**
-     * @var string
-     */
-    public $transformMethod = 'craft';
-
-    /**
-     * @var string
-     */
-    public $imgixDomain = '';
 
     // Private Properties
     // =========================================================================
@@ -80,12 +58,26 @@ class OptimizedImages extends Field
      */
     public static function displayName(): string
     {
-        return Craft::t('image-optimize', 'OptimizedImages');
+        return 'OptimizedImages';
     }
 
     // Public Methods
     // =========================================================================
 
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $config = [])
+    {
+        // Unset any deprecated properties
+        unset($config['transformMethod']);
+        unset($config['imgixDomain']);
+        parent::__construct($config);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -108,10 +100,6 @@ class OptimizedImages extends Field
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
-            ['transformMethod', 'string'],
-            ['transformMethod', 'default', 'value' => 'craft'],
-            ['imgixDomain', 'string'],
-            ['imgixDomain', 'default', 'value' => ''],
             ['variants', ArrayValidator::class],
         ]);
 
@@ -257,10 +245,6 @@ class OptimizedImages extends Field
      */
     protected function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
     {
-        /** @var ImageTransformInterface $transformClass */
-        $transformClass = self::IMAGE_TRANSFORM_MAP[$this->transformMethod];
-        $params = $this->getTransformParams($this->transformMethod);
-
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
         $model->optimizedWebPImageUrls = [];
@@ -295,15 +279,15 @@ class OptimizedImages extends Field
                         $transform->interlace = 'line';
                     }
                     // Generate an image transform url
-                    $url = $transformClass::getTransformUrl(
+                    $url = ImageOptimize::$transformClass::getTransformUrl(
                         $element,
                         $transform,
-                        $params
+                        ImageOptimize::$transformParams
                     );
                     // Update the model
                     if (!empty($url)) {
                         $model->optimizedImageUrls[$width] = $url;
-                        $model->optimizedWebPImageUrls[$width] = $transformClass::getWebPUrl($url);
+                        $model->optimizedWebPImageUrls[$width] = ImageOptimize::$transformClass::getWebPUrl($url);
                     }
                     $model->focalPoint = $element->focalPoint;
                     $model->originalImageWidth = $element->width;
@@ -322,39 +306,6 @@ class OptimizedImages extends Field
                 );
             }
         }
-    }
-
-    /**
-     * @param string $transformMethod
-     *
-     * @return array
-     */
-    protected function getTransformParams(string $transformMethod): array
-    {
-        $settings = ImageOptimize::$plugin->getSettings();
-        switch ($transformMethod) {
-            case 'imgix':
-                $params = [
-                    'domain' => $this->imgixDomain,
-                ];
-                break;
-
-            case 'craft':
-                // Get our $generateTransformsBeforePageLoad setting
-                $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
-                    ? $settings->generateTransformsBeforePageLoad
-                    : true;
-                $params = [
-                    'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
-                ];
-                break;
-
-            default:
-                $params = [];
-                break;
-        }
-
-        return $params;
     }
 
     /**
