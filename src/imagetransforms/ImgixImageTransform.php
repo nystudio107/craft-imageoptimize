@@ -13,6 +13,7 @@ namespace nystudio107\imageoptimize\imagetransforms;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use craft\elements\Asset;
+use craft\helpers\ArrayHelper;
 use craft\models\AssetTransform;
 
 use Imgix\UrlBuilder;
@@ -60,16 +61,61 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                     $params[$value] = $transform[$key];
                 }
             }
-            // Crop mode
-            $params['fit'] = 'crop';
-            // Handle the focal point
-            $focalPoint = $asset->getFocalPoint();
-            if (!empty($focalPoint)) {
-                $params['fp-x'] = $focalPoint['x'];
-                $params['fp-y'] = $focalPoint['y'];
-                $params['crop'] = 'focalpoint';
+            // Remove any 'AUTO' settings
+            ArrayHelper::removeValue($params, 'AUTO');
+            // Handle the Imgix auto setting for compression/format
+            $autoParams = [];
+            if (empty($params['q'])) {
+                $autoParams = 'compress';
             }
-            $url = $builder->createURL($asset->filename, $params);
+            if (empty($params['fm'])) {
+                $autoParams = 'format';
+            }
+            if (!empty($autoParams)) {
+                $params['auto'] = implode(',', $autoParams);
+            }
+            // Handle interlaced images
+            if (property_exists($transform, 'interlace')) {
+                if (($transform->interlace != 'none')
+                    && (!empty($params['fm']))
+                    && ($params['fm'] == 'jpg')
+                ) {
+                    $params['fm'] = 'pjpg';
+                }
+            }
+            // Handle the mode
+            switch ($transform->mode) {
+                case 'fit':
+                    $params['fit'] = 'clamp';
+                    break;
+
+                case 'stretch':
+                    $params['fit'] = 'scale';
+                    break;
+
+                default:
+                    // Fit mode
+                    $params['fit'] = 'crop';
+                    $cropParams = [];
+                    // Handle the focal point
+                    $focalPoint = $asset->getFocalPoint();
+                    if (!empty($focalPoint)) {
+                        $params['fp-x'] = $focalPoint['x'];
+                        $params['fp-y'] = $focalPoint['y'];
+                        $cropParams[] = 'focalpoint';
+                    } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position)) {
+                        // Imgix defaults to 'center' if no param is present
+                        $filteredCropParams = explode('-', $transform->position);
+                        $filteredCropParams = array_diff($filteredCropParams, array('center'));
+                        $cropParams[] = $filteredCropParams;
+                    }
+                    if (!empty($cropParams)) {
+                        $params['crop'] = implode(',', $cropParams);
+                    }
+                    break;
+            }
+            // Finally, create the Imgix URL for this transformed image
+            $url = $builder->createURL($asset->uri, $params);
             // Prime the pump by downloading the image
             self::prefetchRemoteFile($url);
         }
