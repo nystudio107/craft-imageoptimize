@@ -35,13 +35,13 @@ interface ImageTransformInterface
     // =========================================================================
 
     /**
-     * @param Asset          $asset
-     * @param AssetTransform $transform
-     * @param array          $params
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
-     * @return string
+     * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string;
+    public static function getTransformUrl(Asset $asset, $transform, array $params = []);
 
     /**
      * @param string $url
@@ -49,6 +49,13 @@ interface ImageTransformInterface
      * @return string
      */
     public static function getWebPUrl(string $url): string;
+
+    /**
+     * @param Asset $asset
+     *
+     * @return mixed
+     */
+    public static function getAssetUri(Asset $asset);
 
     /**
      * @param string $url
@@ -59,5 +66,4 @@ interface ImageTransformInterface
      * @return array
      */
     public static function getTransformParams(): array;
-
 }

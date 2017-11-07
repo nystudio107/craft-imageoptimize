@@ -29,15 +29,15 @@ class ImageOptimImageTransform extends ImageTransform implements ImageTransformI
     // =========================================================================
 
     /**
-     * @param Asset          $asset
-     * @param AssetTransform $transform
-     * @param array          $params
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
-     * @return string
+     * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string
+    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        $url = '';
+        $url = null;
 
         $userName = isset($params['user-name'])
             ? $params['user-name']

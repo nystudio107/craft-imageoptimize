@@ -37,15 +37,15 @@ class CloudinaryImageTransform extends ImageTransform implements ImageTransformI
     // =========================================================================
 
     /**
-     * @param Asset          $asset
-     * @param AssetTransform $transform
-     * @param array          $params
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
-     * @return string
+     * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string
+    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        $url = '';
+        $url = null;
 
         // Get the config parameters
         $cloud_name = isset($params['cloud_name'])

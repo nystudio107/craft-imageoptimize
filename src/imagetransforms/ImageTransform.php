@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\imagetransforms;
 
 use craft\elements\Asset;
+use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
 
@@ -25,15 +26,15 @@ abstract class ImageTransform implements ImageTransformInterface
     // =========================================================================
 
     /**
-     * @param Asset          $asset
-     * @param AssetTransform $transform
-     * @param array          $params
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
-     * @return string
+     * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string
+    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        $url = '';
+        $url = null;
 
         return $url;
     }
@@ -57,6 +58,20 @@ abstract class ImageTransform implements ImageTransformInterface
         ];
 
         return $params;
+    }
+
+    /**
+     * @param Asset $asset
+     *
+     * @return mixed
+     */
+    public static function getAssetUri(Asset $asset)
+    {
+        $volume = $asset->getVolume();
+        $assetUrl = AssetsHelper::generateUrl($volume, $asset);
+        $assetUri = parse_url($assetUrl, PHP_URL_PATH);
+
+        return $assetUri;
     }
 
     /**

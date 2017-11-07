@@ -48,7 +48,7 @@ class Optimize extends Component
      */
     public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
     {
-        $url = '';
+        $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
         if ($settings->transformMethod != 'craft') {
             // Generate an image transform url
@@ -58,6 +58,7 @@ class Optimize extends Component
                 ImageOptimize::$transformParams
             );
         }
+
         return $url;
     }
     /**
