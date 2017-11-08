@@ -84,5 +84,4 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
 
         return $params;
     }
-
 }

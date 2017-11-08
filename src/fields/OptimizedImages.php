@@ -56,9 +56,12 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public static function displayName(): string
+    public function __construct(array $config = [])
     {
-        return 'OptimizedImages';
+        // Unset any deprecated properties
+        unset($config['transformMethod']);
+        unset($config['imgixDomain']);
+        parent::__construct($config);
     }
 
     // Public Methods
@@ -67,12 +70,9 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function __construct(array $config = [])
+    public static function displayName(): string
     {
-        // Unset any deprecated properties
-        unset($config['transformMethod']);
-        unset($config['imgixDomain']);
-        parent::__construct($config);
+        return 'OptimizedImages';
     }
 
     /**
@@ -157,89 +157,6 @@ class OptimizedImages extends Field
     }
 
     /**
-     * @inheritdoc
-     */
-    public function serializeValue($value, ElementInterface $element = null)
-    {
-        return parent::serializeValue($value, $element);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getContentColumnType(): string
-    {
-        return Schema::TYPE_TEXT;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSettingsHtml()
-    {
-        $reflect = new \ReflectionClass($this);
-        $thisId = $reflect->getShortName();
-        $id = Craft::$app->getView()->formatInputId($thisId);
-        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
-        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput(' .
-            '"' . $namespacedId . '", ' .
-            '"' . $namespacePrefix . '"' .
-            ');');
-
-        // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_settings',
-            [
-                'field'     => $this,
-                'id'        => $id,
-                'name'      => $this->handle,
-                'namespace' => $namespacedId,
-            ]
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getInputHtml($value, ElementInterface $element = null): string
-    {
-        // Register our asset bundle
-        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
-
-        // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
-
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id'        => $id,
-            'name'      => $this->handle,
-            'namespace' => $nameSpaceId,
-            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
-        ];
-        $jsonVars = Json::encode($jsonVars);
-        $view = Craft::$app->getView();
-        $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" . $jsonVars . ");");
-
-        // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_input',
-            [
-                'name'        => $this->handle,
-                'value'       => $value,
-                'variants'    => $this->variants,
-                'field'       => $this,
-                'id'          => $id,
-                'nameSpaceId' => $nameSpaceId,
-            ]
-        );
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
      * @param Asset          $element
      * @param OptimizedImage $model
      */
@@ -301,7 +218,7 @@ class OptimizedImages extends Field
                     }
                 }
                 Craft::info(
-                    'Created transforms for variant: ' . print_r($variant, true),
+                    'Created transforms for variant: '.print_r($variant, true),
                     __METHOD__
                 );
             }
@@ -317,15 +234,108 @@ class OptimizedImages extends Field
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $placeholder = ImageOptimize::$plugin->placeholder;
-        // Generate our placeholder image
-        $model->placeholder = $placeholder->generatePlaceholderImage($element, $aspectRatio);
-        // Generate the color palette for the image
-        if ($settings->createColorPalette) {
-            $model->colorPalette = $placeholder->generateColorPalette($element, $aspectRatio);
+        if ($element->focalPoint) {
+            $position = $element->getFocalPoint();
+        } else {
+            $position = 'center-center';
         }
-        // Generate the Potrace SVG
-        if ($settings->createPlaceholderSilhouettes) {
-            $model->placeholderSvg = $placeholder->generatePlaceholderSvg($element, $aspectRatio);
+        $tempPath = $placeholder->createTempPlaceholderImage($element, $aspectRatio, $position);
+        if (!empty($tempPath)) {
+            // Generate our placeholder image
+            $model->placeholder = $placeholder->generatePlaceholderImage($tempPath, $aspectRatio, $position);
+            // Generate the color palette for the image
+            if ($settings->createColorPalette) {
+                $model->colorPalette = $placeholder->generateColorPalette($tempPath);
+            }
+            // Generate the Potrace SVG
+            if ($settings->createPlaceholderSilhouettes) {
+                $model->placeholderSvg = $placeholder->generatePlaceholderSvg($tempPath);
+            }
+            // Get rid of our placeholder image
+            @unlink($tempPath);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        return parent::serializeValue($value, $element);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getContentColumnType(): string
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        $reflect = new \ReflectionClass($this);
+        $thisId = $reflect->getShortName();
+        $id = Craft::$app->getView()->formatInputId($thisId);
+        $namespacedId = Craft::$app->getView()->namespaceInputId($id);
+        $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
+        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
+            '"'.$namespacedId.'", '.
+            '"'.$namespacePrefix.'"'.
+            ');');
+
+        // Render the settings template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/_components/fields/OptimizedImages_settings',
+            [
+                'field'     => $this,
+                'id'        => $id,
+                'name'      => $this->handle,
+                'namespace' => $namespacedId,
+            ]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml($value, ElementInterface $element = null): string
+    {
+        // Register our asset bundle
+        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+
+        // Get our id and namespace
+        $id = Craft::$app->getView()->formatInputId($this->handle);
+        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
+
+        // Variables to pass down to our field JavaScript to let it namespace properly
+        $jsonVars = [
+            'id'        => $id,
+            'name'      => $this->handle,
+            'namespace' => $nameSpaceId,
+            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
+        ];
+        $jsonVars = Json::encode($jsonVars);
+        $view = Craft::$app->getView();
+        $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+
+        // Render the input template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/_components/fields/OptimizedImages_input',
+            [
+                'name'        => $this->handle,
+                'value'       => $value,
+                'variants'    => $this->variants,
+                'field'       => $this,
+                'id'          => $id,
+                'nameSpaceId' => $nameSpaceId,
+            ]
+        );
     }
 }
