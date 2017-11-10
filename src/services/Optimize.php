@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\fields\OptimizedImages;
 
 use Craft;
 use craft\base\Component;
@@ -23,6 +24,7 @@ use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;
 use craft\models\AssetTransformIndex;
+use craft\models\FieldLayout;
 use craft\queue\jobs\ResaveElements;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
@@ -493,24 +495,52 @@ class Optimize extends Component
     }
 
     /**
-     * Re-save all of the Asset elements in the Volume $volume
+     * Re-save all of the assets in all of the volumes
+     */
+    public function resaveAllVolumesAssets()
+    {
+        $volumes = Craft::$app->getVolumes()->getAllVolumes();
+        foreach ($volumes as $volume) {
+            if (is_subclass_of($volume, Volume::class)) {
+                /** @var Volume $volume */
+                $this->resaveVolumeAssets($volume);
+            }
+        }
+    }
+    /**
+     * Re-save all of the Asset elements in the Volume $volume that have an
+     * OptimizedImages field in the FieldLayout
      *
      * @param Volume $volume
      */
     public function resaveVolumeAssets(Volume $volume)
     {
-        $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+        $needToReSave = false;
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $volume->getFieldLayout();
+        // Loop through the fields in the layout to see if there is an OptimizedImages field
+        if ($fieldLayout) {
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof OptimizedImages) {
+                    $needToReSave = true;
+                }
+            }
+        }
+        if ($needToReSave) {
+            $siteId = Craft::$app->getSites()->getPrimarySite()->id;
 
-        Craft::$app->getQueue()->push(new ResaveElements([
-            'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
-            'elementType' => Asset::class,
-            'criteria'    => [
-                'siteId'         => $siteId,
-                'volumeId'       => $volume->id,
-                'status'         => null,
-                'enabledForSite' => false,
-            ],
-        ]));
+            Craft::$app->getQueue()->push(new ResaveElements([
+                'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
+                'elementType' => Asset::class,
+                'criteria'    => [
+                    'siteId'         => $siteId,
+                    'volumeId'       => $volume->id,
+                    'status'         => null,
+                    'enabledForSite' => false,
+                ],
+            ]));
+        }
     }
 
     /**

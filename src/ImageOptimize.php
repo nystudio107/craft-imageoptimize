@@ -145,21 +145,9 @@ class ImageOptimize extends Plugin
                 );
                 // Only worry about this volume if it's not new
                 if (!$event->isNew) {
-                    $needToReSave = false;
                     /** @var Volume $volume */
                     $volume = $event->volume;
-                    /** @var FieldLayout $fieldLayout */
-                    $fieldLayout = $volume->getFieldLayout();
-                    // Loop through the fields in the layout to see if there is an OptimizedImages field
-                    if ($fieldLayout) {
-                        $fields = $fieldLayout->getFields();
-                        foreach ($fields as $field) {
-                            if ($field instanceof OptimizedImages) {
-                                $needToReSave = true;
-                            }
-                        }
-                    }
-                    if ($needToReSave) {
+                    if (is_subclass_of($volume, Volume::class)) {
                         ImageOptimize::$plugin->optimize->resaveVolumeAssets($volume);
                     }
                 }
@@ -175,7 +163,7 @@ class ImageOptimize extends Plugin
                     'Assets::EVENT_GET_ASSET_URL',
                     __METHOD__
                 );
-                // Return the URL to the asset URL or '' to let Craft handle it
+                // Return the URL to the asset URL or null to let Craft handle it
                 $event->url = ImageOptimize::$plugin->optimize->handleGetAssetUrlEvent(
                     $event
                 );
