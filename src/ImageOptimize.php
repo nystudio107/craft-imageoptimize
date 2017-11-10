@@ -23,12 +23,14 @@ use craft\base\Volume;
 use craft\events\FieldEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
+use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\VolumeEvent;
 use craft\models\FieldLayout;
 use craft\services\Assets;
 use craft\services\AssetTransforms;
 use craft\services\Fields;
+use craft\services\Plugins;
 use craft\services\Volumes;
 use craft\web\Controller;
 
@@ -68,6 +70,11 @@ class ImageOptimize extends Plugin
      */
     public static $transformParams;
 
+    /**
+     * @var string
+     */
+    public static $previousTransformMethod = null;
+
     // Public Methods
     // =========================================================================
 
@@ -81,6 +88,7 @@ class ImageOptimize extends Plugin
 
         // Cache some settings
         $settings = $this->getSettings();
+        self::$previousTransformMethod = $settings->transformMethod;
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
 
@@ -91,7 +99,7 @@ class ImageOptimize extends Plugin
             function (RegisterComponentTypesEvent $event) {
                 Craft::trace(
                     'Fields::EVENT_REGISTER_FIELD_TYPES',
-                    'image-optimize'
+                    __METHOD__
                 );
                 $event->types[] = OptimizedImages::class;
             }
@@ -134,6 +142,24 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Handler: Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    Craft::trace(
+                        'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
+                        __METHOD__
+                    );
+                    // If they changed the global transform method, we need to resave all Asset Volumes
+                    if (self::$previousTransformMethod != self::getSettings()->transformMethod) {
+                        ImageOptimize::$plugin->optimize->resaveAllVolumesAssets();
+                    }
+                }
+            }
+        );
+
         // Handler: Volumes::EVENT_AFTER_SAVE_VOLUME
         Event::on(
             Volumes::class,
@@ -141,7 +167,7 @@ class ImageOptimize extends Plugin
             function (VolumeEvent $event) {
                 Craft::trace(
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
-                    'image-optimize'
+                    __METHOD__
                 );
                 // Only worry about this volume if it's not new
                 if (!$event->isNew) {
