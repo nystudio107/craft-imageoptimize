@@ -20,7 +20,7 @@
 {% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
 <div class="field">
     <div class="heading">
-        <label>Optimized Image Variants:</label>
+        <label>{{ 'Optimized Image Variants:' |t('image-optimize') }} </label>
         <p style="fill: #AAA; color: #AAA;">
             {% if value.focalPoint |length %}
                 <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
@@ -171,3 +171,27 @@
     </div>
 </div>
 {% endif %}
+<div class="field">
+    <div class="heading">
+        <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
+        {% if value.colorPalette |length %}
+            <div>
+                {%- for dominantColor in value.colorPalette -%}
+                    <div style="display: inline-block; width: 20%; height: 20px; background-color: {{ dominantColor }}"></div>
+                {%- endfor -%}
+            </div>
+        {% else %}
+            <p style="fill: #AAA; color: #AAA;">
+                <span class="warning" title="{{ 'Color Palette not extracted' |t('image-optimize') }}" data-icon="alert"></span>
+            </p>
+        {% endif %}
+    </div>
+</div>
+<div class="field">
+    <div class="heading">
+        <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
+            <div>
+                <img src="{{ value.placeholderBox() }}"
+            </div>
+    </div>
+</div>
