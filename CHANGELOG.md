@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.3.0 - 2017.11.13
+## 1.3.0 - 2017.11.10
 ### Changed
 * Added support for globally replacing native Craft transforms with a service like Imgix, with zero template changes
 * Added a Welcome page after installing ImageOptimize
