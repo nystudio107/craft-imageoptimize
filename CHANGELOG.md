@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.3.1 - 2017.11.15
+### Added
+* Added the display of the dominant color palette and the lazy load placeholder images to the Field
+
 ## 1.3.0 - 2017.11.10
 ### Changed
 * Added support for globally replacing native Craft transforms with a service like Imgix, with zero template changes
