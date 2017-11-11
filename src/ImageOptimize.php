@@ -26,6 +26,7 @@ use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\VolumeEvent;
+use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\services\Assets;
 use craft\services\AssetTransforms;
@@ -209,6 +210,20 @@ class ImageOptimize extends Plugin
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
+            }
+        );
+
+        // Do something after we're installed
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $request = Craft::$app->getRequest();
+                    if (($request->isCpRequest) && (!$request->isConsoleRequest)) {
+                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+                    }
+                }
             }
         );
 

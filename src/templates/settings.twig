@@ -21,7 +21,7 @@
     <!-- transformMethod -->
     {{ forms.selectField({
         label: "Transform Method"|t('image-optimize'),
-        instructions: "Choose from Craft native transforms or an image transform service for the responsive image variants."|t('image-optimize'),
+        instructions: "Choose from Craft native transforms or an image transform service to handle your image transforms site-wide."|t('image-optimize'),
         id: 'transformMethod',
         name: 'transformMethod',
         value: settings.transformMethod,
@@ -41,12 +41,14 @@
             value: settings.imgixDomain
         }) }}
     </div>
-    <div class="io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
-        <div class="textline">
-            <p class="readable">
-                These ImageOptimize settings are not editable here; this is just an informational display.
-                Instead copy the <code>imageoptimize/config.php</code> file to <code>craft/config</code>, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
-            </p>
+    <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
+        <div class="heading">
+            <div class="instructions">
+                <p class="readable">
+                    These ImageOptimize settings are not editable here; this is just an informational display.
+                    Instead copy the <code>imageoptimize/config.php</code> file to <code>craft/config</code>, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
+                </p>
+            </div>
         </div>
         {% if imageProcessors is defined and imageProcessors |length %}
             <h2>{{ 'Active Image Processors' }}</h2>
@@ -82,10 +84,12 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <div class="textline">
-                <p class="">
-                    Image Processors optimize Craft's Image Transforms by losslessly removing metadata and cruft from the images.
-                </p>
+            <div class="heading">
+                <div class="instructions">
+                    <p class="">
+                        Image Processors optimize Craft's Image Transforms by losslessly removing metadata and cruft from the images.
+                    </p>
+                </div>
             </div>
         {% endif %}
     
@@ -123,12 +127,22 @@
                 {% endfor %}
                 </tbody>
             </table>
-            <div class="textline">
-                <p class="">
-                    Image Variant Creators make new image variants from Craft's Image Transforms.
-                </p>
+            <div class="heading">
+                <div class="instructions">
+                    <p class="">
+                        Image Variant Creators make new image variants from Craft's Image Transforms.
+                    </p>
+                </div>
             </div>
         {% endif %}
+    </div>
+    <div class="field">
+        <div class="heading">
+            <label for="settings-transformMethod">OptimizedImages Field</label>
+            <div class="instructions">
+                <p>ImageOptimize also comes with an <strong>OptimizedImages</strong> Field that makes creating responsive image sizes for <code>{{ '<img srcset="">' |escape }}</code> or <code>{{ '<picture>' |escape }}</code> elements sublimely easy. These responsive image transforms are created when an asset is <em>saved</em>, rather than at page load time, to ensure that frontend performance is optimal.</p>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -1,6 +1,6 @@
 # ImageOptimize plugin for Craft CMS 3.x
 
-Automatically create & optimize responsive image transforms
+Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.
 
 **Note**: This plugin may become a paid add-on when the Craft Plugin store becomes available.
 
@@ -15,24 +15,17 @@ To install ImageOptimize, follow these steps:
 
 ImageOptimize works on Craft 3.x.
 
-To create client-proof optimized images, you'll need to also install the image optimization tools of your choice. Here's how to install a few on Ubuntu 16.04:
-
-* **jpegoptim** - `sudo apt-get install jpegoptim`
-* **mozjpeg** - [Installing mozjpeg on Ubuntu 16.04 (Forge)](https://nystudio107.com/blog/installing-mozjpeg-on-ubuntu-16-04-forge)
-* **optipng** - `sudo apt-get install optipng`
-* **svgo** - `sudo npm install -g svgo`
-* **gifsicle** - `sudo apt-get install gifsicle`
-* **webp** - `sudo apt-get install webp`
-
-ImageOptimize's responsive image transforms will work without these tools installed, but it's recommended that you use them to ensure the images are fully optimized.
-
 ## ImageOptimize Overview
 
-ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets.  This makes creating responsive image sizes for `<img srcset="">` or `<picture>` elements sublimely easy. These responsive image transforms are created when an asset is _saved_, rather than at page load time, to ensure that frontend performance is optimal.
+ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com), with zero template changes.
+
+You use the native Craft UI/UX to create your image transforms, whether in the AdminCP or via your templates. ImageOptimize takes care of the rest, optimizing all of your image transforms automatically by running a variety of image optimization tools on them.
+
+ImageOptimize also comes with an **OptimizedImages** Field that makes creating responsive image sizes for `<img srcset="">` or `<picture>` elements sublimely easy. These responsive image transforms are created when an asset is _saved_, rather than at page load time, to ensure that frontend performance is optimal.
 
 Because ImageOptimize has already pre-generated and saved the URLs to your optimized image variants, no additional database requests are needed to fetch this information (unlike with Assets or Transforms).
 
-It will also optimize all of your image transforms automatically by running a variety of image optimization tools on them. As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
+As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
 Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [Imgix](https://www.imgix.com/) to create the responsive image transforms.
 
@@ -43,6 +36,25 @@ Once ImageOptimize is installed, optimized versions of image transforms are crea
 ImageOptimize works equally well with both local and remote assets such as Amazon S3 buckets.
 
 ## Configuring ImageOptimize
+
+The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [Imgix](https://imgix.com). The setting you choose here will apply globally to all of your image transforms.
+
+### Native Craft Images
+
+To create client-proof optimized images with native Craft transforms, you'll need to also install the image optimization tools of your choice. The ImageOptimize plugin Settings page will show you the status of your installed image optimization tools:
+
+![Screenshot](screenshots/image-optimize-settings.png)
+
+Here's how to install a few on Ubuntu 16.04:
+
+* **jpegoptim** - `sudo apt-get install jpegoptim`
+* **mozjpeg** - [Installing mozjpeg on Ubuntu 16.04 (Forge)](https://nystudio107.com/blog/installing-mozjpeg-on-ubuntu-16-04-forge)
+* **optipng** - `sudo apt-get install optipng`
+* **svgo** - `sudo npm install -g svgo`
+* **gifsicle** - `sudo apt-get install gifsicle`
+* **webp** - `sudo apt-get install webp`
+
+ImageOptimize's responsive image transforms will work without these tools installed, but it's recommended that you use them to ensure the images are fully optimized.
 
 The only configuration for ImageOptimize is in the `config.php` file, which is a multi-environment friendly way to store the default settings.  Don't edit this file, instead copy it to `craft/config` as `image-optimize.php` and make your changes there.
 
@@ -56,9 +68,19 @@ The `imageVariantCreators` array specifies the path and options for each of the 
 
 See each image optimization tool's documentation for details on the options they allow you to use.
 
-The ImageOptimize plugin Settings page will show you the status of your installed image optimization tools:
+### Imgix Service Images
 
-![Screenshot](screenshots/image-optimize-settings.png)
+If you're using the [Imgix](https://imgix.com) service, ImageOptimize allows you to use the Craft AdminCP UX/UI to create your image transforms, but have Imgix do all of the heavy lifting for you. This means you can use Imgix with zero template changes.
+
+To utilize Imgix, you'll need to enter your **Imgix Source Domain**:
+
+![Screenshot](screenshots/image-optimize-imgix-settings.png)
+
+Then configure your Imgix source via your Imgix.com account. If you're using a Web Folder as a source, make sure it's set to the root of your domain, since you can only have one per site:
+
+![Screenshot](screenshots/imgix-web-folder-source.png)
+
+Regardless of how many separate Craft Asset Volumes you've set up, you'll just have one Web Folder source.
 
 ## Using ImageOptimize
 
