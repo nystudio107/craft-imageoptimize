@@ -178,7 +178,13 @@
             {% if value.colorPalette |length %}
                 <div class="io-field-section-container">
                 {%- for dominantColor in value.colorPalette -%}
-                    <div style="display: inline-block; width: 20%; height: 20px; background-color: {{ dominantColor }}"></div>
+                    <div style="display: inline-block; width: 20%;">
+                        <div style="height: 30px; background-color: {{ dominantColor }}">
+                        </div>
+                        <p style="text-align: center; color: #AAA; margin-top: 5px; text-transform: uppercase;">
+                            {{ dominantColor }}
+                        </p>
+                    </div>
                 {%- endfor -%}
                 </div>
             {% else %}
