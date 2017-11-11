@@ -55,9 +55,9 @@
         {% for retinaSize in retinaSizes %}
             {% set realWidth = variant.width %}
             {% set retinaWidth = variant.width * retinaSize %}
-            <div style="padding-bottom: 10px; width: 440px; text-align: center;">
+            <div class="io-field-display-wrapper">
                 {% for imageSource in imageSources %}
-                    <div style="display: inline-block; padding-right: 10px; vertical-align: top;">
+                    <div class="io-inline-image-container">
                         {% set thisUrl = "" %}
                         {% set errorMessage = ' variant does not exist' %}
                         {% if imageSource |length and imageSource[retinaWidth] is defined and imageSource[retinaWidth] |length %}
@@ -105,7 +105,7 @@
                             <div style="width: 200px; vertical-align: top;">
                                 <a href="{{ thisUrl }}" target="_blank">
                                     <div style="position: relative;">
-                                        <img style="vertical-align: middle; box-shadow: 0px 3px 15px rgba(0,0,0,0.2);" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                        <img class="io-soft-shadow-img" src="{{ thisUrl }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
                                         {% if (retinaSizes |length) > 1 %}
                                             <h4 class="io-retina-size-badge">
                                                 {{ retinaSize }}x
@@ -175,10 +175,10 @@
     <div class="heading">
         <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
         {% if value.colorPalette |length %}
-            <div>
-                {%- for dominantColor in value.colorPalette -%}
-                    <div style="display: inline-block; width: 20%; height: 20px; background-color: {{ dominantColor }}"></div>
-                {%- endfor -%}
+            <div class="io-field-section-container">
+            {%- for dominantColor in value.colorPalette -%}
+                <div style="display: inline-block; width: 20%; height: 20px; background-color: {{ dominantColor }}"></div>
+            {%- endfor -%}
             </div>
         {% else %}
             <p style="fill: #AAA; color: #AAA;">
@@ -187,11 +187,32 @@
         {% endif %}
     </div>
 </div>
+{% set thisWidth = 400 %}
+{% set thisHeight = (thisWidth / value.placeholderWidth) * value.placeholderHeight %}
 <div class="field">
     <div class="heading">
         <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
-            <div>
-                <img src="{{ value.placeholderBox() }}"
+        <div class="io-field-section-container">
+            <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+            <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                {{ 'placeholderBox' |t('image-optimize') }}
+            </p>
+        </div>
+        {% if value.placeholder |length %}
+            <div class="io-field-section-container">
+                <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                    {{ 'placeholderImage' |t('image-optimize') }}
+                </p>
             </div>
+        {% endif %}
+        {% if value.placeholderSvg |length %}
+            <div class="io-field-section-container">
+                <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                    {{ 'placeholderSilhouette' |t('image-optimize') }}
+                </p>
+            </div>
+        {% endif %}
     </div>
 </div>
