@@ -171,48 +171,52 @@
     </div>
 </div>
 {% endif %}
-<div class="field">
-    <div class="heading">
-        <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
-        {% if value.colorPalette |length %}
-            <div class="io-field-section-container">
-            {%- for dominantColor in value.colorPalette -%}
-                <div style="display: inline-block; width: 20%; height: 20px; background-color: {{ dominantColor }}"></div>
-            {%- endfor -%}
-            </div>
-        {% else %}
-            <p style="fill: #AAA; color: #AAA;">
-                <span class="warning" title="{{ 'Color Palette not extracted' |t('image-optimize') }}" data-icon="alert"></span>
-            </p>
-        {% endif %}
-    </div>
-</div>
-{% set thisWidth = 400 %}
-{% set thisHeight = (thisWidth / value.placeholderWidth) * value.placeholderHeight %}
-<div class="field">
-    <div class="heading">
-        <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
-        <div class="io-field-section-container">
-            <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-            <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                {{ 'placeholderBox' |t('image-optimize') }}
-            </p>
+{% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
+    <div class="field">
+        <div class="heading">
+            <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
+            {% if value.colorPalette |length %}
+                <div class="io-field-section-container">
+                {%- for dominantColor in value.colorPalette -%}
+                    <div style="display: inline-block; width: 20%; height: 20px; background-color: {{ dominantColor }}"></div>
+                {%- endfor -%}
+                </div>
+            {% else %}
+                <p style="fill: #AAA; color: #AAA;">
+                    <span class="warning" title="{{ 'Color Palette not extracted' |t('image-optimize') }}" data-icon="alert">
+                        {{ 'Color Palette not extracted' |t('image-optimize') }}
+                    </span>
+                </p>
+            {% endif %}
         </div>
-        {% if value.placeholder |length %}
-            <div class="io-field-section-container">
-                <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-                <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                    {{ 'placeholderImage' |t('image-optimize') }}
-                </p>
-            </div>
-        {% endif %}
-        {% if value.placeholderSvg |length %}
-            <div class="io-field-section-container">
-                <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-                <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                    {{ 'placeholderSilhouette' |t('image-optimize') }}
-                </p>
-            </div>
-        {% endif %}
     </div>
-</div>
+    {% set thisWidth = 400 %}
+    {% set thisHeight = (thisWidth / value.placeholderWidth) * value.placeholderHeight %}
+    <div class="field">
+        <div class="heading">
+            <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
+            <div class="io-field-section-container">
+                <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                    {{ 'placeholderBox' |t('image-optimize') }}
+                </p>
+            </div>
+            {% if value.placeholder |length %}
+                <div class="io-field-section-container">
+                    <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                    <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                        {{ 'placeholderImage' |t('image-optimize') }}
+                    </p>
+                </div>
+            {% endif %}
+            {% if value.placeholderSvg |length %}
+                <div class="io-field-section-container">
+                    <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                    <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                        {{ 'placeholderSilhouette' |t('image-optimize') }}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}
