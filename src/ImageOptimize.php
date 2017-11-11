@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize;
 
 use nystudio107\imageoptimize\fields\OptimizedImages;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
@@ -20,12 +21,17 @@ use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
 use craft\events\FieldEvent;
+use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
+use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\VolumeEvent;
+use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
+use craft\services\Assets;
 use craft\services\AssetTransforms;
 use craft\services\Fields;
+use craft\services\Plugins;
 use craft\services\Volumes;
 use craft\web\Controller;
 
@@ -55,6 +61,21 @@ class ImageOptimize extends Plugin
      */
     public static $plugin;
 
+    /**
+     * @var ImageTransformInterface
+     */
+    public static $transformClass;
+
+    /**
+     * @var array
+     */
+    public static $transformParams;
+
+    /**
+     * @var string
+     */
+    public static $previousTransformMethod = null;
+
     // Public Methods
     // =========================================================================
 
@@ -66,6 +87,12 @@ class ImageOptimize extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        // Cache some settings
+        $settings = $this->getSettings();
+        self::$previousTransformMethod = $settings->transformMethod;
+        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
+        self::$transformParams = self::$transformClass::getTransformParams();
+
         // Register our Field
         Event::on(
             Fields::class,
@@ -73,7 +100,7 @@ class ImageOptimize extends Plugin
             function (RegisterComponentTypesEvent $event) {
                 Craft::trace(
                     'Fields::EVENT_REGISTER_FIELD_TYPES',
-                    'image-optimize'
+                    __METHOD__
                 );
                 $event->types[] = OptimizedImages::class;
             }
@@ -116,6 +143,24 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Handler: Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    Craft::trace(
+                        'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
+                        __METHOD__
+                    );
+                    // If they changed the global transform method, we need to resave all Asset Volumes
+                    if (self::$previousTransformMethod != self::getSettings()->transformMethod) {
+                        ImageOptimize::$plugin->optimize->resaveAllVolumesAssets();
+                    }
+                }
+            }
+        );
+
         // Handler: Volumes::EVENT_AFTER_SAVE_VOLUME
         Event::on(
             Volumes::class,
@@ -123,28 +168,32 @@ class ImageOptimize extends Plugin
             function (VolumeEvent $event) {
                 Craft::trace(
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
-                    'image-optimize'
+                    __METHOD__
                 );
                 // Only worry about this volume if it's not new
                 if (!$event->isNew) {
-                    $needToReSave = false;
                     /** @var Volume $volume */
                     $volume = $event->volume;
-                    /** @var FieldLayout $fieldLayout */
-                    $fieldLayout = $volume->getFieldLayout();
-                    // Loop through the fields in the layout to see if there is an OptimizedImages field
-                    if ($fieldLayout) {
-                        $fields = $fieldLayout->getFields();
-                        foreach ($fields as $field) {
-                            if ($field instanceof OptimizedImages) {
-                                $needToReSave = true;
-                            }
-                        }
-                    }
-                    if ($needToReSave) {
+                    if (is_subclass_of($volume, Volume::class)) {
                         ImageOptimize::$plugin->optimize->resaveVolumeAssets($volume);
                     }
                 }
+            }
+        );
+
+        // Handler: Assets::EVENT_GET_ASSET_URL
+        Event::on(
+            Assets::class,
+            Assets::EVENT_GET_ASSET_URL,
+            function (GetAssetUrlEvent $event) {
+                Craft::trace(
+                    'Assets::EVENT_GET_ASSET_URL',
+                    __METHOD__
+                );
+                // Return the URL to the asset URL or null to let Craft handle it
+                $event->url = ImageOptimize::$plugin->optimize->handleGetAssetUrlEvent(
+                    $event
+                );
             }
         );
 
@@ -155,12 +204,26 @@ class ImageOptimize extends Plugin
             function (GenerateTransformEvent $event) {
                 Craft::trace(
                     'AssetTransforms::EVENT_GENERATE_TRANSFORM',
-                    'image-optimize'
+                    __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
+            }
+        );
+
+        // Do something after we're installed
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $request = Craft::$app->getRequest();
+                    if (($request->isCpRequest) && (!$request->isConsoleRequest)) {
+                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+                    }
+                }
             }
         );
 
@@ -202,11 +265,14 @@ class ImageOptimize extends Plugin
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
 
+        // Get only the user-editable settings
+        $settings = $this->getSettings();
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/settings',
             [
-                'settings'        => $this->getSettings(),
+                'settings'        => $settings,
                 'imageProcessors' => $imageProcessors,
                 'variantCreators' => $variantCreators,
             ]

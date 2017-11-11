@@ -11,18 +11,21 @@
 namespace nystudio107\imageoptimize\imagetransforms;
 
 use craft\elements\Asset;
-use craft\helpers\Assets as AssetsHelper;
-use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
+
+use ImageOptim\API;
 
 /**
  * @author    nystudio107
  * @package   ImageOptimize
  * @since     1.0.0
  */
-abstract class ImageTransform implements ImageTransformInterface
+class ImageOptimImageTransform extends ImageTransform implements ImageTransformInterface
 {
-    // Public Static Methods
+    // Constants
+    // =========================================================================
+
+    // Static Methods
     // =========================================================================
 
     /**
@@ -36,6 +39,12 @@ abstract class ImageTransform implements ImageTransformInterface
     {
         $url = null;
 
+        $userName = isset($params['user-name'])
+            ? $params['user-name']
+            : 'demo';
+        $api = new API($userName);
+        if ($api) {
+        }
         return $url;
     }
 
@@ -54,44 +63,10 @@ abstract class ImageTransform implements ImageTransformInterface
      */
     public static function getTransformParams(): array
     {
+        $settings = ImageOptimize::$plugin->getSettings();
         $params = [
         ];
 
         return $params;
-    }
-
-    /**
-     * @param Asset $asset
-     *
-     * @return mixed
-     */
-    public static function getAssetUri(Asset $asset)
-    {
-        $volume = $asset->getVolume();
-        $assetUrl = AssetsHelper::generateUrl($volume, $asset);
-        $assetUri = parse_url($assetUrl, PHP_URL_PATH);
-
-        return $assetUri;
-    }
-
-    /**
-     * @param string $url
-     */
-    public static function prefetchRemoteFile($url)
-    {
-        // Make this a full
-        if (!UrlHelper::isAbsoluteUrl($url)) {
-            $url = UrlHelper::siteUrl($url);
-        }
-
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_FOLLOWLOCATION => 1,
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_NOBODY         => 1,
-        ]);
-        curl_exec($ch);
-        curl_close($ch);
     }
 }

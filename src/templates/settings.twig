@@ -17,94 +17,133 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
 <div class="readable">
-
-    <div class="textline">
-        <p class="readable">
-            These ImageOptimize settings are not editable here; this is just an informational display.
-            Instead copy the <code>imageoptimize/config.php</code> file to <code>craft/config</code>, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
-        </p>
+    
+    <!-- transformMethod -->
+    {{ forms.selectField({
+        label: "Transform Method"|t('image-optimize'),
+        instructions: "Choose from Craft native transforms or an image transform service to handle your image transforms site-wide."|t('image-optimize'),
+        id: 'transformMethod',
+        name: 'transformMethod',
+        value: settings.transformMethod,
+        options: {
+            'craft': 'Craft'|t('image-optimize'),
+            'imgix': "Imgix"|t('image-optimize'),
+        },
+        class: 'io-transform-method'
+    }) }}
+    <div class="io-method-settings io-imgix-method"{% if settings.transformMethod != 'imgix' %} style="display: none;"{% endif %}>
+        <!-- imgixDomain -->
+        {{ forms.textField({
+            label: 'Imgix Source Domain',
+            instructions: "The source domain to use for the Imgix transforms."|t('image-optimize'),
+            id: 'imgixDomain',
+            name: 'imgixDomain',
+            value: settings.imgixDomain
+        }) }}
     </div>
-    {% if imageProcessors is defined and imageProcessors |length %}
-        <h2>{{ 'Active Image Processors' }}</h2>
-        <table id="imageProcessors" class="data collapsible image-optimize">
-            <thead class="">
+    <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
+        <div class="heading">
+            <div class="instructions">
+                <p class="readable">
+                    These ImageOptimize settings are not editable here; this is just an informational display.
+                    Instead copy the <code>imageoptimize/config.php</code> file to <code>craft/config</code>, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
+                </p>
+            </div>
+        </div>
+        {% if imageProcessors is defined and imageProcessors |length %}
+            <h2>{{ 'Active Image Processors' }}</h2>
+            <table id="imageProcessors" class="data collapsible image-optimize">
+                <thead class="">
                 <tr>
                     <th class="col io-format-column" scope="col">{{ "File Format"|t('image-optimize') }}</th>
                     <th class="col io-name-column" scope="col">{{ "Image Processor"|t('image-optimize') }}</th>
                     <th class="col io-command-column">{{ "Command"|t('image-optimize') }}</th>
                     <th class="thin io-installed-column">{{ "Installed"|t('image-optimize') }}</th>
                 </tr>
-            </thead>
-            <tbody>
-            {% for imageProcessor in imageProcessors %}
-                <tr data-id="{{ loop.index0 }}" data-name="{{ imageProcessor.format }}">
-                    <td data-title="{{ "File Format"|t('image-optimize') }}">
-                        {{ imageProcessor.format }}
-                    </td>
-                    <td data-title="{{ "Image Processor"|t('image-optimize') }}">
-                        {{ imageProcessor.creator }}
-                    </td>
-                    <td data-title="{{ "Command"|t('image-optimize') }}">
-                        <code>{{ imageProcessor.command }}</code>
-                    </td>
-                    <td class="thin">
-                        {%  if imageProcessor.installed %}
-                            <span class="success" title="{{ 'Installed'|t('image-optimize') }}" data-icon="check"></span>
-                        {% else %}
-                            <span class="warning" title="{{ 'Not Installed'|t('image-optimize') }}" data-icon="alert"></span>
-                        {% endif %}
-                    </td>
+                </thead>
+                <tbody>
+                {% for imageProcessor in imageProcessors %}
+                    <tr data-id="{{ loop.index0 }}" data-name="{{ imageProcessor.format }}">
+                        <td data-title="{{ "File Format"|t('image-optimize') }}">
+                            {{ imageProcessor.format }}
+                        </td>
+                        <td data-title="{{ "Image Processor"|t('image-optimize') }}">
+                            {{ imageProcessor.creator }}
+                        </td>
+                        <td data-title="{{ "Command"|t('image-optimize') }}">
+                            <code>{{ imageProcessor.command }}</code>
+                        </td>
+                        <td class="thin">
+                            {%  if imageProcessor.installed %}
+                                <span class="success" title="{{ 'Installed'|t('image-optimize') }}" data-icon="check"></span>
+                            {% else %}
+                                <span class="warning" title="{{ 'Not Installed'|t('image-optimize') }}" data-icon="alert"></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="heading">
+                <div class="instructions">
+                    <p class="">
+                        Image Processors optimize Craft's Image Transforms by losslessly removing metadata and cruft from the images.
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    
+        {% if variantCreators is defined and variantCreators |length %}
+            <h2>{{ 'Active Image Variant Creators' }}</h2>
+            <table id="variantCreators" class="data collapsible image-optimize">
+                <thead class="">
+                <tr>
+                    <th class="col io-format-column" scope="col">{{ "File Format"|t('image-optimize') }}</th>
+                    <th class="col io-name-column" scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
+                    <th class="col io-command-column">{{ "Command"|t('image-optimize') }}</th>
+                    <th class="thin io-installed-column">{{ "Installed"|t('image-optimize') }}</th>
+                </thead>
                 </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="textline">
-            <p class="">
-                Image Processors optimize Craft's Image Transforms by losslessly removing metadata and cruft from the images.
-            </p>
+                <tbody>
+                {% for variantCreator in variantCreators %}
+                    <tr data-id="{{ loop.index0 }}" data-name="{{ variantCreator.format }}">
+                        <td data-title="{{ "File Format"|t('image-optimize') }}">
+                            {{ variantCreator.format }}
+                        </td>
+                        <td data-title="{{ "Variant Creator"|t('image-optimize') }}">
+                            {{ variantCreator.creator }}
+                        </td>
+                        <td data-title="{{ "Command"|t('image-optimize') }}">
+                            <code>{{ variantCreator.command }}</code>
+                        </td>
+                        <td class="thin">
+                            {%  if variantCreator.installed %}
+                                <span class="success" title="{{ 'Installed'|t('image-optimize') }}" data-icon="check"></span>
+                            {% else %}
+                                <span class="warning" title="{{ 'Not Installed'|t('image-optimize') }}" data-icon="alert"></span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="heading">
+                <div class="instructions">
+                    <p class="">
+                        Image Variant Creators make new image variants from Craft's Image Transforms.
+                    </p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="field">
+        <div class="heading">
+            <label for="settings-transformMethod">OptimizedImages Field</label>
+            <div class="instructions">
+                <p>ImageOptimize also comes with an <strong>OptimizedImages</strong> Field that makes creating responsive image sizes for <code>{{ '<img srcset="">' |escape }}</code> or <code>{{ '<picture>' |escape }}</code> elements sublimely easy. These responsive image transforms are created when an asset is <em>saved</em>, rather than at page load time, to ensure that frontend performance is optimal.</p>
+            </div>
         </div>
-    {% endif %}
-
-    {% if variantCreators is defined and variantCreators |length %}
-        <h2>{{ 'Active Image Variant Creators' }}</h2>
-        <table id="variantCreators" class="data collapsible image-optimize">
-            <thead class="">
-            <tr>
-                <th class="col io-format-column" scope="col">{{ "File Format"|t('image-optimize') }}</th>
-                <th class="col io-name-column" scope="col">{{ "Variant Creator"|t('image-optimize') }}</th>
-                <th class="col io-command-column">{{ "Command"|t('image-optimize') }}</th>
-                <th class="thin io-installed-column">{{ "Installed"|t('image-optimize') }}</th>
-            </thead>
-            </tr>
-            <tbody>
-            {% for variantCreator in variantCreators %}
-                <tr data-id="{{ loop.index0 }}" data-name="{{ variantCreator.format }}">
-                    <td data-title="{{ "File Format"|t('image-optimize') }}">
-                        {{ variantCreator.format }}
-                    </td>
-                    <td data-title="{{ "Variant Creator"|t('image-optimize') }}">
-                        {{ variantCreator.creator }}
-                    </td>
-                    <td data-title="{{ "Command"|t('image-optimize') }}">
-                        <code>{{ variantCreator.command }}</code>
-                    </td>
-                    <td class="thin">
-                        {%  if variantCreator.installed %}
-                            <span class="success" title="{{ 'Installed'|t('image-optimize') }}" data-icon="check"></span>
-                        {% else %}
-                            <span class="warning" title="{{ 'Not Installed'|t('image-optimize') }}" data-icon="alert"></span>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        <div class="textline">
-            <p class="">
-                Image Variant Creators make new image variants from Craft's Image Transforms.
-            </p>
-        </div>
-    {% endif %}
+    </div>
 </div>
 
 {% js %}
@@ -113,5 +152,10 @@ new Craft.AdminTable({
 });
 new Craft.AdminTable({
     tableSelector: '#variantCreators',
+});
+$('.io-transform-method').change(function(ev) {
+    $('.io-method-settings').hide();
+    var value = 'io-' + $(ev.target).val() + '-method';
+    $('.' + value).slideToggle();
 });
 {% endjs %}

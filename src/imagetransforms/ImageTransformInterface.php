@@ -20,17 +20,28 @@ use craft\models\AssetTransform;
  */
 interface ImageTransformInterface
 {
+    // Constants
+    // =========================================================================
+
+    const IMAGE_TRANSFORM_MAP = [
+        'craft' => CraftImageTransform::class,
+        'imgix' => ImgixImageTransform::class,
+        'cloudinary' => CloudinaryImageTransform::class,
+        'image-optim' => ImageOptimImageTransform::class,
+        'kraken' => KrakenImageTransform::class,
+    ];
+
     // Static Methods
     // =========================================================================
 
     /**
-     * @param Asset          $asset
-     * @param AssetTransform $transform
-     * @param array          $params
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
-     * @return string
+     * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, AssetTransform $transform, array $params = []): string;
+    public static function getTransformUrl(Asset $asset, $transform, array $params = []);
 
     /**
      * @param string $url
@@ -40,7 +51,19 @@ interface ImageTransformInterface
     public static function getWebPUrl(string $url): string;
 
     /**
+     * @param Asset $asset
+     *
+     * @return mixed
+     */
+    public static function getAssetUri(Asset $asset);
+
+    /**
      * @param string $url
      */
     public static function prefetchRemoteFile($url);
+
+    /**
+     * @return array
+     */
+    public static function getTransformParams(): array;
 }

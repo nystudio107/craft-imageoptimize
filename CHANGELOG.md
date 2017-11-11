@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.3.0 - 2017.11.10
+### Changed
+* Added support for globally replacing native Craft transforms with a service like Imgix, with zero template changes
+* Added a Welcome page after installing ImageOptimize
+* Performance improvements when generating the placeholders
+
 ## 1.2.10 - 2017.11.04
 ### Changed
 * Fixed broken OptimizedImages Field settings

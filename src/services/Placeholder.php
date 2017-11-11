@@ -35,11 +35,11 @@ class Placeholder extends Component
     const PLACEHOLDER_WIDTH = 16;
     const PLACEHOLDER_QUALITY = 50;
 
-    const SVG_PLACEHOLDER_WIDTH = 300;
-    const SVG_PLACEHOLDER_QUALITY = 75;
+    const TEMP_PLACEHOLDER_WIDTH = 300;
+    const TEMP_PLACEHOLDER_QUALITY = 75;
 
-    const COLOR_PALETTE_WIDTH = 200;
-    const COLOR_PALETTE_QUALITY = 75;
+    // Public Properties
+    // =========================================================================
 
     // Public Methods
     // =========================================================================
@@ -47,20 +47,21 @@ class Placeholder extends Component
     /**
      * Generate a base64-encoded placeholder image
      *
-     * @param Asset $asset
-     * @param float $aspectRatio
+     * @param string            $tempPath
+     * @param float             $aspectRatio
+     * @param mixed|string|null $position
      *
      * @return string
      */
-    public function generatePlaceholderImage(Asset $asset, float $aspectRatio): string
+    public function generatePlaceholderImage(string $tempPath, float $aspectRatio, $position): string
     {
         $result = '';
         $width = self::PLACEHOLDER_WIDTH;
         $height = intval($width / $aspectRatio);
-        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::PLACEHOLDER_QUALITY);
-        if (!empty($tempPath)) {
-            $result = base64_encode(file_get_contents($tempPath));
-            unlink($tempPath);
+        $placeholderPath = $this->createImageFromPath($tempPath, $width, $height, self::PLACEHOLDER_QUALITY, $position);
+        if (!empty($placeholderPath)) {
+            $result = base64_encode(file_get_contents($placeholderPath));
+            unlink($placeholderPath);
         }
 
         return $result;
@@ -69,17 +70,13 @@ class Placeholder extends Component
     /**
      * Generate a color palette from the image
      *
-     * @param Asset $asset
-     * @param float $aspectRatio
+     * @param string $tempPath
      *
      * @return array
      */
-    public function generateColorPalette(Asset $asset, float $aspectRatio): array
+    public function generateColorPalette(string $tempPath): array
     {
         $colorPalette = [];
-        $width = self::COLOR_PALETTE_WIDTH;
-        $height = intval($width / $aspectRatio);
-        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::COLOR_PALETTE_QUALITY);
         if (!empty($tempPath)) {
             // Extract the color palette
             $palette = ColorThief::getPalette($tempPath, 5);
@@ -87,7 +84,6 @@ class Placeholder extends Component
             foreach ($palette as $colors) {
                 $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
             }
-            unlink($tempPath);
         }
 
         return $colorPalette;
@@ -96,68 +92,101 @@ class Placeholder extends Component
     /**
      * Generate an SVG image via Potrace
      *
-     * @param Asset $asset
-     * @param float $aspectRatio
+     * @param string $tempPath
      *
      * @return string
      */
-    public function generatePlaceholderSvg(Asset $asset, float $aspectRatio): string
+    public function generatePlaceholderSvg(string $tempPath): string
     {
         $result = '';
-        $width = self::SVG_PLACEHOLDER_WIDTH;
-        $height = intval($width / $aspectRatio);
-        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::SVG_PLACEHOLDER_QUALITY);
+
         if (!empty($tempPath)) {
             $pot = new Potracio();
             $pot->loadImageFromFile($tempPath);
             $pot->process();
 
             $result = $pot->getSVG(1);
-            unlink($tempPath);
         }
 
         return ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
     }
 
     /**
-     * @param Asset $asset
-     * @param int   $width
-     * @param int   $height
-     * @param int   $quality
+     * Create a small placeholder image file that the various placerholder generators can use
+     *
+     * @param Asset             $asset
+     * @param float             $aspectRatio
+     * @param mixed|string|null $position
      *
      * @return string
      */
-    public function createImageFromAsset(Asset $asset, int $width, int $height, int $quality)
+    public function createTempPlaceholderImage(Asset $asset, float $aspectRatio, $position): string
+    {
+        $width = self::TEMP_PLACEHOLDER_WIDTH;
+        $height = intval($width / $aspectRatio);
+        $tempPath = $this->createImageFromAsset($asset, $width, $height, self::TEMP_PLACEHOLDER_QUALITY, $position);
+
+        return $tempPath;
+    }
+
+    /**
+     * @param Asset             $asset
+     * @param int               $width
+     * @param int               $height
+     * @param int               $quality
+     * @param mixed|string|null $position
+     *
+     * @return string
+     */
+    public function createImageFromAsset(Asset $asset, int $width, int $height, int $quality, $position)
     {
         $tempPath = '';
+
         if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
-            $images = Craft::$app->getImages();
             $imageSource = $asset->getTransformSource();
-            /** @var Image $image */
-            if (StringHelper::toLowerCase($asset->getExtension()) === 'svg') {
-                $image = $images->loadImage($imageSource, true, $width);
-            } else {
-                $image = $images->loadImage($imageSource);
-            }
-
-            if ($image instanceof Raster) {
-                $image->setQuality($quality);
-            }
-
             // Scale and crop the placeholder image
-            if ($asset->focalPoint) {
-                $position = $asset->getFocalPoint();
-            } else {
-                $position = 'center-center';
-            }
-            $image->scaleAndCrop($width, $height, true, $position);
-
-            // Save the image out to a temp file, then return its contents
-            $tempFilename = uniqid(pathinfo($asset->filename, PATHINFO_FILENAME), true) . '.' . 'jpg';
-            $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
-            clearstatcache(true, $tempPath);
-            $image->saveAs($tempPath);
+            $tempPath = $this->createImageFromPath($imageSource, $width, $height, $quality, $position);
         }
+
+        return $tempPath;
+    }
+
+    /**
+     * @param string            $filePath
+     * @param int               $width
+     * @param int               $height
+     * @param int               $quality
+     * @param mixed|string|null $position
+     *
+     * @return string
+     */
+    public function createImageFromPath(
+        string $filePath,
+        int $width,
+        int $height,
+        int $quality,
+        $position
+    ): string {
+        $images = Craft::$app->getImages();
+        $pathParts = pathinfo($filePath);
+        /** @var Image $image */
+        if (StringHelper::toLowerCase($pathParts['extension']) === 'svg') {
+            $image = $images->loadImage($filePath, true, $width);
+        } else {
+            $image = $images->loadImage($filePath);
+        }
+
+        if ($image instanceof Raster) {
+            $image->setQuality($quality);
+        }
+
+        $image->scaleAndCrop($width, $height, true, $position);
+
+        // Save the image out to a temp file, then return its contents
+        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';
+        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+        clearstatcache(true, $tempPath);
+        $image->saveAs($tempPath);
 
         return $tempPath;
     }
