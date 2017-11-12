@@ -18,11 +18,16 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
 {% set aspectRatios = [
-    {'x': 1, 'y': 1},
-    {'x': 5, 'y': 4},
-    {'x': 4, 'y': 3},
-    {'x': 8, 'y': 5},
     {'x': 16, 'y': 9},
+    {'x': 8, 'y': 5},
+    {'x': 4, 'y': 3},
+    {'x': 5, 'y': 4},
+    {'x': 1, 'y': 1},
+    {'x': 2, 'y': 2, 'break': true},
+    {'x': 9, 'y': 16},
+    {'x': 5, 'y': 8},
+    {'x': 3, 'y': 4},
+    {'x': 4, 'y': 5},
     {'x': 2, 'y': 2, 'custom': true},
 ] %}
 <div class="field" id="{{ id }}-fields">
@@ -101,36 +106,50 @@
                                     {% set selectedAspectRatio = false %}
                                     {% set currentAspectRatioX = field.variants[loop.index0]['aspectRatioX'] %}
                                     {% set currentAspectRatioY = field.variants[loop.index0]['aspectRatioY'] %}
+                                    <div>
+                                    {% set containerSize = 150 %}
                                     {% for aspectRatio in aspectRatios %}
-                                        {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
-                                        {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
-                                            {% set selectedAspectRatio = loop.index0 %}
-                                        {% endif %}
-                                        {% set thisHeight = 75 %}
-                                        {% set thisWidth = thisHeight * thisAspectRatio %}
-                                        {% set thisFontSize = 24 %}
-                                        {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
-
-                                        {% set selectedClass = '' %}
-                                        {% if selectedAspectRatio is same as(false) %}
-                                            {% if loop.last %}
-                                                {% set selectedClass = 'io-selected-ar-box' %}
-                                            {% endif %}
+                                        {% if aspectRatio.break is defined and aspectRatio.break %}
+                                            </div><div>
                                         {% else %}
-                                            {% if selectedAspectRatio == loop.index0 %}
-                                                {% set selectedClass = 'io-selected-ar-box' %}
+                                            {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
+                                            {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
+                                                {% set selectedAspectRatio = loop.index0 %}
                                             {% endif %}
+                                            {% if thisAspectRatio < 1.0 %}
+                                                {% set thisWidth = containerSize / 2 %}
+                                                {% set thisHeight = thisWidth / thisAspectRatio %}
+                                            {% else %}
+                                                {% set thisHeight = containerSize / 2 %}
+                                                {% set thisWidth = thisHeight * thisAspectRatio %}
+                                            {% endif %}
+                                            {% set thisFontSize = 24 %}
+                                            {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
+
+                                            {% set selectedClass = '' %}
+                                            {% if selectedAspectRatio is same as(false) %}
+                                                {% if loop.last %}
+                                                    {% set selectedClass = 'io-selected-ar-box' %}
+                                                {% endif %}
+                                            {% else %}
+                                                {% if selectedAspectRatio == loop.index0 %}
+                                                    {% set selectedClass = 'io-selected-ar-box' %}
+                                                {% endif %}
+                                            {% endif %}
+                                            <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
+                                                <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ containerSize }}" width="{{ containerSize }}" preserveAspectRatio="xMidYMid meet">
+                                                    <rect x="0" y="0" width="{{ containerSize }}" height="{{ containerSize }}" stroke-width="4" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
+                                                    </rect>
+                                                    <rect x="1" y="1" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="2">
+                                                    </rect>
+                                                    <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                                        {{ thisText }}
+                                                    </text>
+                                                </svg>
+                                            </div>
                                         {% endif %}
-                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
-                                            <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
-                                                <rect x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="4">
-                                                </rect>
-                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
-                                                    {{ thisText }}
-                                                </text>
-                                            </svg>
-                                        </div>
                                     {% endfor %}
+                                    </div>
 
                                     <div class="io-custom-ar-wrapper"{% if selectedAspectRatio is not same as(false) %} style="display: none;"{% endif %}>
                                         <!-- aspectRatioX -->
@@ -223,4 +242,4 @@
         $(this).find('input:checkbox').first().parent().hide();
     });
 {% endset %}
-{% includeJs js %}
+{% js js %}
