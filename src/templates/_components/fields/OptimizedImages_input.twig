@@ -205,6 +205,10 @@
                 <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
                 <p style="text-align: center; color: #AAA; margin-top: 5px;">
                     {{ 'Placeholder Box' |t('image-optimize') }}
+                    &middot;
+                    SVG
+                    &middot;
+                    {{ value.placeholderBoxSize() }}
                 </p>
             </div>
             {% if value.placeholder |length %}
@@ -212,6 +216,10 @@
                     <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
                     <p style="text-align: center; color: #AAA; margin-top: 5px;">
                         {{ 'Placeholder Image' |t('image-optimize') }}
+                        &middot;
+                        JPG
+                        &middot;
+                        {{ value.placeholderImageSize() }}
                     </p>
                 </div>
             {% endif %}
@@ -220,6 +228,10 @@
                     <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
                     <p style="text-align: center; color: #AAA; margin-top: 5px;">
                         {{ 'Placeholder Silhouette' |t('image-optimize') }}
+                        &middot;
+                        SVG
+                        &middot;
+                        {{ value.placeholderSilhouetteSize() }}
                     </p>
                 </div>
             {% endif %}

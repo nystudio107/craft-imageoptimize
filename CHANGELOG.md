@@ -3,6 +3,7 @@
 ## 1.3.1 - 2017.11.15
 ### Added
 * Added the display of the dominant color palette and the lazy load placeholder images to the Field
+* Optimize the placeholder images regardless of user settings
 
 ## 1.3.0 - 2017.11.10
 ### Changed

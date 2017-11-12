@@ -138,6 +138,16 @@ class OptimizedImage extends Model
     }
 
     /**
+     * @return string
+     */
+    public function placeholderImageSize()
+    {
+        $placeholder = $this->placeholderImage();
+        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+        return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
+    }
+
+    /**
      * Return an SVG box as a placeholder image
      *
      * @param null $color
@@ -160,6 +170,16 @@ class OptimizedImage extends Model
     }
 
     /**
+     * @return string
+     */
+    public function placeholderBoxSize()
+    {
+        $placeholder = $this->placeholderBox();
+        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+        return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
+    }
+
+    /**
      * Return a silhouette of the image as an SVG placeholder
      *
      * @return string
@@ -173,6 +193,16 @@ class OptimizedImage extends Model
         }
 
         return $header . $content;
+    }
+
+    /**
+     * @return string
+     */
+    public function placeholderSilhouetteSize()
+    {
+        $placeholder = $this->placeholderSilhouette();
+        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+        return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
     /**

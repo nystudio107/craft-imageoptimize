@@ -180,7 +180,22 @@ class Placeholder extends Component
             $image->setQuality($quality);
         }
 
+        // No matter what the user settings are, we don't want any metadata/color palette cruft
+        $config = Craft::$app->getConfig()->getGeneral();
+        $oldOptimizeImageFilesize = $config->optimizeImageFilesize;
+        $oldPreserveImageColorProfiles = $config->preserveImageColorProfiles;
+        $oldPreserveExifData = $config->preserveExifData;
+        $config->optimizeImageFilesize = true;
+        $config->preserveImageColorProfiles = false;
+        $config->preserveExifData = false;
+
+        // Resize the image
         $image->scaleAndCrop($width, $height, true, $position);
+
+        // Restore the old settings
+        $config->optimizeImageFilesize = $oldOptimizeImageFilesize;
+        $config->preserveImageColorProfiles = $oldPreserveImageColorProfiles;
+        $config->preserveExifData = $oldPreserveExifData;
 
         // Save the image out to a temp file, then return its contents
         $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';

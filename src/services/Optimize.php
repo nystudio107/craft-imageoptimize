@@ -245,12 +245,14 @@ class Optimize extends Component
      *
      * @return string
      */
-    public function humanFileSize($bytes, $decimals = 2): string
+    public function humanFileSize($bytes, $decimals = 1): string
     {
-        $sz = 'BKMGTP';
-        $factor = floor((strlen($bytes) - 1) / 3);
+        $oldSize = Craft::$app->formatter->sizeFormatBase;
+        Craft::$app->formatter->sizeFormatBase = 1000;
+        $result = Craft::$app->formatter->asShortSize($bytes, $decimals);
+        Craft::$app->formatter->sizeFormatBase = $oldSize;
 
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).@$sz[intval($factor)];
+        return $result;
     }
 
     /**
