@@ -532,7 +532,8 @@ class Optimize extends Component
         if ($needToReSave) {
             $siteId = Craft::$app->getSites()->getPrimarySite()->id;
 
-            $jobId = Craft::$app->getQueue()->push(new ResaveElements([
+            $queue = Craft::$app->getQueue();
+            $jobId = $queue->push(new ResaveElements([
                 'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
                 'elementType' => Asset::class,
                 'criteria'    => [
@@ -562,7 +563,8 @@ class Optimize extends Component
      */
     public function resaveAsset(int $id)
     {
-        $jobId = Craft::$app->getQueue()->push(new ResaveElements([
+        $queue = Craft::$app->getQueue();
+        $jobId = $queue->push(new ResaveElements([
             'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
             'elementType' => Asset::class,
             'criteria'    => [
@@ -571,6 +573,8 @@ class Optimize extends Component
                 'enabledForSite' => false,
             ],
         ]));
+        // Run this queue immediately, so we don't have to wait for the next request
+        $queue->run();
         Craft::trace(
             Craft::t(
                 'image-optimize',
