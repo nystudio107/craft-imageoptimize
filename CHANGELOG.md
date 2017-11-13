@@ -5,6 +5,7 @@
 * Added the display of the dominant color palette and the lazy load placeholder images to the Field
 * Optimize the placeholder images regardless of user settings
 * Fixed an issue where newly uploaded assets would not resave on the AJAX request
+* Added portrait & landscape responsive image variant presets
 
 ## 1.3.0 - 2017.11.10
 ### Changed
