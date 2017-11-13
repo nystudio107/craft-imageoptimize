@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.3.1 - 2017.11.15
+## 1.3.1 - 2017.11.13
 ### Added
 * Added the display of the dominant color palette and the lazy load placeholder images to the Field
 * Optimize the placeholder images regardless of user settings
