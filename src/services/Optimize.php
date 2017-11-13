@@ -532,7 +532,7 @@ class Optimize extends Component
         if ($needToReSave) {
             $siteId = Craft::$app->getSites()->getPrimarySite()->id;
 
-            Craft::$app->getQueue()->push(new ResaveElements([
+            $jobId = Craft::$app->getQueue()->push(new ResaveElements([
                 'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
                 'elementType' => Asset::class,
                 'criteria'    => [
@@ -542,6 +542,16 @@ class Optimize extends Component
                     'enabledForSite' => false,
                 ],
             ]));
+            Craft::trace(
+                Craft::t(
+                    'image-optimize',
+                    'Started resaveVolumeAssets queue job id: {jobId}',
+                    [
+                        'jobId' => $jobId,
+                    ]
+                ),
+                __METHOD__
+            );
         }
     }
 
@@ -552,7 +562,7 @@ class Optimize extends Component
      */
     public function resaveAsset(int $id)
     {
-        Craft::$app->getQueue()->push(new ResaveElements([
+        $jobId = Craft::$app->getQueue()->push(new ResaveElements([
             'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
             'elementType' => Asset::class,
             'criteria'    => [
@@ -561,6 +571,17 @@ class Optimize extends Component
                 'enabledForSite' => false,
             ],
         ]));
+        Craft::trace(
+            Craft::t(
+                'image-optimize',
+                'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
+                [
+                    'elementId' => $id,
+                    'jobId' => $jobId,
+                ]
+            ),
+            __METHOD__
+        );
     }
 
     // Protected Methods
