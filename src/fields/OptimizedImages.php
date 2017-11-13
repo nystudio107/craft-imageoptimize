@@ -128,6 +128,8 @@ class OptimizedImages extends Field
      */
     public function afterElementSave(ElementInterface $element, bool $isNew)
     {
+        parent::afterElementSave($element, $isNew);
+
         /** @var Asset $element */
         if ($element instanceof Asset) {
             // If this is a new element, resave it so that it as an id for our asset transforms
@@ -135,8 +137,6 @@ class OptimizedImages extends Field
                 ImageOptimize::$plugin->optimize->resaveAsset($element->id);
             }
         }
-
-        parent::afterElementSave($element, $isNew);
     }
 
     /**

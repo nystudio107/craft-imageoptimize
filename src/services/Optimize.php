@@ -245,12 +245,14 @@ class Optimize extends Component
      *
      * @return string
      */
-    public function humanFileSize($bytes, $decimals = 2): string
+    public function humanFileSize($bytes, $decimals = 1): string
     {
-        $sz = 'BKMGTP';
-        $factor = floor((strlen($bytes) - 1) / 3);
+        $oldSize = Craft::$app->formatter->sizeFormatBase;
+        Craft::$app->formatter->sizeFormatBase = 1000;
+        $result = Craft::$app->formatter->asShortSize($bytes, $decimals);
+        Craft::$app->formatter->sizeFormatBase = $oldSize;
 
-        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)).@$sz[intval($factor)];
+        return $result;
     }
 
     /**
@@ -530,7 +532,8 @@ class Optimize extends Component
         if ($needToReSave) {
             $siteId = Craft::$app->getSites()->getPrimarySite()->id;
 
-            Craft::$app->getQueue()->push(new ResaveElements([
+            $queue = Craft::$app->getQueue();
+            $jobId = $queue->push(new ResaveElements([
                 'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
                 'elementType' => Asset::class,
                 'criteria'    => [
@@ -540,6 +543,16 @@ class Optimize extends Component
                     'enabledForSite' => false,
                 ],
             ]));
+            Craft::trace(
+                Craft::t(
+                    'image-optimize',
+                    'Started resaveVolumeAssets queue job id: {jobId}',
+                    [
+                        'jobId' => $jobId,
+                    ]
+                ),
+                __METHOD__
+            );
         }
     }
 
@@ -550,7 +563,8 @@ class Optimize extends Component
      */
     public function resaveAsset(int $id)
     {
-        Craft::$app->getQueue()->push(new ResaveElements([
+        $queue = Craft::$app->getQueue();
+        $jobId = $queue->push(new ResaveElements([
             'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
             'elementType' => Asset::class,
             'criteria'    => [
@@ -559,6 +573,19 @@ class Optimize extends Component
                 'enabledForSite' => false,
             ],
         ]));
+        // Run this queue immediately, so we don't have to wait for the next request
+        $queue->run();
+        Craft::trace(
+            Craft::t(
+                'image-optimize',
+                'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
+                [
+                    'elementId' => $id,
+                    'jobId' => $jobId,
+                ]
+            ),
+            __METHOD__
+        );
     }
 
     // Protected Methods
