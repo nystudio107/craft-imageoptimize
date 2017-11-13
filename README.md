@@ -72,6 +72,8 @@ See each image optimization tool's documentation for details on the options they
 
 If you're using the [Imgix](https://imgix.com) service, ImageOptimize allows you to use the Craft AdminCP UX/UI to create your image transforms, but have Imgix do all of the heavy lifting for you. This means you can use Imgix with zero template changes.
 
+Craft will then use Imgix for all Asset URLs, including the original image, its thumbnails, and any Asset transforms you create (whether in the AdminCP or via Twig templates).
+
 To utilize Imgix, you'll need to enter your **Imgix Source Domain**:
 
 ![Screenshot](screenshots/image-optimize-imgix-settings.png)
@@ -81,6 +83,8 @@ Then configure your Imgix source via your Imgix.com account. If you're using a W
 ![Screenshot](screenshots/imgix-web-folder-source.png)
 
 Regardless of how many separate Craft Asset Volumes you've set up, you'll just have one Web Folder source.
+
+For image transforms, and set both **Quality** and **Format** to `Auto` in the AdminCP, it’ll send along `auto=compress,format` to Imgix, which will allow Imgix to compress the image as it sees fit. See the [Automatic Imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
 
 ## Using ImageOptimize
 
