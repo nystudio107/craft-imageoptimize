@@ -14,7 +14,6 @@
  * @since     1.0.0
  */
 return [
-    'ImageOptimize plugin loaded'                                                                                  => 'ImageOptimize plugin loaded',
     'does not exist'                                                                                               => 'does not exist',
     'Original'                                                                                                     => 'Original',
     'Optimized'                                                                                                    => 'Optimized',
@@ -33,7 +32,6 @@ return [
     'This image is upscaled'                                                                                       => 'This image is upscaled',
     'Retina Sizes'                                                                                                 => 'Retina Sizes',
     'Choose from Craft native transforms or an image transform service to handle your image transforms site-wide.' => 'Choose from Craft native transforms or an image transform service to handle your image transforms site-wide.',
-    'Choose from Craft native transforms or an image transform service to handle your image transforms.'           => 'Choose from Craft native transforms or an image transform service to handle your image transforms.',
     'Craft'                                                                                                        => 'Craft',
     'Imgix'                                                                                                        => 'Imgix',
     'Resaving Assets in {name}'                                                                                    => 'Resaving Assets in {name}',
@@ -47,4 +45,9 @@ return [
     'Installed'                                                                                                    => 'Installed',
     'Resaving new Asset id {id}'                                                                                   => 'Resaving new Asset id {id}',
     'Focal Point set'                                                                                              => 'Focal Point set',
+    'The width of the optimized image variant in pixels. This should match your `@media` queries.'                 => 'The width of the optimized image variant in pixels. This should match your `@media` queries.',
+    'Deleting stale imave variant: '                                                                               => 'Deleting stale imave variant: ',
+    'Started resaveAsset queue job id: {jobId} Element id: {elementId}'                                            => 'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
+    'Started resaveVolumeAssets queue job id: {jobId}'                                                             => 'Started resaveVolumeAssets queue job id: {jobId}',
+    'Tried to remove a null temporary placeholder image'                                                           => 'Tried to remove a null temporary placeholder image',
 ];
