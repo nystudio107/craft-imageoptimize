@@ -165,6 +165,7 @@ class OptimizedImages extends Field
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
         $model->optimizedWebPImageUrls = [];
+        $model->variantSourceWidths = [];
 
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
@@ -205,6 +206,7 @@ class OptimizedImages extends Field
                     if (!empty($url)) {
                         $model->optimizedImageUrls[$width] = $url;
                         $model->optimizedWebPImageUrls[$width] = ImageOptimize::$transformClass::getWebPUrl($url);
+                        $model->variantSourceWidths[] = $variant['width'];
                     }
                     $model->focalPoint = $element->focalPoint;
                     $model->originalImageWidth = $element->width;

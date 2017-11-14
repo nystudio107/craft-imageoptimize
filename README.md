@@ -227,6 +227,29 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
      </picture>
 ```
 
+##### Media Query srcset Sizes
+
+If you need separate `srcset`s to match your media queries, you can use:
+
+    {{ someAsset.one().optimizedImages.srcsetWidth(970) }}
+    {{ someAsset.one().optimizedImages.srcsetWidthWebP(970) }}
+   
+...to output all variants that exactly match the passed in width (which could be more than one, if you have set up `2x` or `3x` retina variants).
+
+To mimic the `min-width` media query, you can do:
+
+    {{ someAsset.one().optimizedImages.srcsetMinWidth(970) }}
+    {{ someAsset.one().optimizedImages.srcsetMinWidthWebP(970) }}
+
+...to output all variants that match the passed in width or are larger than the passed in width (which also includes any `2x` or `3x` retina variants).
+
+To mimic the `max-width` media query, you can do:
+
+    {{ someAsset.one().optimizedImages.srcsetMaxWidth(970) }}
+    {{ someAsset.one().optimizedImages.srcsetMaxWidthWebP(970) }}
+
+...to output all variants that match the passed in width or are smaller than the passed in width (which also includes any `2x` or `3x` retina variants).
+
 ##### Placeholder Images
 
 Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`. 
