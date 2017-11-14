@@ -39,6 +39,11 @@ class OptimizedImage extends Model
     /**
      * @var array
      */
+    public $variantSourceWidths = [];
+
+    /**
+     * @var array
+     */
     public $focalPoint;
 
     /**
@@ -54,12 +59,12 @@ class OptimizedImage extends Model
     /**
      * @var string
      */
-    public $placeholder;
+    public $placeholder = '';
 
     /**
      * @var
      */
-    public $placeholderSvg;
+    public $placeholderSvg = '';
 
     /**
      * @var array
@@ -87,9 +92,15 @@ class OptimizedImage extends Model
         return [
             ['optimizedImageUrls', ArrayValidator::class],
             ['optimizedWebPImageUrls', ArrayValidator::class],
+            ['variantSourceWidths', ArrayValidator::class],
             ['focalPoint', 'safe'],
             ['originalImageWidth', 'integer'],
             ['originalImageHeight', 'integer'],
+            ['placeholder', 'string'],
+            ['placeholderSvg', 'string'],
+            ['colorPalette', ArrayValidator::class],
+            ['placeholderWidth', 'integer'],
+            ['placeholderHeight', 'integer'],
         ];
     }
 
@@ -114,11 +125,97 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Return a string of image URLs and their sizes that match $width
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function srcsetWidth(int $width): string
+    {
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
+
+        return $this->getSrcsetFromArray($subset);
+    }
+
+    /**
+     * Return a string of image URLs and their sizes that are at least $width or larger
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function srcsetMinWidth(int $width): string
+    {
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
+
+        return $this->getSrcsetFromArray($subset);
+    }
+
+    /**
+     * Return a string of image URLs and their sizes that are $width or smaller
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function srcsetMaxWidth(int $width): string
+    {
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
+
+        return $this->getSrcsetFromArray($subset);
+    }
+
+    /**
+     * Return a string of webp image URLs and their sizes
+     *
      * @return string
      */
     public function srcsetWebp(): string
     {
         return $this->getSrcsetFromArray($this->optimizedWebPImageUrls);
+    }
+
+    /**
+     * Return a string of webp image URLs and their sizes that match $width
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function srcsetWidthWebp(int $width): string
+    {
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
+
+        return $this->getSrcsetFromArray($subset);
+    }
+
+    /**
+     * Return a string of webp image URLs and their sizes that are at least $width or larger
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function srcsetMinWidthWebp(int $width): string
+    {
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
+
+        return $this->getSrcsetFromArray($subset);
+    }
+
+    /**
+     * Return a string of webp image URLs and their sizes that are $width or smaller
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function srcsetMaxWidthWebp(int $width): string
+    {
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
+
+        return $this->getSrcsetFromArray($subset);
     }
 
     /**
@@ -257,6 +354,41 @@ class OptimizedImage extends Model
     // Protected Methods
     // =========================================================================
 
+    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison): array
+    {
+        $subset = [];
+        $index = 0;
+        if (!empty($this->variantSourceWidths)) {
+            foreach ($this->variantSourceWidths as $variantSourceWidth) {
+                $match = false;
+                switch ($comparison) {
+                    case 'width':
+                        if ($variantSourceWidth == $width) {
+                            $match = true;
+                        }
+                        break;
+
+                    case 'minwidth':
+                        if ($variantSourceWidth >= $width) {
+                            $match = true;
+                        }
+                        break;
+
+                    case 'maxwidth':
+                        if ($variantSourceWidth <= $width) {
+                            $match = true;
+                        }
+                        break;
+                }
+                if ($match) {
+                    $subset+= array_slice($set, $index, 1, true);
+                }
+                $index++;
+            }
+        }
+
+        return $subset;
+    }
     /**
      * @param array $array
      *

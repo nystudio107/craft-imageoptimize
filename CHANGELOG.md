@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.3.2 - 2017.11.14
+### Added
+* Added media query srcset sizes for precise control over the output sizes
+
 ## 1.3.1 - 2017.11.13
 ### Added
 * Added the display of the dominant color palette and the lazy load placeholder images to the Field
