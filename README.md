@@ -181,7 +181,7 @@ To use `<picture>` in your templates, you can just do:
 ```
     {% set someAsset = entry.myAssetField %}
     <picture>
-        <sources srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
+        <source srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
                  sizes="100vw"
                  type="image/webp" />
         <img src="{{ someAsset.one().optimizedImages.src() }}"
@@ -194,7 +194,7 @@ To use `<picture>` in your templates, you can just do:
 
 ```
     <picture>
-        <sources srcset="/assets/_1170x658_crop_center-center/painted-face.jpg.webp 1170w,
+        <source srcset="/assets/_1170x658_crop_center-center/painted-face.jpg.webp 1170w,
                          /assets/_970x545_crop_center-center/painted-face.jpg.webp 970w,
                          /assets/_750x562_crop_center-center/painted-face.jpg.webp 750w,
                          /assets/_320x240_crop_center-center/painted-face.jpg.webp 320w"
@@ -218,7 +218,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 ```
     {% set someAsset = entry.myAssetField %}
     <picture>
-        <sources data-srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
+        <source data-srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
                  data-sizes="100vw"
                  type="image/webp" />
         <img src="{{ someAsset.one().optimizedImages.placeholderBox() }}"
