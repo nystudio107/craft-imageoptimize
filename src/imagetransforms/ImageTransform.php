@@ -50,6 +50,30 @@ abstract class ImageTransform implements ImageTransformInterface
     }
 
     /**
+     * @param Asset $asset
+     * @param array $params
+     *
+     * @return null|string
+     */
+    public static function getPurgeUrl(Asset $asset, array $params = [])
+    {
+        $url = null;
+
+        return $url;
+    }
+
+    /**
+     * @param string $url
+     * @param array  $params
+     *
+     * @return bool
+     */
+    public static function purgeUrl(string $url, array $params = []): bool
+    {
+        return true;
+    }
+
+    /**
      * @return array
      */
     public static function getTransformParams(): array
@@ -64,6 +88,7 @@ abstract class ImageTransform implements ImageTransformInterface
      * @param Asset $asset
      *
      * @return mixed
+     * @throws \yii\base\InvalidConfigException
      */
     public static function getAssetUri(Asset $asset)
     {
@@ -76,6 +101,8 @@ abstract class ImageTransform implements ImageTransformInterface
 
     /**
      * @param string $url
+     *
+     * @throws \yii\base\Exception
      */
     public static function prefetchRemoteFile($url)
     {

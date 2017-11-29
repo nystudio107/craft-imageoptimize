@@ -17,6 +17,7 @@ use craft\helpers\ArrayHelper;
 use craft\models\AssetTransform;
 
 use Imgix\UrlBuilder;
+use Psr\Http\Message\ResponseInterface;
 
 use Craft;
 
@@ -37,6 +38,8 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
         'format'  => 'fm',
     ];
 
+    const IMGIX_PURGE_ENDPOINT = 'https://api.imgix.com/v2/image/purger';
+
     // Static Methods
     // =========================================================================
 
@@ -46,6 +49,8 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
      * @param array               $params
      *
      * @return string|null
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
@@ -128,8 +133,6 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                 'Imgix transform created for: ' . print_r($assetUri, true),
                 __METHOD__
             );
-            // Prime the pump by downloading the image
-            self::prefetchRemoteFile($url);
         }
 
         return $url;
@@ -143,10 +146,77 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
     public static function getWebPUrl(string $url): string
     {
         $url = preg_replace('/fm=[^&]*/', 'fmt=webp', $url);
-        // Prime the pump by downloading the image
-        self::prefetchRemoteFile($url);
 
         return $url;
+    }
+
+    /**
+     * @param Asset $asset
+     * @param array $params
+     *
+     * @return null|string
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getPurgeUrl(Asset $asset, array $params = [])
+    {
+        $url = null;
+
+        $domain = isset($params['domain'])
+            ? $params['domain']
+            : 'demos.imgix.net';
+        $builder = new UrlBuilder($domain);
+        if ($asset && $builder) {
+            $builder->setUseHttps(true);
+            // Finally, create the Imgix URL for this transformed image
+            $assetUri = self::getAssetUri($asset);
+            $url = $builder->createURL($assetUri, $params);
+        }
+
+        return $url;
+    }
+
+    /**
+     * @param string $url
+     * @param array  $params
+     *
+     * @return bool
+     */
+    public static function purgeUrl(string $url, array $params = []): bool
+    {
+        $result = false;
+        $apiKey = isset($params['api-key'])
+            ? $params['api-key']
+            : '';
+        // create new guzzle client
+        $guzzleClient = Craft::createGuzzleClient(['timeout' => 120, 'connect_timeout' => 120]);
+        // Submit the sitemap index to each search engine
+        try {
+            /** @var ResponseInterface $response */
+            $response = $guzzleClient->post(self::IMGIX_PURGE_ENDPOINT, [
+                'auth' => [
+                    $apiKey,
+                    ''
+                ],
+                'url' => $url,
+            ]);
+            // See if it succeeded
+            if (($response->getStatusCode() >= 200)
+                && ($response->getStatusCode() < 400)
+            ) {
+                $result = true;
+            }
+            Craft::info(
+                'URL purged: ' . $url . ' - Response code: ' . $response->getStatusCode(),
+                __METHOD__
+            );
+        } catch (\Exception $e) {
+            Craft::error(
+                'Error purging URL: ' . $url . ' - ' . $e->getMessage(),
+                __METHOD__
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -157,6 +227,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
         $settings = ImageOptimize::$plugin->getSettings();
         $params = [
             'domain' => $settings->imgixDomain,
+            'api-key' => $settings->imgixApiKey,
         ];
 
         return $params;

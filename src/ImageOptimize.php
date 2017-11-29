@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize;
 
+use craft\elements\Asset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
@@ -17,9 +18,11 @@ use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 
 use Craft;
+use craft\base\Element;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
+use craft\events\ElementEvent;
 use craft\events\FieldEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
@@ -30,6 +33,7 @@ use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\services\Assets;
 use craft\services\AssetTransforms;
+use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\Volumes;
@@ -210,6 +214,29 @@ class ImageOptimize extends Plugin
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
+            }
+        );
+
+        // Handler: Elements::EVENT_AFTER_SAVE_ELEMENT
+        Event::on(
+            Elements::class,
+            Elements::EVENT_AFTER_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::trace(
+                    'Elements::EVENT_AFTER_SAVE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Element $element */
+                $element = $event->element;
+                $isNewElement = $event->isNew;
+                if (($element instanceof Asset) && (!$isNewElement)) {
+                    // Purge the URL
+                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                        $element,
+                        ImageOptimize::$transformParams
+                    );
+                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                }
             }
         );
 

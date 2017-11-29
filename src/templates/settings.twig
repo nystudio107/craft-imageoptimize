@@ -40,6 +40,14 @@
             name: 'imgixDomain',
             value: settings.imgixDomain
         }) }}
+        <!-- imgixApiKey -->
+        {{ forms.textField({
+            label: 'Imgix API Key',
+            instructions: "The API key to use for the Imgix transforms (needed for auto-purging changed assets)."|t('image-optimize'),
+            id: 'imgixApiKey',
+            name: 'imgixApiKey',
+            value: settings.imgixApiKey
+        }) }}
     </div>
     <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
         <div class="heading">

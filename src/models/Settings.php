@@ -40,6 +40,13 @@ class Settings extends Model
     public $imgixDomain = '';
 
     /**
+     * API Key for the Imgix transform service
+     *
+     * @var string
+     */
+    public $imgixApiKey = '';
+
+    /**
      * Should image variant be created on Asset save (aka BeforePageLoad)
      *
      * @var bool
