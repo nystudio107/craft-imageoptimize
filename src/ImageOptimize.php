@@ -10,7 +10,6 @@
 
 namespace nystudio107\imageoptimize;
 
-use craft\elements\Asset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
@@ -22,12 +21,14 @@ use craft\base\Element;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
+use craft\elements\Asset;
 use craft\events\ElementEvent;
 use craft\events\FieldEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\ReplaceAssetEvent;
 use craft\events\VolumeEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
@@ -221,13 +222,13 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: Elements::EVENT_AFTER_SAVE_ELEMENT
+        // Handler: Elements::EVENT_BEFORE_SAVE_ELEMENT
         Event::on(
             Elements::class,
-            Elements::EVENT_AFTER_SAVE_ELEMENT,
+            Elements::EVENT_BEFORE_SAVE_ELEMENT,
             function (ElementEvent $event) {
                 Craft::trace(
-                    'Elements::EVENT_AFTER_SAVE_ELEMENT',
+                    'Elements::EVENT_BEFORE_SAVE_ELEMENT',
                     __METHOD__
                 );
                 /** @var Element $element */
@@ -242,6 +243,28 @@ class ImageOptimize extends Plugin
                     if ($purgeUrl) {
                         ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                     }
+                }
+            }
+        );
+
+        // Handler: Assets::EVENT_BEFORE_REPLACE_ASSET
+        Event::on(
+            Assets::class,
+            Assets::EVENT_BEFORE_REPLACE_ASSET,
+            function (ReplaceAssetEvent $event) {
+                Craft::trace(
+                    'Assets::EVENT_BEFORE_REPLACE_ASSET',
+                    __METHOD__
+                );
+                /** @var Asset $element */
+                $element = $event->asset;
+                // Purge the URL
+                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                    $element,
+                    ImageOptimize::$transformParams
+                );
+                if ($purgeUrl) {
+                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                 }
             }
         );

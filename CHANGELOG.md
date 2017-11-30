@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.3.3 - 2017.11.30
+### Added
+* Auto-purge remote Imgix image URLs when assets are changed
+
 ## 1.3.2 - 2017.11.14
 ### Added
 * Added media query srcset sizes for precise control over the output sizes

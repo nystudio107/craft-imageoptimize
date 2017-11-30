@@ -14,6 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use craft\elements\Asset;
 use craft\helpers\ArrayHelper;
+use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
 
 use Imgix\UrlBuilder;
@@ -130,7 +131,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
             $assetUri = self::getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
             Craft::trace(
-                'Imgix transform created for: ' . print_r($assetUri, true),
+                'Imgix transform created for: ' . $assetUri . ' - Params: ' . print_r($params, true) . ' - URL: ' . $url,
                 __METHOD__
             );
         }
@@ -167,9 +168,11 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
         $builder = new UrlBuilder($domain);
         if ($asset && $builder) {
             $builder->setUseHttps(true);
-            // Finally, create the Imgix URL for this transformed image
+            // Create the Imgix URL for purging this image
             $assetUri = self::getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
+            // Strip the query string so we just pass in the raw URL
+            $url = UrlHelper::stripQueryString($url);
         }
 
         return $url;
@@ -197,7 +200,9 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                     $apiKey,
                     ''
                 ],
-                'url' => $url,
+                'form_params' => [
+                    'url' => $url,
+                ]
             ]);
             // See if it succeeded
             if (($response->getStatusCode() >= 200)
