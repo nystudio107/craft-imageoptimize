@@ -204,8 +204,13 @@ class OptimizedImages extends Field
                     );
                     // Update the model
                     if (!empty($url)) {
+                        // Store & prefetch image at the image URL
+                        ImageOptimize::$transformClass::prefetchRemoteFile($url);
                         $model->optimizedImageUrls[$width] = $url;
-                        $model->optimizedWebPImageUrls[$width] = ImageOptimize::$transformClass::getWebPUrl($url);
+                        // Store & prefetch image at the webp URL
+                        $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
+                        ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
+                        $model->optimizedWebPImageUrls[$width] = $webPUrl;
                         $model->variantSourceWidths[] = $variant['width'];
                     }
                     $model->focalPoint = $element->focalPoint;

@@ -31,6 +31,9 @@ return [
     // Domain for the Imgix transform service
     'imgixDomain' => '',
 
+    // API key for the Imgix transform service
+    'imgixApiKey' => '',
+
     // Should image variant be created on Asset save (aka BeforePageLoad)
     'generateTransformsBeforePageLoad' => true,
 

@@ -17,19 +17,24 @@ use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 
 use Craft;
+use craft\base\Element;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
+use craft\elements\Asset;
+use craft\events\ElementEvent;
 use craft\events\FieldEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\ReplaceAssetEvent;
 use craft\events\VolumeEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\services\Assets;
 use craft\services\AssetTransforms;
+use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\Volumes;
@@ -153,8 +158,12 @@ class ImageOptimize extends Plugin
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
                         __METHOD__
                     );
+                    $settings = self::getSettings();
                     // If they changed the global transform method, we need to resave all Asset Volumes
-                    if (self::$previousTransformMethod != self::getSettings()->transformMethod) {
+                    if (self::$previousTransformMethod != $settings->transformMethod) {
+                        self::$previousTransformMethod = $settings->transformMethod;
+                        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
+                        self::$transformParams = self::$transformClass::getTransformParams();
                         ImageOptimize::$plugin->optimize->resaveAllVolumesAssets();
                     }
                 }
@@ -210,6 +219,53 @@ class ImageOptimize extends Plugin
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
+            }
+        );
+
+        // Handler: Elements::EVENT_BEFORE_SAVE_ELEMENT
+        Event::on(
+            Elements::class,
+            Elements::EVENT_BEFORE_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::trace(
+                    'Elements::EVENT_BEFORE_SAVE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Element $element */
+                $element = $event->element;
+                $isNewElement = $event->isNew;
+                if (($element instanceof Asset) && (!$isNewElement)) {
+                    // Purge the URL
+                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                        $element,
+                        ImageOptimize::$transformParams
+                    );
+                    if ($purgeUrl) {
+                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    }
+                }
+            }
+        );
+
+        // Handler: Assets::EVENT_BEFORE_REPLACE_ASSET
+        Event::on(
+            Assets::class,
+            Assets::EVENT_BEFORE_REPLACE_ASSET,
+            function (ReplaceAssetEvent $event) {
+                Craft::trace(
+                    'Assets::EVENT_BEFORE_REPLACE_ASSET',
+                    __METHOD__
+                );
+                /** @var Asset $element */
+                $element = $event->asset;
+                // Purge the URL
+                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                    $element,
+                    ImageOptimize::$transformParams
+                );
+                if ($purgeUrl) {
+                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                }
             }
         );
 

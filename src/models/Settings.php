@@ -40,6 +40,13 @@ class Settings extends Model
     public $imgixDomain = '';
 
     /**
+     * API Key for the Imgix transform service
+     *
+     * @var string
+     */
+    public $imgixApiKey = '';
+
+    /**
      * Should image variant be created on Asset save (aka BeforePageLoad)
      *
      * @var bool
@@ -221,6 +228,8 @@ class Settings extends Model
             ['transformMethod', 'default', 'value' => 'craft'],
             ['imgixDomain', 'string'],
             ['imgixDomain', 'default', 'value' => ''],
+            ['imgixApiKey', 'string'],
+            ['imgixApiKey', 'default', 'value' => ''],
             [
                 [
                     'generateTransformsBeforePageLoad',
@@ -263,7 +272,8 @@ class Settings extends Model
         // Only return user-editable settings
         $fields = [
             'transformMethod',
-            'imgixDomain'
+            'imgixDomain',
+            'imgixApiKey'
         ];
 
         return $fields;

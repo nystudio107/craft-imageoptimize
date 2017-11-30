@@ -52,6 +52,23 @@ interface ImageTransformInterface
 
     /**
      * @param Asset $asset
+     * @param array $params
+     *
+     * @return mixed
+     */
+    public static function getPurgeUrl(Asset $asset, array $params = []);
+
+    /**
+     * @param string $url
+     * @param array  $params
+     *
+     * @return bool
+     */
+    public static function purgeUrl(string $url, array $params = []): bool;
+
+
+    /**
+     * @param Asset $asset
      *
      * @return mixed
      */
