@@ -74,7 +74,7 @@ If you're using the [Imgix](https://imgix.com) service, ImageOptimize allows you
 
 Craft will then use Imgix for all Asset URLs, including the original image, its thumbnails, and any Asset transforms you create (whether in the AdminCP or via Twig templates).
 
-To utilize Imgix, you'll need to enter your **Imgix Source Domain**:
+To utilize Imgix, you'll need to enter your **Imgix Source Domain**, and your **Imgix API Key** to allow for auto-purging of changed Assets:
 
 ![Screenshot](screenshots/image-optimize-imgix-settings.png)
 
