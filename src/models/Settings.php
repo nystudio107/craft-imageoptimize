@@ -228,6 +228,8 @@ class Settings extends Model
             ['transformMethod', 'default', 'value' => 'craft'],
             ['imgixDomain', 'string'],
             ['imgixDomain', 'default', 'value' => ''],
+            ['imgixApiKey', 'string'],
+            ['imgixApiKey', 'default', 'value' => ''],
             [
                 [
                     'generateTransformsBeforePageLoad',
@@ -270,7 +272,8 @@ class Settings extends Model
         // Only return user-editable settings
         $fields = [
             'transformMethod',
-            'imgixDomain'
+            'imgixDomain',
+            'imgixApiKey'
         ];
 
         return $fields;

@@ -235,7 +235,9 @@ class ImageOptimize extends Plugin
                         $element,
                         ImageOptimize::$transformParams
                     );
-                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    if ($purgeUrl) {
+                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    }
                 }
             }
         );

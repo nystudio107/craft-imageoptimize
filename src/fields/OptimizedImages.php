@@ -172,7 +172,9 @@ class OptimizedImages extends Field
             $element,
             ImageOptimize::$transformParams
         );
-        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+        if ($purgeUrl) {
+            ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+        }
 
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
