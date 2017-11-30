@@ -106,7 +106,7 @@ abstract class ImageTransform implements ImageTransformInterface
      */
     public static function prefetchRemoteFile($url)
     {
-        // Make this a full
+        // Make this a full URL
         if (!UrlHelper::isAbsoluteUrl($url)) {
             $url = UrlHelper::siteUrl($url);
         }

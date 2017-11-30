@@ -167,15 +167,6 @@ class OptimizedImages extends Field
         $model->optimizedWebPImageUrls = [];
         $model->variantSourceWidths = [];
 
-        // Purge the URL
-        $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-            $element,
-            ImageOptimize::$transformParams
-        );
-        if ($purgeUrl) {
-            ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
-        }
-
         /** @var AssetTransform $transform */
         $transform = new AssetTransform();
         $placeholderMade = false;
