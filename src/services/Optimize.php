@@ -509,11 +509,14 @@ class Optimize extends Component
             }
         }
     }
+
     /**
      * Re-save all of the Asset elements in the Volume $volume that have an
      * OptimizedImages field in the FieldLayout
      *
      * @param Volume $volume
+     *
+     * @throws \craft\errors\SiteNotFoundException
      */
     public function resaveVolumeAssets(Volume $volume)
     {
@@ -573,8 +576,8 @@ class Optimize extends Component
                 'enabledForSite' => false,
             ],
         ]));
-        // Run this queue immediately, so we don't have to wait for the next request
-        $queue->run();
+        // @TODO: Run this queue immediately, so we don't have to wait for the next request
+        //$queue->run();
         Craft::trace(
             Craft::t(
                 'image-optimize',

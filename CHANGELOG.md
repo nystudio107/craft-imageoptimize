@@ -4,6 +4,9 @@
 ### Added
 * Auto-purge remote Imgix image URLs when assets are changed
 
+### Changed
+* Fixed an issue with newly uploaded assets that have an OptimizedImages field in their Volume Layout
+
 ## 1.3.2 - 2017.11.14
 ### Added
 * Added media query srcset sizes for precise control over the output sizes
