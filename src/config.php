@@ -48,7 +48,7 @@ return [
     // Default image variants
     'defaultVariants'            => [
         [
-            'width'          => 1170,
+            'width'          => 1200,
             'useAspectRatio' => true,
             'aspectRatioX'   => 16.0,
             'aspectRatioY'   => 9.0,
@@ -57,7 +57,7 @@ return [
             'format'         => 'jpg',
         ],
         [
-            'width'          => 970,
+            'width'          => 992,
             'useAspectRatio' => true,
             'aspectRatioX'   => 16.0,
             'aspectRatioY'   => 9.0,
@@ -66,7 +66,7 @@ return [
             'format'         => 'jpg',
         ],
         [
-            'width'          => 750,
+            'width'          => 768,
             'useAspectRatio' => true,
             'aspectRatioX'   => 4.0,
             'aspectRatioY'   => 3.0,
@@ -75,7 +75,7 @@ return [
             'format'         => 'jpg',
         ],
         [
-            'width'          => 320,
+            'width'          => 576,
             'useAspectRatio' => true,
             'aspectRatioX'   => 4.0,
             'aspectRatioY'   => 3.0,
