@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.3.4 - 2017.12.03
+### Changed
+* Fixed an issue where selecting image variants would result in the wrong aspect ratio
+* Changed the default image variant widths
+
 ## 1.3.3 - 2017.11.30
 ### Added
 * Auto-purge remote Imgix image URLs when assets are changed

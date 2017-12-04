@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  * @link      https://nystudio107.com
  * @package   ImageOptimize
- * @since     1.2.0ImageOptimizeOptimizedImages
+ * @since     1.2.0
  */
 
  ;(function ( $, window, document, undefined ) {
@@ -197,9 +197,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                     $block.find('.io-custom-ar-wrapper').slideDown();
                 } else {
                     $block.find('.io-custom-ar-wrapper').slideUp();
-                    field = $block.find('input')[1];
-                    $(field).val(x);
                     field = $block.find('input')[2];
+                    $(field).val(x);
+                    field = $block.find('input')[3];
                     $(field).val(y);
                 }
             });
@@ -210,7 +210,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             $block = $(this.$blockContainer.children()[0]).clone();
             // Reset to default values
             $block.find('.io-select-ar-box').each(function (index, value) {
-                if (index === 4) {
+                if (index === 0) {
                     $(value).addClass('io-selected-ar-box');
                 } else {
                     $(value).removeClass('io-selected-ar-box');
@@ -218,7 +218,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             });
             $block.find('.io-custom-ar-wrapper').hide();
             field = $block.find('input')[0];
-            $(field).val(1170);
+            $(field).val(1200);
             field = $block.find('input')[1];
             $(field).val(16);
             field = $block.find('input')[2];
