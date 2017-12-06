@@ -413,7 +413,7 @@ class Optimize extends Component
             }
 
             clearstatcache(true, $outputPath);
-            $stream = fopen($outputPath, 'rb');
+            $stream = @fopen($outputPath, 'rb');
 
             // Now create it
             try {
