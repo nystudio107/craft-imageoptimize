@@ -223,11 +223,19 @@ class OptimizedImages extends Field
                         $this->generatePlaceholders($element, $model, $aspectRatio);
                         $placeholderMade = true;
                     }
+                    Craft::info(
+                        'Created transforms for variant: '.print_r($variant, true),
+                        __METHOD__
+                    );
+                } else {
+                    Craft::error(
+                        'Could not create transform for: '.$element->title
+                            . " - Final format: ".$finalFormat
+                            . " - Element extension: ".$element->getExtension()
+                            . " - canManipulateAsImage: ".Image::canManipulateAsImage($element->getExtension()),
+                        __METHOD__
+                    );
                 }
-                Craft::info(
-                    'Created transforms for variant: '.print_r($variant, true),
-                    __METHOD__
-                );
             }
         }
     }
