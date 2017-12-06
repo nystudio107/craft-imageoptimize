@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.3.5 - 2017.12.06
+### Changed
+* Switched from `file_exists()` to `is_file()` for detecting image processor and variant commands
+* Added better debug logging
+
 ## 1.3.4 - 2017.12.03
 ### Changed
 * Fixed an issue where selecting image variants would result in the wrong aspect ratio

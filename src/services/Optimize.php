@@ -173,7 +173,7 @@ class Optimize extends Component
     protected function executeImageProcessor($thisProcessor, string $tempPath)
     {
         // Make sure the command exists
-        if (file_exists($thisProcessor['commandPath'])) {
+        if (is_file($thisProcessor['commandPath'])) {
             // Set any options for the command
             $commandOptions = '';
             if (!empty($thisProcessor['commandOptions'])) {
@@ -335,7 +335,7 @@ class Optimize extends Component
     {
         $outputPath = $tempPath;
         // Make sure the command exists
-        if (file_exists($variantCreatorCommand['commandPath'])) {
+        if (is_file($variantCreatorCommand['commandPath'])) {
             // Get the output file for this image variant
             $outputPath .= '.'.$variantCreatorCommand['imageVariantExtension'];
             // Set any options for the command
@@ -398,7 +398,7 @@ class Optimize extends Component
         $outputPath
     ) {
         // If the image variant creation succeeded, copy it into place
-        if (!empty($outputPath) && file_exists($outputPath)) {
+        if (!empty($outputPath) && is_file($outputPath)) {
             // Figure out the resulting path for the image variant
             $volume = $asset->getVolume();
             $assetTransforms = Craft::$app->getAssetTransforms();
@@ -455,7 +455,7 @@ class Optimize extends Component
                         'command'   => $thisImageProcessor['commandPath']
                             .' '
                             .$thisImageProcessor['commandOptions'],
-                        'installed' => file_exists($thisImageProcessor['commandPath']),
+                        'installed' => is_file($thisImageProcessor['commandPath']),
                     ];
                 }
             }
@@ -487,7 +487,7 @@ class Optimize extends Component
                         'command'   => $thisVariantCreator['commandPath']
                             .' '
                             .$thisVariantCreator['commandOptions'],
-                        'installed' => file_exists($thisVariantCreator['commandPath']),
+                        'installed' => is_file($thisVariantCreator['commandPath']),
                     ];
                 }
             }
