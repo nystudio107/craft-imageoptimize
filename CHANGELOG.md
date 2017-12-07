@@ -3,6 +3,8 @@
 ## 1.3.5 - 2017.12.06
 ### Changed
 * Switched from `file_exists()` to `is_file()` for detecting image processor and variant commands
+* Fixed an issue with Optimized Image Variant generation on certain setups
+* The OptimizedImages field now displays protocol-relative images properly
 * Added better debug logging
 * Updated to require craftcms/cms `^3.0.0-RC1`
 

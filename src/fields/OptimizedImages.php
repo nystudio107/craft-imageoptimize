@@ -202,6 +202,10 @@ class OptimizedImages extends Field
                         $transform,
                         ImageOptimize::$transformParams
                     );
+                    Craft::info(
+                        'URL created: '.print_r($url, true),
+                        __METHOD__
+                    );
                     // Update the model
                     if (!empty($url)) {
                         // Store & prefetch image at the image URL
