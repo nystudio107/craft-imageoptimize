@@ -6,6 +6,10 @@ Automatically create & optimize responsive image transforms, using either native
 
 ![Screenshot](screenshots/image-optimize-splash.png)
 
+## Requirements
+
+This plugin requires Craft CMS 3.0.0-RC1 or later.
+
 ## Installation
 
 To install ImageOptimize, follow these steps:
