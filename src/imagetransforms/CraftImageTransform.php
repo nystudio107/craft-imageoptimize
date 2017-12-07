@@ -14,7 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\elements\Asset;
-use craft\errors\AssetLogicException;
+use craft\services\Assets;
 use craft\models\AssetTransform;
 
 /**
@@ -41,17 +41,9 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
         $generateTransformsBeforePageLoad = isset($params['generateTransformsBeforePageLoad'])
             ? $params['generateTransformsBeforePageLoad']
             : true;
-        // Force generateTransformsBeforePageLoad = true to generate the images now
-        $generalConfig = Craft::$app->getConfig()->getGeneral();
-        $oldSetting = $generalConfig->generateTransformsBeforePageLoad;
-        $generalConfig->generateTransformsBeforePageLoad = $generateTransformsBeforePageLoad;
-        try {
-            // Generate the URLs to the optimized images
-            $url = $asset->getUrl($transform);
-        } catch (AssetLogicException $e) {
-            // This isn't an image or an image format that can be transformed
-        }
-        $generalConfig->generateTransformsBeforePageLoad = $oldSetting;
+        // Generate the URLs to the optimized images
+        $assets = Craft::$app->getAssets();
+        $url = $assets->getAssetUrl($asset, $transform, $generateTransformsBeforePageLoad);
 
         return $url;
     }

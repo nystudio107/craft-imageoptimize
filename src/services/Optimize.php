@@ -16,6 +16,7 @@ use nystudio107\imageoptimize\fields\OptimizedImages;
 use Craft;
 use craft\base\Component;
 use craft\base\Image;
+use craft\base\LocalVolumeInterface;
 use craft\base\Volume;
 use craft\elements\Asset;
 use craft\errors\VolumeException;
@@ -412,6 +413,11 @@ class Optimize extends Component
                 // We're fine with that.
             }
 
+            Craft::info(
+                'Variant output path: '.$outputPath.' - Variant path: '.$variantPath,
+                __METHOD__
+            );
+
             clearstatcache(true, $outputPath);
             $stream = @fopen($outputPath, 'rb');
 
@@ -420,9 +426,15 @@ class Optimize extends Component
                 $volume->createFileByStream($variantPath, $stream, []);
             } catch (VolumeObjectExistsException $e) {
                 // We're fine with that.
+                Craft::error(
+                    Craft::t('image-optimize', 'Failed to create image variant at: ')
+                    .$outputPath,
+                    __METHOD__
+                );
             }
 
             FileHelper::removeFile($outputPath);
+
         } else {
             Craft::error(
                 Craft::t('image-optimize', 'Failed to create image variant at: ')
