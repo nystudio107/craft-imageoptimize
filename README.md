@@ -4,7 +4,7 @@ Automatically create & optimize responsive image transforms, using either native
 
 **Note**: This plugin may become a paid add-on when the Craft Plugin store becomes available.
 
-![Screenshot](screenshots/image-optimize-splash.png)
+![Screenshot](resources/img/plugin-logo.png)
 
 ## Requirements
 
@@ -20,6 +20,8 @@ To install ImageOptimize, follow these steps:
 ImageOptimize works on Craft 3.x.
 
 ## ImageOptimize Overview
+
+![Screenshot](resources/screenshots/image-optimize-field-composite2.jpg)
 
 ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com), with zero template changes.
 
@@ -47,7 +49,7 @@ The plugin Settings for ImageOptimize allows you to choose whether to use native
 
 To create client-proof optimized images with native Craft transforms, you'll need to also install the image optimization tools of your choice. The ImageOptimize plugin Settings page will show you the status of your installed image optimization tools:
 
-![Screenshot](screenshots/image-optimize-settings.png)
+![Screenshot](resources/screenshots/image-optimize-settings.png)
 
 Here's how to install a few on Ubuntu 16.04:
 
@@ -80,11 +82,11 @@ Craft will then use Imgix for all Asset URLs, including the original image, its 
 
 To utilize Imgix, you'll need to enter your **Imgix Source Domain**, and your **Imgix API Key** to allow for auto-purging of changed Assets:
 
-![Screenshot](screenshots/image-optimize-imgix-settings.png)
+![Screenshot](resources/screenshots/image-optimize-imgix-settings.png)
 
 Then configure your Imgix source via your Imgix.com account. If you're using a Web Folder as a source, make sure it's set to the root of your domain, since you can only have one per site:
 
-![Screenshot](screenshots/imgix-web-folder-source.png)
+![Screenshot](resources/screenshots/imgix-web-folder-source.png)
 
 Regardless of how many separate Craft Asset Volumes you've set up, you'll just have one Web Folder source.
 
@@ -102,7 +104,7 @@ To create responsive image variants for all of your images, create an **Optimize
 
 You can then create as many Optimized Image Variants as you like:
 
-![Screenshot](screenshots/field-settings.png)
+![Screenshot](resources/screenshots/field-settings.png)
 
 You can add, delete, and re-order the Optimized Image Variants just like you can Matrix blocks.
 
@@ -121,7 +123,7 @@ Whenever you add an OptimizedImages field to an asset Volume's layout, or make c
 
 If you double-click on an asset (or click on an asset, and choose **Edit Asset** from the gear menu), you will now see all of your responsive image variants for that image:
 
-![Screenshot](screenshots/image-variant-field.png)
+![Screenshot](resources/screenshots/image-variant-field.png)
 
 You'll see the responsive width of each image variant above each thumbnail, with the aspect ratio, file format, and file size below it. If you have `.webp` image variants configured, you will see them here as well.
 
@@ -129,11 +131,11 @@ If you click on an image thumbnail, it will open up the full size image in a new
 
 The OptimizedImages field also helps content editors by pointing out potential problems as well:
 
-![Screenshot](screenshots/image-variant-warnings.png)
+![Screenshot](resources/screenshots/image-variant-warnings.png)
 
 In this example, no **Focal Point** has been set via Craft 3's built-in image editor. The **Focal Point** lets content editors choose what portion of the image is most important, and should be kept in the center of any transformed images:
 
-![Screenshot](screenshots/image-editor-focal-point.png)
+![Screenshot](resources/screenshots/image-editor-focal-point.png)
 
 There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn't been configured, so there are no `.webp` variants created.
 
@@ -262,12 +264,12 @@ All of the placeholder images are stored in the Optimized Image field itself, so
  
 The first is `.placeholderBox()` which displays a simple inline SVG with the background color set to the dominant color of the image:
 
-![Screenshot](screenshots/placeholder-image-box.png)
+![Screenshot](resources/screenshots/placeholder-image-box.png)
 (Placholder on the left, actual image on the right)
 
 The second is `.placeholderSilhouette()` which displays an inline SVG silhouette generated from the original image:
 
-![Screenshot](screenshots/placeholder-image-silhouette.png)
+![Screenshot](resources/screenshots/placeholder-image-silhouette.png)
 (Placholder on the left, actual image on the right)
 
 The SVG image itself will only be 300px wide, so apply CSS styles to it such as:
@@ -281,7 +283,7 @@ The SVG image itself will only be 300px wide, so apply CSS styles to it such as:
 
 The third is `.placeholderImage()`, which displays a tiny Instagram-style low resolution placeholder image to display while the image is being lazy loaded.
 
-![Screenshot](screenshots/placeholder-image.png)
+![Screenshot](resources/screenshots/placeholder-image.png)
 (Placholder on the left, actual image on the right)
 
 The image itself will only be 16px wide, so apply CSS styles to it such as:
@@ -310,7 +312,7 @@ ImageOptimize extracts a color palette composed of the 5 most dominant colors us
 
 ```
 
-![Screenshot](screenshots/color-palette.png)
+![Screenshot](resources/screenshots/color-palette.png)
 
 Dominant Color Palette
 
@@ -361,11 +363,11 @@ This is especially useful when implementing [webp images](https://developers.goo
 
 Here's an example of what it looks like for images with the transform `Some Transform` applied to them:
 
-![Screenshot](screenshots/image-variants.png)
+![Screenshot](resources/screenshots/image-variants.png)
 
 The savings from using `.webp` can be significant, without sacrificing image quality:
  
- ![Screenshot](screenshots/image-variants-filesize.png)
+ ![Screenshot](resources/screenshots/image-variants-filesize.png)
 
 `webp` also supports transparency, so it can be used as a viable substitute for both `.jpg` and `.png`
 
