@@ -108,7 +108,18 @@ abstract class ImageTransform implements ImageTransformInterface
     {
         // Make this a full URL
         if (!UrlHelper::isAbsoluteUrl($url)) {
-            $url = UrlHelper::siteUrl($url);
+            if (UrlHelper::isProtocolRelativeUrl($url)) {
+                if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+                    || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
+                ) {
+                    $protocol = "https";
+                } else {
+                    $protocol = "http";
+                }
+                $url = UrlHelper::urlWithProtocol($url, $protocol);
+            } else {
+                $url = UrlHelper::siteUrl($url);
+            }
         }
 
         $ch = curl_init($url);
