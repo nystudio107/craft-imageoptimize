@@ -75,10 +75,10 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                 // Handle the Imgix auto setting for compression/format
                 $autoParams = [];
                 if (empty($params['q'])) {
-                    $autoParams = 'compress';
+                    $autoParams[] = 'compress';
                 }
                 if (empty($params['fm'])) {
-                    $autoParams = 'format';
+                    $autoParams[] = 'format';
                 }
                 if (!empty($autoParams)) {
                     $params['auto'] = implode(',', $autoParams);
