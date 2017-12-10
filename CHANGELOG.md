@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.3.6 - 2017.12.10
+### Changed
+* Fixed an error with Imgix transforms
+
 ## 1.3.5 - 2017.12.06
 ### Changed
 * Switched from `file_exists()` to `is_file()` for detecting image processor and variant commands
