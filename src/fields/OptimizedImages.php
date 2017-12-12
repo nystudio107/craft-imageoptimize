@@ -227,6 +227,8 @@ class OptimizedImages extends Field
         $view = Craft::$app->getView();
         $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
 
+        $settings = ImageOptimize::$plugin->getSettings();
+
         // Render the input template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/fields/OptimizedImages_input',
@@ -235,6 +237,7 @@ class OptimizedImages extends Field
                 'value'       => $value,
                 'variants'    => $this->variants,
                 'field'       => $this,
+                'settings'    => $settings,
                 'id'          => $id,
                 'nameSpaceId' => $nameSpaceId,
             ]
