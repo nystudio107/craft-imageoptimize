@@ -2,8 +2,8 @@
 
 ## 1.4.0 - 2017.12.13
 ### Added
-* Added `craft.imageOptimmize.createOptimizedImages` to allow for the dynamic creation of Optimized Image variants
-* Added `craft.imageOptimmize.placeholderBox` to create a transparent SVG placeholder box of an arbitrary size and color
+* Added `craft.imageOptimize.createOptimizedImages` to allow for the dynamic creation of Optimized Image variants
+* Added `craft.imageOptimize.placeholderBox` to create a transparent SVG placeholder box of an arbitrary size and color
 
 ### Changed
 * Updated README.md to relect the new features
