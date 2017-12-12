@@ -49,12 +49,12 @@ class OptimizedImages extends Component
         $color = $color ?? '#CCC';
         $header = 'data:image/svg+xml,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-            . "width='$width' "
-            . "height='$height' "
-            . "style='background:$color' "
-            . "/>";
+            ."width='$width' "
+            ."height='$height' "
+            ."style='background:$color' "
+            ."/>";
 
-        return $header . ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($content);
+        return $header.ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($content);
     }
 
     /**
@@ -87,6 +87,7 @@ class OptimizedImages extends Component
      */
     public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model)
     {
+        $settings = ImageOptimize::$plugin->getSettings();
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
         $model->optimizedWebPImageUrls = [];
@@ -117,51 +118,62 @@ class OptimizedImages extends Component
                     $width = $variant['width'] * $retinaSize;
                     $transform->width = $width;
                     $transform->height = intval($width / $aspectRatio);
-                    $transform->quality = $variant['quality'];
+                    // Image quality
+                    $quality = $variant['quality'];
+                    if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
+                        $quality = intval($quality * (1 / intval($retinaSize)));
+                    }
+                    $transform->quality = $quality;
+                    // Interlaced (progressive JPEGs or interlaced PNGs)
                     if (property_exists($transform, 'interlace')) {
                         $transform->interlace = 'line';
                     }
-                    // Generate an image transform url
-                    $url = ImageOptimize::$transformClass::getTransformUrl(
-                        $asset,
-                        $transform,
-                        ImageOptimize::$transformParams
-                    );
-                    Craft::info(
-                        'URL created: '.print_r($url, true),
-                        __METHOD__
-                    );
-                    // Update the model
-                    if (!empty($url)) {
-                        // Store & prefetch image at the image URL
-                        ImageOptimize::$transformClass::prefetchRemoteFile($url);
-                        $model->optimizedImageUrls[$width] = $url;
-                        // Store & prefetch image at the webp URL
-                        $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
-                        ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
-                        $model->optimizedWebPImageUrls[$width] = $webPUrl;
-                        $model->variantSourceWidths[] = $variant['width'];
+                    // Only create the image variant if it is not upscaled, or they are okay with it being up-scaled
+                    if (($asset->width >= $transform->width && $asset->height >= $transform->height)
+                        || $settings->allowUpScaledImageVariants
+                    ) {
+                        // Generate an image transform url
+                        $url = ImageOptimize::$transformClass::getTransformUrl(
+                            $asset,
+                            $transform,
+                            ImageOptimize::$transformParams
+                        );
+                        Craft::info(
+                            'URL created: '.print_r($url, true),
+                            __METHOD__
+                        );
+                        // Update the model
+                        if (!empty($url)) {
+                            // Store & prefetch image at the image URL
+                            ImageOptimize::$transformClass::prefetchRemoteFile($url);
+                            $model->optimizedImageUrls[$width] = $url;
+                            // Store & prefetch image at the webp URL
+                            $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
+                            ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
+                            $model->optimizedWebPImageUrls[$width] = $webPUrl;
+                            $model->variantSourceWidths[] = $variant['width'];
+                        }
+                        $model->focalPoint = $asset->focalPoint;
+                        $model->originalImageWidth = $asset->width;
+                        $model->originalImageHeight = $asset->height;
+                        // Make our placeholder image once, from the first variant
+                        if (!$placeholderMade) {
+                            $model->placeholderWidth = $transform->width;
+                            $model->placeholderHeight = $transform->height;
+                            $this->generatePlaceholders($asset, $model, $aspectRatio);
+                            $placeholderMade = true;
+                        }
+                        Craft::info(
+                            'Created transforms for variant: '.print_r($variant, true),
+                            __METHOD__
+                        );
                     }
-                    $model->focalPoint = $asset->focalPoint;
-                    $model->originalImageWidth = $asset->width;
-                    $model->originalImageHeight = $asset->height;
-                    // Make our placeholder image once, from the first variant
-                    if (!$placeholderMade) {
-                        $model->placeholderWidth = $transform->width;
-                        $model->placeholderHeight = $transform->height;
-                        $this->generatePlaceholders($asset, $model, $aspectRatio);
-                        $placeholderMade = true;
-                    }
-                    Craft::info(
-                        'Created transforms for variant: '.print_r($variant, true),
-                        __METHOD__
-                    );
                 } else {
                     Craft::error(
                         'Could not create transform for: '.$asset->title
-                        . " - Final format: ".$finalFormat
-                        . " - Element extension: ".$asset->getExtension()
-                        . " - canManipulateAsImage: ".Image::canManipulateAsImage($asset->getExtension()),
+                        ." - Final format: ".$finalFormat
+                        ." - Element extension: ".$asset->getExtension()
+                        ." - canManipulateAsImage: ".Image::canManipulateAsImage($asset->getExtension()),
                         __METHOD__
                     );
                 }
