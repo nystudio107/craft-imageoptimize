@@ -63,7 +63,11 @@
                         {% if imageSource |length and imageSource[retinaWidth] is defined and imageSource[retinaWidth] |length %}
                             {% set thisUrl = imageSource[retinaWidth] %}
                         {% else %}
-                            {% set errorMessage = " format cannot be manipulated" %}
+                            {% if settings.allowUpScaledImageVariants %}
+                                {% set errorMessage = " format cannot be manipulated" %}
+                            {% else %}
+                                {% set errorMessage = " image would be upscaled" %}
+                            {% endif %}
                         {% endif %}
                         {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
                         {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}

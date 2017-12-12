@@ -14,7 +14,9 @@ use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
+use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
+use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 
 use Craft;
 use craft\base\Element;
@@ -38,6 +40,7 @@ use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\Volumes;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
 
 use yii\base\Event;
@@ -51,10 +54,11 @@ use yii\base\Event;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService    optimize
- * @property PlaceholderService placeholder
- * @property Settings           $settings
- * @method   Settings           getSettings()
+ * @property OptimizeService        optimize
+ * @property PlaceholderService     placeholder
+ * @property OptimizedImagesService optimizedImages
+ * @property Settings               $settings
+ * @method   Settings               getSettings()
  */
 class ImageOptimize extends Plugin
 {
@@ -97,6 +101,17 @@ class ImageOptimize extends Plugin
         self::$previousTransformMethod = $settings->transformMethod;
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
+
+        // Register our variables
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('imageOptimize', ImageOptimizeVariable::class);
+            }
+        );
 
         // Register our Field
         Event::on(
@@ -235,6 +250,30 @@ class ImageOptimize extends Plugin
                 $element = $event->element;
                 $isNewElement = $event->isNew;
                 if (($element instanceof Asset) && (!$isNewElement)) {
+                    // Purge the URL
+                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                        $element,
+                        ImageOptimize::$transformParams
+                    );
+                    if ($purgeUrl) {
+                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    }
+                }
+            }
+        );
+
+        // Handler: Elements::EVENT_BEFORE_DELETE_ELEMENT
+        Event::on(
+            Elements::class,
+            Elements::EVENT_BEFORE_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::trace(
+                    'Elements::EVENT_BEFORE_DELETE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Element $element */
+                $element = $event->element;
+                if ($element instanceof Asset) {
                     // Purge the URL
                     $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
                         $element,

@@ -96,8 +96,6 @@ For image transforms, and set both **Quality** and **Format** to `Auto` in the A
 
 ### Using the Optimized Images Field
 
-#### In the AdminCP
-
 To create responsive image variants for all of your images, create an **OptimizedImages** Field.
 
 **Transform Method** let you choose to use the built-in Craft transforms or a service like [Imgix](https://www.imgix.com/) for the responsive image variants.
@@ -119,6 +117,8 @@ For each Optimized Image Variant, set:
  
  Once you have set up your field, add it to your asset Volume's layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
 
+By default, ImageOptimize automatically will decrease the `quality` setting of retina images, as discussed in the [Retina revolution](https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/) article. This allows for increasing the visual quality of the retina images while keeping the file size modest. You can disable this via the `lowerQualityRetinaImageVariants` setting in `config.php`.
+
 Whenever you add an OptimizedImages field to an asset Volume's layout, or make changes to an existing OptimizedImages field's settings, it will automatically generate your responsive image variants for you.
 
 If you double-click on an asset (or click on an asset, and choose **Edit Asset** from the gear menu), you will now see all of your responsive image variants for that image:
@@ -126,6 +126,8 @@ If you double-click on an asset (or click on an asset, and choose **Edit Asset**
 ![Screenshot](resources/screenshots/image-variant-field.png)
 
 You'll see the responsive width of each image variant above each thumbnail, with the aspect ratio, file format, and file size below it. If you have `.webp` image variants configured, you will see them here as well.
+
+By default, ImageOptimize will not create Optimized Image Variants that would be up-scaled from the original source image. You can control this behavior via the `allowUpScaledImageVariants` setting in `config.php`.
 
 If you click on an image thumbnail, it will open up the full size image in a new browser tab.
 
@@ -139,11 +141,84 @@ In this example, no **Focal Point** has been set via Craft 3's built-in image ed
 
 There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn't been configured, so there are no `.webp` variants created.
 
-#### In your Templates
+### Dynamically creating Optimized Image Variants
+
+If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field, you can do that via:
+
+```
+{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ]
+) %}
+
+```
+
+All of these fields are required, and they are analogous to the settings provided by the Field. The `retinaSizes` is an array of multipliers for the retina variants. For instance, if we wanted both normal resolution and 2x variants of the above image, we'd do:
+
+```
+{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1', '2'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ]
+) %}
+
+```
+
+You can create as many Optimized Image Variants as you like, by just including another array of settings. For example, to create both 200x and 400x image variants, we could do:
+
+```
+{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+        {
+            'width': 400,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ]
+) %}
+
+```
+
+The `optimizedImages` object that is returned to you can be used in your templates as described in the *Displaying images on the frontend* section.
+
+### Displaying images on the frontend
 
 ImageOptimize makes it easy to create responsive images in your frontend templates. There are two primary ways to create responsive images: using the `<img srcset="">` element or using the `<picture>` element.
 
-##### Img srcset
+#### Img srcset
 
 To use `<img srcset="">` elements in your templates, you can just do:
 
@@ -180,7 +255,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
          data-sizes="100vw" />
 ```
 
-##### Picture Elements
+#### Picture Elements
 
 To use `<picture>` in your templates, you can just do:
 
@@ -233,7 +308,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
      </picture>
 ```
 
-##### Media Query srcset Sizes
+#### Media Query srcset Sizes
 
 If you need separate `srcset`s to match your media queries, you can use:
 
@@ -256,7 +331,7 @@ To mimic the `max-width` media query, you can do:
 
 ...to output all variants that match the passed in width or are smaller than the passed in width (which also includes any `2x` or `3x` retina variants).
 
-##### Placeholder Images
+#### Placeholder Images
 
 Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`. 
 
@@ -297,9 +372,9 @@ The image itself will only be 16px wide, so apply CSS styles to it such as:
 
 For extra visual lusciousness, you could also apply a [CSS blur filter](https://css-tricks.com/almanac/properties/f/filter/) to the `.lazyload` class.
 
-#### Advanced Usage
+## Advanced Usage
 
-##### Color Palette
+### Color Palette
 
 ImageOptimize extracts a color palette composed of the 5 most dominant colors used by an image that you can access from your templates:
 
@@ -318,7 +393,7 @@ Dominant Color Palette
 
 These colors are sorted by color dominance, and can be used to style other HTML elements with complimentary colors.
 
-##### Iterating Through URLs
+### Iterating Through URLs
 
 Should you want to iterate through the URLs individually, you can do that via:
 
@@ -345,7 +420,18 @@ Or to get the `width` as well as the `url`, you can do:
 
 ```
 
-### Using Optimized Image Transforms
+### Arbitrary placeholder SVGs
+
+Should you need to create an arbitrary placeholder SVG for lazy loading of images, you can do that via:
+
+```
+{% set placeholderBox = craft.imageOptimize.placeholderBox(100, 100, '#CCC') %}
+<img src="{{ placeholderBox }}" />
+```
+
+The method signature is `placeholderBox(WIDTH, HEIGHT, COLOR)`.
+
+## Using Optimized Image Transforms
 
 Once ImageOptimize is set up and configured, there's nothing left to do for optimizing your image transforms. It just works.
 
