@@ -2,9 +2,9 @@
 
 Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.
 
-**Note**: This plugin may become a paid add-on when the Craft Plugin store becomes available.
-
 ![Screenshot](resources/img/plugin-logo.png)
+
+**Note**: This plugin may become a paid add-on when the Craft Plugin store becomes available.
 
 ## Requirements
 
