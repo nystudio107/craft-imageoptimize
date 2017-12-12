@@ -4,9 +4,12 @@
 ### Added
 * Added `craft.imageOptimize.createOptimizedImages` to allow for the dynamic creation of Optimized Image variants
 * Added `craft.imageOptimize.placeholderBox` to create a transparent SVG placeholder box of an arbitrary size and color
+* Automatically reduce the quality of retina images (controllable via the `lowerQualityRetinaImageVariants` setting in `config.php`)
+* Don't create Optimized Image Variants if it means the original image would be up-scaled (controllable via the `allowUpScaledImageVariants` setting in `config.php`)
 
 ### Changed
 * Fixed an issue where deleted Optimized Image Variant blocks would cause an error once saved
+* Changed the default `optipng` compression to `-o3` so the compression time is more reasonable
 * Updated README.md to reflect the new features
 
 ## 1.3.6 - 2017.12.10
