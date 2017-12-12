@@ -220,8 +220,10 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             field = $block.find('input')[0];
             $(field).val(1200);
             field = $block.find('input')[1];
-            $(field).val(16);
+            $(field).val(1);
             field = $block.find('input')[2];
+            $(field).val(16);
+            field = $block.find('input')[3];
             $(field).val(9);
             field = $block.find('select')[0];
             $(field).val(82);
@@ -259,10 +261,11 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         deleteVariantBlock: function(container) {
+            var _this = this;
             container.velocity(this.getHiddenBlockCss(container), 'fast', $.proxy(function() {
                 container.remove();
+                _this.reIndexVariants();
             }, this));
-            this.reIndexVariants();
         },
 
         resetVariantBlockOrder: function() {

@@ -6,7 +6,8 @@
 * Added `craft.imageOptimize.placeholderBox` to create a transparent SVG placeholder box of an arbitrary size and color
 
 ### Changed
-* Updated README.md to relect the new features
+* Fixed an issue where deleted Optimized Image Variant blocks would cause an error once saved
+* Updated README.md to reflect the new features
 
 ## 1.3.6 - 2017.12.10
 ### Changed

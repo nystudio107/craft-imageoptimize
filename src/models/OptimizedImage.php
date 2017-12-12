@@ -255,6 +255,7 @@ class OptimizedImage extends Model
     {
         $width = $this->placeholderWidth ?? 1;
         $height = $this->placeholderHeight ?? 1;
+        $color = $color ?? $this->colorPalette[0] ?? '#CCC';
 
         return ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color);
     }
