@@ -1,11 +1,12 @@
 # ImageOptimize Changelog
 
-## 1.4.0 - 2017.12.13
+## 1.4.0 - 2017.12.12
 ### Added
 * Added `craft.imageOptimize.createOptimizedImages` to allow for the dynamic creation of Optimized Image variants
 * Added `craft.imageOptimize.placeholderBox` to create a transparent SVG placeholder box of an arbitrary size and color
 * Automatically reduce the quality of retina images (controllable via the `lowerQualityRetinaImageVariants` setting in `config.php`)
 * Don't create Optimized Image Variants if it means the original image would be up-scaled (controllable via the `allowUpScaledImageVariants` setting in `config.php`)
+* Purge URLs for assets that are deleted from services like Imgix
 
 ### Changed
 * Fixed an issue where deleted Optimized Image Variant blocks would cause an error once saved
