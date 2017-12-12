@@ -1,5 +1,13 @@
 # ImageOptimize Changelog
 
+## 1.4.0 - 2017.12.13
+### Added
+* Added `craft.imageOptimmize.createOptimizedImages` to allow for the dynamic creation of Optimized Image variants
+* Added `craft.imageOptimmize.placeholderBox` to create a transparent SVG placeholder box of an arbitrary size and color
+
+### Changed
+* Updated README.md to relect the new features
+
 ## 1.3.6 - 2017.12.10
 ### Changed
 * Fixed an error with Imgix transforms
