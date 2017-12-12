@@ -18,12 +18,26 @@ use craft\elements\Asset;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.2.0
+ * @since     1.4.0
  */
 class ImageOptimizeVariable
 {
     // Public Methods
     // =========================================================================
+
+    /**
+     * Return an SVG box as a placeholder image
+     *
+     * @param      $width
+     * @param      $height
+     * @param null $color
+     *
+     * @return string
+     */
+    public function placeholderBox($width, $height, $color = null)
+    {
+        return ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color);
+    }
 
     /**
      * @param Asset          $asset
@@ -33,8 +47,6 @@ class ImageOptimizeVariable
      */
     public function createOptimizedImages(Asset $asset, $variants = null)
     {
-        $model = ImageOptimize::$plugin->optimizedImages->createOptimizedImages($asset, $variants);
-
-        return $model;
+        return ImageOptimize::$plugin->optimizedImages->createOptimizedImages($asset, $variants);
     }
 }
