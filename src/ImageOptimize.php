@@ -14,6 +14,7 @@ use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
+use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 
 use Craft;
@@ -51,10 +52,11 @@ use yii\base\Event;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService    optimize
- * @property PlaceholderService placeholder
- * @property Settings           $settings
- * @method   Settings           getSettings()
+ * @property OptimizeService        optimize
+ * @property PlaceholderService     placeholder
+ * @property OptimizedImagesService optimizedImages
+ * @property Settings               $settings
+ * @method   Settings               getSettings()
  */
 class ImageOptimize extends Plugin
 {

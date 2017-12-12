@@ -50,6 +50,7 @@
         "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptimize/master/CHANGELOG.md",
         "components": {
             "optimize": "nystudio107\\imageoptimize\\services\\Optimize",
+            "optimizedImages": "nystudio107\\imageoptimize\\services\\OptimizedImages",
             "placeholder": "nystudio107\\imageoptimize\\services\\Placeholder"
         },
         "class": "nystudio107\\imageoptimize\\ImageOptimize"

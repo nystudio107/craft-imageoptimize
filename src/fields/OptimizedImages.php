@@ -18,9 +18,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
-use craft\helpers\Image;
 use craft\helpers\Json;
-use craft\models\AssetTransform;
 use craft\validators\ArrayValidator;
 
 use yii\db\Schema;
@@ -150,129 +148,14 @@ class OptimizedImages extends Field
         // Create a new OptimizedImage model and populate it
         $model = new OptimizedImage($value);
         if (!empty($this->currentAsset)) {
-            $this->populateOptimizedImageModel($this->currentAsset, $model);
+            ImageOptimize::$plugin->optimizedImages->populateOptimizedImageModel(
+                $this->currentAsset,
+                $this->variants,
+                $model
+            );
         }
 
         return $model;
-    }
-
-    /**
-     * @param Asset          $element
-     * @param OptimizedImage $model
-     */
-    protected function populateOptimizedImageModel(Asset $element, OptimizedImage $model)
-    {
-        // Empty our the optimized image URLs
-        $model->optimizedImageUrls = [];
-        $model->optimizedWebPImageUrls = [];
-        $model->variantSourceWidths = [];
-
-        /** @var AssetTransform $transform */
-        $transform = new AssetTransform();
-        $placeholderMade = false;
-        foreach ($this->variants as $variant) {
-            $retinaSizes = ['1'];
-            if (!empty($variant['retinaSizes'])) {
-                $retinaSizes = $variant['retinaSizes'];
-            }
-            foreach ($retinaSizes as $retinaSize) {
-                $transform->format = $variant['format'];
-                $finalFormat = $transform->format == null ? $element->getExtension() : $transform->format;
-                // Only try the transform if it's possible
-                if (Image::canManipulateAsImage($finalFormat)
-                    && Image::canManipulateAsImage($element->getExtension())
-                    && $element->height > 0) {
-                    // Create the transform based on the variant
-                    $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
-                    if ($useAspectRatio) {
-                        $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-                    } else {
-                        $aspectRatio = $element->width / $element->height;
-                    }
-                    $width = $variant['width'] * $retinaSize;
-                    $transform->width = $width;
-                    $transform->height = intval($width / $aspectRatio);
-                    $transform->quality = $variant['quality'];
-                    if (property_exists($transform, 'interlace')) {
-                        $transform->interlace = 'line';
-                    }
-                    // Generate an image transform url
-                    $url = ImageOptimize::$transformClass::getTransformUrl(
-                        $element,
-                        $transform,
-                        ImageOptimize::$transformParams
-                    );
-                    Craft::info(
-                        'URL created: '.print_r($url, true),
-                        __METHOD__
-                    );
-                    // Update the model
-                    if (!empty($url)) {
-                        // Store & prefetch image at the image URL
-                        ImageOptimize::$transformClass::prefetchRemoteFile($url);
-                        $model->optimizedImageUrls[$width] = $url;
-                        // Store & prefetch image at the webp URL
-                        $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
-                        ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
-                        $model->optimizedWebPImageUrls[$width] = $webPUrl;
-                        $model->variantSourceWidths[] = $variant['width'];
-                    }
-                    $model->focalPoint = $element->focalPoint;
-                    $model->originalImageWidth = $element->width;
-                    $model->originalImageHeight = $element->height;
-                    // Make our placeholder image once, from the first variant
-                    if (!$placeholderMade) {
-                        $model->placeholderWidth = $transform->width;
-                        $model->placeholderHeight = $transform->height;
-                        $this->generatePlaceholders($element, $model, $aspectRatio);
-                        $placeholderMade = true;
-                    }
-                    Craft::info(
-                        'Created transforms for variant: '.print_r($variant, true),
-                        __METHOD__
-                    );
-                } else {
-                    Craft::error(
-                        'Could not create transform for: '.$element->title
-                            . " - Final format: ".$finalFormat
-                            . " - Element extension: ".$element->getExtension()
-                            . " - canManipulateAsImage: ".Image::canManipulateAsImage($element->getExtension()),
-                        __METHOD__
-                    );
-                }
-            }
-        }
-    }
-
-    /**
-     * @param Asset          $element
-     * @param OptimizedImage $model
-     * @param                $aspectRatio
-     */
-    protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
-    {
-        $settings = ImageOptimize::$plugin->getSettings();
-        $placeholder = ImageOptimize::$plugin->placeholder;
-        if ($element->focalPoint) {
-            $position = $element->getFocalPoint();
-        } else {
-            $position = 'center-center';
-        }
-        $tempPath = $placeholder->createTempPlaceholderImage($element, $aspectRatio, $position);
-        if (!empty($tempPath)) {
-            // Generate our placeholder image
-            $model->placeholder = $placeholder->generatePlaceholderImage($tempPath, $aspectRatio, $position);
-            // Generate the color palette for the image
-            if ($settings->createColorPalette) {
-                $model->colorPalette = $placeholder->generateColorPalette($tempPath);
-            }
-            // Generate the Potrace SVG
-            if ($settings->createPlaceholderSilhouettes) {
-                $model->placeholderSvg = $placeholder->generatePlaceholderSvg($tempPath);
-            }
-            // Get rid of our placeholder image
-            @unlink($tempPath);
-        }
     }
 
     /**
