@@ -16,6 +16,7 @@ use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
+use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 
 use Craft;
 use craft\base\Element;
@@ -39,6 +40,7 @@ use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\Volumes;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
 
 use yii\base\Event;
@@ -99,6 +101,17 @@ class ImageOptimize extends Plugin
         self::$previousTransformMethod = $settings->transformMethod;
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
+
+        // Register our variables
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                /** @var CraftVariable $variable */
+                $variable = $event->sender;
+                $variable->set('imageOptimize', ImageOptimizeVariable::class);
+            }
+        );
 
         // Register our Field
         Event::on(
