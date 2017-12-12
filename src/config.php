@@ -45,6 +45,14 @@ return [
      // It takes a bit of time, so if you never plan to use them, you can turn it off
     'createPlaceholderSilhouettes' => true,
 
+    // Controls whether retina images are automatically created with reduced quality
+    // as per https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
+    'lowerQualityRetinaImageVariants' => true,
+
+    // Controls whether Optimized Image Variants be created that would be up-scaled
+    // to be larger than the original source image
+    'allowUpScaledImageVariants' => false,
+
     // Default image variants
     'defaultVariants'            => [
         [
@@ -135,7 +143,7 @@ return [
         // png optimizers
         'optipng'   => [
             'commandPath'           => '/usr/bin/optipng',
-            'commandOptions'        => '-o7 -strip all',
+            'commandOptions'        => '-o3 -strip all',
             'commandOutputFileFlag' => '',
         ],
         'pngcrush'  => [

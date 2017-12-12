@@ -72,6 +72,22 @@ class Settings extends Model
     public $createPlaceholderSilhouettes = true;
 
     /**
+     * Controls whether retina images are automatically created with reduced quality
+     * as per https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
+     *
+     * @var bool
+     */
+    public $lowerQualityRetinaImageVariants = true;
+
+    /**
+     * Controls whether Optimized Image Variants be created that would be up-scaled
+     * to be larger than the original source image
+     *
+     * @var bool
+     */
+    public $allowUpScaledImageVariants = false;
+
+    /**
      * Default variants
      *
      * @var array
@@ -177,7 +193,7 @@ class Settings extends Model
         // png optimizers
         'optipng'   => [
             'commandPath'           => '/usr/bin/optipng',
-            'commandOptions'        => '-o7 -strip all',
+            'commandOptions'        => '-o3 -strip all',
             'commandOutputFileFlag' => '',
         ],
         'pngcrush'  => [
