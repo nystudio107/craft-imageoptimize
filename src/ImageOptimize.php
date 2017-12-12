@@ -262,6 +262,30 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Handler: Elements::EVENT_BEFORE_DELETE_ELEMENT
+        Event::on(
+            Elements::class,
+            Elements::EVENT_BEFORE_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::trace(
+                    'Elements::EVENT_BEFORE_DELETE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Element $element */
+                $element = $event->element;
+                if ($element instanceof Asset) {
+                    // Purge the URL
+                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                        $element,
+                        ImageOptimize::$transformParams
+                    );
+                    if ($purgeUrl) {
+                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    }
+                }
+            }
+        );
+
         // Handler: Assets::EVENT_BEFORE_REPLACE_ASSET
         Event::on(
             Assets::class,
