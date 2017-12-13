@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.4.0 - 2017.12.13
+## 1.4.1 - 2017.12.13
 ### Changed
 * Re-create the Responsive Image Variants when an Asset is replaced
 * Handle cache busting for the Responsive Image Variants by appending an `?mtime=` string to the URL
