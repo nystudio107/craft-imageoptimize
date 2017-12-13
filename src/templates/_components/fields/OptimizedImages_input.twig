@@ -169,8 +169,13 @@
     <div class="heading">
         <label>Optimized Image Variants:</label>
         <p>
+            {% if settings.allowUpScaledImageVariants %}
+                {% set errorMessage = "This is not an image that can be manipulated" %}
+            {% else %}
+                {% set errorMessage = "No Image Variants created because they would all be up-scaled" %}
+            {% endif %}
             <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
-            <span>{{ 'This is not an image that can be manipulated' |t('image-optimize') }}</span>
+            <span>{{ errorMessage |t('image-optimize') }}</span>
         </p>
     </div>
 </div>
