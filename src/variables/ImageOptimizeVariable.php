@@ -14,6 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
 use craft\elements\Asset;
+use craft\helpers\Template;
 
 /**
  * @author    nystudio107
@@ -32,11 +33,11 @@ class ImageOptimizeVariable
      * @param      $height
      * @param null $color
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function placeholderBox($width, $height, $color = null)
     {
-        return ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color);
+        return Template::raw(ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color));
     }
 
     /**
