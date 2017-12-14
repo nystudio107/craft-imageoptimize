@@ -284,41 +284,43 @@ class Optimize extends Component
                             $quality
                         );
 
-                        // Get info on the original and the created variant
-                        $originalFileSize = filesize($tempPath);
-                        $variantFileSize = filesize($outputPath);
+                        if ($empty($outputPath)) {
+                            // Get info on the original and the created variant
+                            $originalFileSize = filesize($tempPath);
+                            $variantFileSize = filesize($outputPath);
 
-                        Craft::info(
-                            pathinfo($tempPath, PATHINFO_FILENAME)
-                            .'.'
-                            .pathinfo($tempPath, PATHINFO_EXTENSION)
-                            .' -> '
-                            .pathinfo($outputPath, PATHINFO_FILENAME)
-                            .'.'
-                            .pathinfo($outputPath, PATHINFO_EXTENSION)
-                            .' -> '
-                            .Craft::t('image-optimize', 'Original')
-                            .': '
-                            .$this->humanFileSize($originalFileSize, 1)
-                            .', '
-                            .Craft::t('image-optimize', 'Variant')
-                            .': '
-                            .$this->humanFileSize($variantFileSize, 1)
-                            .' -> '
-                            .Craft::t('image-optimize', 'Savings')
-                            .': '
-                            .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
-                            .'%',
-                            __METHOD__
-                        );
+                            Craft::info(
+                                pathinfo($tempPath, PATHINFO_FILENAME)
+                                .'.'
+                                .pathinfo($tempPath, PATHINFO_EXTENSION)
+                                .' -> '
+                                .pathinfo($outputPath, PATHINFO_FILENAME)
+                                .'.'
+                                .pathinfo($outputPath, PATHINFO_EXTENSION)
+                                .' -> '
+                                .Craft::t('image-optimize', 'Original')
+                                .': '
+                                .$this->humanFileSize($originalFileSize, 1)
+                                .', '
+                                .Craft::t('image-optimize', 'Variant')
+                                .': '
+                                .$this->humanFileSize($variantFileSize, 1)
+                                .' -> '
+                                .Craft::t('image-optimize', 'Savings')
+                                .': '
+                                .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
+                                .'%',
+                                __METHOD__
+                            );
 
-                        // Copy the image variant into place
-                        $this->copyImageVariantToVolume(
-                            $imageVariantCreators[$variantCreator],
-                            $asset,
-                            $index,
-                            $outputPath
-                        );
+                            // Copy the image variant into place
+                            $this->copyImageVariantToVolume(
+                                $imageVariantCreators[$variantCreator],
+                                $asset,
+                                $index,
+                                $outputPath
+                            );
+                        }
                     }
                 }
             }
@@ -330,9 +332,9 @@ class Optimize extends Component
      * @param string  $tempPath
      * @param int     $imageQuality
      *
-     * @return string the path to the created variant
+     * @return string|null the path to the created variant
      */
-    protected function executeVariantCreator($variantCreatorCommand, string $tempPath, int $imageQuality): string
+    protected function executeVariantCreator($variantCreatorCommand, string $tempPath, int $imageQuality)
     {
         $outputPath = $tempPath;
         // Make sure the command exists
@@ -381,6 +383,7 @@ class Optimize extends Component
                 .Craft::t('image-optimize', 'does not exist'),
                 __METHOD__
             );
+            $$outputPath = null;
         }
 
         return $outputPath;

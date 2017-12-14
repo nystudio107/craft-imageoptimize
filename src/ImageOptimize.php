@@ -308,6 +308,21 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Handler: Elements::EVENT_AFTER_REPLACE_ASSET
+        Event::on(
+            Assets::class,
+            Assets::EVENT_AFTER_REPLACE_ASSET,
+            function (ReplaceAssetEvent $event) {
+                Craft::trace(
+                    'Assets::EVENT_AFTER_REPLACE_ASSET',
+                    __METHOD__
+                );
+                /** @var Asset $element */
+                $element = $event->asset;
+                ImageOptimize::$plugin->optimize->resaveAsset($element->id);
+            }
+        );
+
         // Do something after we're installed
         Event::on(
             Plugins::class,

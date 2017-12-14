@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 
+use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\base\Model;
 use craft\validators\ArrayValidator;
@@ -107,21 +108,21 @@ class OptimizedImage extends Model
     /**
      * Return the first image variant URL
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function src(): string
     {
-        return reset($this->optimizedImageUrls);
+        return Template::raw(reset($this->optimizedImageUrls));
     }
 
     /**
      * Return a string of image URLs and their sizes
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcset(): string
     {
-        return $this->getSrcsetFromArray($this->optimizedImageUrls);
+        return Template::raw($this->getSrcsetFromArray($this->optimizedImageUrls));
     }
 
     /**
@@ -129,13 +130,13 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetWidth(int $width): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
 
-        return $this->getSrcsetFromArray($subset);
+        return Template::raw($this->getSrcsetFromArray($subset));
     }
 
     /**
@@ -143,13 +144,13 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetMinWidth(int $width): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
 
-        return $this->getSrcsetFromArray($subset);
+        return Template::raw($this->getSrcsetFromArray($subset));
     }
 
     /**
@@ -157,23 +158,23 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetMaxWidth(int $width): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
 
-        return $this->getSrcsetFromArray($subset);
+        return Template::raw($this->getSrcsetFromArray($subset));
     }
 
     /**
      * Return a string of webp image URLs and their sizes
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetWebp(): string
     {
-        return $this->getSrcsetFromArray($this->optimizedWebPImageUrls);
+        return Template::raw($this->getSrcsetFromArray($this->optimizedWebPImageUrls));
     }
 
     /**
@@ -181,13 +182,13 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetWidthWebp(int $width): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
 
-        return $this->getSrcsetFromArray($subset);
+        return Template::raw($this->getSrcsetFromArray($subset));
     }
 
     /**
@@ -195,13 +196,13 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetMinWidthWebp(int $width): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
 
-        return $this->getSrcsetFromArray($subset);
+        return Template::raw($this->getSrcsetFromArray($subset));
     }
 
     /**
@@ -209,19 +210,19 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function srcsetMaxWidthWebp(int $width): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
 
-        return $this->getSrcsetFromArray($subset);
+        return Template::raw($this->getSrcsetFromArray($subset));
     }
 
     /**
      * Return a base64-encoded placeholder image
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function placeholderImage()
     {
@@ -231,7 +232,7 @@ class OptimizedImage extends Model
             $content = $this->placeholder;
         }
 
-        return $header . rawurlencode($content);
+        return Template::raw($header . rawurlencode($content));
     }
 
     /**
@@ -249,7 +250,7 @@ class OptimizedImage extends Model
      *
      * @param null $color
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function placeholderBox($color = null)
     {
@@ -257,7 +258,7 @@ class OptimizedImage extends Model
         $height = $this->placeholderHeight ?? 1;
         $color = $color ?? $this->colorPalette[0] ?? '#CCC';
 
-        return ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color);
+        return Template::raw(ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color));
     }
 
     /**
@@ -273,7 +274,7 @@ class OptimizedImage extends Model
     /**
      * Return a silhouette of the image as an SVG placeholder
      *
-     * @return string
+     * @return \Twig_Markup|null
      */
     public function placeholderSilhouette()
     {
@@ -283,7 +284,7 @@ class OptimizedImage extends Model
             $content = $this->placeholderSvg;
         }
 
-        return $header . $content;
+        return Template::raw($header . $content);
     }
 
     /**
