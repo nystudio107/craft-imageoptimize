@@ -143,7 +143,11 @@ There are also warnings indicating that the original image is too small, and is 
 
 ### Dynamically creating Optimized Image Variants
 
-If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field, you can do that via:
+If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
+
+*N.B.:* If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+
+To create Optimized Image Variants dynamically in your templates, you can do:
 
 ```
 {% set optimzedImages = craft.imageOptimize.createOptimizedImages(
@@ -224,8 +228,8 @@ To use `<img srcset="">` elements in your templates, you can just do:
 
 ```
     {% set someAsset = entry.myAssetField %}
-    <img src="{{ someAsset.one().optimizedImages.src() }}"
-         srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+    <img src="{{ someAsset.one().optimizedImages.src() |raw }}"
+         srcset="{{ someAsset.one().optimizedImages.srcset() |raw }}"
          sizes="100vw" />
 ```
 

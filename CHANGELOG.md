@@ -6,6 +6,7 @@
 * Handle cache busting for the Responsive Image Variants by appending an `?mtime=` string to the URL
 * Better display of image variants when no variants are created
 * No longer throws errors if you don't have the an image variant creator installed
+* Wrap URLs and data returned to templates with `Template::raw()` so they won't be HTML entity encoded by default
 
 ## 1.4.0 - 2017.12.12
 ### Added
