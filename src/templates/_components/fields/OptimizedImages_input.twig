@@ -58,10 +58,14 @@
             <div class="io-field-display-wrapper">
                 {% for imageSource in imageSources %}
                     <div class="io-inline-image-container">
+                        {% set cacheBustString = "" %}
                         {% set thisUrl = "" %}
                         {% set errorMessage = ' variant does not exist' %}
                         {% if imageSource |length and imageSource[retinaWidth] is defined and imageSource[retinaWidth] |length %}
                             {% set thisUrl = imageSource[retinaWidth] %}
+                            {% if "?" not in thisUrl %}
+                                {% set cacheBustString = "?mtime=" ~ now|date('U') %}
+                            {% endif %}
                         {% else %}
                             {% if settings.allowUpScaledImageVariants %}
                                 {% set errorMessage = " format cannot be manipulated" %}
@@ -107,9 +111,9 @@
                         {% endif %}
                         {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
                             <div style="width: 200px; vertical-align: top;">
-                                <a href="{{ thisUrl ~ "?mtime=" ~ now|date('U') }}" target="_blank">
+                                <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
                                     <div style="position: relative;">
-                                        <img class="io-soft-shadow-img" src="{{ thisUrl ~ "?mtime=" ~ now|date('U') }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                        <img class="io-soft-shadow-img" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
                                         {% if (retinaSizes |length) > 1 %}
                                             <h4 class="io-retina-size-badge">
                                                 {{ retinaSize }}x
