@@ -284,7 +284,7 @@ class Optimize extends Component
                             $quality
                         );
 
-                        if ($empty($outputPath)) {
+                        if (empty($outputPath)) {
                             // Get info on the original and the created variant
                             $originalFileSize = filesize($tempPath);
                             $variantFileSize = filesize($outputPath);
