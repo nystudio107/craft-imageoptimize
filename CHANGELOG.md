@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.2 - 2017.12.15
+### Changed
+* Fixed an issue where `.webp` variants would not be created
+
 ## 1.4.1 - 2017.12.13
 ### Changed
 * Re-create the Responsive Image Variants when an Asset is replaced
