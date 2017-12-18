@@ -2,7 +2,7 @@
 
 ## 1.4.3 - 2017.12.18
 ### Added
-* 
+* It's now possible to set the default aspect ratios in the `config.php`
 
 ### Changed
 * No longer possible delete the last Optimized Image variant
