@@ -32,6 +32,21 @@ use yii\db\Schema;
  */
 class OptimizedImages extends Field
 {
+    // Constants
+    // =========================================================================
+
+    const DEFAULT_IMAGE_VARIANTS = [
+        [
+            'width'          => 1200,
+            'useAspectRatio' => true,
+            'aspectRatioX'   => 16.0,
+            'aspectRatioY'   => 9.0,
+            'retinaSizes'    => ['1'],
+            'quality'        => 82,
+            'format'         => 'jpg',
+        ],
+    ];
+
     // Public Properties
     // =========================================================================
 
@@ -88,6 +103,10 @@ class OptimizedImages extends Field
                     $this->variants = $settings->defaultVariants;
                 }
             }
+        }
+        // If the user has deleted all default variants, provide a fallback
+        if (empty($this->variants)) {
+            $this->variants = DEFAULT_IMAGE_VARIANTS;
         }
     }
 

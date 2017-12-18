@@ -115,6 +115,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             });
 
             this.addAspectRatioHandlers();
+            this.reIndexVariants();
         },
 
         onMenuOptionSelect: function(option, menuBtn) {
@@ -171,6 +172,25 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                     }
                 });
             });
+            var disabledDeleteItem = false;
+            // If we only have one block, don't allow it to be deleted
+            if ($blocks.length == 1) {
+                disabledDeleteItem = true;
+            }
+            $blocks.find('> .actions > .settings').each(function (index, value) {
+                var $value = $(value);
+                var menuBtn;
+                if ($value.data('menubtn')) {
+                    menuBtn = $value.data('menubtn');
+                    $menuItem = $(menuBtn.menu.$menuList[1]);
+                    if (disabledDeleteItem) {
+                        $menuItem.addClass('disabled');
+                    } else {
+                        $menuItem.removeClass('disabled');
+                    }
+                }
+            });
+
         },
 
         addAspectRatioHandlers: function () {
