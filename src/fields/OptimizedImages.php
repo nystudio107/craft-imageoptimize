@@ -35,6 +35,9 @@ class OptimizedImages extends Field
     // Constants
     // =========================================================================
 
+    const DEFAULT_ASPECT_RATIOS = [
+        ['x' => 16, 'y' => 9],
+    ];
     const DEFAULT_IMAGE_VARIANTS = [
         [
             'width'          => 1200,
@@ -57,6 +60,11 @@ class OptimizedImages extends Field
 
     // Private Properties
     // =========================================================================
+
+    /**
+     * @var array
+     */
+    private $aspectRatios = [];
 
     /**
      * @var Asset
@@ -102,11 +110,16 @@ class OptimizedImages extends Field
                 if (empty($this->variants)) {
                     $this->variants = $settings->defaultVariants;
                 }
+                $this->aspectRatios = $settings->defaultAspectRatios;
             }
+        }
+        // If the user has deleted all default aspect ratios, provide a fallback
+        if (empty($this->aspectRatios)) {
+            $this->aspectRatios = self::DEFAULT_ASPECT_RATIOS;
         }
         // If the user has deleted all default variants, provide a fallback
         if (empty($this->variants)) {
-            $this->variants = DEFAULT_IMAGE_VARIANTS;
+            $this->variants = self::DEFAULT_IMAGE_VARIANTS;
         }
     }
 
@@ -211,14 +224,28 @@ class OptimizedImages extends Field
             '"'.$namespacePrefix.'"'.
             ');');
 
+        // Prep our aspect ratios
+        $aspectRatios = [];
+        $index = 1;
+        foreach ($this->aspectRatios as $aspectRatio) {
+            if ($index % 6 === 0) {
+                $aspectRatio['break'] = true;
+            }
+            $aspectRatios[] = $aspectRatio;
+            $index++;
+        }
+        $aspectRatio = ['x' => 2, 'y' => 2, 'custom' => true];
+        $aspectRatios[] = $aspectRatio;
+
         // Render the settings template
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/fields/OptimizedImages_settings',
             [
-                'field'     => $this,
-                'id'        => $id,
-                'name'      => $this->handle,
-                'namespace' => $namespacedId,
+                'field'        => $this,
+                'aspectRatios' => $aspectRatios,
+                'id'           => $id,
+                'name'         => $this->handle,
+                'namespace'    => $namespacedId,
             ]
         );
     }
