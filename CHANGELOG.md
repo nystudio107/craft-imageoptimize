@@ -1,5 +1,13 @@
 # ImageOptimize Changelog
 
+## 1.4.3 - 2017.12.18
+### Added
+* 
+
+### Changed
+* No longer possible delete the last Optimized Image variant
+* At least one Optimized Image variant will always be present
+
 ## 1.4.2 - 2017.12.15
 ### Changed
 * Fixed an issue where `.webp` variants would not be created
