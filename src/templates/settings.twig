@@ -54,7 +54,7 @@
             <div class="instructions">
                 <p class="readable">
                     These ImageOptimize settings are not editable here; this is just an informational display.
-                    Instead copy the <code>imageoptimize/config.php</code> file to <code>craft/config</code>, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
+                    Instead copy the <code>imageoptimize/config.php</code> file to Craft's <code>config/</code> directory, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
                 </p>
             </div>
         </div>
@@ -148,7 +148,7 @@
         <div class="heading">
             <label for="settings-transformMethod">OptimizedImages Field</label>
             <div class="instructions">
-                <p>ImageOptimize also comes with an <strong>OptimizedImages</strong> Field that makes creating responsive image sizes for <code>{{ '<img srcset="">' |escape }}</code> or <code>{{ '<picture>' |escape }}</code> elements sublimely easy. These responsive image transforms are created when an asset is <em>saved</em>, rather than at page load time, to ensure that frontend performance is optimal.</p>
+                <p>ImageOptimize also comes with an <strong>OptimizedImages</strong> Field that you can add to an Asset Volume's layout. The OptimizedImages Field makes creating responsive image sizes for <code>{{ '<img srcset="">' |escape }}</code> or <code>{{ '<picture>' |escape }}</code> elements sublimely easy.</p><p>These responsive image transforms are created when an asset is <em>saved</em>, rather than at page load time, to ensure that frontend performance is optimal.</p>
             </div>
         </div>
     </div>
