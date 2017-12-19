@@ -24,6 +24,7 @@ use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
 use craft\elements\Asset;
+use craft\events\AssetTransformImageEvent;
 use craft\events\ElementEvent;
 use craft\events\FieldEvent;
 use craft\events\GetAssetUrlEvent;
@@ -232,6 +233,22 @@ class ImageOptimize extends Plugin
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
                 $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
+                    $event
+                );
+            }
+        );
+
+        // Handler: AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS
+        Event::on(
+            AssetTransforms::class,
+            AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS,
+            function (AssetTransformImageEvent $event) {
+                Craft::trace(
+                    'AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS',
+                    __METHOD__
+                );
+                // Clean up any stray variant files
+                ImageOptimize::$plugin->optimize->handleAfterDeleteTransformsEvent(
                     $event
                 );
             }
