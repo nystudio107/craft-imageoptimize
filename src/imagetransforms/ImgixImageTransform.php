@@ -56,6 +56,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $url = null;
+        $settings = ImageOptimize::$plugin->getSettings();
 
         $domain = isset($params['domain'])
             ? $params['domain']
@@ -90,6 +91,14 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                         && ($params['fm'] == 'jpg')
                     ) {
                         $params['fm'] = 'pjpg';
+                    }
+                }
+                if ($settings->autoSharpenScaledImages) {
+                    // See if the image has been scaled >= 50%
+                    $widthScale = $asset->getWidth() / $transform->width;
+                    $heightScale = $asset->getHeight() / $transform->height;
+                    if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
+                        $params['sharp'] = 50.0;
                     }
                 }
                 // Handle the mode
@@ -131,7 +140,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
             $assetUri = self::getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
             Craft::trace(
-                'Imgix transform created for: ' . $assetUri . ' - Params: ' . print_r($params, true) . ' - URL: ' . $url,
+                'Imgix transform created for: '.$assetUri.' - Params: '.print_r($params, true).' - URL: '.$url,
                 __METHOD__
             );
         }
@@ -196,13 +205,13 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
         try {
             /** @var ResponseInterface $response */
             $response = $guzzleClient->post(self::IMGIX_PURGE_ENDPOINT, [
-                'auth' => [
+                'auth'        => [
                     $apiKey,
-                    ''
+                    '',
                 ],
                 'form_params' => [
                     'url' => $url,
-                ]
+                ],
             ]);
             // See if it succeeded
             if (($response->getStatusCode() >= 200)
@@ -211,12 +220,12 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                 $result = true;
             }
             Craft::info(
-                'URL purged: ' . $url . ' - Response code: ' . $response->getStatusCode(),
+                'URL purged: '.$url.' - Response code: '.$response->getStatusCode(),
                 __METHOD__
             );
         } catch (\Exception $e) {
             Craft::error(
-                'Error purging URL: ' . $url . ' - ' . $e->getMessage(),
+                'Error purging URL: '.$url.' - '.$e->getMessage(),
                 __METHOD__
             );
         }
@@ -231,7 +240,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $params = [
-            'domain' => $settings->imgixDomain,
+            'domain'  => $settings->imgixDomain,
             'api-key' => $settings->imgixApiKey,
         ];
 

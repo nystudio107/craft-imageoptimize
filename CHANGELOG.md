@@ -1,5 +1,14 @@
 # ImageOptimize Changelog
 
+## 1.4.3 - 2017.12.19
+### Added
+* Image transforms that are scaled down >= 50% are now auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`)
+* It's now possible to set the default aspect ratios in the `config.php`
+
+### Changed
+* No longer possible delete the last Optimized Image variant
+* At least one Optimized Image variant will always be present
+
 ## 1.4.2 - 2017.12.15
 ### Changed
 * Fixed an issue where `.webp` variants would not be created

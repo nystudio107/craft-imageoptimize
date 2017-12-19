@@ -8,7 +8,7 @@ Automatically create & optimize responsive image transforms, using either native
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-RC1 or later.
+This plugin requires Craft CMS 3.0.0-RC2 or later.
 
 ## Installation
 
@@ -444,6 +444,12 @@ If you have `devMode` on, ImageOptimize will log stats for images that it optimi
 ```
 2017-03-12 07:49:27 [192.168.10.1][1][-][info][nystudio107\ImageOptimize\services\Optimize::handleGenerateTransformEvent] zappa.png -> Original: 129.5K, Optimized: 100.8K -> Savings: 28.4%
 ```
+
+Image transforms that are scaled down >= 50% are auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`). 
+
+![Screenshot](resources/screenshots/auto-sharpen.png)
+
+Normal scaled image on the left, auto-sharpened scaled image on the right.
 
 ## Image Variants
 
