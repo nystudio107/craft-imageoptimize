@@ -28,7 +28,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "craftcms/cms": "^3.0.0-RC1",
+        "craftcms/cms": "^3.0.0-RC2",
         "cloudinary/cloudinary_php": "^1.8.0",
         "imageoptim/imageoptim": "^1.0.0",
         "imgix/imgix-php": "^1.1.0",

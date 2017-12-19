@@ -1,7 +1,8 @@
 # ImageOptimize Changelog
 
-## 1.4.3 - 2017.12.18
+## 1.4.3 - 2017.12.19
 ### Added
+* Image transforms that are scaled down >= 50% are now auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`)
 * It's now possible to set the default aspect ratios in the `config.php`
 
 ### Changed
