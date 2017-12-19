@@ -10,25 +10,29 @@
 
 namespace nystudio107\imageoptimize\services;
 
+use craft\errors\SiteNotFoundException;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 
 use Craft;
 use craft\base\Component;
 use craft\base\Image;
-use craft\base\LocalVolumeInterface;
 use craft\base\Volume;
 use craft\elements\Asset;
+use craft\errors\ImageException;
 use craft\errors\VolumeException;
-use craft\errors\VolumeObjectExistsException;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;
+use craft\image\Raster;
+use craft\models\AssetTransform;
 use craft\models\AssetTransformIndex;
 use craft\models\FieldLayout;
 use craft\queue\jobs\ResaveElements;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
+use yii\base\ErrorException;
+use yii\base\InvalidConfigException;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
 
@@ -79,6 +83,10 @@ class Optimize extends Component
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
         if ($settings->transformMethod == 'craft') {
+            // Apply any filters to the image
+            if (!empty($event->transformIndex->transform)) {
+                $this->applyFiltersToImage($event->transformIndex->transform, $event->asset, $event->image);
+            }
             // Save the transformed image to a temp file
             $tempPath = $this->saveTransformToTempFile(
                 $event->transformIndex,
@@ -124,6 +132,39 @@ class Optimize extends Component
         return $tempPath;
     }
 
+    /** @noinspection PhpUnusedParameterInspection
+     * @param AssetTransform $transform
+     * @param Asset          $asset
+     * @param Image          $image
+     */
+    protected function applyFiltersToImage(AssetTransform $transform, Asset $asset, Image $image)
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        // Only try to apply filters to Raster images
+        if ($image instanceof Raster) {
+            $imagineImage = $image->getImagineImage();
+            if ($settings->autoSharpenScaledImages) {
+                // See if the image has been scaled >= 50%
+                $widthScale = $asset->getWidth() / $image->getWidth();
+                $heightScale = $asset->getHeight() / $image->getHeight();
+                if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
+                    $imagineImage->effects()
+                        ->sharpen();
+                    Craft::trace(
+                        Craft::t(
+                            'image-optimize',
+                            'Image transform >= 50%, sharpened the transformed image: {name}',
+                            [
+                                'name' => $asset->title,
+                            ]
+                        ),
+                        __METHOD__
+                    );
+                }
+            }
+        }
+    }
+
     /**
      * Save out the image to a temp file
      *
@@ -136,7 +177,11 @@ class Optimize extends Component
     {
         $tempFilename = uniqid(pathinfo($index->filename, PATHINFO_FILENAME), true).'.'.$index->detectedFormat;
         $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
-        $image->saveAs($tempPath);
+        try {
+            $image->saveAs($tempPath);
+        } catch (ImageException $e) {
+            Craft::error('Transformed image save failed: '.$e->getMessage(), __METHOD__);
+        }
         Craft::info('Transformed image saved to: '.$tempPath, __METHOD__);
 
         return $tempPath;
@@ -403,10 +448,26 @@ class Optimize extends Component
     ) {
         // If the image variant creation succeeded, copy it into place
         if (!empty($outputPath) && is_file($outputPath)) {
+            $volume = null;
             // Figure out the resulting path for the image variant
-            $volume = $asset->getVolume();
+            try {
+                $volume = $asset->getVolume();
+            } catch (InvalidConfigException $e) {
+                Craft::error(
+                    'Asset volume error: '.$e->getMessage(),
+                    __METHOD__
+                );
+            }
             $assetTransforms = Craft::$app->getAssetTransforms();
-            $transformPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath($asset, $index);
+            $transformPath = '';
+            try {
+                $transformPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath($asset, $index);
+            } catch (InvalidConfigException $e) {
+                Craft::error(
+                    'Error getting asset folder: '.$e->getMessage(),
+                    __METHOD__
+                );
+            }
             $variantPath = $transformPath.'.'.$variantCreatorCommand['imageVariantExtension'];
 
             // Delete the variant file in case it is stale
@@ -427,8 +488,7 @@ class Optimize extends Component
             // Now create it
             try {
                 $volume->createFileByStream($variantPath, $stream, []);
-            } catch (VolumeObjectExistsException $e) {
-                // We're fine with that.
+            } catch (VolumeException $e) {
                 Craft::error(
                     Craft::t('image-optimize', 'Failed to create image variant at: ')
                     .$outputPath,
@@ -436,8 +496,14 @@ class Optimize extends Component
                 );
             }
 
-            FileHelper::removeFile($outputPath);
-
+            try {
+                FileHelper::removeFile($outputPath);
+            } catch (ErrorException $e) {
+                Craft::error(
+                    'Error removing file: '.$e->getMessage(),
+                    __METHOD__
+                );
+            }
         } else {
             Craft::error(
                 Craft::t('image-optimize', 'Failed to create image variant at: ')
@@ -530,8 +596,6 @@ class Optimize extends Component
      * OptimizedImages field in the FieldLayout
      *
      * @param Volume $volume
-     *
-     * @throws \craft\errors\SiteNotFoundException
      */
     public function resaveVolumeAssets(Volume $volume)
     {
@@ -548,7 +612,15 @@ class Optimize extends Component
             }
         }
         if ($needToReSave) {
-            $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+            $siteId = 0;
+            try {
+                $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+            } catch (SiteNotFoundException $e) {
+                Craft::error(
+                    'Failed to get primary site: '.$e->getMessage(),
+                    __METHOD__
+                );
+            }
 
             $queue = Craft::$app->getQueue();
             $jobId = $queue->push(new ResaveElements([
@@ -591,15 +663,13 @@ class Optimize extends Component
                 'enabledForSite' => false,
             ],
         ]));
-        // @TODO: Run this queue immediately, so we don't have to wait for the next request
-        //$queue->run();
         Craft::trace(
             Craft::t(
                 'image-optimize',
                 'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
                 [
                     'elementId' => $id,
-                    'jobId' => $jobId,
+                    'jobId'     => $jobId,
                 ]
             ),
             __METHOD__

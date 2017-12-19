@@ -53,6 +53,9 @@ return [
     // to be larger than the original source image
     'allowUpScaledImageVariants' => false,
 
+    // Controls whether images scaled down >= 50% should be automatically sharpened
+    'autoSharpenScaledImages' => true,
+
     // Default aspect ratios
     'defaultAspectRatios' => [
         ['x' => 16, 'y' => 9],

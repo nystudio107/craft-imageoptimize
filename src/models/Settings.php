@@ -88,6 +88,13 @@ class Settings extends Model
     public $allowUpScaledImageVariants = false;
 
     /**
+     * Controls whether images scaled down >= 50% should be automatically sharpened
+     *
+     * @var bool
+     */
+    public $autoSharpenScaledImages = true;
+
+    /**
      * Default aspect ratios
      *
      * @var array
