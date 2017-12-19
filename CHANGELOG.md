@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.4.4 - 2017.12.21
+### Added
+* Image variant creators now clean up after themselves when an Asset transform is deleted
+
+### Changed
+
 ## 1.4.3 - 2017.12.19
 ### Added
 * Image transforms that are scaled down >= 50% are now auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`)

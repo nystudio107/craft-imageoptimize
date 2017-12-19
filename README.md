@@ -8,7 +8,7 @@ Automatically create & optimize responsive image transforms, using either native
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-RC2 or later.
+This plugin requires Craft CMS 3.0.0-RC3 or later.
 
 ## Installation
 
