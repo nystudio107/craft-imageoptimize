@@ -1,10 +1,11 @@
 # ImageOptimize Changelog
 
-## 1.4.4 - 2017.12.21
+## 1.4.4 - 2017.12.19
 ### Added
 * Image variant creators now clean up after themselves when an Asset transform is deleted
 
 ### Changed
+* ImageOptimize now _requires_ at least Craft CMS 3 RC3 or later
 
 ## 1.4.3 - 2017.12.19
 ### Added
