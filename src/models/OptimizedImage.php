@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 
+use Craft;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\base\Model;
@@ -217,6 +218,27 @@ class OptimizedImage extends Model
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
 
         return Template::raw($this->getSrcsetFromArray($subset));
+    }
+
+    /**
+     * Work around issues with `<img srcset>` returning sizes larger than are available
+     * as per: https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db
+     *
+     * @return int
+     */
+    public function maxSrcsetWidth(): int
+    {
+        $result = 0;
+        if (!empty($this->optimizedImageUrls))
+        {
+            $tempArray = $this->optimizedImageUrls;
+            ksort($tempArray, SORT_NUMERIC);
+
+            $keys = array_keys($tempArray);
+            $result = end($keys);
+        }
+
+        return $result;
     }
 
     /**
