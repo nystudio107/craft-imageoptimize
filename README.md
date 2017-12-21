@@ -227,13 +227,13 @@ ImageOptimize makes it easy to create responsive images in your frontend templat
 To use `<img srcset="">` elements in your templates, you can just do:
 
 ```
-    {% set someAsset = entry.myAssetField %}
-    <img src="{{ someAsset.one().optimizedImages.src() |raw }}"
-         srcset="{{ someAsset.one().optimizedImages.srcset() |raw }}"
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    <img src="{{ optimizedImages.src() }}"
+         srcset="{{ optimizedImages.srcset() }}"
          sizes="100vw" />
 ```
 
-...where `someAsset` is your Assets field handle, and `optimizedImages` is the handle to your OptimizedImages field. This will result in HTML like this being generated for you:
+...where `myAssetField` is your Assets field, and `optimizedImagesField` is your OptimizedImages field. This will result in HTML like this being generated for you:
 
 ```
     <img src="/assets/_1170x658_crop_center-center/painted-face.jpg"
@@ -253,9 +253,9 @@ The `sizes` attribute here is a simple one that just matches the browser's width
 If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
 ```
-    {% set someAsset = entry.myAssetField %}
-    <img src="{{ someAsset.one().optimizedImages.placeholderBox() }}"
-         data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    <img src="{{ optimizedImages.placeholderBox() }}"
+         data-srcset="{{ optimizedImages.srcset() }}"
          data-sizes="100vw" />
 ```
 
@@ -264,18 +264,19 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 To use `<picture>` in your templates, you can just do:
 
 ```
-    {% set someAsset = entry.myAssetField %}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    <img src="{{ optimizedImages.placeholderBox() }}"
     <picture>
-        <source srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
+        <source srcset="{{ optimizedImages.srcsetWebP() }}" 
                  sizes="100vw"
                  type="image/webp" />
-        <img src="{{ someAsset.one().optimizedImages.src() }}"
-             srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+        <img src="{{ optimizedImages.src() }}"
+             srcset="{{ optimizedImages.srcset() }}"
              sizes="100vw" />
      </picture>
 ```
 
-...where `someAsset` is your Assets field handle, and `optimizedImages` is the handle to your OptimizedImages field. This will result in HTML like this being generated for you:
+...where `myAssetField` is your Assets field, and `optimizedImagesField` is your OptimizedImages field. This will result in HTML like this being generated for you:
 
 ```
     <picture>
@@ -301,13 +302,13 @@ The `sizes` attribute here is a simple one that just matches the browser's width
 If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
 ```
-    {% set someAsset = entry.myAssetField %}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
     <picture>
-        <source data-srcset="{{ someAsset.one().optimizedImages.srcsetWebP() }}" 
+        <source data-srcset="{{ optimizedImages.srcsetWebP() }}" 
                  data-sizes="100vw"
                  type="image/webp" />
-        <img src="{{ someAsset.one().optimizedImages.placeholderBox() }}"
-             data-srcset="{{ someAsset.one().optimizedImages.srcset() }}"
+        <img src="{{ optimizedImages.placeholderBox() }}"
+             data-srcset="{{ optimizedImages.srcset() }}"
              data-sizes="100vw" />
      </picture>
 ```
@@ -316,22 +317,25 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
 
 If you need separate `srcset`s to match your media queries, you can use:
 
-    {{ someAsset.one().optimizedImages.srcsetWidth(970) }}
-    {{ someAsset.one().optimizedImages.srcsetWidthWebP(970) }}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {{ optimizedImages.srcsetWidth(970) }}
+    {{ optimizedImages.srcsetWidthWebP(970) }}
    
 ...to output all variants that exactly match the passed in width (which could be more than one, if you have set up `2x` or `3x` retina variants).
 
 To mimic the `min-width` media query, you can do:
 
-    {{ someAsset.one().optimizedImages.srcsetMinWidth(970) }}
-    {{ someAsset.one().optimizedImages.srcsetMinWidthWebP(970) }}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {{ optimizedImages.srcsetMinWidth(970) }}
+    {{ optimizedImages.srcsetMinWidthWebP(970) }}
 
 ...to output all variants that match the passed in width or are larger than the passed in width (which also includes any `2x` or `3x` retina variants).
 
 To mimic the `max-width` media query, you can do:
 
-    {{ someAsset.one().optimizedImages.srcsetMaxWidth(970) }}
-    {{ someAsset.one().optimizedImages.srcsetMaxWidthWebP(970) }}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {{ optimizedImages.srcsetMaxWidth(970) }}
+    {{ optimizedImages.srcsetMaxWidthWebP(970) }}
 
 ...to output all variants that match the passed in width or are smaller than the passed in width (which also includes any `2x` or `3x` retina variants).
 
@@ -383,8 +387,8 @@ For extra visual lusciousness, you could also apply a [CSS blur filter](https://
 ImageOptimize extracts a color palette composed of the 5 most dominant colors used by an image that you can access from your templates:
 
 ```
-    {% set someAsset = entry.myAssetField %}
-    {% for color in someAsset.optimizedImages.colorPalette %}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {% for color in optimizedImages.colorPalette %}
         <div style="background-color: {{ color }}">
         </div>
     {% endfor %}
@@ -402,11 +406,11 @@ These colors are sorted by color dominance, and can be used to style other HTML 
 Should you want to iterate through the URLs individually, you can do that via:
 
 ```
-    {% set someAsset = entry.myAssetField %}
-    {% for url in someAsset.optimizedImages.optimizedImageUrls %}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {% for url in optimizedImages.optimizedImageUrls %}
         {{ url }}
     {% endfor %}
-    {% for url in someAsset.optimizedImages.optimizedWebPImageUrls %}
+    {% for url in optimizedImages.optimizedWebPImageUrls %}
         {{ url }}
     {% endfor %}
 ```
@@ -414,11 +418,11 @@ Should you want to iterate through the URLs individually, you can do that via:
 Or to get the `width` as well as the `url`, you can do:
 
 ```
-    {% set someAsset = entry.myAssetField %}
-    {% for width,url in someAsset.optimizedImages.optimizedImageUrls %}
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {% for width,url in optimizedImages.optimizedImageUrls %}
         {{ width ~ ' - ' ~ url }}
     {% endfor %}
-    {% for width,url in someAsset.optimizedImages.optimizedWebPImageUrls %}
+    {% for width,url in optimizedImages.optimizedWebPImageUrls %}
         {{ width ~ ' - ' ~ url }}
     {% endfor %}
 
@@ -434,6 +438,20 @@ Should you need to create an arbitrary placeholder SVG for lazy loading of image
 ```
 
 The method signature is `placeholderBox(WIDTH, HEIGHT, COLOR)`.
+
+### Miscelaneous
+
+The `maxSrcsetWidth()` method allows you to work around issues with `<img srcset>` returning sizes larger than are available as per the [Unexpected Image Sizes](https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db) article. It returns the width of the largest Optimized Image Variant:
+
+```
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    <img src="{{ optimizedImages.src() }}"
+         srcset="{{ optimizedImages.srcset() }}"
+         sizes="100vw"
+         width="{{ optimizedImages.maxSrcsetWidth() }}"
+         height="auto" />
+```
+
 
 ## Using Optimized Image Transforms
 

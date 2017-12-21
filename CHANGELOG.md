@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.5 - 2017.12.21
+### Added
+* Added `.getMaxSrcsetWidth()` to work around issues with `<img srcset>` choosing sizes larger than are available
+
 ## 1.4.4 - 2017.12.19
 ### Added
 * Image variant creators now clean up after themselves when an Asset transform is deleted
