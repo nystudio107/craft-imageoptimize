@@ -16,6 +16,7 @@ use nystudio107\imageoptimize\lib\Potracio;
 use Craft;
 use craft\base\Component;
 use craft\elements\Asset;
+use craft\errors\ImageException;
 use craft\helpers\Image;
 use craft\helpers\StringHelper;
 use craft\image\Raster;
@@ -38,11 +39,35 @@ class Placeholder extends Component
     const TEMP_PLACEHOLDER_WIDTH = 300;
     const TEMP_PLACEHOLDER_QUALITY = 75;
 
+    const MAX_SILHOUETTE_SIZE = 30 * 1024;
+
     // Public Properties
     // =========================================================================
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Return an SVG box as a placeholder image
+     *
+     * @param      $width
+     * @param      $height
+     * @param null $color
+     *
+     * @return string
+     */
+    public function generatePlaceholderBox($width, $height, $color = null)
+    {
+        $color = $color ?? '#CCC';
+        $header = 'data:image/svg+xml,';
+        $content = "<svg xmlns='http://www.w3.org/2000/svg' "
+            ."width='$width' "
+            ."height='$height' "
+            ."style='background:$color' "
+            ."/>";
+
+        return $header.ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($content);
+    }
 
     /**
      * Generate a base64-encoded placeholder image
@@ -106,9 +131,23 @@ class Placeholder extends Component
             $pot->process();
 
             $result = $pot->getSVG(1);
+
+            // Optimize the result if we got one
+            if (!empty($result)) {
+                $result = ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
+            }
+
+            // If Potracio failed or this is larger than MAX_SILHOUETTE_SIZE bytes, just return a box
+            if (empty($result) || (strlen($result) > self::MAX_SILHOUETTE_SIZE)) {
+                $size = getimagesize($tempPath);
+                if ($size !== false) {
+                    list($width, $height) = $size;
+                    $result = $this->generatePlaceholderBox($width, $height);
+                }
+            }
         }
 
-        return ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
+        return ($result);
     }
 
     /**
@@ -201,7 +240,14 @@ class Placeholder extends Component
         $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';
         $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
         clearstatcache(true, $tempPath);
-        $image->saveAs($tempPath);
+        try {
+            $image->saveAs($tempPath);
+        } catch (ImageException $e) {
+            Craft::error(
+                'Error saving temporary image: '.$e->getMessage(),
+                __METHOD__
+            );
+        }
 
         return $tempPath;
     }

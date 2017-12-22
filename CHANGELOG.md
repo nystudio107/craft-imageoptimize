@@ -1,5 +1,13 @@
 # ImageOptimize Changelog
 
+## 1.4.5 - 2017.12.22
+### Added
+* Added `.getMaxSrcsetWidth()` to work around issues with `<img srcset>` choosing sizes larger than are available
+* Added a max size of 30K for generated silhouette SVGs, at which point it returns a simple SVG box
+
+### Changed
+* Better exception handling
+
 ## 1.4.4 - 2017.12.19
 ### Added
 * Image variant creators now clean up after themselves when an Asset transform is deleted

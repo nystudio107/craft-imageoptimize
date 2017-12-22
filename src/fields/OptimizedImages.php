@@ -174,8 +174,13 @@ class OptimizedImages extends Field
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
+        // If we're passed in a string, assume it's JSON-encoded, and decode it
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
+        }
+        // If it's not an array, default it to null
+        if (!is_array($value)) {
+            $value = null;
         }
         // Create a new OptimizedImage model and populate it
         $model = new OptimizedImage($value);

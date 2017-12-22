@@ -36,28 +36,6 @@ class OptimizedImages extends Component
     // =========================================================================
 
     /**
-     * Return an SVG box as a placeholder image
-     *
-     * @param      $width
-     * @param      $height
-     * @param null $color
-     *
-     * @return string
-     */
-    public function placeholderBox($width, $height, $color = null)
-    {
-        $color = $color ?? '#CCC';
-        $header = 'data:image/svg+xml,';
-        $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-            ."width='$width' "
-            ."height='$height' "
-            ."style='background:$color' "
-            ."/>";
-
-        return $header.ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($content);
-    }
-
-    /**
      * @param Asset $asset
      * @param array $variants
      *

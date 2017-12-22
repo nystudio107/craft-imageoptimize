@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 
+use Craft;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\base\Model;
@@ -220,6 +221,27 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Work around issues with `<img srcset>` returning sizes larger than are available
+     * as per: https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db
+     *
+     * @return int
+     */
+    public function maxSrcsetWidth(): int
+    {
+        $result = 0;
+        if (!empty($this->optimizedImageUrls))
+        {
+            $tempArray = $this->optimizedImageUrls;
+            ksort($tempArray, SORT_NUMERIC);
+
+            $keys = array_keys($tempArray);
+            $result = end($keys);
+        }
+
+        return $result;
+    }
+
+    /**
      * Return a base64-encoded placeholder image
      *
      * @return \Twig_Markup|null
@@ -258,7 +280,7 @@ class OptimizedImage extends Model
         $height = $this->placeholderHeight ?? 1;
         $color = $color ?? $this->colorPalette[0] ?? '#CCC';
 
-        return Template::raw(ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color));
+        return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
     }
 
     /**

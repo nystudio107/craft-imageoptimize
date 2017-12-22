@@ -37,7 +37,7 @@ class ImageOptimizeVariable
      */
     public function placeholderBox($width, $height, $color = null)
     {
-        return Template::raw(ImageOptimize::$plugin->optimizedImages->placeholderBox($width, $height, $color));
+        return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
     }
 
     /**
