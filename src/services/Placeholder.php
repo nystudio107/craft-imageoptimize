@@ -132,14 +132,22 @@ class Placeholder extends Component
 
             $result = $pot->getSVG(1);
 
-            // If this is larger than MAX_SILHOUETTE_SIZE bytes, just return a box
-            if (strlen($result) > self::MAX_SILHOUETTE_SIZE) {
-                list($w, $h) = getimagesize($tempPath);
-                $result = $this->generatePlaceholderBox($w, $h);
+            // Optimize the result if we got one
+            if (!empty($result)) {
+                $result = ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
+            }
+
+            // If Potracio failed or this is larger than MAX_SILHOUETTE_SIZE bytes, just return a box
+            if (empty($result) || (strlen($result) > self::MAX_SILHOUETTE_SIZE)) {
+                $size = getimagesize($tempPath);
+                if ($size !== false) {
+                    list($width, $height) = $size;
+                    $result = $this->generatePlaceholderBox($width, $height);
+                }
             }
         }
 
-        return ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
+        return ($result);
     }
 
     /**
