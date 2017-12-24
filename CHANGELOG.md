@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.6 - 2017.12.24
+### Changed
+* Handle the case of no Optimize Image Variants being created due to upscaling by just returning the original image
+
 ## 1.4.5 - 2017.12.22
 ### Added
 * Added `.getMaxSrcsetWidth()` to work around issues with `<img srcset>` choosing sizes larger than are available
