@@ -96,7 +96,7 @@ For image transforms, and set both **Quality** and **Format** to `Auto` in the A
 
 ### Using the Optimized Images Field
 
-To create responsive image variants for all of your images, create an **OptimizedImages** Field.
+To create responsive image variants for all of your images, create an **OptimizedImages** Field and add it to the Asset Volume field layout of the images you want optimized
 
 **Transform Method** let you choose to use the built-in Craft transforms or a service like [Imgix](https://www.imgix.com/) for the responsive image variants.
 

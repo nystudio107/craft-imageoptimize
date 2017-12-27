@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.6 - 2017.12.27
+### Changed
+* Handle the case of no Optimize Image Variants being created due to upscaling by just returning the original image
+* Made the documentation on the OptimizedImages Field more clear, in that it needs to be added to an Asset Volume's layout
+
 ## 1.4.5 - 2017.12.22
 ### Added
 * Added `.getMaxSrcsetWidth()` to work around issues with `<img srcset>` choosing sizes larger than are available

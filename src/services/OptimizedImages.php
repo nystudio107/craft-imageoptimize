@@ -70,81 +70,27 @@ class OptimizedImages extends Component
         $model->optimizedImageUrls = [];
         $model->optimizedWebPImageUrls = [];
         $model->variantSourceWidths = [];
+        $model->placeholderWidth = 0;
+        $model->placeholderHeight = 0;
 
-        /** @var AssetTransform $transform */
-        $transform = new AssetTransform();
-        $placeholderMade = false;
         foreach ($variants as $variant) {
             $retinaSizes = ['1'];
             if (!empty($variant['retinaSizes'])) {
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
-                $transform->format = $variant['format'];
-                $finalFormat = $transform->format == null ? $asset->getExtension() : $transform->format;
+                $finalFormat = $variant['format'] == null ? $asset->getExtension() : $variant['format'];
                 // Only try the transform if it's possible
                 if (Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
                     && $asset->height > 0) {
                     // Create the transform based on the variant
-                    $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
-                    if ($useAspectRatio) {
-                        $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
-                    } else {
-                        $aspectRatio = $asset->width / $asset->height;
-                    }
-                    $width = $variant['width'] * $retinaSize;
-                    $transform->width = $width;
-                    $transform->height = intval($width / $aspectRatio);
-                    // Image quality
-                    $quality = $variant['quality'];
-                    if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
-                        $quality = intval($quality * (1 / intval($retinaSize)));
-                    }
-                    $transform->quality = $quality;
-                    // Interlaced (progressive JPEGs or interlaced PNGs)
-                    if (property_exists($transform, 'interlace')) {
-                        $transform->interlace = 'line';
-                    }
+                    list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, $retinaSize);
                     // Only create the image variant if it is not upscaled, or they are okay with it being up-scaled
                     if (($asset->width >= $transform->width && $asset->height >= $transform->height)
                         || $settings->allowUpScaledImageVariants
                     ) {
-                        // Generate an image transform url
-                        $url = ImageOptimize::$transformClass::getTransformUrl(
-                            $asset,
-                            $transform,
-                            ImageOptimize::$transformParams
-                        );
-                        Craft::info(
-                            'URL created: '.print_r($url, true),
-                            __METHOD__
-                        );
-                        // Update the model
-                        if (!empty($url)) {
-                            // Store & prefetch image at the image URL
-                            ImageOptimize::$transformClass::prefetchRemoteFile($url);
-                            $model->optimizedImageUrls[$width] = $url;
-                            // Store & prefetch image at the webp URL
-                            $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
-                            ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
-                            $model->optimizedWebPImageUrls[$width] = $webPUrl;
-                            $model->variantSourceWidths[] = $variant['width'];
-                        }
-                        $model->focalPoint = $asset->focalPoint;
-                        $model->originalImageWidth = $asset->width;
-                        $model->originalImageHeight = $asset->height;
-                        // Make our placeholder image once, from the first variant
-                        if (!$placeholderMade) {
-                            $model->placeholderWidth = $transform->width;
-                            $model->placeholderHeight = $transform->height;
-                            $this->generatePlaceholders($asset, $model, $aspectRatio);
-                            $placeholderMade = true;
-                        }
-                        Craft::info(
-                            'Created transforms for variant: '.print_r($variant, true),
-                            __METHOD__
-                        );
+                        $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
                     }
                 } else {
                     Craft::error(
@@ -155,6 +101,34 @@ class OptimizedImages extends Component
                         __METHOD__
                     );
                 }
+            }
+        }
+
+        // If no image variants were created, populate it with the image itself
+        if (empty($model->optimizedImageUrls)) {
+            $finalFormat = $asset->getExtension();
+            if (Image::canManipulateAsImage($finalFormat)
+                && Image::canManipulateAsImage($finalFormat)
+                && $asset->height > 0) {
+                $variant =         [
+                    'width'          => $asset->width,
+                    'useAspectRatio' => false,
+                    'aspectRatioX'   => $asset->width,
+                    'aspectRatioY'   => $asset->height,
+                    'retinaSizes'    => ['1'],
+                    'quality'        => 0,
+                    'format'         => $finalFormat,
+                ];
+                list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, 1);
+                $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
+            } else {
+                Craft::error(
+                    'Could not create transform for: '.$asset->title
+                    ." - Final format: ".$finalFormat
+                    ." - Element extension: ".$asset->getExtension()
+                    ." - canManipulateAsImage: ".Image::canManipulateAsImage($asset->getExtension()),
+                    __METHOD__
+                );
             }
         }
     }
@@ -190,6 +164,86 @@ class OptimizedImages extends Component
             }
             // Get rid of our placeholder image
             @unlink($tempPath);
+        }
+    }
+
+    /**
+     * @param Asset $asset
+     * @param       $variant
+     * @param       $retinaSize
+     *
+     * @return array
+     */
+    protected function getTransformFromVariant(Asset $asset, $variant, $retinaSize): array
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        $transform = new AssetTransform();
+        $transform->format = $variant['format'];
+        $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
+        if ($useAspectRatio) {
+            $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+        } else {
+            $aspectRatio = $asset->width / $asset->height;
+        }
+        $width = $variant['width'] * $retinaSize;
+        $transform->width = $width;
+        $transform->height = intval($width / $aspectRatio);
+        // Image quality
+        $quality = $variant['quality'];
+        if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
+            $quality = intval($quality * (1 / intval($retinaSize)));
+        }
+        $transform->quality = $quality;
+        // Interlaced (progressive JPEGs or interlaced PNGs)
+        if (property_exists($transform, 'interlace')) {
+            $transform->interlace = 'line';
+        }
+
+        return [$transform, $aspectRatio];
+    }
+
+    /**
+     * @param Asset          $asset
+     * @param OptimizedImage $model
+     * @param                $transform
+     * @param                $variant
+     * @param                $aspectRatio
+     */
+    protected function addVariantImageToModel(Asset $asset, OptimizedImage $model, $transform, $variant, $aspectRatio): void
+    {
+// Generate an image transform url
+        $url = ImageOptimize::$transformClass::getTransformUrl(
+            $asset,
+            $transform,
+            ImageOptimize::$transformParams
+        );
+        Craft::info(
+            'URL created: '.print_r($url, true),
+            __METHOD__
+        );
+        // Update the model
+        if (!empty($url)) {
+            $model->variantSourceWidths[] = $variant['width'];
+            // Store & prefetch image at the image URL
+            ImageOptimize::$transformClass::prefetchRemoteFile($url);
+            $model->optimizedImageUrls[$transform->width] = $url;
+            // Store & prefetch image at the webp URL
+            $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
+            ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
+            $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;
+            $model->focalPoint = $asset->focalPoint;
+            $model->originalImageWidth = $asset->width;
+            $model->originalImageHeight = $asset->height;
+            // Make our placeholder image once, from the first variant
+            if (!$model->placeholderWidth) {
+                $model->placeholderWidth = $transform->width;
+                $model->placeholderHeight = $transform->height;
+                $this->generatePlaceholders($asset, $model, $aspectRatio);
+            }
+            Craft::info(
+                'Created transforms for variant: '.print_r($variant, true),
+                __METHOD__
+            );
         }
     }
 }
