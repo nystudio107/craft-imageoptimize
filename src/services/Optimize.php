@@ -652,7 +652,7 @@ class Optimize extends Component
      * @param Asset               $asset
      * @param AssetTransformIndex $transformIndex
      */
-    protected function cleanupImageVariants(Asset $asset, AssetTransformIndex $transformIndex): void
+    protected function cleanupImageVariants(Asset $asset, AssetTransformIndex $transformIndex)
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $assetTransforms = Craft::$app->getAssetTransforms();
