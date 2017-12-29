@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.7 - 2017.12.29
+### Changed
+* Fixed a regression that would cause issues with PHP 7.0 (but not later versions of PHP)
+
 ## 1.4.6 - 2017.12.27
 ### Changed
 * Handle the case of no Optimize Image Variants being created due to upscaling by just returning the original image
