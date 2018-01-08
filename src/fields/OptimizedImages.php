@@ -234,7 +234,7 @@ class OptimizedImages extends Field
         $index = 1;
         foreach ($this->aspectRatios as $aspectRatio) {
             if ($index % 6 === 0) {
-                $aspectRatio['break'] = true;
+                $aspectRatios[] = array('break' => true);
             }
             $aspectRatios[] = $aspectRatio;
             $index++;
