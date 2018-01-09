@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.8 - 2018.01.09
+### Changed
+* Fixed a flaw in the default aspect ratios
+
 ## 1.4.7 - 2017.12.29
 ### Changed
 * Fixed a regression that would cause issues with PHP 7.0 (but not later versions of PHP)
