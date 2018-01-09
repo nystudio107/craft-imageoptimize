@@ -98,43 +98,42 @@
                                     {% for aspectRatio in aspectRatios %}
                                         {% if aspectRatio.break is defined and aspectRatio.break %}
                                             </div><div>
-                                        {% else %}
-                                            {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
-                                            {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
-                                                {% set selectedAspectRatio = loop.index0 %}
-                                            {% endif %}
-                                            {% if thisAspectRatio < 1.0 %}
-                                                {% set thisWidth = containerSize / 2 %}
-                                                {% set thisHeight = thisWidth / thisAspectRatio %}
-                                            {% else %}
-                                                {% set thisHeight = containerSize / 2 %}
-                                                {% set thisWidth = thisHeight * thisAspectRatio %}
-                                            {% endif %}
-                                            {% set thisFontSize = 24 %}
-                                            {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
-
-                                            {% set selectedClass = '' %}
-                                            {% if selectedAspectRatio is same as(false) %}
-                                                {% if loop.last %}
-                                                    {% set selectedClass = 'io-selected-ar-box' %}
-                                                {% endif %}
-                                            {% else %}
-                                                {% if selectedAspectRatio == loop.index0 %}
-                                                    {% set selectedClass = 'io-selected-ar-box' %}
-                                                {% endif %}
-                                            {% endif %}
-                                            <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
-                                                <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ containerSize }}" width="{{ containerSize }}" preserveAspectRatio="xMidYMid meet">
-                                                    <rect x="0" y="0" width="{{ containerSize }}" height="{{ containerSize }}" stroke-width="4" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
-                                                    </rect>
-                                                    <rect x="1" y="1" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="2">
-                                                    </rect>
-                                                    <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
-                                                        {{ thisText }}
-                                                    </text>
-                                                </svg>
-                                            </div>
                                         {% endif %}
+                                        {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
+                                        {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
+                                            {% set selectedAspectRatio = loop.index0 %}
+                                        {% endif %}
+                                        {% if thisAspectRatio < 1.0 %}
+                                            {% set thisWidth = containerSize / 2 %}
+                                            {% set thisHeight = thisWidth / thisAspectRatio %}
+                                        {% else %}
+                                            {% set thisHeight = containerSize / 2 %}
+                                            {% set thisWidth = thisHeight * thisAspectRatio %}
+                                        {% endif %}
+                                        {% set thisFontSize = 24 %}
+                                        {% set thisText = aspectRatio.custom is defined ? '?' : aspectRatio.x ~ ':' ~ aspectRatio.y %}
+
+                                        {% set selectedClass = '' %}
+                                        {% if selectedAspectRatio is same as(false) %}
+                                            {% if loop.last %}
+                                                {% set selectedClass = 'io-selected-ar-box' %}
+                                            {% endif %}
+                                        {% else %}
+                                            {% if selectedAspectRatio == loop.index0 %}
+                                                {% set selectedClass = 'io-selected-ar-box' %}
+                                            {% endif %}
+                                        {% endif %}
+                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
+                                            <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ containerSize }}" width="{{ containerSize }}" preserveAspectRatio="xMidYMid meet">
+                                                <rect x="0" y="0" width="{{ containerSize }}" height="{{ containerSize }}" stroke-width="4" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
+                                                </rect>
+                                                <rect x="1" y="1" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="2">
+                                                </rect>
+                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                                    {{ thisText }}
+                                                </text>
+                                            </svg>
+                                        </div>
                                     {% endfor %}
                                     </div>
 
