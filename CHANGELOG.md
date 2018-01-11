@@ -1,8 +1,9 @@
 # ImageOptimize Changelog
 
-## 1.4.8 - 2018.01.09
+## 1.4.8 - 2018.01.11
 ### Changed
 * Fixed a flaw in the default aspect ratios
+* Fixed Focal Point resaving issue
 
 ## 1.4.7 - 2017.12.29
 ### Changed
