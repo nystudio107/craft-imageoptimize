@@ -66,11 +66,6 @@ class OptimizedImages extends Field
      */
     private $aspectRatios = [];
 
-    /**
-     * @var Asset
-     */
-    private $currentAsset = null;
-
     // Static Methods
     // =========================================================================
 
@@ -139,40 +134,51 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function beforeElementSave(ElementInterface $element, bool $isNew): bool
+    public function afterElementSave(ElementInterface $asset, bool $isNew)
     {
-        $this->currentAsset = null;
-        // Only stash the currentAsset if this is not a new element
-        if (!$isNew) {
-            /** @var Asset $element */
-            if ($element instanceof Asset) {
-                $this->currentAsset = $element;
-            }
-        }
+        parent::afterElementSave($asset, $isNew);
 
-        return parent::beforeElementSave($element, $isNew);
+        /** @var Asset $asset */
+        if ($asset instanceof Asset) {
+            // Create a new OptimizedImage model and populate it
+            $model = new OptimizedImage();
+            if (!empty($asset)) {
+                ImageOptimize::$plugin->optimizedImages->populateOptimizedImageModel(
+                    $asset,
+                    $this->variants,
+                    $model
+                );
+            }
+            // Save our field data directly into the content table
+            $asset->setFieldValue($this->handle, $this->serializeValue($model));
+            $table = $asset->getContentTable();
+            $column = $asset->getFieldColumnPrefix().$this->handle;
+            $data = Json::encode($this->serializeValue($asset->getFieldValue($this->handle), $asset));
+
+            Craft::trace(
+                print_r($data, true),
+                __METHOD__
+            );
+
+            Craft::trace(
+                'WOOF',
+                __METHOD__
+            );
+
+            Craft::$app->db->createCommand()
+                ->update($table, [
+                    $column => $data,
+                ], [
+                    'id' => $asset->contentId,
+                ], [], false)
+                ->execute();
+        }
     }
 
     /**
      * @inheritdoc
      */
-    public function afterElementSave(ElementInterface $element, bool $isNew)
-    {
-        parent::afterElementSave($element, $isNew);
-
-        /** @var Asset $element */
-        if ($element instanceof Asset) {
-            // If this is a new element, resave it so that it as an id for our asset transforms
-            if ($isNew) {
-                ImageOptimize::$plugin->optimize->resaveAsset($element->id);
-            }
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue($value, ElementInterface $asset = null)
     {
         // If we're passed in a string, assume it's JSON-encoded, and decode it
         if (is_string($value) && !empty($value)) {
@@ -184,13 +190,6 @@ class OptimizedImages extends Field
         }
         // Create a new OptimizedImage model and populate it
         $model = new OptimizedImage($value);
-        if (!empty($this->currentAsset)) {
-            ImageOptimize::$plugin->optimizedImages->populateOptimizedImageModel(
-                $this->currentAsset,
-                $this->variants,
-                $model
-            );
-        }
 
         return $model;
     }
