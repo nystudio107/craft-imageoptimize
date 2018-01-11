@@ -154,17 +154,6 @@ class OptimizedImages extends Field
             $table = $asset->getContentTable();
             $column = $asset->getFieldColumnPrefix().$this->handle;
             $data = Json::encode($this->serializeValue($asset->getFieldValue($this->handle), $asset));
-
-            Craft::trace(
-                print_r($data, true),
-                __METHOD__
-            );
-
-            Craft::trace(
-                'WOOF',
-                __METHOD__
-            );
-
             Craft::$app->db->createCommand()
                 ->update($table, [
                     $column => $data,
