@@ -66,7 +66,7 @@ class Placeholder extends Component
             ."style='background:$color' "
             ."/>";
 
-        return $header.ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($content);
+        return $header.ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
     }
 
     /**
@@ -134,7 +134,7 @@ class Placeholder extends Component
 
             // Optimize the result if we got one
             if (!empty($result)) {
-                $result = ImageOptimize::$plugin->optimize->encodeOptimizedSVGDataUri($result);
+                $result = ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($result);
             }
 
             // If Potracio failed or this is larger than MAX_SILHOUETTE_SIZE bytes, just return a box

@@ -16,11 +16,9 @@ use nystudio107\imageoptimize\fields\OptimizedImages;
 use Craft;
 use craft\base\Component;
 use craft\base\Image;
-use craft\base\Volume;
 use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\VolumeException;
-use craft\errors\SiteNotFoundException;
 use craft\events\AssetTransformImageEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
@@ -28,8 +26,6 @@ use craft\helpers\FileHelper;
 use craft\image\Raster;
 use craft\models\AssetTransform;
 use craft\models\AssetTransformIndex;
-use craft\models\FieldLayout;
-use craft\queue\jobs\ResaveElements;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
 use yii\base\ErrorException;
@@ -345,138 +341,6 @@ class Optimize extends Component
         }
 
         return $result;
-    }
-
-    /**
-     * Re-save all of the assets in all of the volumes
-     */
-    public function resaveAllVolumesAssets()
-    {
-        $volumes = Craft::$app->getVolumes()->getAllVolumes();
-        foreach ($volumes as $volume) {
-            if (is_subclass_of($volume, Volume::class)) {
-                /** @var Volume $volume */
-                $this->resaveVolumeAssets($volume);
-            }
-        }
-    }
-
-    /**
-     * Re-save all of the Asset elements in the Volume $volume that have an
-     * OptimizedImages field in the FieldLayout
-     *
-     * @param Volume $volume
-     */
-    public function resaveVolumeAssets(Volume $volume)
-    {
-        $needToReSave = false;
-        /** @var FieldLayout $fieldLayout */
-        $fieldLayout = $volume->getFieldLayout();
-        // Loop through the fields in the layout to see if there is an OptimizedImages field
-        if ($fieldLayout) {
-            $fields = $fieldLayout->getFields();
-            foreach ($fields as $field) {
-                if ($field instanceof OptimizedImages) {
-                    $needToReSave = true;
-                }
-            }
-        }
-        if ($needToReSave) {
-            $siteId = 0;
-            try {
-                $siteId = Craft::$app->getSites()->getPrimarySite()->id;
-            } catch (SiteNotFoundException $e) {
-                Craft::error(
-                    'Failed to get primary site: '.$e->getMessage(),
-                    __METHOD__
-                );
-            }
-
-            $queue = Craft::$app->getQueue();
-            $jobId = $queue->push(new ResaveElements([
-                'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
-                'elementType' => Asset::class,
-                'criteria'    => [
-                    'siteId'         => $siteId,
-                    'volumeId'       => $volume->id,
-                    'status'         => null,
-                    'enabledForSite' => false,
-                ],
-            ]));
-            Craft::trace(
-                Craft::t(
-                    'image-optimize',
-                    'Started resaveVolumeAssets queue job id: {jobId}',
-                    [
-                        'jobId' => $jobId,
-                    ]
-                ),
-                __METHOD__
-            );
-        }
-    }
-
-    /**
-     * Re-save an individual asset
-     *
-     * @param int $id
-     */
-    public function resaveAsset(int $id)
-    {
-        $queue = Craft::$app->getQueue();
-        $jobId = $queue->push(new ResaveElements([
-            'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
-            'elementType' => Asset::class,
-            'criteria'    => [
-                'id'             => $id,
-                'status'         => null,
-                'enabledForSite' => false,
-            ],
-        ]));
-        Craft::trace(
-            Craft::t(
-                'image-optimize',
-                'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
-                [
-                    'elementId' => $id,
-                    'jobId'     => $jobId,
-                ]
-            ),
-            __METHOD__
-        );
-    }
-
-    /**
-     * Create an optimized SVG data uri
-     * See: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
-     *
-     * @param string $uri
-     *
-     * @return string
-     */
-    public function encodeOptimizedSVGDataUri(string $uri): string
-    {
-        // First, uri encode everything
-        $uri = rawurlencode($uri);
-        $replacements = [
-            // remove newlines
-            '/%0A/' => '',
-            // put spaces back in
-            '/%20/' => ' ',
-            // put equals signs back in
-            '/%3D/' => '=',
-            // put colons back in
-            '/%3A/' => ':',
-            // put slashes back in
-            '/%2F/' => '/',
-            // replace quotes with apostrophes (may break certain SVGs)
-            '/%22/' => "'",
-        ];
-        foreach ($replacements as $pattern => $replacement) {
-            $uri = preg_replace($pattern, $replacement, $uri);
-        }
-
-        return $uri;
     }
 
     // Protected Methods

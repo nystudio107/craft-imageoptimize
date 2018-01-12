@@ -12,11 +12,11 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 
-use Craft;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\base\Model;
 use craft\validators\ArrayValidator;
+use yii\base\Exception;
 
 /**
  * @author    nystudio107
@@ -222,15 +222,15 @@ class OptimizedImage extends Model
 
     /**
      * Work around issues with `<img srcset>` returning sizes larger than are available
-     * as per: https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db
+     * as per:
+     * https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db
      *
      * @return int
      */
     public function maxSrcsetWidth(): int
     {
         $result = 0;
-        if (!empty($this->optimizedImageUrls))
-        {
+        if (!empty($this->optimizedImageUrls)) {
             $tempArray = $this->optimizedImageUrls;
             ksort($tempArray, SORT_NUMERIC);
 
@@ -350,7 +350,10 @@ class OptimizedImage extends Model
                 }
                 $url = UrlHelper::urlWithProtocol($url, $protocol);
             } else {
-                $url = UrlHelper::siteUrl($url);
+                try {
+                    $url = UrlHelper::siteUrl($url);
+                } catch (Exception $e) {
+                }
             }
         }
 
