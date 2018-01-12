@@ -4,6 +4,7 @@
 ### Changed
 * Fixed a flaw in the default aspect ratios
 * Fixed Focal Point resaving issue
+* Resaving Optimized Image Variants after making field changes should be quicker now
 
 ## 1.4.7 - 2017.12.29
 ### Changed
