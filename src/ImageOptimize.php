@@ -155,7 +155,7 @@ class ImageOptimize extends Plugin
                                     }
                                 }
                                 if ($needToReSave) {
-                                    ImageOptimize::$plugin->optimize->resaveVolumeAssets($volume);
+                                    ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
                                 }
                             }
                         }
@@ -180,7 +180,7 @@ class ImageOptimize extends Plugin
                         self::$previousTransformMethod = $settings->transformMethod;
                         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
                         self::$transformParams = self::$transformClass::getTransformParams();
-                        ImageOptimize::$plugin->optimize->resaveAllVolumesAssets();
+                        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
                     }
                 }
             }
@@ -200,7 +200,7 @@ class ImageOptimize extends Plugin
                     /** @var Volume $volume */
                     $volume = $event->volume;
                     if (is_subclass_of($volume, Volume::class)) {
-                        ImageOptimize::$plugin->optimize->resaveVolumeAssets($volume);
+                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
                     }
                 }
             }
@@ -336,7 +336,7 @@ class ImageOptimize extends Plugin
                 );
                 /** @var Asset $element */
                 $element = $event->asset;
-                ImageOptimize::$plugin->optimize->resaveAsset($element->id);
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
             }
         );
 

@@ -11,13 +11,21 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\models\OptimizedImage;
+use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
 
 use Craft;
 use craft\base\Component;
+use craft\base\ElementInterface;
+use craft\base\Field;
+use craft\base\Volume;
 use craft\elements\Asset;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\Image;
+use craft\helpers\Json;
 use craft\models\AssetTransform;
+use craft\models\FieldLayout;
 
 /**
  * @author    nystudio107
@@ -245,5 +253,170 @@ class OptimizedImages extends Component
                 __METHOD__
             );
         }
+    }
+
+    /**
+     * @param Field            $field
+     * @param ElementInterface $asset
+     *
+     * @throws \yii\db\Exception
+     */
+    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset)
+    {
+        /** @var Asset $asset */
+        if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
+            // Create a new OptimizedImage model and populate it
+            $model = new OptimizedImage();
+            if (!empty($asset)) {
+                $this->populateOptimizedImageModel(
+                    $asset,
+                    $field->variants,
+                    $model
+                );
+            }
+            // Save our field data directly into the content table
+            $asset->setFieldValue($field->handle, $field->serializeValue($model));
+            $table = $asset->getContentTable();
+            $column = $asset->getFieldColumnPrefix().$field->handle;
+            $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
+            Craft::$app->db->createCommand()
+                ->update($table, [
+                    $column => $data,
+                ], [
+                    'id' => $asset->contentId,
+                ], [], false)
+                ->execute();
+        }
+    }
+
+
+    /**
+     * Re-save all of the assets in all of the volumes
+     */
+    public function resaveAllVolumesAssets()
+    {
+        $volumes = Craft::$app->getVolumes()->getAllVolumes();
+        foreach ($volumes as $volume) {
+            if (is_subclass_of($volume, Volume::class)) {
+                /** @var Volume $volume */
+                $this->resaveVolumeAssets($volume);
+            }
+        }
+    }
+
+    /**
+     * Re-save all of the Asset elements in the Volume $volume that have an
+     * OptimizedImages field in the FieldLayout
+     *
+     * @param Volume $volume
+     */
+    public function resaveVolumeAssets(Volume $volume)
+    {
+        $needToReSave = false;
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $volume->getFieldLayout();
+        // Loop through the fields in the layout to see if there is an OptimizedImages field
+        if ($fieldLayout) {
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof OptimizedImagesField) {
+                    $needToReSave = true;
+                }
+            }
+        }
+        if ($needToReSave) {
+            $siteId = 0;
+            try {
+                $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+            } catch (SiteNotFoundException $e) {
+                Craft::error(
+                    'Failed to get primary site: '.$e->getMessage(),
+                    __METHOD__
+                );
+            }
+
+            $queue = Craft::$app->getQueue();
+            $jobId = $queue->push(new ResaveOptimizedImages([
+                'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
+                'criteria'    => [
+                    'siteId'         => $siteId,
+                    'volumeId'       => $volume->id,
+                    'status'         => null,
+                    'enabledForSite' => false,
+                ],
+            ]));
+            Craft::trace(
+                Craft::t(
+                    'image-optimize',
+                    'Started resaveVolumeAssets queue job id: {jobId}',
+                    [
+                        'jobId' => $jobId,
+                    ]
+                ),
+                __METHOD__
+            );
+        }
+    }
+
+    /**
+     * Re-save an individual asset
+     *
+     * @param int $id
+     */
+    public function resaveAsset(int $id)
+    {
+        $queue = Craft::$app->getQueue();
+        $jobId = $queue->push(new ResaveOptimizedImages([
+            'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
+            'criteria'    => [
+                'id'             => $id,
+                'status'         => null,
+                'enabledForSite' => false,
+            ],
+        ]));
+        Craft::trace(
+            Craft::t(
+                'image-optimize',
+                'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
+                [
+                    'elementId' => $id,
+                    'jobId'     => $jobId,
+                ]
+            ),
+            __METHOD__
+        );
+    }
+
+    /**
+     * Create an optimized SVG data uri
+     * See: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
+     *
+     * @param string $uri
+     *
+     * @return string
+     */
+    public function encodeOptimizedSVGDataUri(string $uri): string
+    {
+        // First, uri encode everything
+        $uri = rawurlencode($uri);
+        $replacements = [
+            // remove newlines
+            '/%0A/' => '',
+            // put spaces back in
+            '/%20/' => ' ',
+            // put equals signs back in
+            '/%3D/' => '=',
+            // put colons back in
+            '/%3A/' => ':',
+            // put slashes back in
+            '/%2F/' => '/',
+            // replace quotes with apostrophes (may break certain SVGs)
+            '/%22/' => "'",
+        ];
+        foreach ($replacements as $pattern => $replacement) {
+            $uri = preg_replace($pattern, $replacement, $uri);
+        }
+
+        return $uri;
     }
 }
