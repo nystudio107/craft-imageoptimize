@@ -137,31 +137,8 @@ class OptimizedImages extends Field
     public function afterElementSave(ElementInterface $asset, bool $isNew)
     {
         parent::afterElementSave($asset, $isNew);
-
-        /** @var Asset $asset */
-        if ($asset instanceof Asset) {
-            // Create a new OptimizedImage model and populate it
-            $model = new OptimizedImage();
-            if (!empty($asset)) {
-                ImageOptimize::$plugin->optimizedImages->populateOptimizedImageModel(
-                    $asset,
-                    $this->variants,
-                    $model
-                );
-            }
-            // Save our field data directly into the content table
-            $asset->setFieldValue($this->handle, $this->serializeValue($model));
-            $table = $asset->getContentTable();
-            $column = $asset->getFieldColumnPrefix().$this->handle;
-            $data = Json::encode($this->serializeValue($asset->getFieldValue($this->handle), $asset));
-            Craft::$app->db->createCommand()
-                ->update($table, [
-                    $column => $data,
-                ], [
-                    'id' => $asset->contentId,
-                ], [], false)
-                ->execute();
-        }
+        // Update our OptimizedImages Field data now that the Asset has been saved
+        ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
     }
 
     /**
