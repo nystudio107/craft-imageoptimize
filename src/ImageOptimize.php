@@ -134,7 +134,7 @@ class ImageOptimize extends Plugin
             function (FieldEvent $event) {
                 Craft::trace(
                     'Fields::EVENT_AFTER_SAVE_FIELD',
-                    'image-optimize'
+                    __METHOD__
                 );
                 /** @var Field $field */
                 if (!$event->isNew) {
