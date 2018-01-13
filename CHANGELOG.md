@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.9 - 2018.01.13
+### Changed
+* Fixed `getWebPUrl()` for the Imgix image transform driver
+
 ## 1.4.8 - 2018.01.11
 ### Changed
 * Fixed a flaw in the default aspect ratios
