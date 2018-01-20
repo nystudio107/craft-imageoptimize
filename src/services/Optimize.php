@@ -506,7 +506,7 @@ class Optimize extends Component
                 .Craft::t('image-optimize', 'does not exist'),
                 __METHOD__
             );
-            $$outputPath = null;
+            $outputPath = null;
         }
 
         return $outputPath;

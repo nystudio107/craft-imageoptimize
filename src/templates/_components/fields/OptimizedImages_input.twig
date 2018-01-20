@@ -21,17 +21,22 @@
 <div class="field">
     <div class="heading">
         <label>{{ 'Optimized Image Variants:' |t('image-optimize') }} </label>
-        <p style="fill: #AAA; color: #AAA;">
-            {% if value.focalPoint |length %}
-                <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
-                {{ source('image-optimize/_components/fields/focal-point.svg') }}
-                <span>{{ 'Focal Point set' |t('image-optimize') }}</span>
-            {% else %}
-                <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
-                {{ source('image-optimize/_components/fields/focal-point.svg') }}
-                <span>{{ 'Focal Point not set' |t('image-optimize') }}</span>
-            {% endif %}
-        </p>
+        <div style="padding: 2px 0px; position: relative;">
+            <div style="padding: 10px 0px; display: inline-block;">
+            <span style="fill: #AAA; color: #AAA;">
+                {% if value.focalPoint |length %}
+                    <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
+                    {{ source('image-optimize/_components/fields/focal-point.svg') }}
+                    <span>{{ 'Focal Point set' |t('image-optimize') }}</span>
+                {% else %}
+                    <span style="vertical-align: top;" class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
+                    {{ source('image-optimize/_components/fields/focal-point.svg') }}
+                    <span>{{ 'Focal Point not set' |t('image-optimize') }}</span>
+                {% endif %}
+            </span>
+            </div>
+            <div class="buttons right" style="margin: 0;"><div class="btn submit edit-click-trigger" style="margin: 0;">Edit Image</div></div>
+        </div>
     </div>
     {% set retinaSizes = [] %}
     {% set maxWidth = 0 %}
@@ -168,6 +173,19 @@
         {% endfor %}
     {% endfor  %}
 </div>
+<script>
+    $(".edit-click-trigger").click(function(e) {
+        var settings = {
+            onSave: function () {
+                $("form.elementeditor").submit();
+                Craft.elementIndex.updateElements();
+            },
+            allowDegreeFractions: Craft.isImagick,
+        };
+        new Craft.AssetImageEditor({{ elementId }}, settings);
+        e.preventDefault();
+    });
+</script>
 {% else %}
 <div class="field">
     <div class="heading">
@@ -176,7 +194,7 @@
             {% if settings.allowUpScaledImageVariants %}
                 {% set errorMessage = "This is not an image that can be manipulated" %}
             {% else %}
-                {% set errorMessage = "No Image Variants created because they would all be up-scaled" %}
+                {% set errorMessage = "This is not an image that can be manipulated or the images would all be up-scaled" %}
             {% endif %}
             <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
             <span>{{ errorMessage |t('image-optimize') }}</span>

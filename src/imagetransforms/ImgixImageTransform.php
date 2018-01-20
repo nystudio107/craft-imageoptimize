@@ -155,7 +155,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
      */
     public static function getWebPUrl(string $url): string
     {
-        $url = preg_replace('/fm=[^&]*/', 'fmt=webp', $url);
+        $url = preg_replace('/fm=[^&]*/', 'fm=webp', $url);
 
         return $url;
     }
