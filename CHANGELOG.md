@@ -7,6 +7,7 @@
 ### Changed
 * Fixed `getWebPUrl()` for the Imgix image transform driver
 * Fixed an issue where image uploads/changes would fail if you had an invalid or non-existent `activeImageVariantCreators` set
+* Fixed an issue with protocol-relative siteUrls
 
 
 ## 1.4.8 - 2018.01.11
