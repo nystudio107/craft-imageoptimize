@@ -1,8 +1,13 @@
 # ImageOptimize Changelog
 
 ## 1.4.9 - 2018.01.13
+### Added
+* Added an *Edit Image* button to the Optimized Images field view
+
 ### Changed
 * Fixed `getWebPUrl()` for the Imgix image transform driver
+* Fixed an issue where image uploads/changes would fail if you had an invalid or non-existent `activeImageVariantCreators` set
+
 
 ## 1.4.8 - 2018.01.11
 ### Changed
