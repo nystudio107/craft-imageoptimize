@@ -194,7 +194,7 @@
             {% if settings.allowUpScaledImageVariants %}
                 {% set errorMessage = "This is not an image that can be manipulated" %}
             {% else %}
-                {% set errorMessage = "No Image Variants created because they would all be up-scaled" %}
+                {% set errorMessage = "This is not an image that can be manipulated or the images would all be up-scaled" %}
             {% endif %}
             <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
             <span>{{ errorMessage |t('image-optimize') }}</span>
