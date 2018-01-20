@@ -254,6 +254,7 @@ class OptimizedImages extends Field
                 'variants'    => $this->variants,
                 'field'       => $this,
                 'settings'    => $settings,
+                'elementId'   => $element->id,
                 'id'          => $id,
                 'nameSpaceId' => $nameSpaceId,
             ]
