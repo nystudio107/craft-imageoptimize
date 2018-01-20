@@ -340,18 +340,18 @@ class OptimizedImage extends Model
     {
         // Make this a full URL / aaw -- 2017.09.08
         if (!UrlHelper::isAbsoluteUrl($url)) {
+            if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+                || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
+            ) {
+                $protocol = "https";
+            } else {
+                $protocol = "http";
+            }
             if (UrlHelper::isProtocolRelativeUrl($url)) {
-                if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-                    || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
-                ) {
-                    $protocol = "https";
-                } else {
-                    $protocol = "http";
-                }
                 $url = UrlHelper::urlWithProtocol($url, $protocol);
             } else {
                 try {
-                    $url = UrlHelper::siteUrl($url);
+                    $url = UrlHelper::siteUrl($url, null, $protocol);
                 } catch (Exception $e) {
                 }
             }
