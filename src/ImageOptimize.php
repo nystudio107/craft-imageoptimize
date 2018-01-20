@@ -178,7 +178,9 @@ class ImageOptimize extends Plugin
                     // If they changed the global transform method, we need to resave all Asset Volumes
                     if (self::$previousTransformMethod != $settings->transformMethod) {
                         self::$previousTransformMethod = $settings->transformMethod;
-                        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
+                        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[
+                            $settings->transformMethod
+                        ];
                         self::$transformParams = self::$transformClass::getTransformParams();
                         ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
                     }
