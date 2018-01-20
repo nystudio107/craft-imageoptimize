@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.4.9 - 2018.01.13
+## 1.4.9 - 2018.01.20
 ### Added
 * Added an *Edit Image* button to the Optimized Images field view
 
