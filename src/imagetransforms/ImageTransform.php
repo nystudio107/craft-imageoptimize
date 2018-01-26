@@ -15,6 +15,8 @@ use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
 
+use yii\base\Exception;
+
 /**
  * @author    nystudio107
  * @package   ImageOptimize
@@ -116,9 +118,12 @@ abstract class ImageTransform implements ImageTransformInterface
                 } else {
                     $protocol = "http";
                 }
-                $url = UrlHelper::urlWithProtocol($url, $protocol);
+                $url = UrlHelper::urlWithScheme($url, $protocol);
             } else {
-                $url = UrlHelper::siteUrl($url);
+                try {
+                    $url = UrlHelper::siteUrl($url);
+                } catch (Exception $e) {
+                }
             }
         }
 

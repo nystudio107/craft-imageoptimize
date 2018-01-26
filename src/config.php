@@ -49,7 +49,7 @@ return [
     // as per https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
     'lowerQualityRetinaImageVariants' => true,
 
-    // Controls whether Optimized Image Variants be created that would be up-scaled
+    // Controls whether Optimized Image Variants are created that would be up-scaled
     // to be larger than the original source image
     'allowUpScaledImageVariants' => false,
 

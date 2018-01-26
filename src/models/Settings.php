@@ -80,7 +80,7 @@ class Settings extends Model
     public $lowerQualityRetinaImageVariants = true;
 
     /**
-     * Controls whether Optimized Image Variants be created that would be up-scaled
+     * Controls whether Optimized Image Variants are created that would be up-scaled
      * to be larger than the original source image
      *
      * @var bool

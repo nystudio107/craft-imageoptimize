@@ -128,7 +128,7 @@
                                 </a>
                             </div>
                             {% if variant.format == null %}
-                                {% set thisFormat = thisUrl |split('.') |last %}
+                                {% set thisFormat = format %}
                             {% else %}
                                 {% set thisFormat = variant.format %}
                             {% endif %}

@@ -1,5 +1,16 @@
 # ImageOptimize Changelog
 
+## 1.4.10 - 2018.01.26
+### Added
+* Shows an error if an OptimizedImages field is added to anything other than an Asset's layout
+* Added a warning if a config setting is being overridden by the `config.php`
+* Added a number of config settings to the AdminCP GUI
+
+### Changed
+* `UrlHelper::urlWithProtocol` -> `UrlHelper::urlWithScheme` for Craft CMS 3 RC7 compatibility
+* Fixed an issue where you could delete the last Image Variant in the field settings, even though the option was disabled
+* Handle the display of Optimized Image Variant names better when coming from Imgix
+
 ## 1.4.9 - 2018.01.20
 ### Added
 * Added an *Edit Image* button to the Optimized Images field view

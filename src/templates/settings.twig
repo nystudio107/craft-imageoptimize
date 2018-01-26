@@ -12,6 +12,8 @@
  */
 #}
 
+{% from 'image-optimize/macros' import configWarning %}
+
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
@@ -29,8 +31,55 @@
             'craft': 'Craft'|t('image-optimize'),
             'imgix': "Imgix"|t('image-optimize'),
         },
-        class: 'io-transform-method'
+        class: 'io-transform-method',
+        warning: configWarning('transformMethod', 'image-optimize'),
     }) }}
+    <!-- createColorPalette -->
+    {{ forms.lightswitchField({
+        label: "Create Color Palette"|t('image-optimize'),
+        instructions: "Controls whether a dominant color palette should be created for image variants. It takes a bit of time, so if you never plan to use it, you can turn it off."|t('image-optimize'),
+        'id': 'createColorPalette',
+        'name': 'createColorPalette',
+        'on': settings.createColorPalette,
+        'warning': configWarning('createColorPalette', 'image-optimize')
+    }) }}
+    <!-- createPlaceholderSilhouettes -->
+    {{ forms.lightswitchField({
+        label: "Create Placeholder Silhouettes"|t('image-optimize'),
+        instructions: "Controls whether SVG placeholder silhouettes should be created for image variants. It takes a bit of time, so if you never plan to use them, you can turn it off."|t('image-optimize'),
+        'id': 'createPlaceholderSilhouettes',
+        'name': 'createPlaceholderSilhouettes',
+        'on': settings.createPlaceholderSilhouettes,
+        'warning': configWarning('createPlaceholderSilhouettes', 'image-optimize')
+    }) }}
+    <!-- lowerQualityRetinaImageVariants -->
+    {{ forms.lightswitchField({
+        label: "Lower Quality Retina Image Variants"|t('image-optimize'),
+        instructions: "Controls whether retina images are automatically created with reduced quality as per <a href='https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/' target='_blank'>here</a>."|t('image-optimize') |raw,
+        'id': 'lowerQualityRetinaImageVariants',
+        'name': 'lowerQualityRetinaImageVariants',
+        'on': settings.lowerQualityRetinaImageVariants,
+        'warning': configWarning('lowerQualityRetinaImageVariants', 'image-optimize')
+    }) }}
+    <!-- allowUpScaledImageVariants -->
+    {{ forms.lightswitchField({
+        label: "Allow Up-Scaled Image Variants"|t('image-optimize'),
+        instructions: "Controls whether Optimized Image Variants are created that would be up-scaled to be larger than the original source image."|t('image-optimize'),
+        'id': 'allowUpScaledImageVariants',
+        'name': 'allowUpScaledImageVariants',
+        'on': settings.allowUpScaledImageVariants,
+        'warning': configWarning('allowUpScaledImageVariants', 'image-optimize')
+    }) }}
+    <!-- autoSharpenScaledImages -->
+    {{ forms.lightswitchField({
+        label: "Auto Sharpen Scaled Images"|t('image-optimize'),
+        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
+        'id': 'autoSharpenScaledImages',
+        'name': 'autoSharpenScaledImages',
+        'on': settings.autoSharpenScaledImages,
+        'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
+    }) }}
+    
     <div class="io-method-settings io-imgix-method"{% if settings.transformMethod != 'imgix' %} style="display: none;"{% endif %}>
         <!-- imgixDomain -->
         {{ forms.textField({
@@ -38,7 +87,8 @@
             instructions: "The source domain to use for the Imgix transforms."|t('image-optimize'),
             id: 'imgixDomain',
             name: 'imgixDomain',
-            value: settings.imgixDomain
+            value: settings.imgixDomain,
+            warning: configWarning('imgixDomain', 'image-optimize'),
         }) }}
         <!-- imgixApiKey -->
         {{ forms.textField({
@@ -46,20 +96,22 @@
             instructions: "The API key to use for the Imgix transforms (needed for auto-purging changed assets)."|t('image-optimize'),
             id: 'imgixApiKey',
             name: 'imgixApiKey',
-            value: settings.imgixApiKey
+            value: settings.imgixApiKey,
+            warning: configWarning('imgixApiKey', 'image-optimize'),
         }) }}
     </div>
     <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
         <div class="heading">
+            <h2>{{ 'Image Processors & Variant Creators' }}</h2>
             <div class="instructions">
                 <p class="readable">
-                    These ImageOptimize settings are not editable here; this is just an informational display.
+                    The following ImageOptimize settings are not editable here; this is just an informational display.
                     Instead copy the <code>imageoptimize/config.php</code> file to Craft's <code>config/</code> directory, renaming it to <code>image-optimize.php</code>, and make your changes there to override default settings.
                 </p>
             </div>
         </div>
         {% if imageProcessors is defined and imageProcessors |length %}
-            <h2>{{ 'Active Image Processors' }}</h2>
+            <h3>{{ 'Active Image Processors' }}</h3>
             <table id="imageProcessors" class="data collapsible image-optimize">
                 <thead class="">
                 <tr>
@@ -102,7 +154,7 @@
         {% endif %}
     
         {% if variantCreators is defined and variantCreators |length %}
-            <h2>{{ 'Active Image Variant Creators' }}</h2>
+            <h3>{{ 'Active Image Variant Creators' }}</h3>
             <table id="variantCreators" class="data collapsible image-optimize">
                 <thead class="">
                 <tr>
