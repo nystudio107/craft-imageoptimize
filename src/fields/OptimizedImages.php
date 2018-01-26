@@ -225,39 +225,50 @@ class OptimizedImages extends Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        // Register our asset bundle
-        Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+        if (!empty($element) && $element instanceof Asset) {
+            /** @var Asset $element */
+            // Register our asset bundle
+            Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
 
-        // Get our id and namespace
-        $id = Craft::$app->getView()->formatInputId($this->handle);
-        $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
+            // Get our id and namespace
+            $id = Craft::$app->getView()->formatInputId($this->handle);
+            $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
 
-        // Variables to pass down to our field JavaScript to let it namespace properly
-        $jsonVars = [
-            'id'        => $id,
-            'name'      => $this->handle,
-            'namespace' => $nameSpaceId,
-            'prefix'    => Craft::$app->getView()->namespaceInputId(''),
-        ];
-        $jsonVars = Json::encode($jsonVars);
-        $view = Craft::$app->getView();
-        $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
+            // Variables to pass down to our field JavaScript to let it namespace properly
+            $jsonVars = [
+                'id'        => $id,
+                'name'      => $this->handle,
+                'namespace' => $nameSpaceId,
+                'prefix'    => Craft::$app->getView()->namespaceInputId(''),
+            ];
+            $jsonVars = Json::encode($jsonVars);
+            $view = Craft::$app->getView();
+            $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
 
-        $settings = ImageOptimize::$plugin->getSettings();
+            $settings = ImageOptimize::$plugin->getSettings();
 
-        // Render the input template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_input',
-            [
-                'name'        => $this->handle,
-                'value'       => $value,
-                'variants'    => $this->variants,
-                'field'       => $this,
-                'settings'    => $settings,
-                'elementId'   => $element->id,
-                'id'          => $id,
-                'nameSpaceId' => $nameSpaceId,
-            ]
-        );
+            // Render the input template
+            return Craft::$app->getView()->renderTemplate(
+                'image-optimize/_components/fields/OptimizedImages_input',
+                [
+                    'name'        => $this->handle,
+                    'value'       => $value,
+                    'variants'    => $this->variants,
+                    'field'       => $this,
+                    'settings'    => $settings,
+                    'elementId'   => $element->id,
+                    'format'      => $element->getExtension(),
+                    'id'          => $id,
+                    'nameSpaceId' => $nameSpaceId,
+                ]
+            );
+        } else {
+            // Render an error template, since the field only works when attached to an Asset
+            return Craft::$app->getView()->renderTemplate(
+                'image-optimize/_components/fields/OptimizedImages_error',
+                [
+                ]
+            );
+        }
     }
 }
