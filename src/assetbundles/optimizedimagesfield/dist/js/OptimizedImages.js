@@ -128,7 +128,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                     break;
                 }
                 case 'delete': {
-                    this.deleteVariantBlock(container);
+                    if (!$option.hasClass('disabled')) {
+                        this.deleteVariantBlock(container);
+                    }
                     break;
                 }
             }
@@ -184,9 +186,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                     menuBtn = $value.data('menubtn');
                     $menuItem = $(menuBtn.menu.$menuList[1]);
                     if (disabledDeleteItem) {
-                        $menuItem.addClass('disabled');
+                        $menuItem.find("> li > a").addClass('disabled').disable();
                     } else {
-                        $menuItem.removeClass('disabled');
+                        $menuItem.find("> li > a").removeClass('disabled').enable();
                     }
                 }
             });
