@@ -1,5 +1,5 @@
 {
-    "name": "nystudio107/craft3-imageoptimize",
+    "name": "nystudio107/craft-imageoptimize",
     "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.",
     "type": "craft-plugin",
     "version": "1.4.10",
@@ -15,8 +15,8 @@
         "imgix"
     ],
     "support": {
-        "docs": "https://github.com/nystudio107/craft3-imageoptimize/blob/master/README.md",
-        "issues": "https://github.com/nystudio107/craft3-imageoptimize/issues"
+        "docs": "https://github.com/nystudio107/craft-imageoptimize/blob/master/README.md",
+        "issues": "https://github.com/nystudio107/craft-imageoptimize/issues"
     },
     "license": "MIT",
     "authors": [
@@ -47,7 +47,7 @@
         "schemaVersion": "1.0.0",
         "hasCpSettings": true,
         "hasCpSection": false,
-        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft3-imageoptimize/master/CHANGELOG.md",
+        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-imageoptimize/master/CHANGELOG.md",
         "components": {
             "optimize": "nystudio107\\imageoptimize\\services\\Optimize",
             "optimizedImages": "nystudio107\\imageoptimize\\services\\OptimizedImages",

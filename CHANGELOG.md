@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.11 - 2018.01.30
+### Changed
+* Renamed the composer package name to `craft-imageoptimize`
+* Fixed a regression that broke protocol-relative siteUrls
+
 ## 1.4.10 - 2018.01.26
 ### Added
 * Shows an error if an OptimizedImages field is added to anything other than an Asset's layout
