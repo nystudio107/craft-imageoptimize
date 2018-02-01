@@ -136,6 +136,8 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                 // No transform was passed in; so just auto all the things
                 $params['auto'] = 'format,compress';
             }
+            // Remove the api-key param
+            unset($params['api-key']);
             // Finally, create the Imgix URL for this transformed image
             $assetUri = self::getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
