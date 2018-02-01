@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.12 - 2018.02.01
+### Changed
+* Removed the `api-key` parameter from Imgix image transform URLs
+
 ## 1.4.11 - 2018.01.30
 ### Changed
 * Renamed the composer package name to `craft-imageoptimize`
