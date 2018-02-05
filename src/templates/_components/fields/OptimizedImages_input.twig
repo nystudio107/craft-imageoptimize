@@ -35,7 +35,6 @@
                 {% endif %}
             </span>
             </div>
-            <div class="buttons right" style="margin: 0;"><div class="btn submit edit-click-trigger" style="margin: 0;">Edit Image</div></div>
         </div>
     </div>
     {% set retinaSizes = [] %}
@@ -173,19 +172,6 @@
         {% endfor %}
     {% endfor  %}
 </div>
-<script>
-    $(".edit-click-trigger").click(function(e) {
-        var settings = {
-            onSave: function () {
-                $("form.elementeditor").submit();
-                Craft.elementIndex.updateElements();
-            },
-            allowDegreeFractions: Craft.isImagick,
-        };
-        new Craft.AssetImageEditor({{ elementId }}, settings);
-        e.preventDefault();
-    });
-</script>
 {% else %}
 <div class="field">
     <div class="heading">
