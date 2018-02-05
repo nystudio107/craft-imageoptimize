@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.13 - 2018.02.05
+### Changed
+* Removed *Edit Image* button, since Craft CMS 3 now includes one in the Asset preview
+
 ## 1.4.12 - 2018.02.01
 ### Changed
 * Removed the `api-key` parameter from Imgix image transform URLs
