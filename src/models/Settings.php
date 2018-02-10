@@ -284,9 +284,6 @@ class Settings extends Model
                 ],
                 'boolean',
             ],
-            ['generateTransformsBeforePageLoad', 'default', 'value' => true],
-            ['createColorPalette', 'default', 'value' => true],
-            ['createPlaceholderSilhouettes', 'default', 'value' => true],
             [
                 [
                     'defaultVariants',
