@@ -72,23 +72,25 @@ class Settings extends Model
     public $createPlaceholderSilhouettes = true;
 
     /**
-     * Controls whether retina images are automatically created with reduced quality
-     * as per https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
+     * Controls whether retina images are automatically created with reduced
+     * quality as per
+     * https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
      *
      * @var bool
      */
     public $lowerQualityRetinaImageVariants = true;
 
     /**
-     * Controls whether Optimized Image Variants are created that would be up-scaled
-     * to be larger than the original source image
+     * Controls whether Optimized Image Variants are created that would be
+     * up-scaled to be larger than the original source image
      *
      * @var bool
      */
     public $allowUpScaledImageVariants = false;
 
     /**
-     * Controls whether images scaled down >= 50% should be automatically sharpened
+     * Controls whether images scaled down >= 50% should be automatically
+     * sharpened
      *
      * @var bool
      */
@@ -276,8 +278,11 @@ class Settings extends Model
                     'generateTransformsBeforePageLoad',
                     'createColorPalette',
                     'createPlaceholderSilhouettes',
+                    'lowerQualityRetinaImageVariants',
+                    'allowUpScaledImageVariants',
+                    'autoSharpenScaledImages',
                 ],
-                'boolean'
+                'boolean',
             ],
             ['generateTransformsBeforePageLoad', 'default', 'value' => true],
             ['createColorPalette', 'default', 'value' => true],
@@ -314,7 +319,12 @@ class Settings extends Model
         $fields = [
             'transformMethod',
             'imgixDomain',
-            'imgixApiKey'
+            'imgixApiKey',
+            'createColorPalette',
+            'createPlaceholderSilhouettes',
+            'lowerQualityRetinaImageVariants',
+            'allowUpScaledImageVariants',
+            'autoSharpenScaledImages',
         ];
 
         return $fields;
