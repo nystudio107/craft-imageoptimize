@@ -61,12 +61,12 @@ class Placeholder extends Component
         $color = $color ?? '#CCC';
         $header = 'data:image/svg+xml,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-            ."width='$width' "
-            ."height='$height' "
-            ."style='background:$color' "
-            ."/>";
+            . "width='$width' "
+            . "height='$height' "
+            . "style='background:$color' "
+            . "/>";
 
-        return $header.ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
+        return $header . ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
     }
 
     /**
@@ -126,18 +126,23 @@ class Placeholder extends Component
         $result = '';
 
         if (!empty($tempPath)) {
-            $pot = new Potracio();
-            $pot->loadImageFromFile($tempPath);
-            $pot->process();
+            // Potracio depends on `gd` being installed
+            if (extension_loaded('gd')) {
+                $pot = new Potracio();
+                $pot->loadImageFromFile($tempPath);
+                $pot->process();
 
-            $result = $pot->getSVG(1);
+                $result = $pot->getSVG(1);
 
-            // Optimize the result if we got one
-            if (!empty($result)) {
-                $result = ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($result);
+                // Optimize the result if we got one
+                if (!empty($result)) {
+                    $result = ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($result);
+                }
             }
-
-            // If Potracio failed or this is larger than MAX_SILHOUETTE_SIZE bytes, just return a box
+            /**
+             * If Potracio failed or gd isn't installed, or this is larger
+             * than MAX_SILHOUETTE_SIZE bytes, just return a box
+             */
             if (empty($result) || (strlen($result) > self::MAX_SILHOUETTE_SIZE)) {
                 $size = getimagesize($tempPath);
                 if ($size !== false) {
@@ -147,11 +152,13 @@ class Placeholder extends Component
             }
         }
 
-        return ($result);
+
+        return $result;
     }
 
     /**
-     * Create a small placeholder image file that the various placerholder generators can use
+     * Create a small placeholder image file that the various placerholder
+     * generators can use
      *
      * @param Asset             $asset
      * @param float             $aspectRatio
@@ -237,14 +244,14 @@ class Placeholder extends Component
         $config->preserveExifData = $oldPreserveExifData;
 
         // Save the image out to a temp file, then return its contents
-        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';
-        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true) . '.' . 'jpg';
+        $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
         clearstatcache(true, $tempPath);
         try {
             $image->saveAs($tempPath);
         } catch (ImageException $e) {
             Craft::error(
-                'Error saving temporary image: '.$e->getMessage(),
+                'Error saving temporary image: ' . $e->getMessage(),
                 __METHOD__
             );
         }
