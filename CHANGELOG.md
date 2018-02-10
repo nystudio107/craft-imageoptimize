@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.4.14 - 2018.02.09
+### Changed
+* Fixed an issue where certain settings could not be saved via the AdminCP
+* Check to ensure that `GD` is installed before attempting to generate silhouette placeholders
+* Show a warning on the Settings page if `GD` is not installed
+
 ## 1.4.13 - 2018.02.05
 ### Changed
 * Removed *Edit Image* button, since Craft CMS 3 now includes one in the Asset preview

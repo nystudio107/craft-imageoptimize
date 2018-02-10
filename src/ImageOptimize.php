@@ -404,6 +404,7 @@ class ImageOptimize extends Plugin
                 'settings'        => $settings,
                 'imageProcessors' => $imageProcessors,
                 'variantCreators' => $variantCreators,
+                'gdInstalled'  => extension_loaded('gd'),
             ]
         );
     }
