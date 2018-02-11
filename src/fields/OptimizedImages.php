@@ -139,6 +139,8 @@ class OptimizedImages extends Field
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
         ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+        /** @var Asset $asset */
+        //ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
     }
 
     /**
@@ -150,12 +152,18 @@ class OptimizedImages extends Field
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
-        // If it's not an array, default it to null
-        if (!is_array($value)) {
-            $value = null;
+        // If we're passed in an array, make a model from it
+        if (is_array($value)) {
+            // Create a new OptimizedImage model and populate it
+            $model = new OptimizedImage($value);
+        } else {
+            if ($value instanceof OptimizedImage) {
+                $model = $value;
+            } else {
+                // Just create a new empty model
+                $model = new OptimizedImage(null);
+            }
         }
-        // Create a new OptimizedImage model and populate it
-        $model = new OptimizedImage($value);
 
         return $model;
     }
