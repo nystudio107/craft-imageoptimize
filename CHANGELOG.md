@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.15 - 2018.02.10
+### Changed
+* Resave all asset volumes after the settings are changed (not just the Transform Method)
+* Save the Optimized Image Variants via an async queue when possible
+
 ## 1.4.14 - 2018.02.09
 ### Changed
 * Fixed an issue where certain settings could not be saved via the AdminCP
