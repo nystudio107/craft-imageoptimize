@@ -54,6 +54,15 @@
             value: settings.imgixApiKey,
             warning: configWarning('imgixApiKey', 'image-optimize'),
         }) }}
+        <!-- imgixSecurityToken -->
+        {{ forms.textField({
+            label: 'Imgix Security Token',
+            instructions: "The optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix."|t('image-optimize'),
+            id: 'imgixSecurityToken',
+            name: 'imgixSecurityToken',
+            value: settings.imgixSecurityToken,
+            warning: configWarning('imgixSecurityToken', 'image-optimize'),
+        }) }}
     </div>
     <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
         <div class="heading">
