@@ -138,9 +138,22 @@ class OptimizedImages extends Field
     {
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
-        ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
-        /** @var Asset $asset */
-        //ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
+        if ($asset instanceof Asset) {
+            if ($isNew) {
+                /**
+                 * If this is a newly uploaded/created Asset, we can save the variants
+                 * via a queue job to prevent it from blocking
+                 */
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
+            } else {
+                /**
+                 * If it's not a newly uploaded/created Asset, they may have edited
+                 * the image with the ImageEditor, so we need to update the variants
+                 * immediately, so the AssetSelectorHud displays the new images
+                 */
+                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+            }
+        }
     }
 
     /**
