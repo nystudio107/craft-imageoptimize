@@ -1,9 +1,11 @@
 # ImageOptimize Changelog
 
-## 1.4.15 - 2018.02.10
+## 1.4.15 - 2018.02.14
 ### Changed
 * Resave all asset volumes after the settings are changed (not just the Transform Method)
 * Save the Optimized Image Variants via an async queue when possible
+* Detect `gd` installation via `function_exists` instead of `extension_loaded`
+* Handle protocol-relative siteUrls better
 
 ## 1.4.14 - 2018.02.09
 ### Changed
