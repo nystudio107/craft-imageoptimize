@@ -5,6 +5,7 @@
 * Added support for optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix
 
 ### Changed
+* Display the non-webp version of an image when it exists, but the browser doesn't support displaying `.webp`
 
 ## 1.4.15 - 2018.02.14
 ### Changed
