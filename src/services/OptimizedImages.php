@@ -309,6 +309,8 @@ class OptimizedImages extends Component
      * OptimizedImages field in the FieldLayout
      *
      * @param Volume $volume
+     *
+     * @throws \yii\base\InvalidConfigException
      */
     public function resaveVolumeAssets(Volume $volume)
     {
@@ -337,7 +339,7 @@ class OptimizedImages extends Component
 
             $queue = Craft::$app->getQueue();
             $jobId = $queue->push(new ResaveOptimizedImages([
-                'description' => Craft::t('image-optimize', 'Resaving Assets in {name}', ['name' => $volume->name]),
+                'description' => Craft::t('image-optimize', 'Optimizing images in {name}', ['name' => $volume->name]),
                 'criteria'    => [
                     'siteId'         => $siteId,
                     'volumeId'       => $volume->id,
@@ -367,7 +369,7 @@ class OptimizedImages extends Component
     {
         $queue = Craft::$app->getQueue();
         $jobId = $queue->push(new ResaveOptimizedImages([
-            'description' => Craft::t('image-optimize', 'Resaving new Asset id {id}', ['id' => $id]),
+            'description' => Craft::t('image-optimize', 'Optimizing image id {id}', ['id' => $id]),
             'criteria'    => [
                 'id'             => $id,
                 'status'         => null,
