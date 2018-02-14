@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.4.16 - 2018.02.15
+### Added
+* Added support for optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix
+
+### Changed
+
 ## 1.4.15 - 2018.02.14
 ### Changed
 * Resave all asset volumes after the settings are changed (not just the Transform Method)
