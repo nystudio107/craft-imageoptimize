@@ -114,10 +114,14 @@
                             {% set aspectRatioText = 'N/A' %}
                         {% endif %}
                         {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
+                            {% set imageClass = "io-normal-image" %}
+                            {% if imageSource == value.optimizedWebPImageUrls %}
+                                {% set imageClass = "io-webp-image" %}
+                            {% endif %}
                             <div style="width: 200px; vertical-align: top;">
                                 <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
                                     <div style="position: relative;">
-                                        <img class="io-soft-shadow-img" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                        <img class="io-soft-shadow-img {{ imageClass }}" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
                                         {% if (retinaSizes |length) > 1 %}
                                             <h4 class="io-retina-size-badge">
                                                 {{ retinaSize }}x
@@ -255,3 +259,24 @@
         </div>
     </div>
 {% endif %}
+{% js %}
+        function canUseWebP() {
+            var elem = document.createElement('canvas');
+
+            if (!!(elem.getContext && elem.getContext('2d'))) {
+                // was able or not to get WebP representation
+                return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
+            }
+            else {
+                // very old browser like IE 8, canvas not supported
+                return false;
+            }
+        }
+        
+        if (!canUseWebP()) {
+            $('.io-webp-image').each(function( index ) {
+                newSrc =  $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
+                $(this).attr('src', newSrc);
+            });
+        }
+{% endjs %}
