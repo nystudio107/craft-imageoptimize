@@ -92,6 +92,8 @@ Regardless of how many separate Craft Asset Volumes you've set up, you'll just h
 
 For image transforms, and set both **Quality** and **Format** to `Auto` in the AdminCP, it’ll send along `auto=compress,format` to Imgix, which will allow Imgix to compress the image as it sees fit. See the [Automatic Imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
 
+You can also set an optional **Imgix Security Token** if you wish to have [secure, signed image URLs](https://docs.imgix.com/setup/securing-images) from Imgix.
+
 ## Using ImageOptimize
 
 ### Using the Optimized Images Field
@@ -146,6 +148,8 @@ There are also warnings indicating that the original image is too small, and is 
 If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
 
 *N.B.:* If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+
+We discourage the use of Optimized Image Variants from your Craft templates for these reason; we recommend that you use the Field instead. However, you can do it if you really want to.
 
 To create Optimized Image Variants dynamically in your templates, you can do:
 
