@@ -81,11 +81,6 @@ class ImageOptimize extends Plugin
      */
     public static $transformParams;
 
-    /**
-     * @var string
-     */
-    public static $previousTransformMethod = null;
-
     // Public Methods
     // =========================================================================
 
@@ -99,7 +94,6 @@ class ImageOptimize extends Plugin
 
         // Cache some settings
         $settings = $this->getSettings();
-        self::$previousTransformMethod = $settings->transformMethod;
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
 
@@ -174,16 +168,8 @@ class ImageOptimize extends Plugin
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
                         __METHOD__
                     );
-                    $settings = self::getSettings();
-                    // If they changed the global transform method, we need to resave all Asset Volumes
-                    if (self::$previousTransformMethod != $settings->transformMethod) {
-                        self::$previousTransformMethod = $settings->transformMethod;
-                        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[
-                            $settings->transformMethod
-                        ];
-                        self::$transformParams = self::$transformClass::getTransformParams();
-                        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
-                    }
+                    // After they have changed the settings, resave all of the assets
+                    ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
                 }
             }
         );
@@ -404,7 +390,7 @@ class ImageOptimize extends Plugin
                 'settings'        => $settings,
                 'imageProcessors' => $imageProcessors,
                 'variantCreators' => $variantCreators,
-                'gdInstalled'  => extension_loaded('gd'),
+                'gdInstalled'  => function_exists('imagecreatefromjpeg'),
             ]
         );
     }

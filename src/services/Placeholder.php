@@ -127,7 +127,7 @@ class Placeholder extends Component
 
         if (!empty($tempPath)) {
             // Potracio depends on `gd` being installed
-            if (extension_loaded('gd')) {
+            if (function_exists('imagecreatefromjpeg')) {
                 $pot = new Potracio();
                 $pot->loadImageFromFile($tempPath);
                 $pot->process();

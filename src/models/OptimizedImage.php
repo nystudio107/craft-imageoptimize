@@ -353,6 +353,9 @@ class OptimizedImage extends Model
             } else {
                 try {
                     $url = UrlHelper::siteUrl($url, null, $protocol);
+                    if (UrlHelper::isProtocolRelativeUrl($url)) {
+                        $url = UrlHelper::urlWithScheme($url, $protocol);
+                    }
                 } catch (Exception $e) {
                 }
             }

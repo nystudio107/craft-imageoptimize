@@ -138,7 +138,22 @@ class OptimizedImages extends Field
     {
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
-        ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+        if ($asset instanceof Asset) {
+            if ($isNew) {
+                /**
+                 * If this is a newly uploaded/created Asset, we can save the variants
+                 * via a queue job to prevent it from blocking
+                 */
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
+            } else {
+                /**
+                 * If it's not a newly uploaded/created Asset, they may have edited
+                 * the image with the ImageEditor, so we need to update the variants
+                 * immediately, so the AssetSelectorHud displays the new images
+                 */
+                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+            }
+        }
     }
 
     /**
@@ -150,12 +165,18 @@ class OptimizedImages extends Field
         if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
-        // If it's not an array, default it to null
-        if (!is_array($value)) {
-            $value = null;
+        // If we're passed in an array, make a model from it
+        if (is_array($value)) {
+            // Create a new OptimizedImage model and populate it
+            $model = new OptimizedImage($value);
+        } else {
+            if ($value instanceof OptimizedImage) {
+                $model = $value;
+            } else {
+                // Just create a new empty model
+                $model = new OptimizedImage(null);
+            }
         }
-        // Create a new OptimizedImage model and populate it
-        $model = new OptimizedImage($value);
 
         return $model;
     }
