@@ -6,6 +6,7 @@
 
 ### Changed
 * Display the non-webp version of an image when it exists, but the browser doesn't support displaying `.webp`
+* Handles error conditions with `filesize` better
 
 ## 1.4.15 - 2018.02.14
 ### Changed
