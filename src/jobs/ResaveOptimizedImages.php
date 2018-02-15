@@ -16,6 +16,7 @@ use Craft;
 use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\console\Application as ConsoleApplication;
 use craft\db\QueryAbortedException;
 use craft\elements\Asset;
 use craft\elements\db\ElementQuery;
@@ -73,7 +74,10 @@ class ResaveOptimizedImages extends BaseJob
             $fields = $layout->getFields();
             /** @var  $field Field */
             foreach ($fields as $field) {
-                if ($field instanceof OptimizedImagesField) {
+                if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
+                    if (Craft::$app instanceof ConsoleApplication) {
+                        echo 'Processing asset: '.$element->title.' from field: '.$field->name.PHP_EOL;
+                    }
                     ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
                 }
             }
