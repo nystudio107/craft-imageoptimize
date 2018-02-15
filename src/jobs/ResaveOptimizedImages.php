@@ -63,6 +63,10 @@ class ResaveOptimizedImages extends BaseJob
             ->limit(null)
             ->orderBy(null);
 
+        if (Craft::$app instanceof ConsoleApplication) {
+            echo $this->description.PHP_EOL;
+        }
+
         $totalElements = $query->count();
         $currentElement = 0;
 
