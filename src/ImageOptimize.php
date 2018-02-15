@@ -23,6 +23,7 @@ use craft\base\Element;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
+use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\events\AssetTransformImageEvent;
 use craft\events\ElementEvent;
@@ -91,6 +92,11 @@ class ImageOptimize extends Plugin
     {
         parent::init();
         self::$plugin = $this;
+
+        // Handle any console commands
+        if (Craft::$app instanceof ConsoleApplication) {
+            $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
+        }
 
         // Cache some settings
         $settings = $this->getSettings();

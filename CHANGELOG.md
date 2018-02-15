@@ -1,5 +1,14 @@
 # ImageOptimize Changelog
 
+## 1.4.16 - 2018.02.15
+### Added
+* Added support for optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix
+* Added `image-optimize/optimize/create` and `image-optimize/optimize/clear` console commands for command line Optimized Image Variant creation
+
+### Changed
+* Display the non-webp version of an image when it exists, but the browser doesn't support displaying `.webp`
+* Handles error conditions with `filesize` better
+
 ## 1.4.15 - 2018.02.14
 ### Changed
 * Resave all asset volumes after the settings are changed (not just the Transform Method)

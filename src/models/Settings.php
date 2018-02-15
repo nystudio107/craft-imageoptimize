@@ -47,6 +47,13 @@ class Settings extends Model
     public $imgixApiKey = '';
 
     /**
+     * The optional security token used to sign image URLs from Imgix
+     *
+     * @var string
+     */
+    public $imgixSecurityToken = '';
+
+    /**
      * Should image variant be created on Asset save (aka BeforePageLoad)
      *
      * @var bool

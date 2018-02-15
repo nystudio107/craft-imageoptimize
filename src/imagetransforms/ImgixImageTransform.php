@@ -138,6 +138,10 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
             }
             // Remove the api-key param
             unset($params['api-key']);
+            // Apply the Security Token, if set
+            if (!empty($settings->imgixSecurityToken)) {
+                $builder->setSignKey($settings->imgixSecurityToken);
+            }
             // Finally, create the Imgix URL for this transformed image
             $assetUri = self::getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);

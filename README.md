@@ -92,6 +92,8 @@ Regardless of how many separate Craft Asset Volumes you've set up, you'll just h
 
 For image transforms, and set both **Quality** and **Format** to `Auto` in the AdminCP, it’ll send along `auto=compress,format` to Imgix, which will allow Imgix to compress the image as it sees fit. See the [Automatic Imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
 
+You can also set an optional **Imgix Security Token** if you wish to have [secure, signed image URLs](https://docs.imgix.com/setup/securing-images) from Imgix.
+
 ## Using ImageOptimize
 
 ### Using the Optimized Images Field
@@ -141,11 +143,30 @@ In this example, no **Focal Point** has been set via Craft 3's built-in image ed
 
 There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn't been configured, so there are no `.webp` variants created.
 
+### Command line Optimized Image Variant creation
+
+Because web-based PHP often has timeouts such as `max_execution_time` that can be exceeded by very large image variant creation, ImageOptimize comes with a command line utility to let you create the responsive image variants via console command.
+
+From the root directory of your Craft CMS 3 project, you can use the following commands:
+
+```
+./craft image-optimize/optimize/create
+```
+
+Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
+
+```
+./craft image-optimize/optimize/clear
+```
+Clear the Asset transform index cache tables, to force the re-creation of transformed images
+
 ### Dynamically creating Optimized Image Variants
 
 If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
 
 *N.B.:* If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+
+We discourage the use of Optimized Image Variants from your Craft templates for these reason; we recommend that you use the Field instead. However, you can do it if you really want to.
 
 To create Optimized Image Variants dynamically in your templates, you can do:
 
