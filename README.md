@@ -143,6 +143,23 @@ In this example, no **Focal Point** has been set via Craft 3's built-in image ed
 
 There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn't been configured, so there are no `.webp` variants created.
 
+### Command line Optimized Image Variant creation
+
+Because web-based PHP often has timeouts such as `max_execution_time` that can be exceeded by very large image variant creation, ImageOptimize comes with a command line utility to let you create the responsive image variants via console command.
+
+From the root directory of your Craft CMS 3 project, you can use the following commands:
+
+```
+./craft image-optimize/optimize/create
+```
+
+Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
+
+```
+./craft image-optimize/optimize/clear
+```
+Clear the Asset transform index cache tables, to force the re-creation of transformed images
+
 ### Dynamically creating Optimized Image Variants
 
 If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
