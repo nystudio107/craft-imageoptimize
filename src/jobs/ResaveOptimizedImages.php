@@ -68,7 +68,6 @@ class ResaveOptimizedImages extends BaseJob
 
         /** @var ElementInterface $element */
         foreach ($query->each() as $element) {
-            $this->setProgress($queue, $currentElement++ / $totalElements);
             // Find each OptimizedImages field and process it
             $layout = $element->getFieldLayout();
             $fields = $layout->getFields();
@@ -76,11 +75,14 @@ class ResaveOptimizedImages extends BaseJob
             foreach ($fields as $field) {
                 if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
                     if (Craft::$app instanceof ConsoleApplication) {
-                        echo 'Processing asset: '.$element->title.' from field: '.$field->name.PHP_EOL;
+                        echo $currentElement.'/'.$totalElements
+                            .' - processing asset: '.$element->title
+                            .' from field: '.$field->name.PHP_EOL;
                     }
                     ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
                 }
             }
+            $this->setProgress($queue, $currentElement++ / $totalElements);
         }
     }
 
