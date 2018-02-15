@@ -89,7 +89,7 @@ class Optimize extends Component
                 $event->transformIndex,
                 $event->image
             );
-            $originalFileSize = filesize($tempPath);
+            $originalFileSize = @filesize($tempPath);
             // Optimize the image
             $this->optimizeImage(
                 $event->transformIndex,
@@ -97,7 +97,7 @@ class Optimize extends Component
             );
             clearstatcache(true, $tempPath);
             // Log the results of the image optimization
-            $optimizedFileSize = filesize($tempPath);
+            $optimizedFileSize = @filesize($tempPath);
             $index = $event->transformIndex;
             Craft::info(
                 pathinfo($index->filename, PATHINFO_FILENAME)
@@ -238,8 +238,8 @@ class Optimize extends Component
 
                         if (!empty($outputPath)) {
                             // Get info on the original and the created variant
-                            $originalFileSize = filesize($tempPath);
-                            $variantFileSize = filesize($outputPath);
+                            $originalFileSize = @filesize($tempPath);
+                            $variantFileSize = @filesize($outputPath);
 
                             Craft::info(
                                 pathinfo($tempPath, PATHINFO_FILENAME)
