@@ -68,7 +68,7 @@ class Optimize extends Component
                 return AssetsHelper::generateUrl($volume, $asset);
             }
             // If we're passed in null, make a dummy AssetTransform model
-            if (!empty($event->transform)) {
+            if (empty($transform)) {
                 $transform = new AssetTransform([
                     'height' => $asset->height,
                     'width' => $asset->width,
