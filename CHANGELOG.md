@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.17 - 2018.02.16
+### Changed
+* Ensure we handle all of the potential `$transform` types passed into `EVENT_GET_ASSET_URL`
+* Both `createColorPalette` and `createPlaceholderSilhouettes` are now off by default when using `craft.imageOptimize.createOptimizedImages()` via Twig, but can be overridden 
+
 ## 1.4.16 - 2018.02.15
 ### Added
 * Added support for optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix
