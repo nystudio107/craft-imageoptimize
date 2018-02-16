@@ -164,9 +164,7 @@ Clear the Asset transform index cache tables, to force the re-creation of transf
 
 If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
 
-*N.B.:* If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
-
-We discourage the use of Optimized Image Variants from your Craft templates for these reason; we recommend that you use the Field instead. However, you can do it if you really want to.
+**N.B.:** If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
 
 To create Optimized Image Variants dynamically in your templates, you can do:
 
@@ -238,6 +236,30 @@ You can create as many Optimized Image Variants as you like, by just including a
 ```
 
 The `optimizedImages` object that is returned to you can be used in your templates as described in the *Displaying images on the frontend* section.
+
+**N.B.:** Because they are lengthy operations, by default the generation of the dominant color palette and the generation of the placeholder silhouette are off by default. You can enable them via additional parameters passed down to `craft.imageOptimize.createOptimizedImages`:
+
+```
+{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ],
+    true,
+    true,
+) %}
+
+```
+
+The third parameter is the `createColorPalette` setting, the fourth parameter is the `createPlaceholderSilhouettes` setting.
 
 ### Displaying images on the frontend
 
