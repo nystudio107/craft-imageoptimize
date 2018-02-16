@@ -54,6 +54,21 @@ class OptimizedImages extends Field
     // =========================================================================
 
     /**
+     * @var bool
+     */
+    public $displayOptimizedImageVariants;
+
+    /**
+     * @var bool
+     */
+    public $displayDominantColorPalette;
+
+    /**
+     * @var bool
+     */
+    public $displayLazyLoadPlaceholderImages;
+
+    /**
      * @var array
      */
     public $variants = [];

@@ -19,6 +19,32 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
 <div class="field" id="{{ id }}-fields">
+    <!-- displayOptimizedImageVariants -->
+    {{ forms.lightswitchField({
+        label: "Display Optimized Image Variants"|t('image-optimize'),
+        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
+        'id': 'displayOptimizedImageVariants',
+        'name': 'displayOptimizedImageVariants',
+        'on': settings.displayOptimizedImageVariants,
+    }) }}
+    <!-- autoSharpenScaledImages -->
+    {{ forms.lightswitchField({
+        label: "Auto Sharpen Scaled Images"|t('image-optimize'),
+        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
+        'id': 'autoSharpenScaledImages',
+        'name': 'autoSharpenScaledImages',
+        'on': settings.autoSharpenScaledImages,
+        'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
+    }) }}
+    <!-- autoSharpenScaledImages -->
+    {{ forms.lightswitchField({
+        label: "Auto Sharpen Scaled Images"|t('image-optimize'),
+        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
+        'id': 'autoSharpenScaledImages',
+        'name': 'autoSharpenScaledImages',
+        'on': settings.autoSharpenScaledImages,
+        'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
+    }) }}
     <!-- variants -->
     <div class="field">
     </div>
