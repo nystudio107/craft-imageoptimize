@@ -23,6 +23,8 @@ use craft\events\AssetTransformImageEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\helpers\FileHelper;
+use craft\helpers\Assets as AssetsHelper;
+use craft\helpers\Image as ImageHelper;
 use craft\image\Raster;
 use craft\models\AssetTransform;
 use craft\models\AssetTransformIndex;
@@ -49,16 +51,43 @@ class Optimize extends Component
      * @param GetAssetUrlEvent $event
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
     {
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
         if ($settings->transformMethod != 'craft') {
+            $asset = $event->asset;
+            $transform = $event->transform;
+            // If there's no transform requested, and we can't manipulate the image anyway, just return the URL
+            if ($transform === null
+                || !ImageHelper::canManipulateAsImage(pathinfo($asset->filename, PATHINFO_EXTENSION))) {
+                $volume = $asset->getVolume();
+
+                return AssetsHelper::generateUrl($volume, $asset);
+            }
+            // If we're passed in null, make a dummy AssetTransform model
+            if (!empty($event->transform)) {
+                $transform = new AssetTransform([
+                    'height' => $asset->height,
+                    'width' => $asset->width,
+                    'interlace' => 'line',
+                ]);
+            }
+            // If we're passed an array, make an AssetTransform model out of it
+            if (is_array($transform)) {
+                $transform = new AssetTransform($transform);
+            }
+            // If we're passing in a string, look up the asset transform in the db
+            if (is_string($transform)) {
+                $assetTransforms = Craft::$app->getAssetTransforms();
+                $transform = $assetTransforms->getTransformByHandle($transform);
+            }
             // Generate an image transform url
             $url = ImageOptimize::$transformClass::getTransformUrl(
-                $event->asset,
-                $event->transform,
+                $asset,
+                $transform,
                 ImageOptimize::$transformParams
             );
         }
@@ -543,9 +572,9 @@ class Optimize extends Component
                         $variantPath = '';
                         try {
                             $variantPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath(
-                                $asset,
-                                $transformIndex
-                            );
+                                    $asset,
+                                    $transformIndex
+                                );
                         } catch (InvalidConfigException $e) {
                             Craft::error(
                                 'Asset folder does not exist: '.$e->getMessage(),
