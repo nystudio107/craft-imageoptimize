@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.4.17 - 2018.02.16
+### Added
+* Added lightswitch controls to the OptimizedImages field that let you control what is displayed
+
 ### Changed
 * Ensure we handle all of the potential `$transform` types passed into `EVENT_GET_ASSET_URL`
 * Both `createColorPalette` and `createPlaceholderSilhouettes` are now off by default when using `craft.imageOptimize.createOptimizedImages()` via Twig, but can be overridden 
