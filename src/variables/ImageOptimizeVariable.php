@@ -41,13 +41,24 @@ class ImageOptimizeVariable
     }
 
     /**
-     * @param Asset          $asset
-     * @param array          $variants
+     * @param Asset $asset
+     * @param array $variants
+     * @param bool  $createColorPalette
+     * @param bool  $createPlaceholderSilhouettes
      *
      * @return OptimizedImage|null
      */
-    public function createOptimizedImages(Asset $asset, $variants = null)
-    {
+    public function createOptimizedImages(
+        Asset $asset,
+        $variants = null,
+        $createColorPalette = false,
+        $createPlaceholderSilhouettes = false
+    ) {
+        // Override our settings for lengthy operations, since we're doing this via Twig
+        $settings = ImageOptimize::$plugin->getSettings();
+        $settings->createColorPalette = $createColorPalette;
+        $settings->createPlaceholderSilhouettes = $createPlaceholderSilhouettes;
+
         return ImageOptimize::$plugin->optimizedImages->createOptimizedImages($asset, $variants);
     }
 }

@@ -219,7 +219,7 @@ class OptimizedImages extends Component
      */
     protected function addVariantImageToModel(Asset $asset, OptimizedImage $model, $transform, $variant, $aspectRatio)
     {
-// Generate an image transform url
+        // Generate an image transform url
         $url = ImageOptimize::$transformClass::getTransformUrl(
             $asset,
             $transform,

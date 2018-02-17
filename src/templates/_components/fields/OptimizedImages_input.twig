@@ -18,246 +18,252 @@
 {% import "_includes/forms" as forms %}
 
 {% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
-<div class="field">
-    <div class="heading">
-        <label>{{ 'Optimized Image Variants:' |t('image-optimize') }} </label>
-        <div style="padding: 2px 0px; position: relative;">
-            <div style="padding: 10px 0px; display: inline-block;">
-            <span style="fill: #AAA; color: #AAA;">
-                {% if value.focalPoint |length %}
-                    <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
-                    {{ source('image-optimize/_components/fields/focal-point.svg') }}
-                    <span>{{ 'Focal Point set' |t('image-optimize') }}</span>
-                {% else %}
-                    <span style="vertical-align: top;" class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
-                    {{ source('image-optimize/_components/fields/focal-point.svg') }}
-                    <span>{{ 'Focal Point not set' |t('image-optimize') }}</span>
-                {% endif %}
-            </span>
-            </div>
-        </div>
-    </div>
-    {% set retinaSizes = [] %}
-    {% set maxWidth = 0 %}
-    {% for variant in variants %}
-        {% set retinaSizes = ['1'] %}
-        {% for retinaSize in retinaSizes %}
-            {% set retinaWidth = variant.width * retinaSize %}
-            {% if retinaWidth > maxWidth %}
-                {% set maxWidth = retinaWidth %}
-            {% endif %}
-        {% endfor  %}
-    {% endfor  %}
-
-    {% set retinaSizes = [] %}
-    {% set imageSources = [value.optimizedImageUrls, value.optimizedWebPImageUrls] %}
-    {% for variant in variants %}
-        {% set retinaSizes = ['1'] %}
-        {% if variant.retinaSizes is defined and variant.retinaSizes|length %}
-            {% set retinaSizes = variant.retinaSizes %}
-        {% endif %}
-        {% for retinaSize in retinaSizes %}
-            {% set realWidth = variant.width %}
-            {% set retinaWidth = variant.width * retinaSize %}
-            <div class="io-field-display-wrapper">
-                {% for imageSource in imageSources %}
-                    <div class="io-inline-image-container">
-                        {% set cacheBustString = "" %}
-                        {% set thisUrl = "" %}
-                        {% set errorMessage = ' variant does not exist' %}
-                        {% if imageSource |length and imageSource[retinaWidth] is defined and imageSource[retinaWidth] |length %}
-                            {% set thisUrl = imageSource[retinaWidth] %}
-                            {% if "?" not in thisUrl %}
-                                {% set cacheBustString = "?mtime=" ~ now|date('U') %}
-                            {% endif %}
+    {% if field.displayOptimizedImageVariants %}
+        <div class="field">
+            <div class="heading">
+                <label>{{ 'Optimized Image Variants:' |t('image-optimize') }} </label>
+                <div style="padding: 2px 0px; position: relative;">
+                    <div style="padding: 10px 0px; display: inline-block;">
+                    <span style="fill: #AAA; color: #AAA;">
+                        {% if value.focalPoint |length %}
+                            <span class="success" title="{{ 'Focal Point set'|t('image-optimize') }}" data-icon="check"></span>
+                            {{ source('image-optimize/_components/fields/focal-point.svg') }}
+                            <span>{{ 'Focal Point set' |t('image-optimize') }}</span>
                         {% else %}
-                            {% if settings.allowUpScaledImageVariants %}
-                                {% set errorMessage = " format cannot be manipulated" %}
-                            {% else %}
-                                {% set errorMessage = " image would be upscaled" %}
-                            {% endif %}
+                            <span style="vertical-align: top;" class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
+                            {{ source('image-optimize/_components/fields/focal-point.svg') }}
+                            <span>{{ 'Focal Point not set' |t('image-optimize') }}</span>
                         {% endif %}
-                        {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
-                        {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
-                        {% set useAspectRatio = variant.useAspectRatio ?? true %}
-                        {% if useAspectRatio != true %}
-                            {% set aspectRatio = value.originalImageWidth / value.originalImageHeight %}
-                        {% endif %}
-                        {% set thisWidth = (realWidth * 200) / maxWidth %}
-                        {% set thisHeight = thisWidth / aspectRatio %}
-                        {% set thisFontSize = (realWidth * 30) / maxWidth %}
-                        {% if thisFontSize < 12 %}
-                            {% set thisFontSize = 12 %}
-                        {% endif %}
-                        {% set thisStrokeColor = '#AAA' %}
-                        {% set thisFillColor = '#DDD' %}
+                    </span>
+                    </div>
+                </div>
+            </div>
+            {% set retinaSizes = [] %}
+            {% set maxWidth = 0 %}
+            {% for variant in variants %}
+                {% set retinaSizes = ['1'] %}
+                {% for retinaSize in retinaSizes %}
+                    {% set retinaWidth = variant.width * retinaSize %}
+                    {% if retinaWidth > maxWidth %}
+                        {% set maxWidth = retinaWidth %}
+                    {% endif %}
+                {% endfor  %}
+            {% endfor  %}
 
-                        {% set markerWidth = 4 %}
-                        {% set markerHeight = 4 %}
-                        {% set lineY = 12 %}
-                        <svg width="{{ thisWidth }}" height="20px">
-                            <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
-                                    refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
-                                <polygon points="{{ markerWidth }} 0, {{ markerWidth }} {{ markerHeight }}, 0 {{ markerHeight / 2 }}" fill="{{ thisStrokeColor }}" />
-                            </marker>
-                            <marker id="{{ name }}endarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
-                                    refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
-                                <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
-                            </marker>
-                            <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ nameSpaceId }}endarrow)" marker-start="url(#{{ nameSpaceId }}startarrow)" />
-                            <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ retinaWidth }}w</text>
-                            <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ retinaWidth }}w</text>
-                        </svg>
+            {% set retinaSizes = [] %}
+            {% set imageSources = [value.optimizedImageUrls, value.optimizedWebPImageUrls] %}
+            {% for variant in variants %}
+                {% set retinaSizes = ['1'] %}
+                {% if variant.retinaSizes is defined and variant.retinaSizes|length %}
+                    {% set retinaSizes = variant.retinaSizes %}
+                {% endif %}
+                {% for retinaSize in retinaSizes %}
+                    {% set realWidth = variant.width %}
+                    {% set retinaWidth = variant.width * retinaSize %}
+                    <div class="io-field-display-wrapper">
+                        {% for imageSource in imageSources %}
+                            <div class="io-inline-image-container">
+                                {% set cacheBustString = "" %}
+                                {% set thisUrl = "" %}
+                                {% set errorMessage = ' variant does not exist' %}
+                                {% if imageSource |length and imageSource[retinaWidth] is defined and imageSource[retinaWidth] |length %}
+                                    {% set thisUrl = imageSource[retinaWidth] %}
+                                    {% if "?" not in thisUrl %}
+                                        {% set cacheBustString = "?mtime=" ~ now|date('U') %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if settings.allowUpScaledImageVariants %}
+                                        {% set errorMessage = " format cannot be manipulated" %}
+                                    {% else %}
+                                        {% set errorMessage = " image would be upscaled" %}
+                                    {% endif %}
+                                {% endif %}
+                                {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
+                                {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
+                                {% set useAspectRatio = variant.useAspectRatio ?? true %}
+                                {% if useAspectRatio != true %}
+                                    {% set aspectRatio = value.originalImageWidth / value.originalImageHeight %}
+                                {% endif %}
+                                {% set thisWidth = (realWidth * 200) / maxWidth %}
+                                {% set thisHeight = thisWidth / aspectRatio %}
+                                {% set thisFontSize = (realWidth * 30) / maxWidth %}
+                                {% if thisFontSize < 12 %}
+                                    {% set thisFontSize = 12 %}
+                                {% endif %}
+                                {% set thisStrokeColor = '#AAA' %}
+                                {% set thisFillColor = '#DDD' %}
 
-                        {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
-                        {% if useAspectRatio != true %}
-                            {% set aspectRatioText = 'N/A' %}
-                        {% endif %}
-                        {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
-                            {% set imageClass = "io-normal-image" %}
-                            {% if imageSource == value.optimizedWebPImageUrls %}
-                                {% set imageClass = "io-webp-image" %}
-                            {% endif %}
-                            <div style="width: 200px; vertical-align: top;">
-                                <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
-                                    <div style="position: relative;">
-                                        <img class="io-soft-shadow-img {{ imageClass }}" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
-                                        {% if (retinaSizes |length) > 1 %}
-                                            <h4 class="io-retina-size-badge">
-                                                {{ retinaSize }}x
-                                            </h4>
+                                {% set markerWidth = 4 %}
+                                {% set markerHeight = 4 %}
+                                {% set lineY = 12 %}
+                                <svg width="{{ thisWidth }}" height="20px">
+                                    <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
+                                            refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
+                                        <polygon points="{{ markerWidth }} 0, {{ markerWidth }} {{ markerHeight }}, 0 {{ markerHeight / 2 }}" fill="{{ thisStrokeColor }}" />
+                                    </marker>
+                                    <marker id="{{ name }}endarrow" markerWidth="{{ markerWidth }}" markerHeight="{{ markerHeight }}"
+                                            refX="0" refY="{{ markerHeight / 2 }}" orient="auto" markerUnits="strokeWidth">
+                                        <polygon points="0 0, {{ markerWidth }} {{ markerHeight / 2 }}, 0 {{ markerHeight }}" fill="{{ thisStrokeColor }}" />
+                                    </marker>
+                                    <line x1="{{ markerWidth * 2 }}" y1="{{ lineY }}" x2="{{ thisWidth - (markerWidth * 2) }}" y2="{{ lineY }}" stroke="{{ thisStrokeColor }}" stroke-width="2" marker-end="url(#{{ nameSpaceId }}endarrow)" marker-start="url(#{{ nameSpaceId }}startarrow)" />
+                                    <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="white" stroke="white" stroke-width="5">{{ retinaWidth }}w</text>
+                                    <text x="{{ thisWidth / 2 }}" y="{{ lineY + 4 }}" text-anchor="middle" fill="{{ thisStrokeColor }}">{{ retinaWidth }}w</text>
+                                </svg>
+
+                                {%  set aspectRatioText = variant.aspectRatioX ~ ':' ~ variant.aspectRatioY %}
+                                {% if useAspectRatio != true %}
+                                    {% set aspectRatioText = 'N/A' %}
+                                {% endif %}
+                                {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
+                                    {% set imageClass = "io-normal-image" %}
+                                    {% if imageSource == value.optimizedWebPImageUrls %}
+                                        {% set imageClass = "io-webp-image" %}
+                                    {% endif %}
+                                    <div style="width: 200px; vertical-align: top;">
+                                        <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
+                                            <div style="position: relative;">
+                                                <img class="io-soft-shadow-img {{ imageClass }}" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                                {% if (retinaSizes |length) > 1 %}
+                                                    <h4 class="io-retina-size-badge">
+                                                        {{ retinaSize }}x
+                                                    </h4>
+                                                {% endif %}
+                                            </div>
+                                        </a>
+                                    </div>
+                                    {% if variant.format == null %}
+                                        {% set thisFormat = format %}
+                                    {% else %}
+                                        {% set thisFormat = variant.format %}
+                                    {% endif %}
+                                    {% if imageSource == value.optimizedWebPImageUrls %}
+                                        {% set thisFormat = ".webp" %}
+                                    {% endif %}
+                                    <div style="text-align: center; padding-top: 10px;">
+                                        <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
+                                            {{ aspectRatioText }}
+                                            &middot;
+                                            {{ thisFormat }}
+                                            &middot;
+                                            {{ thisFileSize }}
+                                        </span>
+                                        {% if value.originalImageWidth < retinaWidth or value.originalImageHeight < (retinaWidth / aspectRatio) %}
+                                            <br />
+                                            <span class="warning" title="{{ 'This image is upscaled'|t('image-optimize') }}" data-icon="alert"></span>
+                                            <span style="color: {{ thisStrokeColor }};">This image is upscaled</span>
                                         {% endif %}
                                     </div>
-                                </a>
-                            </div>
-                            {% if variant.format == null %}
-                                {% set thisFormat = format %}
-                            {% else %}
-                                {% set thisFormat = variant.format %}
-                            {% endif %}
-                            {% if imageSource == value.optimizedWebPImageUrls %}
-                                {% set thisFormat = ".webp" %}
-                            {% endif %}
-                            <div style="text-align: center; padding-top: 10px;">
-                                <span style="text-transform: uppercase; color: {{ thisStrokeColor }}">
-                                    {{ aspectRatioText }}
-                                    &middot;
-                                    {{ thisFormat }}
-                                    &middot;
-                                    {{ thisFileSize }}
-                                </span>
-                                {% if value.originalImageWidth < retinaWidth or value.originalImageHeight < (retinaWidth / aspectRatio) %}
-                                    <br />
-                                    <span class="warning" title="{{ 'This image is upscaled'|t('image-optimize') }}" data-icon="alert"></span>
-                                    <span style="color: {{ thisStrokeColor }};">This image is upscaled</span>
+                                {% else %}
+                                    <div style="width: 200px; vertical-align: top;">
+                                        <svg style="margin: 0 auto; display: block;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
+                                            <rect fill="{{ thisFillColor }}" x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
+                                            </rect>
+                                            <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                                {{ aspectRatioText }}
+                                            </text>
+                                        </svg>
+                                    </div>
+                                    <div style="text-align: center; padding-top: 10px;">
+                                        <span style="color: {{ thisStrokeColor }}">
+                                            {% set thisFormat = thisUrl |split('.') |last %}
+                                            <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
+                                            <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
+                                        </span>
+                                    </div>
                                 {% endif %}
                             </div>
-                        {% else %}
-                            <div style="width: 200px; vertical-align: top;">
-                                <svg style="margin: 0 auto; display: block;" height="{{ thisHeight }}" width="{{ thisWidth }}" preserveAspectRatio="xMidYMid meet">
-                                    <rect fill="{{ thisFillColor }}" x="0" y="0" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke="{{ thisStrokeColor }}" stroke-width="4">
-                                    </rect>
-                                    <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" fill="{{ thisStrokeColor }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
-                                        {{ aspectRatioText }}
-                                    </text>
-                                </svg>
-                            </div>
-                            <div style="text-align: center; padding-top: 10px;">
-                                <span style="color: {{ thisStrokeColor }}">
-                                    {% set thisFormat = thisUrl |split('.') |last %}
-                                    <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
-                                    <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
-                                </span>
-                            </div>
-                        {% endif %}
+                        {% endfor %}
                     </div>
                 {% endfor %}
-            </div>
-        {% endfor %}
-    {% endfor  %}
-</div>
+            {% endfor  %}
+        </div>
+    {% endif %}
 {% else %}
-<div class="field">
-    <div class="heading">
-        <label>Optimized Image Variants:</label>
-        <p>
-            {% if settings.allowUpScaledImageVariants %}
-                {% set errorMessage = "This is not an image that can be manipulated" %}
-            {% else %}
-                {% set errorMessage = "This is not an image that can be manipulated or the images would all be up-scaled" %}
-            {% endif %}
-            <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
-            <span>{{ errorMessage |t('image-optimize') }}</span>
-        </p>
-    </div>
-</div>
-{% endif %}
-{% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
     <div class="field">
         <div class="heading">
-            <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
-            {% if value.colorPalette |length %}
-                <div class="io-field-section-container">
-                {%- for dominantColor in value.colorPalette -%}
-                    <div style="display: inline-block; width: 20%;">
-                        <div style="height: 30px; background-color: {{ dominantColor }}">
-                        </div>
-                        <p style="text-align: center; color: #AAA; margin-top: 5px; text-transform: uppercase;">
-                            {{ dominantColor }}
-                        </p>
-                    </div>
-                {%- endfor -%}
-                </div>
-            {% else %}
-                <p style="fill: #AAA; color: #AAA;">
-                    <span class="warning" title="{{ 'Color Palette not extracted' |t('image-optimize') }}" data-icon="alert">
-                        {{ 'Color Palette not extracted' |t('image-optimize') }}
-                    </span>
-                </p>
-            {% endif %}
+            <label>Optimized Image Variants:</label>
+            <p>
+                {% if settings.allowUpScaledImageVariants %}
+                    {% set errorMessage = "This is not an image that can be manipulated" %}
+                {% else %}
+                    {% set errorMessage = "This is not an image that can be manipulated or the images would all be up-scaled" %}
+                {% endif %}
+                <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
+                <span>{{ errorMessage |t('image-optimize') }}</span>
+            </p>
         </div>
     </div>
+{% endif %}
+{% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
+    {% if field.displayDominantColorPalette %}
+        <div class="field">
+            <div class="heading">
+                <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
+                {% if value.colorPalette |length %}
+                    <div class="io-field-section-container">
+                    {%- for dominantColor in value.colorPalette -%}
+                        <div style="display: inline-block; width: 20%;">
+                            <div style="height: 30px; background-color: {{ dominantColor }}">
+                            </div>
+                            <p style="text-align: center; color: #AAA; margin-top: 5px; text-transform: uppercase;">
+                                {{ dominantColor }}
+                            </p>
+                        </div>
+                    {%- endfor -%}
+                    </div>
+                {% else %}
+                    <p style="fill: #AAA; color: #AAA;">
+                        <span class="warning" title="{{ 'Color Palette not extracted' |t('image-optimize') }}" data-icon="alert">
+                            {{ 'Color Palette not extracted' |t('image-optimize') }}
+                        </span>
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
     {% set thisWidth = 400 %}
     {% set thisHeight = (thisWidth / value.placeholderWidth) * value.placeholderHeight %}
-    <div class="field">
-        <div class="heading">
-            <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
-            <div class="io-field-section-container">
-                <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-                <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                    {{ 'Placeholder Box' |t('image-optimize') }}
-                    &middot;
-                    SVG
-                    &middot;
-                    {{ value.placeholderBoxSize() }}
-                </p>
-            </div>
-            {% if value.placeholder |length %}
+    {% if field.displayLazyLoadPlaceholderImages %}
+        <div class="field">
+            <div class="heading">
+                <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
                 <div class="io-field-section-container">
-                    <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                    <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
                     <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                        {{ 'Placeholder Image' |t('image-optimize') }}
-                        &middot;
-                        JPG
-                        &middot;
-                        {{ value.placeholderImageSize() }}
-                    </p>
-                </div>
-            {% endif %}
-            {% if value.placeholderSvg |length %}
-                <div class="io-field-section-container">
-                    <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-                    <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                        {{ 'Placeholder Silhouette' |t('image-optimize') }}
+                        {{ 'Placeholder Box' |t('image-optimize') }}
                         &middot;
                         SVG
                         &middot;
-                        {{ value.placeholderSilhouetteSize() }}
+                        {{ value.placeholderBoxSize() }}
                     </p>
                 </div>
-            {% endif %}
-        </div>
+                {% if value.placeholder |length %}
+                    <div class="io-field-section-container">
+                        <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                        <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                            {{ 'Placeholder Image' |t('image-optimize') }}
+                            &middot;
+                            JPG
+                            &middot;
+                            {{ value.placeholderImageSize() }}
+                        </p>
+                    </div>
+                {% endif %}
+                {% if value.placeholderSvg |length %}
+                    <div class="io-field-section-container">
+                        <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                        <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                            {{ 'Placeholder Silhouette' |t('image-optimize') }}
+                            &middot;
+                            SVG
+                            &middot;
+                            {{ value.placeholderSilhouetteSize() }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
     </div>
+    {% endif %}
 {% endif %}
 {% js %}
         function canUseWebP() {
