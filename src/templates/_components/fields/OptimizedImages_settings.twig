@@ -22,28 +22,26 @@
     <!-- displayOptimizedImageVariants -->
     {{ forms.lightswitchField({
         label: "Display Optimized Image Variants"|t('image-optimize'),
-        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
+        instructions: "Controls whether the optimized image variants will be displayed in the Edit Asset HUD."|t('image-optimize'),
         'id': 'displayOptimizedImageVariants',
         'name': 'displayOptimizedImageVariants',
-        'on': settings.displayOptimizedImageVariants,
+        'on': field.displayOptimizedImageVariants,
+    }) }}
+    <!-- displayDominantColorPalette -->
+    {{ forms.lightswitchField({
+        label: "Display Dominant Color Palette"|t('image-optimize'),
+        instructions: "Controls whether the dominant color palette will be displayed in the Edit Asset HUD."|t('image-optimize'),
+        'id': 'displayDominantColorPalette',
+        'name': 'displayDominantColorPalette',
+        'on': field.displayDominantColorPalette,
     }) }}
     <!-- autoSharpenScaledImages -->
     {{ forms.lightswitchField({
-        label: "Auto Sharpen Scaled Images"|t('image-optimize'),
-        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
-        'id': 'autoSharpenScaledImages',
-        'name': 'autoSharpenScaledImages',
-        'on': settings.autoSharpenScaledImages,
-        'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
-    }) }}
-    <!-- autoSharpenScaledImages -->
-    {{ forms.lightswitchField({
-        label: "Auto Sharpen Scaled Images"|t('image-optimize'),
-        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
-        'id': 'autoSharpenScaledImages',
-        'name': 'autoSharpenScaledImages',
-        'on': settings.autoSharpenScaledImages,
-        'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
+        label: "Display LazyLoad Placeholder Images"|t('image-optimize'),
+        instructions: "Controls whether the lazy load placeholder images will be displayed in the Edit Asset HUD."|t('image-optimize'),
+        'id': 'displayLazyLoadPlaceholderImages',
+        'name': 'displayLazyLoadPlaceholderImages',
+        'on': field.displayLazyLoadPlaceholderImages,
     }) }}
     <!-- variants -->
     <div class="field">
