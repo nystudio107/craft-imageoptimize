@@ -35,7 +35,7 @@ return [
     'imgixApiKey' => '',
 
     // The optional security token used to sign image URLs from Imgix
-    '$imgixSecurityToken' => '',
+    'imgixSecurityToken' => '',
 
     // Should image variant be created on Asset save (aka BeforePageLoad)
     'generateTransformsBeforePageLoad' => true,
