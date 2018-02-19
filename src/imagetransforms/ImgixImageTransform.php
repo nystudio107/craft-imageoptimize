@@ -95,8 +95,8 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                 }
                 if ($settings->autoSharpenScaledImages) {
                     // See if the image has been scaled >= 50%
-                    $widthScale = $asset->getWidth() / $transform->width;
-                    $heightScale = $asset->getHeight() / $transform->height;
+                    $widthScale = $asset->getWidth() / ($transform->width ?? $asset->getWidth());
+                    $heightScale = $asset->getHeight() / ($transform->height ?? $asset->getHeight());
                     if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
                         $params['sharp'] = 50.0;
                     }
