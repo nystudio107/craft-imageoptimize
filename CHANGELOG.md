@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.18 - 2018.02.19
+### Added
+* Fix a division by 0 error with some custom Craft transforms when using Imgix as a transform method
+
 ## 1.4.17 - 2018.02.16
 ### Added
 * Added lightswitch controls to the OptimizedImages field that let you control what is displayed
