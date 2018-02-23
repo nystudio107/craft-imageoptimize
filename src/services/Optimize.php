@@ -660,14 +660,8 @@ class Optimize extends Component
                 );
             }
 
-            try {
-                FileHelper::removeFile($outputPath);
-            } catch (ErrorException $e) {
-                Craft::error(
-                    'Error removing file: '.$e->getMessage(),
-                    __METHOD__
-                );
-            }
+            FileHelper::unlink($outputPath);
+
         } else {
             Craft::error(
                 Craft::t('image-optimize', 'Failed to create image variant at: ')
