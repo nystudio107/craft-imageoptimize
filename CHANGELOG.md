@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.19 - 2018.02.23
+### Changed
+* Fix deprecation errors from Craft CMS 3 RC 12 (which were causing slowdowns)
+
 ## 1.4.18 - 2018.02.19
 ### Added
 * Fix a division by 0 error with some custom Craft transforms when using Imgix as a transform method
