@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\console\controllers;
 
+use craft\base\Volume;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
@@ -31,14 +32,31 @@ class OptimizeController extends Controller
     // =========================================================================
 
     /**
-     * Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
+     * Create all of the OptimizedImages Field variants by creating all of the
+     * responsive image variant transforms
+     *
+     * @param string|null $volumeHandle
+     *
+     * @throws \yii\base\InvalidConfigException
      */
-    public function actionCreate()
+    public function actionCreate(string $volumeHandle = null)
     {
         echo "Creating optimized image variants".PHP_EOL;
 
-        // Re-save all of the optimized image variants in all volumes
-        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+        if ($volumeHandle == null) {
+            // Re-save all of the optimized image variants in all volumes
+            ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+        } else {
+            // Re-save all of the optimized image variants in a specific volume
+            $volumes = Craft::$app->getVolumes();
+            $volume = $volumes->getVolumeByHandle($volumeHandle);
+            if ($volume) {
+                /** @var Volume $volume */
+                ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
+            } else {
+                echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
+            }
+        }
         Craft::$app->getQueue()->run();
     }
 
