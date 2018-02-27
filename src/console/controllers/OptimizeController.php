@@ -10,10 +10,11 @@
 
 namespace nystudio107\imageoptimize\console\controllers;
 
-use craft\base\Volume;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
+use craft\base\Volume;
+use craft\helpers\FileHelper;
 use craft\utilities\ClearCaches;
 
 use yii\console\Controller;
