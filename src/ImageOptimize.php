@@ -136,8 +136,9 @@ class ImageOptimize extends Plugin
                     'Fields::EVENT_AFTER_SAVE_FIELD',
                     __METHOD__
                 );
+                $settings = $this->getSettings();
                 /** @var Field $field */
-                if (!$event->isNew) {
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     $thisField = $event->field;
                     if ($thisField instanceof OptimizedImages) {
                         $volumes = Craft::$app->getVolumes()->getAllVolumes();
@@ -174,8 +175,11 @@ class ImageOptimize extends Plugin
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
                         __METHOD__
                     );
-                    // After they have changed the settings, resave all of the assets
-                    ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+                    $settings = $this->getSettings();
+                    if ($settings->automaticallyResaveImageVariants) {
+                        // After they have changed the settings, resave all of the assets
+                        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+                    }
                 }
             }
         );
@@ -189,8 +193,9 @@ class ImageOptimize extends Plugin
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
                     __METHOD__
                 );
+                $settings = $this->getSettings();
                 // Only worry about this volume if it's not new
-                if (!$event->isNew) {
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     /** @var Volume $volume */
                     $volume = $event->volume;
                     if (is_subclass_of($volume, Volume::class)) {
