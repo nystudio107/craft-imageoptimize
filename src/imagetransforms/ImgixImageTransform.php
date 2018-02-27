@@ -145,7 +145,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
             // Finally, create the Imgix URL for this transformed image
             $assetUri = self::getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
-            Craft::trace(
+            Craft::debug(
                 'Imgix transform created for: '.$assetUri.' - Params: '.print_r($params, true).' - URL: '.$url,
                 __METHOD__
             );

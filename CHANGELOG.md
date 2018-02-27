@@ -1,5 +1,16 @@
 # ImageOptimize Changelog
 
+## 1.4.20 - 2018.02.27
+### Added
+* Allow for CLI processing of specific Asset Volumes via `image-optimize/optimize/create volumehandle`
+* Added `automaticallyResaveImageVariants` to `config.php` to allow disabling of the automatic re-saving of Image Variants for people who want to do it manually via the CLI
+* Added a `.srcWeb()` method for OptimizedImages
+* Added an optional `width` parameter that can be passed into `.src()` and `.srcWebp()`
+* Added support for mostly deprecated `1x`, `2x`, etc. srcsets by passing an optional `true` parameter to `.srcsetWidth(XXX, true)` and `.srcsetWidthWebp(XXX, true)`
+
+### Changed
+* Fix more deprecation errors from Craft CMS 3 RC 12
+
 ## 1.4.19 - 2018.02.23
 ### Changed
 * Fix deprecation errors from Craft CMS 3 RC 12 (which were causing slowdowns)

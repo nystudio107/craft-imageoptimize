@@ -292,6 +292,8 @@ class OptimizedImages extends Component
 
     /**
      * Re-save all of the assets in all of the volumes
+     *
+     * @throws \yii\base\InvalidConfigException
      */
     public function resaveAllVolumesAssets()
     {
@@ -347,7 +349,7 @@ class OptimizedImages extends Component
                     'enabledForSite' => false,
                 ],
             ]));
-            Craft::trace(
+            Craft::debug(
                 Craft::t(
                     'image-optimize',
                     'Started resaveVolumeAssets queue job id: {jobId}',
@@ -376,7 +378,7 @@ class OptimizedImages extends Component
                 'enabledForSite' => false,
             ],
         ]));
-        Craft::trace(
+        Craft::debug(
             Craft::t(
                 'image-optimize',
                 'Started resaveAsset queue job id: {jobId} Element id: {elementId}',

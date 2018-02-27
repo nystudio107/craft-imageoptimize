@@ -393,7 +393,7 @@ class Optimize extends Component
                 if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
                     $imagineImage->effects()
                         ->sharpen();
-                    Craft::trace(
+                    Craft::debug(
                         Craft::t(
                             'image-optimize',
                             'Image transform >= 50%, sharpened the transformed image: {name}',

@@ -108,117 +108,149 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Return the first image variant URL
+     * Return the first image variant URL or the specific one passed in via $width
+     *
+     * @param int $width
      *
      * @return \Twig_Markup|null
      */
-    public function src(): string
+    public function src(int $width = 0): string
     {
-        return Template::raw(reset($this->optimizedImageUrls));
+        if (empty($width)) {
+            return Template::raw(reset($this->optimizedImageUrls));
+        } else {
+            return Template::raw($this->optimizedImageUrls[$width] ?? '');
+        }
     }
 
     /**
      * Return a string of image URLs and their sizes
      *
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     *
      * @return \Twig_Markup|null
      */
-    public function srcset(): string
+    public function srcset(bool $dpr = false): string
     {
-        return Template::raw($this->getSrcsetFromArray($this->optimizedImageUrls));
+        return Template::raw($this->getSrcsetFromArray($this->optimizedImageUrls, $dpr));
     }
 
     /**
      * Return a string of image URLs and their sizes that match $width
      *
      * @param int $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
      *
      * @return \Twig_Markup|null
      */
-    public function srcsetWidth(int $width): string
+    public function srcsetWidth(int $width, bool $dpr = false): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
 
-        return Template::raw($this->getSrcsetFromArray($subset));
+        return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
 
     /**
      * Return a string of image URLs and their sizes that are at least $width or larger
      *
      * @param int $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
      *
      * @return \Twig_Markup|null
      */
-    public function srcsetMinWidth(int $width): string
+    public function srcsetMinWidth(int $width, bool $dpr = false): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
 
-        return Template::raw($this->getSrcsetFromArray($subset));
+        return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
 
     /**
      * Return a string of image URLs and their sizes that are $width or smaller
      *
      * @param int $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
      *
      * @return \Twig_Markup|null
      */
-    public function srcsetMaxWidth(int $width): string
+    public function srcsetMaxWidth(int $width, bool $dpr = false): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
 
-        return Template::raw($this->getSrcsetFromArray($subset));
+        return Template::raw($this->getSrcsetFromArray($subset, $dpr));
+    }
+
+    /**
+     * Return the first webp image variant URL or the specific one passed in via $width
+     *
+     * @param int $width
+     *
+     * @return \Twig_Markup|null
+     */
+    public function srcWebp(int $width = 0): string
+    {
+        if (empty($width)) {
+            return Template::raw(reset($this->optimizedWebPImageUrls));
+        } else {
+            return Template::raw($this->optimizedWebPImageUrls[$width] ?? '');
+        }
     }
 
     /**
      * Return a string of webp image URLs and their sizes
      *
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     *
      * @return \Twig_Markup|null
      */
-    public function srcsetWebp(): string
+    public function srcsetWebp(bool $dpr = false): string
     {
-        return Template::raw($this->getSrcsetFromArray($this->optimizedWebPImageUrls));
+        return Template::raw($this->getSrcsetFromArray($this->optimizedWebPImageUrls, $dpr));
     }
 
     /**
      * Return a string of webp image URLs and their sizes that match $width
      *
      * @param int $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
      *
      * @return \Twig_Markup|null
      */
-    public function srcsetWidthWebp(int $width): string
+    public function srcsetWidthWebp(int $width, bool $dpr = false): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
 
-        return Template::raw($this->getSrcsetFromArray($subset));
+        return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
 
     /**
      * Return a string of webp image URLs and their sizes that are at least $width or larger
      *
      * @param int $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
      *
      * @return \Twig_Markup|null
      */
-    public function srcsetMinWidthWebp(int $width): string
+    public function srcsetMinWidthWebp(int $width, bool $dpr = false): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
 
-        return Template::raw($this->getSrcsetFromArray($subset));
+        return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
 
     /**
      * Return a string of webp image URLs and their sizes that are $width or smaller
      *
      * @param int $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
      *
      * @return \Twig_Markup|null
      */
-    public function srcsetMaxWidthWebp(int $width): string
+    public function srcsetMaxWidthWebp(int $width, bool $dpr = false): string
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
 
-        return Template::raw($this->getSrcsetFromArray($subset));
+        return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
 
     /**
@@ -424,16 +456,29 @@ class OptimizedImage extends Model
 
         return $subset;
     }
+
     /**
      * @param array $array
+     * @param bool  $dpr
      *
      * @return string
      */
-    protected function getSrcsetFromArray(array $array): string
+    protected function getSrcsetFromArray(array $array, bool $dpr = false): string
     {
         $srcset = '';
         foreach ($array as $key => $value) {
-            $srcset .= $value . ' ' . $key . 'w, ';
+            if ($dpr) {
+                $descriptor = '1x';
+                if (!empty($array[intval($key) / 2])) {
+                    $descriptor = '2x';
+                }
+                if (!empty($array[intval($key) / 3])) {
+                    $descriptor = '3x';
+                }
+            } else {
+                $descriptor = $key . 'w';
+            }
+            $srcset .= $value . ' ' . $descriptor . ', ';
         }
         $srcset = rtrim($srcset, ', ');
 

@@ -119,7 +119,7 @@ class ImageOptimize extends Plugin
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Fields::EVENT_REGISTER_FIELD_TYPES',
                     __METHOD__
                 );
@@ -132,12 +132,13 @@ class ImageOptimize extends Plugin
             Fields::class,
             Fields::EVENT_AFTER_SAVE_FIELD,
             function (FieldEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Fields::EVENT_AFTER_SAVE_FIELD',
                     __METHOD__
                 );
+                $settings = $this->getSettings();
                 /** @var Field $field */
-                if (!$event->isNew) {
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     $thisField = $event->field;
                     if ($thisField instanceof OptimizedImages) {
                         $volumes = Craft::$app->getVolumes()->getAllVolumes();
@@ -170,12 +171,15 @@ class ImageOptimize extends Plugin
             Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
-                    Craft::trace(
+                    Craft::debug(
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
                         __METHOD__
                     );
-                    // After they have changed the settings, resave all of the assets
-                    ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+                    $settings = $this->getSettings();
+                    if ($settings->automaticallyResaveImageVariants) {
+                        // After they have changed the settings, resave all of the assets
+                        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+                    }
                 }
             }
         );
@@ -185,12 +189,13 @@ class ImageOptimize extends Plugin
             Volumes::class,
             Volumes::EVENT_AFTER_SAVE_VOLUME,
             function (VolumeEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
                     __METHOD__
                 );
+                $settings = $this->getSettings();
                 // Only worry about this volume if it's not new
-                if (!$event->isNew) {
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     /** @var Volume $volume */
                     $volume = $event->volume;
                     if (is_subclass_of($volume, Volume::class)) {
@@ -205,7 +210,7 @@ class ImageOptimize extends Plugin
             Assets::class,
             Assets::EVENT_GET_ASSET_URL,
             function (GetAssetUrlEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Assets::EVENT_GET_ASSET_URL',
                     __METHOD__
                 );
@@ -221,7 +226,7 @@ class ImageOptimize extends Plugin
             AssetTransforms::class,
             AssetTransforms::EVENT_GENERATE_TRANSFORM,
             function (GenerateTransformEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'AssetTransforms::EVENT_GENERATE_TRANSFORM',
                     __METHOD__
                 );
@@ -237,7 +242,7 @@ class ImageOptimize extends Plugin
             AssetTransforms::class,
             AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS,
             function (AssetTransformImageEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS',
                     __METHOD__
                 );
@@ -253,7 +258,7 @@ class ImageOptimize extends Plugin
             Elements::class,
             Elements::EVENT_BEFORE_SAVE_ELEMENT,
             function (ElementEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Elements::EVENT_BEFORE_SAVE_ELEMENT',
                     __METHOD__
                 );
@@ -278,7 +283,7 @@ class ImageOptimize extends Plugin
             Elements::class,
             Elements::EVENT_BEFORE_DELETE_ELEMENT,
             function (ElementEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Elements::EVENT_BEFORE_DELETE_ELEMENT',
                     __METHOD__
                 );
@@ -302,7 +307,7 @@ class ImageOptimize extends Plugin
             Assets::class,
             Assets::EVENT_BEFORE_REPLACE_ASSET,
             function (ReplaceAssetEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Assets::EVENT_BEFORE_REPLACE_ASSET',
                     __METHOD__
                 );
@@ -324,7 +329,7 @@ class ImageOptimize extends Plugin
             Assets::class,
             Assets::EVENT_AFTER_REPLACE_ASSET,
             function (ReplaceAssetEvent $event) {
-                Craft::trace(
+                Craft::debug(
                     'Assets::EVENT_AFTER_REPLACE_ASSET',
                     __METHOD__
                 );
