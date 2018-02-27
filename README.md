@@ -297,7 +297,16 @@ To use `<img srcset="">` elements in your templates, you can just do:
                  sizes="100vw" />
 ```
 
-The `.src()` method simply displays the first responsive image variant, and is typically just used as a fallback for browsers that don't support srcset.
+The `.src()` method simply displays the first responsive image variant, and is typically just used as a fallback for browsers that don't support srcset. You can also pass in an optional `width` parameter to have it return a variant of that width:
+
+```
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    <img src="{{ optimizedImages.src(1200) }}"
+         srcset="{{ optimizedImages.srcset() }}"
+         sizes="100vw" />
+```
+
+There is also a corresponding `.srcWebp()` method, should you need it.
 
 The `.srcset()` method displays all of the responsive image variants, with their associated source widths.
 
@@ -375,6 +384,12 @@ If you need separate `srcset`s to match your media queries, you can use:
     {{ optimizedImages.srcsetWidthWebP(970) }}
    
 ...to output all variants that exactly match the passed in width (which could be more than one, if you have set up `2x` or `3x` retina variants).
+
+If you want to use the mostly deprecated `1x`, `2x` DPR srcset syntax, you can do that by passing in `true`:
+
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {{ optimizedImages.srcsetWidth(970, true) }}
+    {{ optimizedImages.srcsetWidthWebP(970, true) }}
 
 To mimic the `min-width` media query, you can do:
 
