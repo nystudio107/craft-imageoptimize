@@ -153,12 +153,22 @@ From the root directory of your Craft CMS 3 project, you can use the following c
 ./craft image-optimize/optimize/create
 ```
 
+If you want to generate only responsive image variants for a specific Asset Volume, you can do that by specifying the `handle` via the console command:
+
+```
+./craft image-optimize/optimize/create blogImages
+```
+
 Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
 
 ```
 ./craft image-optimize/optimize/clear
 ```
 Clear the Asset transform index cache tables, to force the re-creation of transformed images
+
+Normally ImageOptimize will regenerate image variants if you change an OptimizedImages field, save the ImageOptimize preferences, or save an Assets Volume that contains an OptimizedImages field, to ensure that all of your image variants are in sync.
+
+If you plan to do this manually via the above console commands, you can disable this behavior via the `automaticallyResaveImageVariants` setting in `config.php`.
 
 ### Dynamically creating Optimized Image Variants
 
@@ -495,6 +505,13 @@ The `maxSrcsetWidth()` method allows you to work around issues with `<img srcset
          height="auto" />
 ```
 
+### Async Queue plugin
+
+Normally ImageOptimize will regenerate image variants if you change an OptimizedImages field, save the ImageOptimize preferences, or save an Assets Volume that contains an OptimizedImages field, to ensure that all of your image variants are in sync.
+
+Re-saving many images at a time can be intensive, and on certain setups may require tweaking the `php.ini` setting `max_execution_time`. An alternative for better handling of any lengthy Craft CMS task is the [Async Queue plugin](https://github.com/ostark/craft-async-queue).
+
+All you need to do is install the plugin, and any queue jobs in Craft CMS 3 will now run entirely in the background via the CLI php, which isn't subject to the same restrictions that the web php is.
 
 ## Using Optimized Image Transforms
 

@@ -3,6 +3,7 @@
 ## 1.4.20 - 2018.02.27
 ### Added
 * Allow for CLI processing of specific Asset Volumes via `image-optimize/optimize/create volumehandle`
+* Added `automaticallyResaveImageVariants` to `config.php` to allow disabling of the automatic re-saving of Image Variants for people who want to do it manually via the CLI
 
 ### Changed
 * Fix more deprecation errors from Craft CMS 3 RC 12
