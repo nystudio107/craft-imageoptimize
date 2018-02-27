@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.4.20 - 2018.02.27
+### Added
+* Allow for CLI processing of specific Asset Volumes via `image-optimize/optimize/create volumehandle`
+
 ### Changed
 * Fix more deprecation errors from Craft CMS 3 RC 12
 
