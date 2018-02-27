@@ -220,6 +220,16 @@ class OptimizedImages extends Field
      */
     public function getSettingsHtml()
     {
+        $namespace = Craft::$app->getView()->getNamespace();
+        if (strpos($namespace, 'craft\\fields\\Matrix') !== false) {
+            // Render an error template, since the field only works when attached to an Asset
+            return Craft::$app->getView()->renderTemplate(
+                'image-optimize/_components/fields/OptimizedImages_error',
+                [
+                ]
+            );
+        }
+
         $reflect = new \ReflectionClass($this);
         $thisId = $reflect->getShortName();
         $id = Craft::$app->getView()->formatInputId($thisId);
