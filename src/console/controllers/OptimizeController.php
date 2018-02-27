@@ -40,7 +40,7 @@ class OptimizeController extends Controller
      *
      * @throws \yii\base\InvalidConfigException
      */
-    public function actionCreate(string $volumeHandle = null)
+    public function actionCreate($volumeHandle = null)
     {
         echo "Creating optimized image variants".PHP_EOL;
 
