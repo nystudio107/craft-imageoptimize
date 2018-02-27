@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.20 - 2018.02.27
+### Changed
+* Fix more deprecation errors from Craft CMS 3 RC 12
+
 ## 1.4.19 - 2018.02.23
 ### Changed
 * Fix deprecation errors from Craft CMS 3 RC 12 (which were causing slowdowns)
