@@ -33,80 +33,71 @@ class Settings extends Model
     public $transformMethod = 'craft';
 
     /**
-     * Domain for the Imgix transform service
-     *
-     * @var string
+     * @var string Domain for the Imgix transform service
      */
     public $imgixDomain = '';
 
     /**
-     * API Key for the Imgix transform service
-     *
-     * @var string
+     * @var string API Key for the Imgix transform service
      */
     public $imgixApiKey = '';
 
     /**
-     * The optional security token used to sign image URLs from Imgix
-     *
-     * @var string
+     * @var string The optional security token used to sign image URLs from
+     *      Imgix
      */
     public $imgixSecurityToken = '';
 
     /**
-     * Should image variant be created on Asset save (aka BeforePageLoad)
-     *
-     * @var bool
+     * @var bool Should the image variants in an Asset Volume be automatically
+     *      re-saved when saving an OptimizedImages field, saving an Asset
+     *      Volume that has an OptimizedImages field in its layout, or saving
+     *      the ImageOptimized settings. Set this to false only if you will be
+     *      manually using the CLI console command to resave image variants
+     */
+    public $automaticallyResaveImageVariants = true;
+
+    /**
+     * @var bool Should image variant be created on Asset save (aka
+     *      BeforePageLoad)
      */
     public $generateTransformsBeforePageLoad = true;
 
     /**
-     * Controls whether a dominant color palette should be created for image
-     * variants It takes a bit of time, so if you never plan to use it, you can
-     * turn it off
-     *
-     * @var bool
+     * @var bool Controls whether a dominant color palette should be created
+     *      for image variants It takes a bit of time, so if you never plan to
+     *      use it, you can turn it off
      */
     public $createColorPalette = true;
 
     /**
-     * Controls whether SVG placeholder silhouettes should be created for image
-     * variants It takes a bit of time, so if you never plan to use them, you
-     * can turn it off
-     *
-     * @var bool
+     * @var bool Controls whether SVG placeholder silhouettes should be created
+     *      for image variants It takes a bit of time, so if you never plan to
+     *      use them, you can turn it off
      */
     public $createPlaceholderSilhouettes = true;
 
     /**
-     * Controls whether retina images are automatically created with reduced
-     * quality as per
-     * https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
-     *
-     * @var bool
+     * @var bool Controls whether retina images are automatically created with
+     *      reduced quality as per
+     *      https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
      */
     public $lowerQualityRetinaImageVariants = true;
 
     /**
-     * Controls whether Optimized Image Variants are created that would be
-     * up-scaled to be larger than the original source image
-     *
-     * @var bool
+     * @var bool Controls whether Optimized Image Variants are created that
+     *      would be up-scaled to be larger than the original source image
      */
     public $allowUpScaledImageVariants = false;
 
     /**
-     * Controls whether images scaled down >= 50% should be automatically
-     * sharpened
-     *
-     * @var bool
+     * @var bool Controls whether images scaled down >= 50% should be
+     *      automatically sharpened
      */
     public $autoSharpenScaledImages = true;
 
     /**
-     * Default aspect ratios
-     *
-     * @var array
+     * @var array Default aspect ratios
      */
     public $defaultAspectRatios = [
         ['x' => 16, 'y' => 9],
@@ -122,9 +113,7 @@ class Settings extends Model
     ];
 
     /**
-     * Default variants
-     *
-     * @var array
+     * @var array Default variants
      */
     public $defaultVariants = [
         [
@@ -166,9 +155,7 @@ class Settings extends Model
     ];
 
     /**
-     * Active image processors
-     *
-     * @var array
+     * @var array Active image processors
      */
     public $activeImageProcessors = [
         'jpg' => [
@@ -186,9 +173,7 @@ class Settings extends Model
     ];
 
     /**
-     * Active image variant creators
-     *
-     * @var array
+     * @var array Active image variant creators
      */
     public $activeImageVariantCreators = [
         'jpg' => [
@@ -203,9 +188,7 @@ class Settings extends Model
     ];
 
     /**
-     * Preset image processors
-     *
-     * @var array
+     * @var array Preset image processors
      */
     public $imageProcessors = [
         // jpeg optimizers
@@ -282,6 +265,7 @@ class Settings extends Model
             ['imgixApiKey', 'default', 'value' => ''],
             [
                 [
+                    'automaticallyResaveImageVariants',
                     'generateTransformsBeforePageLoad',
                     'createColorPalette',
                     'createPlaceholderSilhouettes',

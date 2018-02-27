@@ -37,6 +37,12 @@ return [
     // The optional security token used to sign image URLs from Imgix
     'imgixSecurityToken' => '',
 
+    // Should the image variants in an Asset Volume be automatically re-saved when saving
+    // an OptimizedImages field, saving an Asset Volume that has an OptimizedImages field
+    // in its layout, or saving the ImageOptimized settings. Set this to false only if
+    // you will be manually using the CLI console command to resave image variants
+    'automaticallyResaveImageVariants' => true,
+
     // Should image variant be created on Asset save (aka BeforePageLoad)
     'generateTransformsBeforePageLoad' => true,
 
