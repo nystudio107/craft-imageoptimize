@@ -64,6 +64,11 @@ class Settings extends Model
     public $generateTransformsBeforePageLoad = true;
 
     /**
+     * @var bool Set to false to disable all placeholder generation
+     */
+    public $generatePlacholders = true;
+
+    /**
      * @var bool Controls whether a dominant color palette should be created
      *      for image variants It takes a bit of time, so if you never plan to
      *      use it, you can turn it off

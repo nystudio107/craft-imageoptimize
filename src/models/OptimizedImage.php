@@ -285,6 +285,9 @@ class OptimizedImage extends Model
         $header = 'data:image/jpeg;base64,';
         if (!empty($this->placeholder)) {
             $content = $this->placeholder;
+        } else {
+            // At least return something
+            return $this->defaultPlaceholderImage();
         }
 
         return Template::raw($header . rawurlencode($content));
@@ -337,6 +340,9 @@ class OptimizedImage extends Model
         $header = 'data:image/svg+xml,';
         if (!empty($this->placeholderSvg)) {
             $content = $this->placeholderSvg;
+        } else {
+            // At least return something
+            return $this->defaultPlaceholderImage();
         }
 
         return Template::raw($header . $content);
@@ -483,5 +489,19 @@ class OptimizedImage extends Model
         $srcset = rtrim($srcset, ', ');
 
         return $srcset;
+    }
+
+    /**
+     * Return a default placeholder image
+     *
+     * @return \Twig_Markup
+     */
+    protected function defaultPlaceholderImage(): \Twig_Markup
+    {
+        $width = 1;
+        $height = 1;
+        $color = '#CCC';
+
+        return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
     }
 }

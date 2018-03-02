@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.22 - 2018.03.02
+### Changed
+* Using Image Optimize via Twig should have less of a performance hit now, since all placeholder image/color palette generation is disabled
+* Fixed deprecation errors from Craft CMS 3 RC13
+
 ## 1.4.21 - 2018.02.27
 ### Changed
 * Show a warning if people try to add an OptimizedImages field in a Matrix block
