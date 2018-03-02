@@ -152,26 +152,28 @@ class OptimizedImages extends Component
     protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
         $settings = ImageOptimize::$plugin->getSettings();
-        $placeholder = ImageOptimize::$plugin->placeholder;
-        if ($element->focalPoint) {
-            $position = $element->getFocalPoint();
-        } else {
-            $position = 'center-center';
-        }
-        $tempPath = $placeholder->createTempPlaceholderImage($element, $aspectRatio, $position);
-        if (!empty($tempPath)) {
-            // Generate our placeholder image
-            $model->placeholder = $placeholder->generatePlaceholderImage($tempPath, $aspectRatio, $position);
-            // Generate the color palette for the image
-            if ($settings->createColorPalette) {
-                $model->colorPalette = $placeholder->generateColorPalette($tempPath);
+        if ($settings->generatePlacholders) {
+            $placeholder = ImageOptimize::$plugin->placeholder;
+            if ($element->focalPoint) {
+                $position = $element->getFocalPoint();
+            } else {
+                $position = 'center-center';
             }
-            // Generate the Potrace SVG
-            if ($settings->createPlaceholderSilhouettes) {
-                $model->placeholderSvg = $placeholder->generatePlaceholderSvg($tempPath);
+            $tempPath = $placeholder->createTempPlaceholderImage($element, $aspectRatio, $position);
+            if (!empty($tempPath)) {
+                // Generate our placeholder image
+                $model->placeholder = $placeholder->generatePlaceholderImage($tempPath, $aspectRatio, $position);
+                // Generate the color palette for the image
+                if ($settings->createColorPalette) {
+                    $model->colorPalette = $placeholder->generateColorPalette($tempPath);
+                }
+                // Generate the Potrace SVG
+                if ($settings->createPlaceholderSilhouettes) {
+                    $model->placeholderSvg = $placeholder->generatePlaceholderSvg($tempPath);
+                }
+                // Get rid of our placeholder image
+                @unlink($tempPath);
             }
-            // Get rid of our placeholder image
-            @unlink($tempPath);
         }
     }
 

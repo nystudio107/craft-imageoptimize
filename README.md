@@ -174,7 +174,7 @@ If you plan to do this manually via the above console commands, you can disable 
 
 If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
 
-**N.B.:** If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+**N.B.:** We recommend _against_ using Image Optimize via Twig. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
 
 To create Optimized Image Variants dynamically in your templates, you can do:
 
@@ -247,7 +247,7 @@ You can create as many Optimized Image Variants as you like, by just including a
 
 The `optimizedImages` object that is returned to you can be used in your templates as described in the *Displaying images on the frontend* section.
 
-**N.B.:** Because they are lengthy operations, by default the generation of the dominant color palette and the generation of the placeholder silhouette are off by default. You can enable them via additional parameters passed down to `craft.imageOptimize.createOptimizedImages`:
+**N.B.:** Because they are lengthy operations, by default the generation of the dominant color palette and the generation of the placeholder silhouette are off. You can enable them via an additional parameter passed down to `craft.imageOptimize.createOptimizedImages`:
 
 ```
 {% set optimzedImages = craft.imageOptimize.createOptimizedImages(
@@ -264,12 +264,11 @@ The `optimizedImages` object that is returned to you can be used in your templat
         },
     ],
     true,
-    true,
 ) %}
 
 ```
 
-The third parameter is the `createColorPalette` setting, the fourth parameter is the `createPlaceholderSilhouettes` setting.
+The third parameter is the `generatePlacholders` setting, which disables generating all placeholders and dominant color palette extraction.
 
 ### Displaying images on the frontend
 
