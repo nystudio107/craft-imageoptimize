@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.23 - 2018.03.03
+### Changed
+* The lengthy generation of placeholders should _really_ be off by default when doing them via Twig now
+* Asset move operations now cause Optimized Image Variants to be re-saved via a non-blocking queue job
+
 ## 1.4.22 - 2018.03.02
 ### Changed
 * Using Image Optimize via Twig should have less of a performance hit now, since all placeholder image/color palette generation is disabled
