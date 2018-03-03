@@ -154,7 +154,9 @@ class OptimizedImages extends Field
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
         if ($asset instanceof Asset) {
-            if ($isNew) {
+            // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_ESSENTIALS treat it as a new asset
+            $scenario = $asset->getScenario();
+            if ($isNew || $scenario == Asset::SCENARIO_FILEOPS || $asset->propagating) {
                 /**
                  * If this is a newly uploaded/created Asset, we can save the variants
                  * via a queue job to prevent it from blocking
