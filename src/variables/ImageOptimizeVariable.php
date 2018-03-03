@@ -53,8 +53,7 @@ class ImageOptimizeVariable
         $generatePlacholders = false
     ) {
         // Override our settings for lengthy operations, since we're doing this via Twig
-        $settings = ImageOptimize::$plugin->getSettings();
-        $settings->generatePlacholders = $generatePlacholders;
+        ImageOptimize::$generatePlacholders = $generatePlacholders;
 
         return ImageOptimize::$plugin->optimizedImages->createOptimizedImages($asset, $variants);
     }

@@ -82,6 +82,11 @@ class ImageOptimize extends Plugin
      */
     public static $transformParams;
 
+    /**
+     * @var bool
+     */
+    public static $generatePlacholders = true;
+
     // Public Methods
     // =========================================================================
 
