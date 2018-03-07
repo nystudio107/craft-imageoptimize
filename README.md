@@ -1,3 +1,5 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nystudio107/craft-imageoptimize/badges/quality-score.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-imageoptimize/?branch=v1)[![Code Coverage](https://scrutinizer-ci.com/g/nystudio107/craft-imageoptimize/badges/coverage.png?b=v1)](https://scrutinizer-ci.com/g/nystudio107/craft-imageoptimize/?branch=v1)
+
 # ImageOptimize plugin for Craft CMS 3.x
 
 Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.
