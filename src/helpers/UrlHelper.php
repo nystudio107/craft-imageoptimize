@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\helpers;
 
 use Craft;
+use craft\errors\SiteNotFoundException;
 use craft\helpers\UrlHelper as CraftUrlHelper;
 
 use yii\base\Exception;
@@ -48,7 +49,11 @@ class UrlHelper extends CraftUrlHelper
                 $protocol = "https";
             }
             if (self::isProtocolRelativeUrl($url)) {
-                $url = self::urlWithScheme($url, $protocol);
+                try {
+                    $url = self::urlWithScheme($url, $protocol);
+                } catch (SiteNotFoundException $e) {
+                    Craft::error($e->getMessage(), __METHOD__);
+                }
             } else {
                 try {
                     $url = self::siteUrl($url, null, $protocol);
