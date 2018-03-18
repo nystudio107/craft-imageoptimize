@@ -209,7 +209,7 @@ class ImageOptimize extends Plugin
     {
         $this->installAssetEventHandlers();
         $this->installElementEventHandlers();
-        $this->installMiscEventHandlers()
+        $this->installMiscEventHandlers();
     }
 
     /**
@@ -418,13 +418,12 @@ class ImageOptimize extends Plugin
                     'Elements::EVENT_BEFORE_SAVE_ELEMENT',
                     __METHOD__
                 );
-                /** @var Asset $element */
-                $element = $event->element;
-                $isNewElement = $event->isNew;
-                if (!$isNewElement) {
+                /** @var Asset $asset */
+                $asset = $event->element;
+                if (!$event->isNew) {
                     // Purge the URL
                     $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-                        $element,
+                        $asset,
                         ImageOptimize::$transformParams
                     );
                     if ($purgeUrl) {
@@ -443,11 +442,11 @@ class ImageOptimize extends Plugin
                     'Elements::EVENT_BEFORE_DELETE_ELEMENT',
                     __METHOD__
                 );
-                /** @var Element $element */
-                $element = $event->element;
+                /** @var Asset $asset */
+                $asset = $event->element;
                 // Purge the URL
                 $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-                    $element,
+                    $asset,
                     ImageOptimize::$transformParams
                 );
                 if ($purgeUrl) {
