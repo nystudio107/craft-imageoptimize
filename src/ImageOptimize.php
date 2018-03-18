@@ -19,7 +19,6 @@ use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 
 use Craft;
-use craft\base\Element;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
@@ -98,7 +97,8 @@ class ImageOptimize extends Plugin
         parent::init();
         self::$plugin = $this;
         // Handle any console commands
-        if (Craft::$app instanceof ConsoleApplication) {
+        $request = Craft::$app->getRequest();
+        if ($request->getIsConsoleRequest()) {
             $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
         }
         // Cache some settings
@@ -265,23 +265,20 @@ class ImageOptimize extends Plugin
                 $settings = $this->getSettings();
                 // Only worry about this volume if it's not new
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
-                    /** @var Volume $volume */
-                    $volume = $event->volume;
-                    if (is_subclass_of($volume, Volume::class)) {
-                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
-                    }
+                    /** @var Volume $event->volume */
+                    ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($event->volume);
                 }
             }
         );
 
-        // Do something after we're installed
+        // Handler: Plugins::EVENT_AFTER_INSTALL_PLUGIN
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
                     $request = Craft::$app->getRequest();
-                    if (($request->isCpRequest) && (!$request->isConsoleRequest)) {
+                    if ($request->isCpRequest) {
                         Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
                     }
                 }
@@ -294,7 +291,6 @@ class ImageOptimize extends Plugin
      */
     protected function installAssetEventHandlers()
     {
-
         // Handler: Assets::EVENT_GET_ASSET_URL
         Event::on(
             Assets::class,
