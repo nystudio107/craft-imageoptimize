@@ -36,8 +36,6 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
      */
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        $url = null;
-
         $generateTransformsBeforePageLoad = isset($params['generateTransformsBeforePageLoad'])
             ? $params['generateTransformsBeforePageLoad']
             : true;
