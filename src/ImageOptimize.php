@@ -105,6 +105,8 @@ class ImageOptimize extends Plugin
         $settings = $this->getSettings();
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
+        // Add in our Craft components
+        $this->addComponents();
         // Install our global event handlers
         $this->installEventHandlers();
         // Log that the plugin has loaded
@@ -154,7 +156,7 @@ class ImageOptimize extends Plugin
                 'settings'        => $settings,
                 'imageProcessors' => $imageProcessors,
                 'variantCreators' => $variantCreators,
-                'gdInstalled'  => function_exists('imagecreatefromjpeg'),
+                'gdInstalled'     => function_exists('imagecreatefromjpeg'),
             ]
         );
     }
@@ -171,9 +173,9 @@ class ImageOptimize extends Plugin
     }
 
     /**
-     * Install our event handlers
+     * Add in our Craft components
      */
-    protected function installEventHandlers()
+    protected function addComponents()
     {
         // Register our variables
         Event::on(
@@ -198,7 +200,23 @@ class ImageOptimize extends Plugin
                 $event->types[] = OptimizedImages::class;
             }
         );
+    }
 
+    /**
+     * Install our event handlers
+     */
+    protected function installEventHandlers()
+    {
+        $this->installAssetEventHandlers();
+        $this->installElementEventHandlers();
+        $this->installMiscEventHandlers()
+    }
+
+    /**
+     * Install our miscellaneous event handlers
+     */
+    protected function installMiscEventHandlers()
+    {
         // Handler: Fields::EVENT_AFTER_SAVE_FIELD
         Event::on(
             Fields::class,
@@ -277,6 +295,27 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Do something after we're installed
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $request = Craft::$app->getRequest();
+                    if (($request->isCpRequest) && (!$request->isConsoleRequest)) {
+                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     * Install our Asset event handlers
+     */
+    protected function installAssetEventHandlers()
+    {
+
         // Handler: Assets::EVENT_GET_ASSET_URL
         Event::on(
             Assets::class,
@@ -325,55 +364,6 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: Elements::EVENT_BEFORE_SAVE_ELEMENT
-        Event::on(
-            Elements::class,
-            Elements::EVENT_BEFORE_SAVE_ELEMENT,
-            function (ElementEvent $event) {
-                Craft::debug(
-                    'Elements::EVENT_BEFORE_SAVE_ELEMENT',
-                    __METHOD__
-                );
-                /** @var Element $element */
-                $element = $event->element;
-                $isNewElement = $event->isNew;
-                if (($element instanceof Asset) && (!$isNewElement)) {
-                    // Purge the URL
-                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-                        $element,
-                        ImageOptimize::$transformParams
-                    );
-                    if ($purgeUrl) {
-                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
-                    }
-                }
-            }
-        );
-
-        // Handler: Elements::EVENT_BEFORE_DELETE_ELEMENT
-        Event::on(
-            Elements::class,
-            Elements::EVENT_BEFORE_DELETE_ELEMENT,
-            function (ElementEvent $event) {
-                Craft::debug(
-                    'Elements::EVENT_BEFORE_DELETE_ELEMENT',
-                    __METHOD__
-                );
-                /** @var Element $element */
-                $element = $event->element;
-                if ($element instanceof Asset) {
-                    // Purge the URL
-                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-                        $element,
-                        ImageOptimize::$transformParams
-                    );
-                    if ($purgeUrl) {
-                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
-                    }
-                }
-            }
-        );
-
         // Handler: Assets::EVENT_BEFORE_REPLACE_ASSET
         Event::on(
             Assets::class,
@@ -396,7 +386,7 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: Elements::EVENT_AFTER_REPLACE_ASSET
+        // Handler: Assets::EVENT_AFTER_REPLACE_ASSET
         Event::on(
             Assets::class,
             Assets::EVENT_AFTER_REPLACE_ASSET,
@@ -412,17 +402,56 @@ class ImageOptimize extends Plugin
                 }
             }
         );
+    }
 
-        // Do something after we're installed
+    /**
+     * Install our Element event handlers
+     */
+    protected function installElementEventHandlers()
+    {
+        // Handler: Elements::EVENT_BEFORE_SAVE_ELEMENT
         Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    $request = Craft::$app->getRequest();
-                    if (($request->isCpRequest) && (!$request->isConsoleRequest)) {
-                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+            Assets::class,
+            Elements::EVENT_BEFORE_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::debug(
+                    'Elements::EVENT_BEFORE_SAVE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Asset $element */
+                $element = $event->element;
+                $isNewElement = $event->isNew;
+                if (!$isNewElement) {
+                    // Purge the URL
+                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                        $element,
+                        ImageOptimize::$transformParams
+                    );
+                    if ($purgeUrl) {
+                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                     }
+                }
+            }
+        );
+
+        // Handler: Elements::EVENT_BEFORE_DELETE_ELEMENT
+        Event::on(
+            Asset::class,
+            Elements::EVENT_BEFORE_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::debug(
+                    'Elements::EVENT_BEFORE_DELETE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Element $element */
+                $element = $event->element;
+                // Purge the URL
+                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                    $element,
+                    ImageOptimize::$transformParams
+                );
+                if ($purgeUrl) {
+                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                 }
             }
         );
