@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\fields\OptimizedImages;
 
 use Craft;
 use craft\base\Component;
@@ -30,7 +29,6 @@ use craft\models\AssetTransform;
 use craft\models\AssetTransformIndex;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
-use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
@@ -571,9 +569,9 @@ class Optimize extends Component
                         }
                         try {
                             $variantPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath(
-                                $asset,
-                                $transformIndex
-                            );
+                                    $asset,
+                                    $transformIndex
+                                );
                         } catch (InvalidConfigException $e) {
                             $variantPath = '';
                             Craft::error(
