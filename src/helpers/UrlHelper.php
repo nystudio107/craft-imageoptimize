@@ -41,12 +41,11 @@ class UrlHelper extends CraftUrlHelper
     {
         // Make this a full URL
         if (!self::isAbsoluteUrl($url)) {
+            $protocol = "http";
             if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
                 || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
             ) {
                 $protocol = "https";
-            } else {
-                $protocol = "http";
             }
             if (self::isProtocolRelativeUrl($url)) {
                 $url = self::urlWithScheme($url, $protocol);
