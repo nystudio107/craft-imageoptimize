@@ -44,7 +44,7 @@ class OptimizeController extends Controller
     {
         echo "Creating optimized image variants".PHP_EOL;
 
-        if ($volumeHandle == null) {
+        if ($volumeHandle === null) {
             // Re-save all of the optimized image variants in all volumes
             ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
         } else {
@@ -58,7 +58,7 @@ class OptimizeController extends Controller
                 echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
             }
         }
-        Craft::$app->getQueue()->run();
+        Craft::$app->getQueue()->run(false);
     }
 
     /**
