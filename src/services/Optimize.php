@@ -70,8 +70,8 @@ class Optimize extends Component
             // If we're passed in null, make a dummy AssetTransform model
             if (empty($transform)) {
                 $transform = new AssetTransform([
-                    'height' => $asset->height,
-                    'width' => $asset->width,
+                    'height'    => $asset->height,
+                    'width'     => $asset->width,
                     'interlace' => 'line',
                 ]);
             }
@@ -102,13 +102,13 @@ class Optimize extends Component
      *
      * @return string
      */
-    public function handleGenerateTransformEvent(GenerateTransformEvent $event): string
+    public function handleGenerateTransformEvent(GenerateTransformEvent $event)
     {
         $tempPath = null;
 
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft') {
+        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
             // Apply any filters to the image
             if (!empty($event->transformIndex->transform)) {
                 $this->applyFiltersToImage($event->transformIndex->transform, $event->asset, $event->image);
@@ -167,7 +167,7 @@ class Optimize extends Component
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft') {
+        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
             $this->cleanupImageVariants($event->asset, $event->transformIndex);
         }
     }
@@ -560,22 +560,22 @@ class Optimize extends Component
                     if (!empty($variantCreator) && !empty($imageVariantCreators[$variantCreator])) {
                         // Create the image variant in a temporary folder
                         $variantCreatorCommand = $imageVariantCreators[$variantCreator];
-                        $volume = null;
                         try {
                             $volume = $asset->getVolume();
                         } catch (InvalidConfigException $e) {
+                            $volume = null;
                             Craft::error(
                                 'Asset volume error: '.$e->getMessage(),
                                 __METHOD__
                             );
                         }
-                        $variantPath = '';
                         try {
                             $variantPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath(
-                                    $asset,
-                                    $transformIndex
-                                );
+                                $asset,
+                                $transformIndex
+                            );
                         } catch (InvalidConfigException $e) {
+                            $variantPath = '';
                             Craft::error(
                                 'Asset folder does not exist: '.$e->getMessage(),
                                 __METHOD__
@@ -661,7 +661,6 @@ class Optimize extends Component
             }
 
             FileHelper::unlink($outputPath);
-
         } else {
             Craft::error(
                 Craft::t('image-optimize', 'Failed to create image variant at: ')
