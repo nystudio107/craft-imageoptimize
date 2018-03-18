@@ -58,7 +58,7 @@ class OptimizeController extends Controller
                 echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
             }
         }
-        Craft::$app->getQueue()->run(false);
+        Craft::$app->getQueue()->run();
     }
 
     /**
