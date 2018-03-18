@@ -229,28 +229,7 @@ class ImageOptimize extends Plugin
                 $settings = $this->getSettings();
                 /** @var Field $field */
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
-                    $thisField = $event->field;
-                    if ($thisField instanceof OptimizedImages) {
-                        $volumes = Craft::$app->getVolumes()->getAllVolumes();
-                        foreach ($volumes as $volume) {
-                            $needToReSave = false;
-                            /** @var FieldLayout $fieldLayout */
-                            /** @var Volume $volume */
-                            $fieldLayout = $volume->getFieldLayout();
-                            // Loop through the fields in the layout to see if it contains our field
-                            if ($fieldLayout) {
-                                $fields = $fieldLayout->getFields();
-                                foreach ($fields as $field) {
-                                    if ($thisField->handle == $field->handle) {
-                                        $needToReSave = true;
-                                    }
-                                }
-                                if ($needToReSave) {
-                                    ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
-                                }
-                            }
-                        }
-                    }
+                    $this->checkForOptimizedImagesField($event);
                 }
             }
         );
@@ -454,5 +433,39 @@ class ImageOptimize extends Plugin
                 }
             }
         );
+    }
+
+    /**
+     * If the Field being saved is an OptimizedImages field, re-save the responsive
+     * image variants automatically
+     *
+     * @param FieldEvent $event
+     *
+     * @throws \yii\base\InvalidConfigException
+     */
+    protected function checkForOptimizedImagesField(FieldEvent $event)
+    {
+        $thisField = $event->field;
+        if ($thisField instanceof OptimizedImages) {
+            $volumes = Craft::$app->getVolumes()->getAllVolumes();
+            foreach ($volumes as $volume) {
+                $needToReSave = false;
+                /** @var FieldLayout $fieldLayout */
+                /** @var Volume $volume */
+                $fieldLayout = $volume->getFieldLayout();
+                // Loop through the fields in the layout to see if it contains our field
+                if ($fieldLayout) {
+                    $fields = $fieldLayout->getFields();
+                    foreach ($fields as $field) {
+                        if ($thisField->handle == $field->handle) {
+                            $needToReSave = true;
+                        }
+                    }
+                    if ($needToReSave) {
+                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
+                    }
+                }
+            }
+        }
     }
 }
