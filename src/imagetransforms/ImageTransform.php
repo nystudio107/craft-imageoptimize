@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
+use Craft;
 use craft\elements\Asset;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\UrlHelper;
@@ -108,7 +109,7 @@ abstract class ImageTransform implements ImageTransformInterface
     {
         // Make this a full URL
         if (!UrlHelper::isAbsoluteUrl($url)) {
-            if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+            if ((isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0) || $_SERVER['HTTPS'] == 1)
                 || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
             ) {
                 $protocol = "https";
@@ -124,6 +125,7 @@ abstract class ImageTransform implements ImageTransformInterface
                         $url = UrlHelper::urlWithScheme($url, $protocol);
                     }
                 } catch (Exception $e) {
+                    Craft::error($e->getMessage(), __METHOD__);
                 }
             }
         }
