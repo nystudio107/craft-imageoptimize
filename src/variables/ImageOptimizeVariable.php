@@ -29,9 +29,9 @@ class ImageOptimizeVariable
     /**
      * Return an SVG box as a placeholder image
      *
-     * @param      $width
-     * @param      $height
-     * @param null $color
+     * @param             $width
+     * @param             $height
+     * @param string|null $color
      *
      * @return \Twig_Markup|null
      */
