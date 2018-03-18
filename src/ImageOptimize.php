@@ -265,8 +265,11 @@ class ImageOptimize extends Plugin
                 $settings = $this->getSettings();
                 // Only worry about this volume if it's not new
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
-                    /** @var Volume $event->volume */
-                    ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($event->volume);
+                    /** @var Volume $volume */
+                    $volume = $event->volume;
+                    if (!empty($volume)) {
+                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
+                    }
                 }
             }
         );
