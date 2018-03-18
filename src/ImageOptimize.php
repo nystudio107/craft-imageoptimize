@@ -340,7 +340,9 @@ class ImageOptimize extends Plugin
                 );
                 /** @var Asset $element */
                 $element = $event->asset;
-                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+                if (!empty($element->id)) {
+                    ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+                }
             }
         );
 
