@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 
+use Craft;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\base\Model;
@@ -281,7 +282,6 @@ class OptimizedImage extends Model
      */
     public function placeholderImage()
     {
-        $content = '';
         $header = 'data:image/jpeg;base64,';
         if (!empty($this->placeholder)) {
             $content = $this->placeholder;
@@ -306,7 +306,7 @@ class OptimizedImage extends Model
     /**
      * Return an SVG box as a placeholder image
      *
-     * @param null $color
+     * @param string|null $color
      *
      * @return \Twig_Markup|null
      */
@@ -336,7 +336,6 @@ class OptimizedImage extends Model
      */
     public function placeholderSilhouette()
     {
-        $content = '';
         $header = 'data:image/svg+xml,';
         if (!empty($this->placeholderSvg)) {
             $content = $this->placeholderSvg;
@@ -379,7 +378,7 @@ class OptimizedImage extends Model
     {
         // Make this a full URL
         if (!UrlHelper::isAbsoluteUrl($url)) {
-            if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+            if ((isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0) || $_SERVER['HTTPS'] == 1)
                 || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
             ) {
                 $protocol = "https";
@@ -395,6 +394,7 @@ class OptimizedImage extends Model
                         $url = UrlHelper::urlWithScheme($url, $protocol);
                     }
                 } catch (Exception $e) {
+                    Craft::error($e->getMessage(), __METHOD__);
                 }
             }
         }
