@@ -97,17 +97,84 @@ class ImageOptimize extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-
         // Handle any console commands
         if (Craft::$app instanceof ConsoleApplication) {
             $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
         }
-
         // Cache some settings
         $settings = $this->getSettings();
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
+        // Install our global event handlers
+        $this->installEventHandlers();
+        // Log that the plugin has loaded
+        Craft::info(
+            Craft::t(
+                'image-optimize',
+                '{name} plugin loaded',
+                ['name' => $this->name]
+            ),
+            __METHOD__
+        );
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsResponse()
+    {
+        $view = Craft::$app->getView();
+        $namespace = $view->getNamespace();
+        $view->setNamespace('settings');
+        $settingsHtml = $this->settingsHtml();
+        $view->setNamespace($namespace);
+        /** @var Controller $controller */
+        $controller = Craft::$app->controller;
+
+        return $controller->renderTemplate('image-optimize/_settings', [
+            'plugin'       => $this,
+            'settingsHtml' => $settingsHtml,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function settingsHtml()
+    {
+        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        // Get only the user-editable settings
+        $settings = $this->getSettings();
+
+        // Render the settings template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/settings',
+            [
+                'settings'        => $settings,
+                'imageProcessors' => $imageProcessors,
+                'variantCreators' => $variantCreators,
+                'gdInstalled'  => function_exists('imagecreatefromjpeg'),
+            ]
+        );
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+    /**
+     * Install our event handlers
+     */
+    protected function installEventHandlers()
+    {
         // Register our variables
         Event::on(
             CraftVariable::class,
@@ -359,68 +426,5 @@ class ImageOptimize extends Plugin
                 }
             }
         );
-
-        Craft::info(
-            Craft::t(
-                'image-optimize',
-                '{name} plugin loaded',
-                ['name' => $this->name]
-            ),
-            __METHOD__
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getSettingsResponse()
-    {
-        $view = Craft::$app->getView();
-        $namespace = $view->getNamespace();
-        $view->setNamespace('settings');
-        $settingsHtml = $this->settingsHtml();
-        $view->setNamespace($namespace);
-
-        /** @var Controller $controller */
-        $controller = Craft::$app->controller;
-
-        return $controller->renderTemplate('image-optimize/_settings', [
-            'plugin'       => $this,
-            'settingsHtml' => $settingsHtml,
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function settingsHtml()
-    {
-        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
-        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
-
-        // Get only the user-editable settings
-        $settings = $this->getSettings();
-
-        // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/settings',
-            [
-                'settings'        => $settings,
-                'imageProcessors' => $imageProcessors,
-                'variantCreators' => $variantCreators,
-                'gdInstalled'  => function_exists('imagecreatefromjpeg'),
-            ]
-        );
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
-    {
-        return new Settings();
     }
 }
