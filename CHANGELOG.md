@@ -5,6 +5,7 @@
 * Fixed an issue with propagating field data in multi-site environments
 * Scrutinizer code cleanup / refactoring
 * If `.webp` support isn't configured, we don't display the images for the `webp` variants
+* If images are being generated via template (not recommended) disable running the image optimizers and variant creators by default
 
 ### Added
 * Added `craft.imageOptimize.serverSupportsWebP()` function to determine whether the server is capable of creating `.webp` variants
