@@ -8,6 +8,7 @@
 
 ### Added
 * Added `craft.imageOptimize.serverSupportsWebP()` function to determine whether the server is capable of creating `.webp` variants
+* Added validation rules for `imgixSecurityToken` so the value can be saved in the model
 
 ## 1.4.23 - 2018.03.03
 ### Changed
