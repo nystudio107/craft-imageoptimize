@@ -1,3 +1,4 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
 {#
 /**
  * Image Optimize plugin for Craft CMS 3.x
@@ -265,24 +266,26 @@
     </div>
     {% endif %}
 {% endif %}
-{% js %}
-        function canUseWebP() {
-            var elem = document.createElement('canvas');
+{% if craft.imageOptimize.serverSupportsWebP() %}
+    {% js %}
+            function canUseWebP() {
+                var elem = document.createElement('canvas');
 
-            if (!!(elem.getContext && elem.getContext('2d'))) {
-                // was able or not to get WebP representation
-                return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
+                if (!!(elem.getContext && elem.getContext('2d'))) {
+                    // was able or not to get WebP representation
+                    return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
+                }
+                else {
+                    // very old browser like IE 8, canvas not supported
+                    return false;
+                }
             }
-            else {
-                // very old browser like IE 8, canvas not supported
-                return false;
+
+            if (!canUseWebP()) {
+                $('.io-webp-image').each(function( index ) {
+                    newSrc =  $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
+                    $(this).attr('src', newSrc);
+                });
             }
-        }
-        
-        if (!canUseWebP()) {
-            $('.io-webp-image').each(function( index ) {
-                newSrc =  $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
-                $(this).attr('src', newSrc);
-            });
-        }
-{% endjs %}
+    {% endjs %}
+{% endif %}
