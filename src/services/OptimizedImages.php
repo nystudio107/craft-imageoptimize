@@ -284,7 +284,7 @@ class OptimizedImages extends Component
                     ->update($table, [
                         $column => $data,
                     ], [
-                        'id' => $asset->contentId,
+                        'elementId' => $asset->getId(),
                     ], [], false)
                     ->execute();
             }
