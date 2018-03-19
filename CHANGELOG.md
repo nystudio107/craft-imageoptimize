@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.24 - 2018.03.19
+### Changed
+* Fixed an issue with propagating field data in multi-site environments
+* Scrutinizer code cleanup / refactoring
+
 ## 1.4.23 - 2018.03.03
 ### Changed
 * The lengthy generation of placeholders should _really_ be off by default when doing them via Twig now
