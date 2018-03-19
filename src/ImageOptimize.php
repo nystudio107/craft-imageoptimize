@@ -19,7 +19,6 @@ use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 
 use Craft;
-use craft\base\Element;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
@@ -97,17 +96,87 @@ class ImageOptimize extends Plugin
     {
         parent::init();
         self::$plugin = $this;
-
         // Handle any console commands
-        if (Craft::$app instanceof ConsoleApplication) {
+        $request = Craft::$app->getRequest();
+        if ($request->getIsConsoleRequest()) {
             $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
         }
-
         // Cache some settings
         $settings = $this->getSettings();
         self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
         self::$transformParams = self::$transformClass::getTransformParams();
+        // Add in our Craft components
+        $this->addComponents();
+        // Install our global event handlers
+        $this->installEventHandlers();
+        // Log that the plugin has loaded
+        Craft::info(
+            Craft::t(
+                'image-optimize',
+                '{name} plugin loaded',
+                ['name' => $this->name]
+            ),
+            __METHOD__
+        );
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsResponse()
+    {
+        $view = Craft::$app->getView();
+        $namespace = $view->getNamespace();
+        $view->setNamespace('settings');
+        $settingsHtml = $this->settingsHtml();
+        $view->setNamespace($namespace);
+        /** @var Controller $controller */
+        $controller = Craft::$app->controller;
+
+        return $controller->renderTemplate('image-optimize/_settings', [
+            'plugin'       => $this,
+            'settingsHtml' => $settingsHtml,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function settingsHtml()
+    {
+        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        // Get only the user-editable settings
+        $settings = $this->getSettings();
+
+        // Render the settings template
+        return Craft::$app->getView()->renderTemplate(
+            'image-optimize/settings',
+            [
+                'settings'        => $settings,
+                'imageProcessors' => $imageProcessors,
+                'variantCreators' => $variantCreators,
+                'gdInstalled'     => function_exists('imagecreatefromjpeg'),
+            ]
+        );
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    protected function createSettingsModel()
+    {
+        return new Settings();
+    }
+
+    /**
+     * Add in our Craft components
+     */
+    protected function addComponents()
+    {
         // Register our variables
         Event::on(
             CraftVariable::class,
@@ -131,7 +200,23 @@ class ImageOptimize extends Plugin
                 $event->types[] = OptimizedImages::class;
             }
         );
+    }
 
+    /**
+     * Install our event handlers
+     */
+    protected function installEventHandlers()
+    {
+        $this->installAssetEventHandlers();
+        $this->installElementEventHandlers();
+        $this->installMiscEventHandlers();
+    }
+
+    /**
+     * Install our miscellaneous event handlers
+     */
+    protected function installMiscEventHandlers()
+    {
         // Handler: Fields::EVENT_AFTER_SAVE_FIELD
         Event::on(
             Fields::class,
@@ -144,28 +229,7 @@ class ImageOptimize extends Plugin
                 $settings = $this->getSettings();
                 /** @var Field $field */
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
-                    $thisField = $event->field;
-                    if ($thisField instanceof OptimizedImages) {
-                        $volumes = Craft::$app->getVolumes()->getAllVolumes();
-                        foreach ($volumes as $volume) {
-                            $needToReSave = false;
-                            /** @var FieldLayout $fieldLayout */
-                            /** @var Volume $volume */
-                            $fieldLayout = $volume->getFieldLayout();
-                            // Loop through the fields in the layout to see if it contains our field
-                            if ($fieldLayout) {
-                                $fields = $fieldLayout->getFields();
-                                foreach ($fields as $field) {
-                                    if ($thisField->handle == $field->handle) {
-                                        $needToReSave = true;
-                                    }
-                                }
-                                if ($needToReSave) {
-                                    ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
-                                }
-                            }
-                        }
-                    }
+                    $this->checkForOptimizedImagesField($event);
                 }
             }
         );
@@ -203,13 +267,33 @@ class ImageOptimize extends Plugin
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     /** @var Volume $volume */
                     $volume = $event->volume;
-                    if (is_subclass_of($volume, Volume::class)) {
+                    if (!empty($volume)) {
                         ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
                     }
                 }
             }
         );
 
+        // Handler: Plugins::EVENT_AFTER_INSTALL_PLUGIN
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $request = Craft::$app->getRequest();
+                    if ($request->isCpRequest) {
+                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     * Install our Asset event handlers
+     */
+    protected function installAssetEventHandlers()
+    {
         // Handler: Assets::EVENT_GET_ASSET_URL
         Event::on(
             Assets::class,
@@ -258,55 +342,6 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: Elements::EVENT_BEFORE_SAVE_ELEMENT
-        Event::on(
-            Elements::class,
-            Elements::EVENT_BEFORE_SAVE_ELEMENT,
-            function (ElementEvent $event) {
-                Craft::debug(
-                    'Elements::EVENT_BEFORE_SAVE_ELEMENT',
-                    __METHOD__
-                );
-                /** @var Element $element */
-                $element = $event->element;
-                $isNewElement = $event->isNew;
-                if (($element instanceof Asset) && (!$isNewElement)) {
-                    // Purge the URL
-                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-                        $element,
-                        ImageOptimize::$transformParams
-                    );
-                    if ($purgeUrl) {
-                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
-                    }
-                }
-            }
-        );
-
-        // Handler: Elements::EVENT_BEFORE_DELETE_ELEMENT
-        Event::on(
-            Elements::class,
-            Elements::EVENT_BEFORE_DELETE_ELEMENT,
-            function (ElementEvent $event) {
-                Craft::debug(
-                    'Elements::EVENT_BEFORE_DELETE_ELEMENT',
-                    __METHOD__
-                );
-                /** @var Element $element */
-                $element = $event->element;
-                if ($element instanceof Asset) {
-                    // Purge the URL
-                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
-                        $element,
-                        ImageOptimize::$transformParams
-                    );
-                    if ($purgeUrl) {
-                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
-                    }
-                }
-            }
-        );
-
         // Handler: Assets::EVENT_BEFORE_REPLACE_ASSET
         Event::on(
             Assets::class,
@@ -329,7 +364,7 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: Elements::EVENT_AFTER_REPLACE_ASSET
+        // Handler: Assets::EVENT_AFTER_REPLACE_ASSET
         Event::on(
             Assets::class,
             Assets::EVENT_AFTER_REPLACE_ASSET,
@@ -340,85 +375,96 @@ class ImageOptimize extends Plugin
                 );
                 /** @var Asset $element */
                 $element = $event->asset;
-                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+                if (!empty($element->id)) {
+                    ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+                }
             }
         );
+    }
 
-        // Do something after we're installed
+    /**
+     * Install our Element event handlers
+     */
+    protected function installElementEventHandlers()
+    {
+        // Handler: Elements::EVENT_BEFORE_SAVE_ELEMENT
         Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    $request = Craft::$app->getRequest();
-                    if (($request->isCpRequest) && (!$request->isConsoleRequest)) {
-                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+            Assets::class,
+            Elements::EVENT_BEFORE_SAVE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::debug(
+                    'Elements::EVENT_BEFORE_SAVE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Asset $asset */
+                $asset = $event->element;
+                if (!$event->isNew) {
+                    // Purge the URL
+                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                        $asset,
+                        ImageOptimize::$transformParams
+                    );
+                    if ($purgeUrl) {
+                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                     }
                 }
             }
         );
 
-        Craft::info(
-            Craft::t(
-                'image-optimize',
-                '{name} plugin loaded',
-                ['name' => $this->name]
-            ),
-            __METHOD__
+        // Handler: Elements::EVENT_BEFORE_DELETE_ELEMENT
+        Event::on(
+            Asset::class,
+            Elements::EVENT_BEFORE_DELETE_ELEMENT,
+            function (ElementEvent $event) {
+                Craft::debug(
+                    'Elements::EVENT_BEFORE_DELETE_ELEMENT',
+                    __METHOD__
+                );
+                /** @var Asset $asset */
+                $asset = $event->element;
+                // Purge the URL
+                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                    $asset,
+                    ImageOptimize::$transformParams
+                );
+                if ($purgeUrl) {
+                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                }
+            }
         );
     }
 
     /**
-     * @inheritdoc
+     * If the Field being saved is an OptimizedImages field, re-save the responsive
+     * image variants automatically
+     *
+     * @param FieldEvent $event
+     *
+     * @throws \yii\base\InvalidConfigException
      */
-    public function getSettingsResponse()
+    protected function checkForOptimizedImagesField(FieldEvent $event)
     {
-        $view = Craft::$app->getView();
-        $namespace = $view->getNamespace();
-        $view->setNamespace('settings');
-        $settingsHtml = $this->settingsHtml();
-        $view->setNamespace($namespace);
-
-        /** @var Controller $controller */
-        $controller = Craft::$app->controller;
-
-        return $controller->renderTemplate('image-optimize/_settings', [
-            'plugin'       => $this,
-            'settingsHtml' => $settingsHtml,
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function settingsHtml()
-    {
-        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
-        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
-
-        // Get only the user-editable settings
-        $settings = $this->getSettings();
-
-        // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/settings',
-            [
-                'settings'        => $settings,
-                'imageProcessors' => $imageProcessors,
-                'variantCreators' => $variantCreators,
-                'gdInstalled'  => function_exists('imagecreatefromjpeg'),
-            ]
-        );
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    protected function createSettingsModel()
-    {
-        return new Settings();
+        $thisField = $event->field;
+        if ($thisField instanceof OptimizedImages) {
+            $volumes = Craft::$app->getVolumes()->getAllVolumes();
+            foreach ($volumes as $volume) {
+                $needToReSave = false;
+                /** @var FieldLayout $fieldLayout */
+                /** @var Volume $volume */
+                $fieldLayout = $volume->getFieldLayout();
+                // Loop through the fields in the layout to see if it contains our field
+                if ($fieldLayout) {
+                    $fields = $fieldLayout->getFields();
+                    foreach ($fields as $field) {
+                        if ($thisField->handle == $field->handle) {
+                            $needToReSave = true;
+                        }
+                    }
+                    if ($needToReSave) {
+                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
+                    }
+                }
+            }
+        }
     }
 }

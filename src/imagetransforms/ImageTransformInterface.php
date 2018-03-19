@@ -26,9 +26,6 @@ interface ImageTransformInterface
     const IMAGE_TRANSFORM_MAP = [
         'craft' => CraftImageTransform::class,
         'imgix' => ImgixImageTransform::class,
-        'cloudinary' => CloudinaryImageTransform::class,
-        'image-optim' => ImageOptimImageTransform::class,
-        'kraken' => KrakenImageTransform::class,
     ];
 
     // Static Methods

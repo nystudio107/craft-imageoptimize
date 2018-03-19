@@ -50,9 +50,9 @@ class Placeholder extends Component
     /**
      * Return an SVG box as a placeholder image
      *
-     * @param      $width
-     * @param      $height
-     * @param null $color
+     * @param             $width
+     * @param             $height
+     * @param string|null $color
      *
      * @return string
      */
@@ -61,12 +61,12 @@ class Placeholder extends Component
         $color = $color ?? '#CCC';
         $header = 'data:image/svg+xml,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-            . "width='$width' "
-            . "height='$height' "
-            . "style='background:$color' "
-            . "/>";
+            ."width='$width' "
+            ."height='$height' "
+            ."style='background:$color' "
+            ."/>";
 
-        return $header . ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
+        return $header.ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
     }
 
     /**
@@ -244,14 +244,14 @@ class Placeholder extends Component
         $config->preserveExifData = $oldPreserveExifData;
 
         // Save the image out to a temp file, then return its contents
-        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true) . '.' . 'jpg';
-        $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
+        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';
+        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
         clearstatcache(true, $tempPath);
         try {
             $image->saveAs($tempPath);
         } catch (ImageException $e) {
             Craft::error(
-                'Error saving temporary image: ' . $e->getMessage(),
+                'Error saving temporary image: '.$e->getMessage(),
                 __METHOD__
             );
         }

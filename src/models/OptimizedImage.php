@@ -11,13 +11,11 @@
 namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\helpers\UrlHelper;
 
 use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 use craft\base\Model;
 use craft\validators\ArrayValidator;
-
-use yii\base\Exception;
 
 /**
  * @author    nystudio107
@@ -108,7 +106,8 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Return the first image variant URL or the specific one passed in via $width
+     * Return the first image variant URL or the specific one passed in via
+     * $width
      *
      * @param int $width
      *
@@ -126,7 +125,8 @@ class OptimizedImage extends Model
     /**
      * Return a string of image URLs and their sizes
      *
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -138,8 +138,9 @@ class OptimizedImage extends Model
     /**
      * Return a string of image URLs and their sizes that match $width
      *
-     * @param int $width
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param int  $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -151,10 +152,12 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Return a string of image URLs and their sizes that are at least $width or larger
+     * Return a string of image URLs and their sizes that are at least $width
+     * or larger
      *
-     * @param int $width
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param int  $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -168,8 +171,9 @@ class OptimizedImage extends Model
     /**
      * Return a string of image URLs and their sizes that are $width or smaller
      *
-     * @param int $width
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param int  $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -181,7 +185,8 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Return the first webp image variant URL or the specific one passed in via $width
+     * Return the first webp image variant URL or the specific one passed in
+     * via $width
      *
      * @param int $width
      *
@@ -199,7 +204,8 @@ class OptimizedImage extends Model
     /**
      * Return a string of webp image URLs and their sizes
      *
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -211,8 +217,9 @@ class OptimizedImage extends Model
     /**
      * Return a string of webp image URLs and their sizes that match $width
      *
-     * @param int $width
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param int  $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -224,10 +231,12 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Return a string of webp image URLs and their sizes that are at least $width or larger
+     * Return a string of webp image URLs and their sizes that are at least
+     * $width or larger
      *
-     * @param int $width
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param int  $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -239,10 +248,12 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Return a string of webp image URLs and their sizes that are $width or smaller
+     * Return a string of webp image URLs and their sizes that are $width or
+     * smaller
      *
-     * @param int $width
-     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw srcsets
+     * @param int  $width
+     * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
+     *                  srcsets
      *
      * @return \Twig_Markup|null
      */
@@ -254,8 +265,8 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Work around issues with `<img srcset>` returning sizes larger than are available
-     * as per:
+     * Work around issues with `<img srcset>` returning sizes larger than are
+     * available as per:
      * https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db
      *
      * @return int
@@ -281,7 +292,6 @@ class OptimizedImage extends Model
      */
     public function placeholderImage()
     {
-        $content = '';
         $header = 'data:image/jpeg;base64,';
         if (!empty($this->placeholder)) {
             $content = $this->placeholder;
@@ -290,7 +300,7 @@ class OptimizedImage extends Model
             return $this->defaultPlaceholderImage();
         }
 
-        return Template::raw($header . rawurlencode($content));
+        return Template::raw($header.rawurlencode($content));
     }
 
     /**
@@ -300,13 +310,14 @@ class OptimizedImage extends Model
     {
         $placeholder = $this->placeholderImage();
         $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
     /**
      * Return an SVG box as a placeholder image
      *
-     * @param null $color
+     * @param string|null $color
      *
      * @return \Twig_Markup|null
      */
@@ -326,6 +337,7 @@ class OptimizedImage extends Model
     {
         $placeholder = $this->placeholderBox();
         $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
@@ -336,7 +348,6 @@ class OptimizedImage extends Model
      */
     public function placeholderSilhouette()
     {
-        $content = '';
         $header = 'data:image/svg+xml,';
         if (!empty($this->placeholderSvg)) {
             $content = $this->placeholderSvg;
@@ -345,7 +356,7 @@ class OptimizedImage extends Model
             return $this->defaultPlaceholderImage();
         }
 
-        return Template::raw($header . $content);
+        return Template::raw($header.$content);
     }
 
     /**
@@ -355,6 +366,7 @@ class OptimizedImage extends Model
     {
         $placeholder = $this->placeholderSilhouette();
         $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
@@ -377,28 +389,8 @@ class OptimizedImage extends Model
      */
     public function getRemoteFileSize($url, $formatSize = true, $useHead = true)
     {
-        // Make this a full URL
-        if (!UrlHelper::isAbsoluteUrl($url)) {
-            if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-                || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
-            ) {
-                $protocol = "https";
-            } else {
-                $protocol = "http";
-            }
-            if (UrlHelper::isProtocolRelativeUrl($url)) {
-                $url = UrlHelper::urlWithScheme($url, $protocol);
-            } else {
-                try {
-                    $url = UrlHelper::siteUrl($url, null, $protocol);
-                    if (UrlHelper::isProtocolRelativeUrl($url)) {
-                        $url = UrlHelper::urlWithScheme($url, $protocol);
-                    }
-                } catch (Exception $e) {
-                }
-            }
-        }
-
+        // Get an absolute URL with protocol that curl will be happy with
+        $url = UrlHelper::absoluteUrlWithProtocol($url);
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => 1,
@@ -431,33 +423,34 @@ class OptimizedImage extends Model
     {
         $subset = [];
         $index = 0;
-        if (!empty($this->variantSourceWidths)) {
-            foreach ($this->variantSourceWidths as $variantSourceWidth) {
-                $match = false;
-                switch ($comparison) {
-                    case 'width':
-                        if ($variantSourceWidth == $width) {
-                            $match = true;
-                        }
-                        break;
+        if (empty($this->variantSourceWidths)) {
+            return $subset;
+        }
+        foreach ($this->variantSourceWidths as $variantSourceWidth) {
+            $match = false;
+            switch ($comparison) {
+                case 'width':
+                    if ($variantSourceWidth == $width) {
+                        $match = true;
+                    }
+                    break;
 
-                    case 'minwidth':
-                        if ($variantSourceWidth >= $width) {
-                            $match = true;
-                        }
-                        break;
+                case 'minwidth':
+                    if ($variantSourceWidth >= $width) {
+                        $match = true;
+                    }
+                    break;
 
-                    case 'maxwidth':
-                        if ($variantSourceWidth <= $width) {
-                            $match = true;
-                        }
-                        break;
-                }
-                if ($match) {
-                    $subset+= array_slice($set, $index, 1, true);
-                }
-                $index++;
+                case 'maxwidth':
+                    if ($variantSourceWidth <= $width) {
+                        $match = true;
+                    }
+                    break;
             }
+            if ($match) {
+                $subset += array_slice($set, $index, 1, true);
+            }
+            $index++;
         }
 
         return $subset;
@@ -482,9 +475,9 @@ class OptimizedImage extends Model
                     $descriptor = '3x';
                 }
             } else {
-                $descriptor = $key . 'w';
+                $descriptor = $key.'w';
             }
-            $srcset .= $value . ' ' . $descriptor . ', ';
+            $srcset .= $value.' '.$descriptor.', ';
         }
         $srcset = rtrim($srcset, ', ');
 

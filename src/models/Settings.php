@@ -268,6 +268,8 @@ class Settings extends Model
             ['imgixDomain', 'default', 'value' => ''],
             ['imgixApiKey', 'string'],
             ['imgixApiKey', 'default', 'value' => ''],
+            ['imgixSecurityToken', 'string'],
+            ['imgixSecurityToken', 'default', 'value' => ''],
             [
                 [
                     'automaticallyResaveImageVariants',
@@ -313,6 +315,7 @@ class Settings extends Model
             'transformMethod',
             'imgixDomain',
             'imgixApiKey',
+            'imgixSecurityToken',
             'createColorPalette',
             'createPlaceholderSilhouettes',
             'lowerQualityRetinaImageVariants',

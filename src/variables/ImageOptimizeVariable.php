@@ -13,6 +13,7 @@ namespace nystudio107\imageoptimize\variables;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
+use Craft;
 use craft\elements\Asset;
 use craft\helpers\Template;
 
@@ -29,9 +30,9 @@ class ImageOptimizeVariable
     /**
      * Return an SVG box as a placeholder image
      *
-     * @param      $width
-     * @param      $height
-     * @param null $color
+     * @param             $width
+     * @param             $height
+     * @param string|null $color
      *
      * @return \Twig_Markup|null
      */
@@ -57,4 +58,23 @@ class ImageOptimizeVariable
 
         return ImageOptimize::$plugin->optimizedImages->createOptimizedImages($asset, $variants);
     }
+
+    /**
+     * Returns whether `.webp` is a format supported by the server
+     *
+     * @return bool
+     */
+    public function serverSupportsWebP(): bool
+    {
+        $result = false;
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        foreach ($variantCreators as $variantCreator) {
+            if ($variantCreator['creator'] == 'cwebp' && $variantCreator['installed']) {
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
 }

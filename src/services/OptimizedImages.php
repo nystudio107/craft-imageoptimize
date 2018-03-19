@@ -54,9 +54,7 @@ class OptimizedImages extends Component
         if (empty($variants)) {
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
-                if (empty($this->variants)) {
-                    $variants = $settings->defaultVariants;
-                }
+                $variants = $settings->defaultVariants;
             }
         }
 
@@ -277,17 +275,19 @@ class OptimizedImages extends Component
                 );
             }
             // Save our field data directly into the content table
-            $asset->setFieldValue($field->handle, $field->serializeValue($model));
-            $table = $asset->getContentTable();
-            $column = $asset->getFieldColumnPrefix().$field->handle;
-            $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
-            Craft::$app->db->createCommand()
-                ->update($table, [
-                    $column => $data,
-                ], [
-                    'id' => $asset->contentId,
-                ], [], false)
-                ->execute();
+            if (!empty($field->handle)) {
+                $asset->setFieldValue($field->handle, $field->serializeValue($model));
+                $table = $asset->getContentTable();
+                $column = $asset->getFieldColumnPrefix().$field->handle;
+                $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
+                Craft::$app->db->createCommand()
+                    ->update($table, [
+                        $column => $data,
+                    ], [
+                        'elementId' => $asset->getId(),
+                    ], [], false)
+                    ->execute();
+            }
         }
     }
 
@@ -331,10 +331,10 @@ class OptimizedImages extends Component
             }
         }
         if ($needToReSave) {
-            $siteId = 0;
             try {
                 $siteId = Craft::$app->getSites()->getPrimarySite()->id;
             } catch (SiteNotFoundException $e) {
+                $siteId = 0;
                 Craft::error(
                     'Failed to get primary site: '.$e->getMessage(),
                     __METHOD__

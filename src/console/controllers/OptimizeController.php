@@ -44,7 +44,7 @@ class OptimizeController extends Controller
     {
         echo "Creating optimized image variants".PHP_EOL;
 
-        if ($volumeHandle == null) {
+        if ($volumeHandle === null) {
             // Re-save all of the optimized image variants in all volumes
             ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
         } else {

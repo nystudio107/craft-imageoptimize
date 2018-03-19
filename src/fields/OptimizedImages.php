@@ -153,7 +153,7 @@ class OptimizedImages extends Field
     {
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
-        if ($asset instanceof Asset) {
+        if (!empty($asset) && $asset instanceof Asset && !empty($asset->id)) {
             // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_ESSENTIALS treat it as a new asset
             $scenario = $asset->getScenario();
             if ($isNew || $scenario == Asset::SCENARIO_FILEOPS || $asset->propagating) {
@@ -273,7 +273,7 @@ class OptimizedImages extends Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        if (!empty($element) && $element instanceof Asset) {
+        if (!empty($element) && $element instanceof Asset && !empty($this->handle)) {
             /** @var Asset $element */
             // Register our asset bundle
             Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);

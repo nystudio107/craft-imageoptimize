@@ -112,6 +112,7 @@ class Path
     public $maxY = -1;
     public $sum = [];
     public $lon = [];
+    public $sign = '';
 }
 
 class Curve
@@ -979,7 +980,7 @@ class Potracio
                 $curve->alpha[$j] = $alpha;
                 $curve->beta[$j] = 0.5;
             }
-            $curve->alphacurve = 1;
+            $curve->alphaCurve = 1;
         };
 
         $optiCurve = function (&$path) use ($mod, $ddist, $sign, $cprod, $dpara, $interval, $tangent, $bezier, $iprod, $iprod1, $info) {
@@ -1209,7 +1210,7 @@ class Potracio
                     $ocurve->beta[$i] = null; // TODO Hack para evitar división por 0
                 }
             }
-            $ocurve->alphacurve = 1;
+            $ocurve->alphaCurve = 1;
             $path->curve = $ocurve;
         };
 

@@ -10,12 +10,11 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
+use nystudio107\imageoptimize\helpers\UrlHelper;
+
 use craft\elements\Asset;
 use craft\helpers\Assets as AssetsHelper;
-use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
-
-use yii\base\Exception;
 
 /**
  * @author    nystudio107
@@ -106,28 +105,8 @@ abstract class ImageTransform implements ImageTransformInterface
      */
     public static function prefetchRemoteFile($url)
     {
-        // Make this a full URL
-        if (!UrlHelper::isAbsoluteUrl($url)) {
-            if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-                || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
-            ) {
-                $protocol = "https";
-            } else {
-                $protocol = "http";
-            }
-            if (UrlHelper::isProtocolRelativeUrl($url)) {
-                $url = UrlHelper::urlWithScheme($url, $protocol);
-            } else {
-                try {
-                    $url = UrlHelper::siteUrl($url, null, $protocol);
-                    if (UrlHelper::isProtocolRelativeUrl($url)) {
-                        $url = UrlHelper::urlWithScheme($url, $protocol);
-                    }
-                } catch (Exception $e) {
-                }
-            }
-        }
-
+        // Get an absolute URL with protocol that curl will be happy with
+        $url = UrlHelper::absoluteUrlWithProtocol($url);
         $ch = curl_init($url);
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => 1,
