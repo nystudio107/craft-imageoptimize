@@ -19,6 +19,8 @@ To install ImageOptimize, follow these steps:
 1. Install with Composer via `composer require nystudio107/craft-imageoptimize` from your project directory
 2. Install plugin in the Craft Control Panel under Settings > Plugins
 
+You can also install ImageOptimize via the **Plugin Store** in the Craft AdminCP.
+
 ImageOptimize works on Craft 3.x.
 
 ## ImageOptimize Overview
