@@ -90,8 +90,10 @@ class OptimizedImages extends Field
     public function __construct(array $config = [])
     {
         // Unset any deprecated properties
-        unset($config['transformMethod']);
-        unset($config['imgixDomain']);
+        if (!empty($config)) {
+            unset($config['transformMethod']);
+            unset($config['imgixDomain']);
+        }
         parent::__construct($config);
     }
 
