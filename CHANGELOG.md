@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.25 - 2018.03.23
+### Changed
+* Fixed a typo in the `config.php` settings, changed `generatePlacholders` -> `generatePlaceholders`
+
 ## 1.4.24 - 2018.03.19
 ### Changed
 * Fixed an issue with propagating field data in multi-site environments
