@@ -44,17 +44,17 @@ class ImageOptimizeVariable
     /**
      * @param Asset $asset
      * @param array $variants
-     * @param bool  $generatePlacholders
+     * @param bool  $generatePlaceholders
      *
      * @return OptimizedImage|null
      */
     public function createOptimizedImages(
         Asset $asset,
         $variants = null,
-        $generatePlacholders = false
+        $generatePlaceholders = false
     ) {
         // Override our settings for lengthy operations, since we're doing this via Twig
-        ImageOptimize::$generatePlacholders = $generatePlacholders;
+        ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 
         return ImageOptimize::$plugin->optimizedImages->createOptimizedImages($asset, $variants);
     }
