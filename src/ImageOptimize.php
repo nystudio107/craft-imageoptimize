@@ -84,7 +84,7 @@ class ImageOptimize extends Plugin
     /**
      * @var bool
      */
-    public static $generatePlacholders = true;
+    public static $generatePlaceholders = true;
 
     // Public Methods
     // =========================================================================

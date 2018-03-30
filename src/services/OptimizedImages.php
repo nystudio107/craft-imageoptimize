@@ -150,7 +150,7 @@ class OptimizedImages extends Component
     protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
         $settings = ImageOptimize::$plugin->getSettings();
-        if ($settings->generatePlacholders && ImageOptimize::$generatePlacholders) {
+        if ($settings->generatePlaceholders && ImageOptimize::$generatePlaceholdersholders) {
             $placeholder = ImageOptimize::$plugin->placeholder;
             if ($element->focalPoint) {
                 $position = $element->getFocalPoint();
@@ -199,7 +199,7 @@ class OptimizedImages extends Component
         // Image quality
         $quality = $variant['quality'];
         if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
-            $quality = intval($quality * (1 / intval($retinaSize)));
+            $quality = intval($quality * (1.5 / intval($retinaSize)));
         }
         $transform->quality = $quality;
         // Interlaced (progressive JPEGs or interlaced PNGs)
@@ -284,7 +284,7 @@ class OptimizedImages extends Component
                     ->update($table, [
                         $column => $data,
                     ], [
-                        'elementId' => $asset->getId(),
+                        'id' => $asset->contentId,
                     ], [], false)
                     ->execute();
             }

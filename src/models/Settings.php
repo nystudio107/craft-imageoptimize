@@ -66,7 +66,7 @@ class Settings extends Model
     /**
      * @var bool Set to false to disable all placeholder generation
      */
-    public $generatePlacholders = true;
+    public $generatePlaceholders = true;
 
     /**
      * @var bool Controls whether a dominant color palette should be created
@@ -255,6 +255,18 @@ class Settings extends Model
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct(array $config = [])
+    {
+        // Unset any deprecated properties
+        if (!empty($config)) {
+            unset($config['generatePlacholders']);
+        }
+        parent::__construct($config);
+    }
 
     /**
      * @inheritdoc
