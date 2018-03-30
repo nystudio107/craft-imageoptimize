@@ -1,8 +1,9 @@
 # ImageOptimize Changelog
 
-## 1.4.25 - 2018.03.23
+## 1.4.25 - 2018.03.30
 ### Changed
 * Fixed a typo in the `config.php` settings, changed `generatePlacholders` -> `generatePlaceholders`
+* Made the reduced quality of retina images if `lowerQualityRetinaImageVariants` is enabled less aggressive
 
 ## 1.4.24 - 2018.03.19
 ### Changed
