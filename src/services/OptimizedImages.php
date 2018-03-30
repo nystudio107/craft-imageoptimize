@@ -199,7 +199,7 @@ class OptimizedImages extends Component
         // Image quality
         $quality = $variant['quality'];
         if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
-            $quality = intval($quality * (1 / intval($retinaSize)));
+            $quality = intval($quality * (1.5 / intval($retinaSize)));
         }
         $transform->quality = $quality;
         // Interlaced (progressive JPEGs or interlaced PNGs)
