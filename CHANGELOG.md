@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.26 - 2018.03.31
+### Changed
+* Fixed a typo with `$generatePlacholders` that would cause saving images to fail
+
 ## 1.4.25 - 2018.03.30
 ### Changed
 * Fixed a typo in the `config.php` settings, changed `generatePlacholders` -> `generatePlaceholders`
