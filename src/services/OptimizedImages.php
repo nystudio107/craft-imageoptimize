@@ -150,7 +150,7 @@ class OptimizedImages extends Component
     protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
         $settings = ImageOptimize::$plugin->getSettings();
-        if ($settings->generatePlaceholders && ImageOptimize::$generatePlaceholdersholders) {
+        if ($settings->generatePlaceholders && ImageOptimize::$generatePlaceholders) {
             $placeholder = ImageOptimize::$plugin->placeholder;
             if ($element->focalPoint) {
                 $position = $element->getFocalPoint();
