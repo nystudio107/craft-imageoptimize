@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.27 - 2018.04.02
+### Changed
+* Removed unused composer dependencies
+
 ## 1.4.26 - 2018.03.31
 ### Changed
 * Fixed a typo with `$generatePlacholders` that would cause saving images to fail
