@@ -98,7 +98,7 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
                     $widthScale = $asset->getWidth() / ($transform->width ?? $asset->getWidth());
                     $heightScale = $asset->getHeight() / ($transform->height ?? $asset->getHeight());
                     if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
-                        $params['sharp'] = 50.0;
+                        $params['usm'] = 50.0;
                     }
                 }
                 // Handle the mode
