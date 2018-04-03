@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.28 - 2018.04.02
+### Changed
+* Switched over to using the Unsharp Mask (`usm`) filter for auto-sharpening Imgix images
+
 ## 1.4.27 - 2018.04.02
 ### Changed
 * Removed unused composer dependencies
