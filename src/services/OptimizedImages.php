@@ -51,6 +51,7 @@ class OptimizedImages extends Component
      */
     public function createOptimizedImages(Asset $asset, $variants = [])
     {
+        Craft::beginProfile('createOptimizedImages', __METHOD__);
         if (empty($variants)) {
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
@@ -60,6 +61,7 @@ class OptimizedImages extends Component
 
         $model = new OptimizedImage();
         $this->populateOptimizedImageModel($asset, $variants, $model);
+        Craft::endProfile('createOptimizedImages', __METHOD__);
 
         return $model;
     }
@@ -71,6 +73,7 @@ class OptimizedImages extends Component
      */
     public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model)
     {
+        Craft::beginProfile('populateOptimizedImageModel', __METHOD__);
         $settings = ImageOptimize::$plugin->getSettings();
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
@@ -137,6 +140,7 @@ class OptimizedImages extends Component
                 );
             }
         }
+        Craft::endProfile('populateOptimizedImageModel', __METHOD__);
     }
 
     // Protected Methods
@@ -219,6 +223,7 @@ class OptimizedImages extends Component
      */
     protected function addVariantImageToModel(Asset $asset, OptimizedImage $model, $transform, $variant, $aspectRatio)
     {
+        Craft::beginProfile('addVariantImageToModel', __METHOD__);
         // Generate an image transform url
         $url = ImageOptimize::$transformClass::getTransformUrl(
             $asset,
@@ -233,11 +238,11 @@ class OptimizedImages extends Component
         if (!empty($url)) {
             $model->variantSourceWidths[] = $variant['width'];
             // Store & prefetch image at the image URL
-            ImageOptimize::$transformClass::prefetchRemoteFile($url);
+            //ImageOptimize::$transformClass::prefetchRemoteFile($url);
             $model->optimizedImageUrls[$transform->width] = $url;
             // Store & prefetch image at the webp URL
             $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
-            ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
+            //ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
             $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;
             $model->focalPoint = $asset->focalPoint;
             $model->originalImageWidth = $asset->width;
@@ -253,6 +258,7 @@ class OptimizedImages extends Component
                 __METHOD__
             );
         }
+        Craft::endProfile('addVariantImageToModel', __METHOD__);
     }
 
     /**

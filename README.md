@@ -178,7 +178,7 @@ If you plan to do this manually via the above console commands, you can disable 
 
 If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
 
-**N.B.:** We recommend _against_ using Image Optimize via Twig. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+**N.B.:** We recommend _against_ using Image Optimize via Twig if you can avoid it. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
 
 To create Optimized Image Variants dynamically in your templates, you can do:
 

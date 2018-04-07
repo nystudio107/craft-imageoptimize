@@ -1,5 +1,13 @@
 # ImageOptimize Changelog
 
+## 1.4.29 - 2018.04.06
+### Added
+* Added profiling to the image variant creation
+
+### Changed
+* Vastly increase the speed with which the transforms are created when done via Twig templating code
+* Increased the speed of the variant creation in general
+
 ## 1.4.28 - 2018.04.02
 ### Changed
 * Switched over to using the Unsharp Mask (`usm`) filter for auto-sharpening Imgix images
