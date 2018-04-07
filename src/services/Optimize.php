@@ -106,7 +106,7 @@ class Optimize extends Component
 
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft' && !empty($event->asset) && ImageOptimize::$generatePlaceholders) {
+        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
             // Apply any filters to the image
             if (!empty($event->transformIndex->transform)) {
                 $this->applyFiltersToImage($event->transformIndex->transform, $event->asset, $event->image);
