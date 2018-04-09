@@ -53,6 +53,7 @@ class Optimize extends Component
      */
     public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
     {
+        Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
         if ($settings->transformMethod != 'craft') {
@@ -89,6 +90,7 @@ class Optimize extends Component
                 ImageOptimize::$transformParams
             );
         }
+        Craft::endProfile('handleGetAssetUrlEvent', __METHOD__);
 
         return $url;
     }
@@ -102,6 +104,7 @@ class Optimize extends Component
      */
     public function handleGenerateTransformEvent(GenerateTransformEvent $event)
     {
+        Craft::beginProfile('handleGenerateTransformEvent', __METHOD__);
         $tempPath = null;
 
         $settings = ImageOptimize::$plugin->getSettings();
@@ -152,6 +155,7 @@ class Optimize extends Component
                 $tempPath
             );
         }
+        Craft::endProfile('handleGenerateTransformEvent', __METHOD__);
 
         return $tempPath;
     }
@@ -200,6 +204,7 @@ class Optimize extends Component
      */
     public function optimizeImage(AssetTransformIndex $index, string $tempPath)
     {
+        Craft::beginProfile('optimizeImage', __METHOD__);
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
@@ -215,6 +220,7 @@ class Optimize extends Component
                 }
             }
         }
+        Craft::endProfile('optimizeImage', __METHOD__);
     }
 
     /**
@@ -244,6 +250,7 @@ class Optimize extends Component
      */
     public function createImageVariants(AssetTransformIndex $index, Asset $asset, string $tempPath)
     {
+        Craft::beginProfile('createImageVariants', __METHOD__);
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
@@ -304,6 +311,7 @@ class Optimize extends Component
                 }
             }
         }
+        Craft::endProfile('createImageVariants', __METHOD__);
     }
 
     /**
