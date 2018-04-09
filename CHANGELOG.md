@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.30 - 2018.04.09
+### Added
+* Added additional profiling information
+
 ## 1.4.29 - 2018.04.06
 ### Added
 * Added profiling to the image variant creation

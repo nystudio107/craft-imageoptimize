@@ -80,6 +80,7 @@ class Placeholder extends Component
      */
     public function generatePlaceholderImage(string $tempPath, float $aspectRatio, $position): string
     {
+        Craft::beginProfile('generatePlaceholderImage', __METHOD__);
         $result = '';
         $width = self::PLACEHOLDER_WIDTH;
         $height = intval($width / $aspectRatio);
@@ -88,6 +89,7 @@ class Placeholder extends Component
             $result = base64_encode(file_get_contents($placeholderPath));
             unlink($placeholderPath);
         }
+        Craft::endProfile('generatePlaceholderImage', __METHOD__);
 
         return $result;
     }
@@ -101,6 +103,7 @@ class Placeholder extends Component
      */
     public function generateColorPalette(string $tempPath): array
     {
+        Craft::beginProfile('generateColorPalette', __METHOD__);
         $colorPalette = [];
         if (!empty($tempPath)) {
             // Extract the color palette
@@ -110,6 +113,7 @@ class Placeholder extends Component
                 $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
             }
         }
+        Craft::endProfile('generateColorPalette', __METHOD__);
 
         return $colorPalette;
     }
@@ -123,6 +127,7 @@ class Placeholder extends Component
      */
     public function generatePlaceholderSvg(string $tempPath): string
     {
+        Craft::beginProfile('generatePlaceholderSvg', __METHOD__);
         $result = '';
 
         if (!empty($tempPath)) {
@@ -151,7 +156,7 @@ class Placeholder extends Component
                 }
             }
         }
-
+        Craft::endProfile('generatePlaceholderSvg', __METHOD__);
 
         return $result;
     }
@@ -168,9 +173,11 @@ class Placeholder extends Component
      */
     public function createTempPlaceholderImage(Asset $asset, float $aspectRatio, $position): string
     {
+        Craft::beginProfile('createTempPlaceholderImage', __METHOD__);
         $width = self::TEMP_PLACEHOLDER_WIDTH;
         $height = intval($width / $aspectRatio);
         $tempPath = $this->createImageFromAsset($asset, $width, $height, self::TEMP_PLACEHOLDER_QUALITY, $position);
+        Craft::endProfile('createTempPlaceholderImage', __METHOD__);
 
         return $tempPath;
     }
