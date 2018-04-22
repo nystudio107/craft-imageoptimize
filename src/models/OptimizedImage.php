@@ -88,7 +88,7 @@ class OptimizedImage extends Model
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['optimizedImageUrls', ArrayValidator::class],
@@ -117,9 +117,21 @@ class OptimizedImage extends Model
     {
         if (empty($width)) {
             return Template::raw(reset($this->optimizedImageUrls));
-        } else {
-            return Template::raw($this->optimizedImageUrls[$width] ?? '');
         }
+
+        return Template::raw($this->optimizedImageUrls[$width] ?? '');
+    }
+
+    /**
+     * Getter for CraftQL
+     *
+     * @param int $width
+     *
+     * @return null|string|\Twig_Markup
+     */
+    public function getSrc(int $width = 0): string
+    {
+        return $this->src($width);
     }
 
     /**
@@ -135,6 +147,17 @@ class OptimizedImage extends Model
         return Template::raw($this->getSrcsetFromArray($this->optimizedImageUrls, $dpr));
     }
 
+    /**
+     * Getter for CraftQL
+     *
+     * @param bool $dpr
+     *
+     * @return string
+     */
+    public function getSrcset(bool $dpr = false): string
+    {
+        return $this->srcset($dpr);
+    }
     /**
      * Return a string of image URLs and their sizes that match $width
      *
@@ -196,9 +219,21 @@ class OptimizedImage extends Model
     {
         if (empty($width)) {
             return Template::raw(reset($this->optimizedWebPImageUrls));
-        } else {
-            return Template::raw($this->optimizedWebPImageUrls[$width] ?? '');
         }
+
+        return Template::raw($this->optimizedWebPImageUrls[$width] ?? '');
+    }
+
+    /**
+     * Getter for CraftQL
+     *
+     * @param int $width
+     *
+     * @return string
+     */
+    public function getSrcWebp(int $width = 0): string
+    {
+        return $this->srcWebp($width);
     }
 
     /**
@@ -212,6 +247,18 @@ class OptimizedImage extends Model
     public function srcsetWebp(bool $dpr = false): string
     {
         return Template::raw($this->getSrcsetFromArray($this->optimizedWebPImageUrls, $dpr));
+    }
+
+    /**
+     * Getter for CraftQL
+     *
+     * @param bool $dpr
+     *
+     * @return string
+     */
+    public function getSrcsetWebp(bool $dpr = false): string
+    {
+        return $this->srcsetWebp($dpr);
     }
 
     /**
@@ -286,6 +333,16 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Getter for CraftQL
+     *
+     * @return int
+     */
+    public function getMaxSrcsetWidth(): int
+    {
+        return $this->maxSrcsetWidth();
+    }
+
+    /**
      * Return a base64-encoded placeholder image
      *
      * @return \Twig_Markup|null
@@ -304,12 +361,22 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Getter for CraftQL
+     *
      * @return string
      */
-    public function placeholderImageSize()
+    public function getPlaceholderImage(): string
+    {
+        return (string)$this->placeholderImage();
+    }
+
+    /**
+     * @return string
+     */
+    public function placeholderImageSize(): string
     {
         $placeholder = $this->placeholderImage();
-        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+        $contentLength = !empty(\strlen($placeholder)) ? \strlen($placeholder) : 0;
 
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
@@ -321,7 +388,7 @@ class OptimizedImage extends Model
      *
      * @return \Twig_Markup|null
      */
-    public function placeholderBox($color = null)
+    public function placeholderBox(string $color = null)
     {
         $width = $this->placeholderWidth ?? 1;
         $height = $this->placeholderHeight ?? 1;
@@ -331,12 +398,24 @@ class OptimizedImage extends Model
     }
 
     /**
+     * @param string|null $color
+     *
      * @return string
      */
-    public function placeholderBoxSize()
+    public function getPlaceholderBox(string $color = null): string
+    {
+        return (string)$this->placeholderBox($color);
+    }
+
+    /**
+     * Getter for CraftQL
+     *
+     * @return string
+     */
+    public function placeholderBoxSize(): string
     {
         $placeholder = $this->placeholderBox();
-        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+        $contentLength = !empty(\strlen($placeholder)) ? \strlen($placeholder) : 0;
 
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
@@ -360,12 +439,22 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Getter for CraftQL
+     *
      * @return string
      */
-    public function placeholderSilhouetteSize()
+    public function getPlaceholderSilhouette(): string
+    {
+        return (string)$this->placeholderSilhouette();
+    }
+
+    /**
+     * @return string
+     */
+    public function placeholderSilhouetteSize(): string
     {
         $placeholder = $this->placeholderSilhouette();
-        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
+        $contentLength = !empty(\strlen($placeholder)) ? \strlen($placeholder) : 0;
 
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
@@ -468,10 +557,10 @@ class OptimizedImage extends Model
         foreach ($array as $key => $value) {
             if ($dpr) {
                 $descriptor = '1x';
-                if (!empty($array[intval($key) / 2])) {
+                if (!empty($array[(int)$key / 2])) {
                     $descriptor = '2x';
                 }
-                if (!empty($array[intval($key) / 3])) {
+                if (!empty($array[(int)$key / 3])) {
                     $descriptor = '3x';
                 }
             } else {
