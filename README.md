@@ -533,6 +533,71 @@ Re-saving many images at a time can be intensive, and on certain setups may requ
 
 All you need to do is install the plugin, and any queue jobs in Craft CMS 3 will now run entirely in the background via the CLI php, which isn't subject to the same restrictions that the web php is.
 
+### GraphQL via CraftQL Plugin
+
+ImageOptimize has built-in support for accessing the OptimizedImages field via GraphQL using the [CraftQL plugin](https://github.com/markhuot/craftql).
+
+You can access all of the primary OptimizeImages methods:
+
+```
+{
+  entries(section:[homepage], limit:1) {
+    ...on Homepage {
+      title
+      url
+      someAsset {
+        ...on AssetsVolume {
+        title
+        optimizedImages {
+          ...on OptimizedImagesData {
+            src,
+            srcset,
+            srcWebp,
+            srcsetWebp,
+            maxSrcsetWidth,
+            placeholderImage,
+            placeholderBox,
+            placeholderSilhouette
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+...as well as all of the object properties:
+
+```
+  entries(section:[homepage], limit:1) {
+    ...on Homepage {
+      title
+      url
+      someAsset {
+        ...on AssetsVolume {
+        title
+        optimizedImages {
+          ...on OptimizedImagesData {
+            optimizedImageUrls,
+            optimizedWebPImageUrls,
+            variantSourceWidths,
+            originalImageWidth,
+            originalImageHeight
+            placeholder,
+            placeholderSvg,
+            colorPalette,
+            placeholderWidth,
+            placeholderHeight
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## Using Optimized Image Transforms
 
 Once ImageOptimize is set up and configured, there's nothing left to do for optimizing your image transforms. It just works.
