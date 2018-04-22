@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.31 - 2018.04.22
+### Added
+* Added CraftQL support
+
 ## 1.4.30 - 2018.04.09
 ### Added
 * Added additional profiling information

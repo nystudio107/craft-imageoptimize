@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize;
 
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\listeners\GetCraftQLSchema;
 use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
@@ -22,7 +23,6 @@ use Craft;
 use craft\base\Field;
 use craft\base\Plugin;
 use craft\base\Volume;
-use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\events\AssetTransformImageEvent;
 use craft\events\ElementEvent;
@@ -44,7 +44,10 @@ use craft\services\Volumes;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
 
+use markhuot\CraftQL\CraftQL;
+
 use yii\base\Event;
+use yii\base\Exception;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
 
@@ -63,6 +66,12 @@ use yii\base\Event;
  */
 class ImageOptimize extends Plugin
 {
+
+    // Constants
+    // =========================================================================
+
+    const CRAFTQL_PLUGIN_HANDLE = 'craftql';
+
     // Static Properties
     // =========================================================================
 
@@ -150,15 +159,23 @@ class ImageOptimize extends Plugin
         $settings = $this->getSettings();
 
         // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/settings',
-            [
-                'settings'        => $settings,
-                'imageProcessors' => $imageProcessors,
-                'variantCreators' => $variantCreators,
-                'gdInstalled'     => function_exists('imagecreatefromjpeg'),
-            ]
-        );
+        try {
+            return Craft::$app->getView()->renderTemplate(
+                'image-optimize/settings',
+                [
+                    'settings'        => $settings,
+                    'imageProcessors' => $imageProcessors,
+                    'variantCreators' => $variantCreators,
+                    'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
+                ]
+            );
+        } catch (\Twig_Error_Loader $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        } catch (Exception $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+
+        return '';
     }
 
     // Protected Methods
@@ -210,83 +227,7 @@ class ImageOptimize extends Plugin
         $this->installAssetEventHandlers();
         $this->installElementEventHandlers();
         $this->installMiscEventHandlers();
-    }
-
-    /**
-     * Install our miscellaneous event handlers
-     */
-    protected function installMiscEventHandlers()
-    {
-        // Handler: Fields::EVENT_AFTER_SAVE_FIELD
-        Event::on(
-            Fields::class,
-            Fields::EVENT_AFTER_SAVE_FIELD,
-            function (FieldEvent $event) {
-                Craft::debug(
-                    'Fields::EVENT_AFTER_SAVE_FIELD',
-                    __METHOD__
-                );
-                $settings = $this->getSettings();
-                /** @var Field $field */
-                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
-                    $this->checkForOptimizedImagesField($event);
-                }
-            }
-        );
-
-        // Handler: Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    Craft::debug(
-                        'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
-                        __METHOD__
-                    );
-                    $settings = $this->getSettings();
-                    if ($settings->automaticallyResaveImageVariants) {
-                        // After they have changed the settings, resave all of the assets
-                        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
-                    }
-                }
-            }
-        );
-
-        // Handler: Volumes::EVENT_AFTER_SAVE_VOLUME
-        Event::on(
-            Volumes::class,
-            Volumes::EVENT_AFTER_SAVE_VOLUME,
-            function (VolumeEvent $event) {
-                Craft::debug(
-                    'Volumes::EVENT_AFTER_SAVE_VOLUME',
-                    __METHOD__
-                );
-                $settings = $this->getSettings();
-                // Only worry about this volume if it's not new
-                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
-                    /** @var Volume $volume */
-                    $volume = $event->volume;
-                    if (!empty($volume)) {
-                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
-                    }
-                }
-            }
-        );
-
-        // Handler: Plugins::EVENT_AFTER_INSTALL_PLUGIN
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    $request = Craft::$app->getRequest();
-                    if ($request->isCpRequest) {
-                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
-                    }
-                }
-            }
-        );
+        $this->installCraftQLEventHandlers();
     }
 
     /**
@@ -375,7 +316,7 @@ class ImageOptimize extends Plugin
                 );
                 /** @var Asset $element */
                 $element = $event->asset;
-                if (!empty($element->id)) {
+                if ($element->id !== null) {
                     ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
                 }
             }
@@ -434,9 +375,101 @@ class ImageOptimize extends Plugin
         );
     }
 
+
     /**
-     * If the Field being saved is an OptimizedImages field, re-save the responsive
-     * image variants automatically
+     * Install our miscellaneous event handlers
+     */
+    protected function installMiscEventHandlers()
+    {
+        // Handler: Fields::EVENT_AFTER_SAVE_FIELD
+        Event::on(
+            Fields::class,
+            Fields::EVENT_AFTER_SAVE_FIELD,
+            function (FieldEvent $event) {
+                Craft::debug(
+                    'Fields::EVENT_AFTER_SAVE_FIELD',
+                    __METHOD__
+                );
+                $settings = $this->getSettings();
+                /** @var Field $field */
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
+                    $this->checkForOptimizedImagesField($event);
+                }
+            }
+        );
+
+        // Handler: Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    Craft::debug(
+                        'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
+                        __METHOD__
+                    );
+                    $settings = $this->getSettings();
+                    if ($settings->automaticallyResaveImageVariants) {
+                        // After they have changed the settings, resave all of the assets
+                        ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+                    }
+                }
+            }
+        );
+
+        // Handler: Volumes::EVENT_AFTER_SAVE_VOLUME
+        Event::on(
+            Volumes::class,
+            Volumes::EVENT_AFTER_SAVE_VOLUME,
+            function (VolumeEvent $event) {
+                Craft::debug(
+                    'Volumes::EVENT_AFTER_SAVE_VOLUME',
+                    __METHOD__
+                );
+                $settings = $this->getSettings();
+                // Only worry about this volume if it's not new
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
+                    /** @var Volume $volume */
+                    $volume = $event->volume;
+                    if ($volume !== null) {
+                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
+                    }
+                }
+            }
+        );
+
+        // Handler: Plugins::EVENT_AFTER_INSTALL_PLUGIN
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                if ($event->plugin === $this) {
+                    $request = Craft::$app->getRequest();
+                    if ($request->isCpRequest) {
+                        Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('image-optimize/welcome'))->send();
+                    }
+                }
+            }
+        );
+    }
+
+    /**
+     * Install our CraftQL event handlers
+     */
+    protected function installCraftQLEventHandlers()
+    {
+        if (class_exists(CraftQL::class)) {
+            Event::on(
+                OptimizedImages::class,
+                GetCraftQLSchema::EVENT_GET_FIELD_SCHEMA,
+                [new GetCraftQLSchema, 'handle']
+            );
+        }
+    }
+
+    /**
+     * If the Field being saved is an OptimizedImages field, re-save the
+     * responsive image variants automatically
      *
      * @param FieldEvent $event
      *
@@ -456,7 +489,8 @@ class ImageOptimize extends Plugin
                 if ($fieldLayout) {
                     $fields = $fieldLayout->getFields();
                     foreach ($fields as $field) {
-                        if ($thisField->handle == $field->handle) {
+                        /** @var Field $field */
+                        if ($thisField->handle === $field->handle) {
                             $needToReSave = true;
                         }
                     }
