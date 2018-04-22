@@ -537,7 +537,7 @@ All you need to do is install the plugin, and any queue jobs in Craft CMS 3 will
 
 ImageOptimize has built-in support for accessing the OptimizedImages field via GraphQL using the [CraftQL plugin](https://github.com/markhuot/craftql).
 
-You can access all of the primary OptimizeImages methods:
+You can access all of the primary OptimizedImages field methods:
 
 ```
 {
@@ -567,7 +567,7 @@ You can access all of the primary OptimizeImages methods:
 }
 ```
 
-...as well as all of the object properties:
+...as well as all of the OptimizedImages field properties:
 
 ```
   entries(section:[homepage], limit:1) {
