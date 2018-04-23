@@ -323,7 +323,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
     <img src="{{ optimizedImages.placeholderBox() }}"
          data-srcset="{{ optimizedImages.srcset() }}"
-         data-sizes="100vw" />
+         sizes="100vw" />
 ```
 
 #### Picture Elements
@@ -372,11 +372,11 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
     <picture>
         <source data-srcset="{{ optimizedImages.srcsetWebP() }}" 
-                 data-sizes="100vw"
+                 sizes="100vw"
                  type="image/webp" />
         <img src="{{ optimizedImages.placeholderBox() }}"
              data-srcset="{{ optimizedImages.srcset() }}"
-             data-sizes="100vw" />
+             sizes="100vw" />
      </picture>
 ```
 
