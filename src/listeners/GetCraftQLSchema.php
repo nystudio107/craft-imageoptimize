@@ -33,8 +33,28 @@ class GetCraftQLSchema
 
         $fieldObject = $event->schema->createObjectType('OptimizedImagesData');
 
+        $srcObject = $event->schema->createObjectType('OptimizedImageSrc');
+        $srcObject->addStringField('url');
+        $srcObject->addIntField('width');
+
         // Primary getter functions
-        $fieldObject->addStringField('src');
+        $fieldObject->addStringField('src')
+            ->arguments(function (\markhuot\CraftQL\Builders\Field $field) {
+                $field->addIntArgument('width');
+            })
+            ->resolve(function ($root, $args) {
+                return $root->src(@$args['width'] ?: 0);
+            });
+        $fieldObject->addField('srcUrls')
+            ->lists()
+            ->type($srcObject)
+            ->resolve(function ($root, $args) {
+                $result = [];
+                foreach ($root->optimizedImageUrls as $width => $url) {
+                    $result[] = ['width' => $width, 'url' => $url];
+                }
+                return $result;
+            });
         $fieldObject->addStringField('srcset');
         $fieldObject->addStringField('srcWebp');
         $fieldObject->addStringField('srcsetWebp');
@@ -44,22 +64,14 @@ class GetCraftQLSchema
         $fieldObject->addStringField('placeholderSilhouette');
 
         // Object properties
-        $fieldObject->addStringField('optimizedImageUrls')
-            ->lists()
-            ->type(Type::string());
-        $fieldObject->addStringField('optimizedWebPImageUrls')
-            ->lists()
-            ->type(Type::string());
-        $fieldObject->addIntField('variantSourceWidths')
-            ->lists()
-            ->type(Type::int());
+        $fieldObject->addStringField('optimizedImageUrls')->lists();
+        $fieldObject->addStringField('optimizedWebPImageUrls')->lists();
+        $fieldObject->addIntField('variantSourceWidths')->lists();
         $fieldObject->addIntField('originalImageWidth');
         $fieldObject->addIntField('originalImageHeight');
         $fieldObject->addStringField('placeholder');
         $fieldObject->addStringField('placeholderSvg');
-        $fieldObject->addStringField('colorPalette')
-            ->lists()
-            ->type(Type::string());
+        $fieldObject->addStringField('colorPalette')->lists();
         $fieldObject->addIntField('placeholderWidth');
         $fieldObject->addIntField('placeholderHeight');
 
