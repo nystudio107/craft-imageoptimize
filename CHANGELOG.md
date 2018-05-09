@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.32 - 2018.05.09
+### Added
+* Improved CraftQL support by allowing parameter passing to `src` and `srcUrls`
+
 ## 1.4.31 - 2018.04.22
 ### Added
 * Added CraftQL support
