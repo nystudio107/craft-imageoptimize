@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.33 - 2018.05.24
+### Changed
+* Handle JPEGs coming in as both `jpg` & `jpeg`
+
 ## 1.4.32 - 2018.05.09
 ### Added
 * Improved CraftQL support by allowing parameter passing to `src` and `srcUrls`
