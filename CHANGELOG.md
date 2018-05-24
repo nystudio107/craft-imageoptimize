@@ -2,7 +2,8 @@
 
 ## 1.4.33 - 2018.05.24
 ### Changed
-* Handle JPEGs coming in as both `jpg` & `jpeg`
+* Handle JPEGs coming in as both `jpg` & `jpeg` for the detected file format
+* Remove vestigal `empty()` checks
 
 ## 1.4.32 - 2018.05.09
 ### Added
