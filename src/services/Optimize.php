@@ -209,6 +209,10 @@ class Optimize extends Component
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
         $fileFormat = $index->detectedFormat;
+        // Special-case for 'jpeg'
+        if ($fileFormat === 'jpeg') {
+            $fileFormat = 'jpg';
+        }
         if (!empty($activeImageProcessors[$fileFormat])) {
             // Iterate through all of the processors for this format
             $imageProcessors = $settings->imageProcessors;
@@ -255,6 +259,10 @@ class Optimize extends Component
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
         $fileFormat = $index->detectedFormat ?? $index->format;
+        // Special-case for 'jpeg'
+        if ($fileFormat === 'jpeg') {
+            $fileFormat = 'jpg';
+        }
         if (!empty($activeImageVariantCreators[$fileFormat])) {
             // Iterate through all of the image variant creators for this format
             $imageVariantCreators = $settings->imageVariantCreators;
