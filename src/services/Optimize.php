@@ -69,8 +69,8 @@ class Optimize extends Component
             // If we're passed in null, make a dummy AssetTransform model
             if (empty($transform)) {
                 $transform = new AssetTransform([
-                    'height'    => $asset->height,
-                    'width'     => $asset->width,
+                    'height' => $asset->height,
+                    'width' => $asset->width,
                     'interlace' => 'line',
                 ]);
             }
@@ -209,14 +209,16 @@ class Optimize extends Component
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
         $fileFormat = $index->detectedFormat;
+        // Special-case for 'jpeg'
+        if ($fileFormat === 'jpeg') {
+            $fileFormat = 'jpg';
+        }
         if (!empty($activeImageProcessors[$fileFormat])) {
             // Iterate through all of the processors for this format
             $imageProcessors = $settings->imageProcessors;
-            if (!empty($activeImageProcessors[$fileFormat])) {
-                foreach ($activeImageProcessors[$fileFormat] as $processor) {
-                    if (!empty($processor) && !empty($imageProcessors[$processor])) {
-                        $this->executeImageProcessor($imageProcessors[$processor], $tempPath);
-                    }
+            foreach ($activeImageProcessors[$fileFormat] as $processor) {
+                if (!empty($processor) && !empty($imageProcessors[$processor])) {
+                    $this->executeImageProcessor($imageProcessors[$processor], $tempPath);
                 }
             }
         }
@@ -255,58 +257,60 @@ class Optimize extends Component
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
         $fileFormat = $index->detectedFormat ?? $index->format;
+        // Special-case for 'jpeg'
+        if ($fileFormat === 'jpeg') {
+            $fileFormat = 'jpg';
+        }
         if (!empty($activeImageVariantCreators[$fileFormat])) {
             // Iterate through all of the image variant creators for this format
             $imageVariantCreators = $settings->imageVariantCreators;
-            if (!empty($activeImageVariantCreators[$fileFormat])) {
-                foreach ($activeImageVariantCreators[$fileFormat] as $variantCreator) {
-                    if (!empty($variantCreator) && !empty($imageVariantCreators[$variantCreator])) {
-                        // Create the image variant in a temporary folder
-                        $generalConfig = Craft::$app->getConfig()->getGeneral();
-                        $quality = $index->transform->quality ?: $generalConfig->defaultImageQuality;
-                        $outputPath = $this->executeVariantCreator(
-                            $imageVariantCreators[$variantCreator],
-                            $tempPath,
-                            $quality
+            foreach ($activeImageVariantCreators[$fileFormat] as $variantCreator) {
+                if (!empty($variantCreator) && !empty($imageVariantCreators[$variantCreator])) {
+                    // Create the image variant in a temporary folder
+                    $generalConfig = Craft::$app->getConfig()->getGeneral();
+                    $quality = $index->transform->quality ?: $generalConfig->defaultImageQuality;
+                    $outputPath = $this->executeVariantCreator(
+                        $imageVariantCreators[$variantCreator],
+                        $tempPath,
+                        $quality
+                    );
+
+                    if (!empty($outputPath)) {
+                        // Get info on the original and the created variant
+                        $originalFileSize = @filesize($tempPath);
+                        $variantFileSize = @filesize($outputPath);
+
+                        Craft::info(
+                            pathinfo($tempPath, PATHINFO_FILENAME)
+                            .'.'
+                            .pathinfo($tempPath, PATHINFO_EXTENSION)
+                            .' -> '
+                            .pathinfo($outputPath, PATHINFO_FILENAME)
+                            .'.'
+                            .pathinfo($outputPath, PATHINFO_EXTENSION)
+                            .' -> '
+                            .Craft::t('image-optimize', 'Original')
+                            .': '
+                            .$this->humanFileSize($originalFileSize, 1)
+                            .', '
+                            .Craft::t('image-optimize', 'Variant')
+                            .': '
+                            .$this->humanFileSize($variantFileSize, 1)
+                            .' -> '
+                            .Craft::t('image-optimize', 'Savings')
+                            .': '
+                            .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
+                            .'%',
+                            __METHOD__
                         );
 
-                        if (!empty($outputPath)) {
-                            // Get info on the original and the created variant
-                            $originalFileSize = @filesize($tempPath);
-                            $variantFileSize = @filesize($outputPath);
-
-                            Craft::info(
-                                pathinfo($tempPath, PATHINFO_FILENAME)
-                                .'.'
-                                .pathinfo($tempPath, PATHINFO_EXTENSION)
-                                .' -> '
-                                .pathinfo($outputPath, PATHINFO_FILENAME)
-                                .'.'
-                                .pathinfo($outputPath, PATHINFO_EXTENSION)
-                                .' -> '
-                                .Craft::t('image-optimize', 'Original')
-                                .': '
-                                .$this->humanFileSize($originalFileSize, 1)
-                                .', '
-                                .Craft::t('image-optimize', 'Variant')
-                                .': '
-                                .$this->humanFileSize($variantFileSize, 1)
-                                .' -> '
-                                .Craft::t('image-optimize', 'Savings')
-                                .': '
-                                .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
-                                .'%',
-                                __METHOD__
-                            );
-
-                            // Copy the image variant into place
-                            $this->copyImageVariantToVolume(
-                                $imageVariantCreators[$variantCreator],
-                                $asset,
-                                $index,
-                                $outputPath
-                            );
-                        }
+                        // Copy the image variant into place
+                        $this->copyImageVariantToVolume(
+                            $imageVariantCreators[$variantCreator],
+                            $asset,
+                            $index,
+                            $outputPath
+                        );
                     }
                 }
             }
@@ -332,9 +336,9 @@ class Optimize extends Component
                 if (!empty($imageProcessors[$processor])) {
                     $thisImageProcessor = $imageProcessors[$processor];
                     $result[] = [
-                        'format'    => $imageFormat,
-                        'creator'   => $processor,
-                        'command'   => $thisImageProcessor['commandPath']
+                        'format' => $imageFormat,
+                        'creator' => $processor,
+                        'command' => $thisImageProcessor['commandPath']
                             .' '
                             .$thisImageProcessor['commandOptions'],
                         'installed' => is_file($thisImageProcessor['commandPath']),
@@ -364,9 +368,9 @@ class Optimize extends Component
                 if (!empty($imageVariantCreators[$variantCreator])) {
                     $thisVariantCreator = $imageVariantCreators[$variantCreator];
                     $result[] = [
-                        'format'    => $imageFormat,
-                        'creator'   => $variantCreator,
-                        'command'   => $thisVariantCreator['commandPath']
+                        'format' => $imageFormat,
+                        'creator' => $variantCreator,
+                        'command' => $thisVariantCreator['commandPath']
                             .' '
                             .$thisVariantCreator['commandOptions'],
                         'installed' => is_file($thisVariantCreator['commandPath']),
@@ -577,9 +581,9 @@ class Optimize extends Component
                         }
                         try {
                             $variantPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath(
-                                $asset,
-                                $transformIndex
-                            );
+                                    $asset,
+                                    $transformIndex
+                                );
                         } catch (InvalidConfigException $e) {
                             $variantPath = '';
                             Craft::error(
