@@ -334,7 +334,6 @@ To use `<picture>` in your templates, you can just do:
 
 ```
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
-    <img src="{{ optimizedImages.placeholderBox() }}"
     <picture>
         <source srcset="{{ optimizedImages.srcsetWebP() }}" 
                  sizes="100vw"
