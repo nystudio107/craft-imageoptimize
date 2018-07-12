@@ -117,4 +117,56 @@ abstract class ImageTransform implements ImageTransformInterface
         curl_exec($ch);
         curl_close($ch);
     }
+
+    /**
+     * Append an extension a passed url or path
+     *
+     * @param $pathOrUrl
+     * @param $extension
+     *
+     * @return string
+     */
+    public static function appendExtension($pathOrUrl, $extension): string
+    {
+        $path = self::decomposeUrl($pathOrUrl);
+        $path_parts = pathinfo($path['path']);
+        $new_path = $path_parts['filename'] . '.' . $path_parts['extension'] . $extension;
+        if (!empty($path_parts['dirname']) && $path_parts['dirname'] !== '.') {
+            $new_path = $path_parts['dirname'] . DIRECTORY_SEPARATOR . $new_path;
+            $new_path = preg_replace('#/+#', '/', $new_path);
+        }
+        $output = $path['prefix'] . $new_path . $path['suffix'];
+
+        return $output;
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Decompose a url into a prefix, path, and suffix
+     *
+     * @param $pathOrUrl
+     *
+     * @return array
+     */
+    protected static function decomposeUrl($pathOrUrl): array
+    {
+        $result = array();
+
+        if (filter_var($pathOrUrl, FILTER_VALIDATE_URL)) {
+            $url_parts = parse_url($pathOrUrl);
+            $result['prefix'] = $url_parts['scheme'] . '://' . $url_parts['host'];
+            $result['path'] = $url_parts['path'];
+            $result['suffix'] = '';
+            $result['suffix'] .= empty($url_parts['query']) ? '' : '?' . $url_parts['query'];
+            $result['suffix'] .= empty($url_parts['fragment']) ? '' : '#' . $url_parts['fragment'];
+        } else {
+            $result['prefix'] = '';
+            $result['path'] = $pathOrUrl;
+            $result['suffix'] = '';
+        }
+
+        return $result;
+    }
 }

@@ -36,9 +36,7 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
      */
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        $generateTransformsBeforePageLoad = isset($params['generateTransformsBeforePageLoad'])
-            ? $params['generateTransformsBeforePageLoad']
-            : true;
+        $generateTransformsBeforePageLoad = $params['generateTransformsBeforePageLoad'] ?? true;
         // Generate the URLs to the optimized images
         $assets = Craft::$app->getAssets();
         $url = $assets->getAssetUrl($asset, $transform, $generateTransformsBeforePageLoad);
@@ -53,7 +51,7 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
      */
     public static function getWebPUrl(string $url): string
     {
-        $url = $url.".webp";
+        $url = self::appendExtension($url, '.webp');
 
         return $url;
     }
@@ -65,9 +63,7 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Get our $generateTransformsBeforePageLoad setting
-        $generateTransformsBeforePageLoad = isset($settings->generateTransformsBeforePageLoad)
-            ? $settings->generateTransformsBeforePageLoad
-            : true;
+        $generateTransformsBeforePageLoad = $settings->generateTransformsBeforePageLoad ?? true;
         $params = [
             'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
         ];
