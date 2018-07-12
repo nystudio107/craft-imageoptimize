@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.35 - 2018.07.12
+### Changed
+* Catch all exceptions that happen during `ResaveOptimizedImages()` job so that execution can continue
+
 ## 1.4.34 - 2018.07.12
 ### Changed
 * Smarter appending of variant creator suffixes, to handle URLs that have query strings
