@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.34 - 2018.07.12
+### Changed
+* Smarter appending of variant creator suffixes, to handle URLs that have query strings
+
 ## 1.4.33 - 2018.05.24
 ### Changed
 * Handle JPEGs coming in as both `jpg` & `jpeg` for the detected file format
