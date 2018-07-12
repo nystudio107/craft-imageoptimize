@@ -74,16 +74,30 @@ class ResaveOptimizedImages extends BaseJob
         foreach ($query->each() as $element) {
             // Find each OptimizedImages field and process it
             $layout = $element->getFieldLayout();
-            $fields = $layout->getFields();
-            /** @var  $field Field */
-            foreach ($fields as $field) {
-                if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
-                    if (Craft::$app instanceof ConsoleApplication) {
-                        echo $currentElement.'/'.$totalElements
-                            .' - processing asset: '.$element->title
-                            .' from field: '.$field->name.PHP_EOL;
+            if ($layout !== null) {
+                $fields = $layout->getFields();
+                /** @var  $field Field */
+                foreach ($fields as $field) {
+                    if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
+                        if (Craft::$app instanceof ConsoleApplication) {
+                            echo $currentElement.'/'.$totalElements
+                                .' - processing asset: '.$element->title
+                                .' from field: '.$field->name.PHP_EOL;
+                        }
+                        try {
+                            ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
+                        } catch (Exception $e) {
+                            Craft::error($e->getMessage(), __METHOD__);
+                            if (Craft::$app instanceof ConsoleApplication) {
+                                echo '[error]: '
+                                    .$e->getMessage()
+                                    .' while processing '
+                                    .$currentElement.'/'.$totalElements
+                                    .' - processing asset: '.$element->title
+                                    .' from field: '.$field->name.PHP_EOL;
+                            }
+                        }
                     }
-                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
                 }
             }
             $this->setProgress($queue, $currentElement++ / $totalElements);
