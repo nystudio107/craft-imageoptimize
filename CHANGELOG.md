@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.4.36 - 2018.08.06
+### Added
+* Added the ability to access each image variant's height
+
+### Changed
+* Update to the latest version of the Imgix PHP library
+
 ## 1.4.35 - 2018.07.12
 ### Changed
 * Catch all exceptions that happen during `ResaveOptimizedImages()` job so that execution can continue

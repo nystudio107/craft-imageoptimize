@@ -502,6 +502,26 @@ Or to get the `width` as well as the `url`, you can do:
 
 ```
 
+### Image Variant Height
+
+Should you want to access the height of a given variant, you can do that via:
+
+```twig
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {{ optimizedImages.variantHeight[VARIANT_WIDTH] }}
+```
+
+...where `VARIANT_WIDTH` is the width of the image variant.
+
+Or to iterate through the `width` as well as the `height`, you can do:
+
+```
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {% for width,height in optimizedImages.variantHeight %}
+        {{ width ~ ' - ' ~ height }}
+    {% endfor %}
+```
+
 ### Arbitrary placeholder SVGs
 
 Should you need to create an arbitrary placeholder SVG for lazy loading of images, you can do that via:

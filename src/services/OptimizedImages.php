@@ -239,6 +239,7 @@ class OptimizedImages extends Component
         // Update the model
         if (!empty($url)) {
             $model->variantSourceWidths[] = $variant['width'];
+            $model->variantHeights[$transform->width] = $asset->getHeight($transform);
             // Store & prefetch image at the image URL
             //ImageOptimize::$transformClass::prefetchRemoteFile($url);
             $model->optimizedImageUrls[$transform->width] = $url;
