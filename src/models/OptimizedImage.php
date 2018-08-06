@@ -45,6 +45,11 @@ class OptimizedImage extends Model
     /**
      * @var array
      */
+    public $variantHeights = [];
+
+    /**
+     * @var array
+     */
     public $focalPoint;
 
     /**
@@ -94,6 +99,7 @@ class OptimizedImage extends Model
             ['optimizedImageUrls', ArrayValidator::class],
             ['optimizedWebPImageUrls', ArrayValidator::class],
             ['variantSourceWidths', ArrayValidator::class],
+            ['variantHeights', ArrayValidator::class],
             ['focalPoint', 'safe'],
             ['originalImageWidth', 'integer'],
             ['originalImageHeight', 'integer'],
