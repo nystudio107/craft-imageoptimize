@@ -16,6 +16,7 @@ use Craft;
 use craft\elements\Asset;
 use craft\services\Assets;
 use craft\models\AssetTransform;
+use nystudio107\seomatic\helpers\UrlHelper;
 
 /**
  * @author    nystudio107
@@ -53,7 +54,7 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
     {
         $url = self::appendExtension($url, '.webp');
 
-        return $url;
+        return UrlHelper::absoluteUrlWithProtocol($url);
     }
 
     /**
