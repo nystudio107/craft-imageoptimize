@@ -14,7 +14,6 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\elements\Asset;
-use craft\services\Assets;
 use craft\models\AssetTransform;
 
 /**
