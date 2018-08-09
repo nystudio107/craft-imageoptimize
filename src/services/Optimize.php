@@ -51,12 +51,12 @@ class Optimize extends Component
      * @return string
      * @throws InvalidConfigException
      */
-    public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
+    public function handleGetAssetUrlEvent(GetAssetUrlEvent $event): string
     {
         Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
-        if ($settings->transformMethod != 'craft') {
+        if ($settings->transformMethod !== 'craft') {
             $asset = $event->asset;
             $transform = $event->transform;
             // If there's no transform requested, and we can't manipulate the image anyway, just return the URL
@@ -75,11 +75,11 @@ class Optimize extends Component
                 ]);
             }
             // If we're passed an array, make an AssetTransform model out of it
-            if (is_array($transform)) {
+            if (\is_array($transform)) {
                 $transform = new AssetTransform($transform);
             }
             // If we're passing in a string, look up the asset transform in the db
-            if (is_string($transform)) {
+            if (\is_string($transform)) {
                 $assetTransforms = Craft::$app->getAssetTransforms();
                 $transform = $assetTransforms->getTransformByHandle($transform);
             }
@@ -102,16 +102,16 @@ class Optimize extends Component
      *
      * @return string
      */
-    public function handleGenerateTransformEvent(GenerateTransformEvent $event)
+    public function handleGenerateTransformEvent(GenerateTransformEvent $event): string
     {
         Craft::beginProfile('handleGenerateTransformEvent', __METHOD__);
         $tempPath = null;
 
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
+        if ($settings->transformMethod === 'craft' && $event->asset !== null) {
             // Apply any filters to the image
-            if (!empty($event->transformIndex->transform)) {
+            if ($event->transformIndex->transform !== null) {
                 $this->applyFiltersToImage($event->transformIndex->transform, $event->asset, $event->image);
             }
             // Save the transformed image to a temp file
@@ -169,7 +169,7 @@ class Optimize extends Component
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
+        if ($settings->transformMethod === 'craft' && $event->asset !== null) {
             $this->cleanupImageVariants($event->asset, $event->transformIndex);
         }
     }
@@ -475,7 +475,7 @@ class Optimize extends Component
         $shellCommand->setCommand($command);
 
         // If we don't have proc_open, maybe we've got exec
-        if (!function_exists('proc_open') && function_exists('exec')) {
+        if (!\function_exists('proc_open') && \function_exists('exec')) {
             $shellCommand->useExec = true;
         }
 
@@ -581,9 +581,9 @@ class Optimize extends Component
                         }
                         try {
                             $variantPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath(
-                                    $asset,
-                                    $transformIndex
-                                );
+                                $asset,
+                                $transformIndex
+                            );
                         } catch (InvalidConfigException $e) {
                             $variantPath = '';
                             Craft::error(
