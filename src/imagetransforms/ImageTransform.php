@@ -133,7 +133,7 @@ abstract class ImageTransform implements ImageTransformInterface
         $new_path = $path_parts['filename'] . '.' . $path_parts['extension'] . $extension;
         if (!empty($path_parts['dirname']) && $path_parts['dirname'] !== '.') {
             $new_path = $path_parts['dirname'] . DIRECTORY_SEPARATOR . $new_path;
-            $new_path = preg_replace('#/+#', '/', $new_path);
+            $new_path = preg_replace('/([^:])(\/{2,})/', '$1/', $new_path);
         }
         $output = $path['prefix'] . $new_path . $path['suffix'];
 

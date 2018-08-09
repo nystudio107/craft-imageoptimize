@@ -14,9 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\elements\Asset;
-use craft\services\Assets;
 use craft\models\AssetTransform;
-use nystudio107\seomatic\helpers\UrlHelper;
 
 /**
  * @author    nystudio107
@@ -54,7 +52,7 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
     {
         $url = self::appendExtension($url, '.webp');
 
-        return UrlHelper::absoluteUrlWithProtocol($url);
+        return $url;
     }
 
     /**
