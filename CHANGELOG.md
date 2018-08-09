@@ -1,9 +1,10 @@
 # ImageOptimize Changelog
 
 
-## 1.4.37 - 2018.08.08
+## 1.4.37 - 2018.08.09
 ### Changed
 * Reverted an errant commit that removed a fix for propagating field data in multi-site environments
+* Ensure that `.webp` variants have fully qualified absolute URLs
 
 ## 1.4.36 - 2018.08.06
 ### Added
