@@ -2,15 +2,10 @@
 
 namespace nystudio107\imageoptimize\listeners;
 
-use Craft;
-
 use markhuot\CraftQL\Events\GetFieldSchema;
-
-use GraphQL\Type\Definition\Type;
 
 class GetCraftQLSchema
 {
-
     // Constants
     // =========================================================================
 
@@ -67,6 +62,7 @@ class GetCraftQLSchema
         $fieldObject->addStringField('optimizedImageUrls')->lists();
         $fieldObject->addStringField('optimizedWebPImageUrls')->lists();
         $fieldObject->addIntField('variantSourceWidths')->lists();
+        $fieldObject->addIntField('variantHeights')->lists();
         $fieldObject->addIntField('originalImageWidth');
         $fieldObject->addIntField('originalImageHeight');
         $fieldObject->addStringField('placeholder');
