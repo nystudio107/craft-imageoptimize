@@ -10,7 +10,6 @@
 
 namespace nystudio107\imageoptimize\assetbundles\ImageOptimize;
 
-use Craft;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
@@ -29,7 +28,7 @@ class ImageOptimizeAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@nystudio107/imageoptimize/assetbundles/imageoptimize/dist";
+        $this->sourcePath = '@nystudio107/imageoptimize/assetbundles/imageoptimize/dist';
 
         $this->depends = [
             CpAsset::class,

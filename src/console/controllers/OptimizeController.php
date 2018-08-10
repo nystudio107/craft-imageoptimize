@@ -18,7 +18,6 @@ use craft\helpers\FileHelper;
 use craft\utilities\ClearCaches;
 
 use yii\console\Controller;
-use yii\helpers\Console;
 
 /**
  * Optimize Command
@@ -42,7 +41,7 @@ class OptimizeController extends Controller
      */
     public function actionCreate($volumeHandle = null)
     {
-        echo "Creating optimized image variants".PHP_EOL;
+        echo 'Creating optimized image variants'.PHP_EOL;
 
         if ($volumeHandle === null) {
             // Re-save all of the optimized image variants in all volumes
@@ -73,14 +72,14 @@ class OptimizeController extends Controller
 
             $action = $cacheOption['action'];
 
-            if (is_string($action)) {
+            if (\is_string($action)) {
                 try {
                     FileHelper::clearDirectory($action);
                 } catch (\Throwable $e) {
                     Craft::warning("Could not clear the directory {$action}: ".$e->getMessage(), __METHOD__);
                 }
             } elseif (isset($cacheOption['params'])) {
-                call_user_func_array($action, $cacheOption['params']);
+                \call_user_func_array($action, $cacheOption['params']);
             } else {
                 $action();
             }
