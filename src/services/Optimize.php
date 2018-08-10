@@ -69,8 +69,8 @@ class Optimize extends Component
             // If we're passed in null, make a dummy AssetTransform model
             if (empty($transform)) {
                 $transform = new AssetTransform([
-                    'height' => $asset->height,
-                    'width' => $asset->width,
+                    'height'    => $asset->height,
+                    'width'     => $asset->width,
                     'interlace' => 'line',
                 ]);
             }
@@ -275,7 +275,7 @@ class Optimize extends Component
                         $quality
                     );
 
-                    if (!empty($outputPath)) {
+                    if ($outputPath !== null) {
                         // Get info on the original and the created variant
                         $originalFileSize = @filesize($tempPath);
                         $variantFileSize = @filesize($outputPath);
@@ -336,9 +336,9 @@ class Optimize extends Component
                 if (!empty($imageProcessors[$processor])) {
                     $thisImageProcessor = $imageProcessors[$processor];
                     $result[] = [
-                        'format' => $imageFormat,
-                        'creator' => $processor,
-                        'command' => $thisImageProcessor['commandPath']
+                        'format'    => $imageFormat,
+                        'creator'   => $processor,
+                        'command'   => $thisImageProcessor['commandPath']
                             .' '
                             .$thisImageProcessor['commandOptions'],
                         'installed' => is_file($thisImageProcessor['commandPath']),
@@ -368,9 +368,9 @@ class Optimize extends Component
                 if (!empty($imageVariantCreators[$variantCreator])) {
                     $thisVariantCreator = $imageVariantCreators[$variantCreator];
                     $result[] = [
-                        'format' => $imageFormat,
-                        'creator' => $variantCreator,
-                        'command' => $thisVariantCreator['commandPath']
+                        'format'    => $imageFormat,
+                        'creator'   => $variantCreator,
+                        'command'   => $thisVariantCreator['commandPath']
                             .' '
                             .$thisVariantCreator['commandOptions'],
                         'installed' => is_file($thisVariantCreator['commandPath']),
@@ -390,29 +390,33 @@ class Optimize extends Component
      * @param Asset          $asset
      * @param Image          $image
      */
+
     protected function applyFiltersToImage(AssetTransform $transform, Asset $asset, Image $image)
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Only try to apply filters to Raster images
         if ($image instanceof Raster) {
             $imagineImage = $image->getImagineImage();
-            if ($settings->autoSharpenScaledImages) {
-                // See if the image has been scaled >= 50%
-                $widthScale = $asset->getWidth() / $image->getWidth();
-                $heightScale = $asset->getHeight() / $image->getHeight();
-                if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
-                    $imagineImage->effects()
-                        ->sharpen();
-                    Craft::debug(
-                        Craft::t(
-                            'image-optimize',
-                            'Image transform >= 50%, sharpened the transformed image: {name}',
-                            [
-                                'name' => $asset->title,
-                            ]
-                        ),
-                        __METHOD__
-                    );
+            if ($imagineImage !== null) {
+                // Handle auto-sharpening scaled down images
+                if ($settings->autoSharpenScaledImages) {
+                    // See if the image has been scaled >= 50%
+                    $widthScale = $asset->getWidth() / $image->getWidth();
+                    $heightScale = $asset->getHeight() / $image->getHeight();
+                    if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
+                        $imagineImage->effects()
+                            ->sharpen();
+                        Craft::debug(
+                            Craft::t(
+                                'image-optimize',
+                                'Image transform >= 50%, sharpened the transformed image: {name}',
+                                [
+                                    'name' => $asset->title,
+                                ]
+                            ),
+                            __METHOD__
+                        );
+                    }
                 }
             }
         }

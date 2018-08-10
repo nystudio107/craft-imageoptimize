@@ -56,7 +56,7 @@ class Placeholder extends Component
      *
      * @return string
      */
-    public function generatePlaceholderBox($width, $height, $color = null)
+    public function generatePlaceholderBox($width, $height, $color = null): string
     {
         $color = $color ?? '#CCC';
         $header = 'data:image/svg+xml,';
@@ -83,7 +83,7 @@ class Placeholder extends Component
         Craft::beginProfile('generatePlaceholderImage', __METHOD__);
         $result = '';
         $width = self::PLACEHOLDER_WIDTH;
-        $height = intval($width / $aspectRatio);
+        $height = (int)($width / $aspectRatio);
         $placeholderPath = $this->createImageFromPath($tempPath, $width, $height, self::PLACEHOLDER_QUALITY, $position);
         if (!empty($placeholderPath)) {
             $result = base64_encode(file_get_contents($placeholderPath));
@@ -110,7 +110,7 @@ class Placeholder extends Component
             $palette = ColorThief::getPalette($tempPath, 5);
             // Convert RGB to hex color
             foreach ($palette as $colors) {
-                $colorPalette[] = sprintf("#%02x%02x%02x", $colors[0], $colors[1], $colors[2]);
+                $colorPalette[] = sprintf('#%02x%02x%02x', $colors[0], $colors[1], $colors[2]);
             }
         }
         Craft::endProfile('generateColorPalette', __METHOD__);
@@ -132,7 +132,7 @@ class Placeholder extends Component
 
         if (!empty($tempPath)) {
             // Potracio depends on `gd` being installed
-            if (function_exists('imagecreatefromjpeg')) {
+            if (\function_exists('imagecreatefromjpeg')) {
                 $pot = new Potracio();
                 $pot->loadImageFromFile($tempPath);
                 $pot->process();
@@ -148,7 +148,7 @@ class Placeholder extends Component
              * If Potracio failed or gd isn't installed, or this is larger
              * than MAX_SILHOUETTE_SIZE bytes, just return a box
              */
-            if (empty($result) || (strlen($result) > self::MAX_SILHOUETTE_SIZE)) {
+            if (empty($result) || (\strlen($result) > self::MAX_SILHOUETTE_SIZE)) {
                 $size = getimagesize($tempPath);
                 if ($size !== false) {
                     list($width, $height) = $size;
@@ -175,7 +175,7 @@ class Placeholder extends Component
     {
         Craft::beginProfile('createTempPlaceholderImage', __METHOD__);
         $width = self::TEMP_PLACEHOLDER_WIDTH;
-        $height = intval($width / $aspectRatio);
+        $height = (int)($width / $aspectRatio);
         $tempPath = $this->createImageFromAsset($asset, $width, $height, self::TEMP_PLACEHOLDER_QUALITY, $position);
         Craft::endProfile('createTempPlaceholderImage', __METHOD__);
 
@@ -191,11 +191,11 @@ class Placeholder extends Component
      *
      * @return string
      */
-    public function createImageFromAsset(Asset $asset, int $width, int $height, int $quality, $position)
+    public function createImageFromAsset(Asset $asset, int $width, int $height, int $quality, $position): string
     {
         $tempPath = '';
 
-        if (!empty($asset) && Image::canManipulateAsImage($asset->getExtension())) {
+        if ($asset !== null && Image::canManipulateAsImage($asset->getExtension())) {
             $imageSource = $asset->getTransformSource();
             // Scale and crop the placeholder image
             $tempPath = $this->createImageFromPath($imageSource, $width, $height, $quality, $position);
