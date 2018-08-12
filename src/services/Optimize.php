@@ -100,9 +100,9 @@ class Optimize extends Component
      *
      * @param GenerateTransformEvent $event
      *
-     * @return string
+     * @return null|string
      */
-    public function handleGenerateTransformEvent(GenerateTransformEvent $event): string
+    public function handleGenerateTransformEvent(GenerateTransformEvent $event)
     {
         Craft::beginProfile('handleGenerateTransformEvent', __METHOD__);
         $tempPath = null;
