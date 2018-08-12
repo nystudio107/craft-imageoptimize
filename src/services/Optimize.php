@@ -48,7 +48,7 @@ class Optimize extends Component
      *
      * @param GetAssetUrlEvent $event
      *
-     * @return string
+     * @return null|string
      * @throws InvalidConfigException
      */
     public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
