@@ -51,7 +51,7 @@ class Optimize extends Component
      * @return string
      * @throws InvalidConfigException
      */
-    public function handleGetAssetUrlEvent(GetAssetUrlEvent $event): string
+    public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
