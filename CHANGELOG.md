@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.38 - 2018.08.15
+### Changed
+* Fixed an incompatibility with the Spoon plugin by removing `matrix-field` class from field type settings
+
 ## 1.4.37 - 2018.08.09
 ### Changed
 * Reverted an errant commit that removed a fix for propagating field data in multi-site environments
