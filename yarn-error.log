@@ -1,0 +1,157 @@
+Arguments: 
+  /usr/local/bin/node /home/vagrant/.yarn/bin/yarn.js
+
+PATH: 
+  /home/vagrant/.composer/vendor/bin:/home/vagrant/bin:/home/vagrant/.local/bin:/home/vagrant/.yarn/bin:/home/vagrant/.config/yarn/global/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.7.0
+
+Node version: 
+  10.8.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/vagrant/webdev/craft/craft-imageoptimize/package.json: Unexpected token } in JSON at position 1367
+      at JSON.parse (<anonymous>)
+      at /home/vagrant/.yarn/lib/cli.js:1130:59
+      at Generator.next (<anonymous>)
+      at step (/home/vagrant/.yarn/lib/cli.js:98:30)
+      at /home/vagrant/.yarn/lib/cli.js:109:13
+
+npm manifest: 
+  {
+      "name": "imageoptimize",
+      "version": "1.0.0",
+      "description": "Automatically optimize images after they've been transformed",
+      "copyright": "nystudio107",
+      "main": "index.js",
+      "scripts": {
+          "dev": "webpack --config webpack.dev.js --progress --hide-modules",
+          "watch": "webpack --config webpack.dev.js --progress --watch --hide-modules",
+          "build": "webpack --config webpack.prod.js"
+      },
+      "repository": {
+          "type": "git",
+          "url": "git+https://github.com/nystudio107/craft-imageoptimize.git"
+      },
+      "author": "andrew@nystudio107.com",
+      "license": "Craft License",
+      "bugs": {
+          "url": "https://github.com/nystudio107/craft-imageoptimize/issues"
+      },
+      "homepage": "https://github.com/nystudio107/craft-imageoptimize",
+      "paths": {
+          "src": {
+              "base": "./src/assetbundles/imageoptimize/src/",
+              "js": "./src/assetbundles/imageoptimize/src/js/",
+              "css": "./src/assetbundles/imageoptimize/src/css/"
+          },
+          "dist": {
+              "base": "./src/assetbundles/imageoptimize/dist/",
+              "public": "/cpresources/imageoptimize/",
+              "clean": [
+                  "./js",
+                  "./css"
+              ]
+          },
+          "templates": "./src/templates/"
+      },
+      "entries": {
+          "imageoptimize": "ImageOptimize.js",
+      },
+      "babelConfig": {
+          "legacyBrowsers": [
+              "> 1%",
+              "last 2 versions",
+              "Firefox ESR"
+          ],
+          "modernBrowsers": [
+              "last 2 Chrome versions",
+              "not Chrome < 60",
+              "last 2 Safari versions",
+              "not Safari < 10.1",
+              "last 2 iOS versions",
+              "not iOS < 10.3",
+              "last 2 Firefox versions",
+              "not Firefox < 54",
+              "last 2 Edge versions",
+              "not Edge < 15"
+          ]
+      },
+      "purgeCss": {
+          "paths": [
+              "./src/templates/**/*.{twig,html}"
+          ],
+          "whitelist": [],
+          "whitelistPatterns": [],
+          "extensions": [
+              "html",
+              "js",
+              "twig",
+              "vue"
+          ]
+      },
+      "urls": {},
+      "vars": {
+          "cssName": "imageoptimize.css",
+          "jsName": "imageoptimize.js"
+      },
+      "devDependencies": {
+          "autoprefixer": "^8.1.0",
+          "babel-core": "^6.26.0",
+          "babel-loader": "^7.1.4",
+          "babel-plugin-syntax-dynamic-import": "^6.18.0",
+          "babel-plugin-transform-runtime": "^6.23.0",
+          "babel-polyfill": "^6.26.0",
+          "babel-preset-env": "^1.7.0",
+          "clean-webpack-plugin": "^0.1.19",
+          "copy-webpack-plugin": "^4.5.1",
+          "css-loader": "^0.28.10",
+          "cssnano": "^3.10.0",
+          "extract-text-webpack-plugin": "^4.0.0-beta.0",
+          "file-loader": "^1.1.11",
+          "git-rev-sync": "^1.10.0",
+          "glob-all": "^3.1.0",
+          "ignore-loader": "^0.1.2",
+          "mini-css-extract-plugin": "^0.4.0",
+          "moment": "^2.21.0",
+          "optimize-css-assets-webpack-plugin": "^4.0.3",
+          "phantomjs-critical-css-webpack-plugin": "^0.1.5",
+          "postcss": "^6.0.19",
+          "postcss-extend": "^1.0.5",
+          "postcss-hexrgba": "^1.0.0",
+          "postcss-import": "^11.1.0",
+          "postcss-loader": "^2.1.1",
+          "postcss-nested": "^3.0.0",
+          "postcss-nested-ancestors": "^1.0.0",
+          "postcss-simple-vars": "^4.1.0",
+          "purgecss-webpack-plugin": "^1.2.0",
+          "purgecss-whitelister": "^2.1.0",
+          "resolve-url-loader": "^2.3.0",
+          "style-loader": "^0.20.3",
+          "tailwindcss": "^0.6.4",
+          "uglifyjs-webpack-plugin": "^1.2.7",
+          "vue-loader": "^15.3.0",
+          "vue-style-loader": "^4.1.2",
+          "vue-template-compiler": "^2.5.17",
+          "webpack": "^4.1.1",
+          "webpack-bundle-analyzer": "^2.13.1",
+          "webpack-cli": "^2.0.11",
+          "webpack-merge": "^4.1.2"
+      },
+      "dependencies": {
+          "apexcharts": "^1.2.0",
+          "datatables": "^1.10.18",
+          "vue": "^2.5.17",
+          "vue-confetti": "^0.4.1"
+      }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

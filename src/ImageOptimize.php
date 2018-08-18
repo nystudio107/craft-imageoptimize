@@ -31,6 +31,7 @@ use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterUrlRulesEvent;
 use craft\events\ReplaceAssetEvent;
 use craft\events\VolumeEvent;
 use craft\helpers\UrlHelper;
@@ -43,6 +44,7 @@ use craft\services\Plugins;
 use craft\services\Volumes;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
+use craft\web\UrlManager;
 
 use markhuot\CraftQL\CraftQL;
 
@@ -228,6 +230,11 @@ class ImageOptimize extends Plugin
         $this->installElementEventHandlers();
         $this->installMiscEventHandlers();
         $this->installCraftQLEventHandlers();
+        $request = Craft::$app->getRequest();
+        // Install only for non-console site requests
+        if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
+            $this->installSiteEventListeners();
+        }
     }
 
     /**
@@ -465,6 +472,42 @@ class ImageOptimize extends Plugin
                 [new GetCraftQLSchema, 'handle']
             );
         }
+    }
+
+    /**
+     * Install site event listeners for site requests only
+     */
+    protected function installSiteEventListeners()
+    {
+        // Handler: UrlManager::EVENT_REGISTER_SITE_URL_RULES
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                Craft::debug(
+                    'UrlManager::EVENT_REGISTER_SITE_URL_RULES',
+                    __METHOD__
+                );
+                // Register our AdminCP routes
+                $event->rules = array_merge(
+                    $event->rules,
+                    $this->customFrontendRoutes()
+                );
+            }
+        );
+    }
+
+    /**
+     * Return the custom frontend routes
+     *
+     * @return array
+     */
+    protected function customFrontendRoutes(): array
+    {
+        return [
+            // Make webpack async bundle loading work out of published AssetBundles
+            '/cpresources/imageoptimize/<resourceType:{handle}>/<fileName>' => 'image-optimize/cp-nav/resource',
+        ];
     }
 
     /**

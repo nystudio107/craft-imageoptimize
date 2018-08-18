@@ -1,0 +1,16 @@
+{% macro configWarning(setting, file) -%}
+    {%- set configArray = craft.app.config.getConfigFromFile(file) -%}
+    {%- if configArray[setting] is defined -%}
+        {{- "This is being overridden by the `#{setting}` setting in the `config/#{file}.php` file." |raw }}
+    {%- else -%}
+        {{ false }}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro includeJsModule(pluginHandle, jsModuleName) -%}
+    {# Browsers with ES module support load this file. #}
+    <script type="module" src="/cpresources/{{ pluginHandle }}/js/{{ jsModuleName }}.js"></script>
+    {# Older browsers load this file (and module-supporting #}
+    {# browsers know *not* to load this file). #}
+    <script nomodule src="/cpresources/{{ pluginHandle }}/js/{{ jsModuleName }}-legacy.js"></script>
+{%- endmacro %}

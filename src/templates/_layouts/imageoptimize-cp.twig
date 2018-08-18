@@ -1,0 +1,8 @@
+{% extends "_layouts/cp" %}
+
+{% from "image-optimize/_includes/macros.twig" import includeJsModule %}
+
+{% block content %}
+    {% include "image-optimize/_includes/safari-nomodule-fix.twig" %}
+    {{ includeJsModule("imageoptimize", "imageoptimize") }}
+{% endblock %}

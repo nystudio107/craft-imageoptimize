@@ -18,7 +18,7 @@ use craft\web\assets\cp\CpAsset;
  * @package   ImageOptimize
  * @since     1.2.0
  */
-class ImageOptimizeAsset extends AssetBundle
+class ImageOptimizeWelcomeAsset extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -32,9 +32,7 @@ class ImageOptimizeAsset extends AssetBundle
 
         $this->depends = [
             CpAsset::class,
-        ];
-        $this->css = [
-            'css/imageoptimize.css',
+            ImageOptimizeAsset::class,
         ];
 
         parent::init();
