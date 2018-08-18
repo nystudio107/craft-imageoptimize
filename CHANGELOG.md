@@ -4,6 +4,7 @@
 ### Changed
 * Fixed an incompatibility with the Spoon plugin by removing `matrix-field` class from field type settings
 * Fixed an erroneous 2:2 aspect ratio in the default settings
+* Added install confetti
 
 ## 1.4.37 - 2018.08.09
 ### Changed
