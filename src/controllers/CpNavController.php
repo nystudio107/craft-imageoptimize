@@ -1,27 +1,20 @@
 <?php
 /**
- * Retour plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS 3.x
  *
- * Retour allows you to intelligently redirect legacy URLs, so that you don't
- * lose SEO value when rebuilding & restructuring a website
+ * Automatically optimize images after they've been transformed
  *
- * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @link      https://nystudio107.com
+ * @copyright Copyright (c) 2017 nystudio107
  */
 
 namespace nystudio107\imageoptimize\controllers;
 
-use craft\helpers\UrlHelper;
-use craft\models\Site;
-use nystudio107\retour\Retour;
-use nystudio107\retour\assetbundles\retour\RetourAsset;
-use nystudio107\retour\assetbundles\retour\RetourDashboardAsset;
+use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\web\Controller;
 
-use yii\base\InvalidConfigException;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 /**
