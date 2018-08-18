@@ -2,8 +2,8 @@
  * @project        nystudio107
  * @name           vendors~confetti~vue.js
  * @author         andrew@nystudio107.com
- * @build          Sat, Aug 18, 2018 2:06 AM ET
- * @release        2b1cb50720562ccbe4fd13d2d4f54a7c08e8bbaa [develop]
+ * @build          Sat, Aug 18, 2018 2:18 AM ET
+ * @release        8e579cd6f64a36e359c53229265b3f951536c6d8 [develop]
  * @copyright      Copyright (c) 2018 nystudio107
  *
  */
