@@ -33,6 +33,10 @@
                 "./css"
             ]
         },
+        "copyFiles": [
+            {
+            }
+        ],
         "manifest": {
             "basePath": "",
             "template": {

@@ -205,7 +205,7 @@ const legacyConfig = {
             chunkFilename: "[id].css"
         }),
         new CopyWebpackPlugin(
-            []
+            pkg.paths.copyFiles
         ),
         new ManifestPlugin(
             configureManifest('manifest-legacy.json')
