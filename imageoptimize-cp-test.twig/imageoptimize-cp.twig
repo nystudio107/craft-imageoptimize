@@ -3,9 +3,11 @@
 {% set welcomeJs = "welcome" %}
 {% set welcomeLegacyJs = "welcome-legacy" %}
 
+<script src="js/welcome.js"></script>
+
 {% from "image-optimize/_includes/macros.twig" import includeJsModule %}
 
 {% block content %}
     {% include "image-optimize/_includes/safari-nomodule-fix.twig" %}
-    {{ includeJsModule("imageoptimize") }}
+    {{ includeJsModule("imageoptimize", "imageoptimize") }}
 {% endblock %}

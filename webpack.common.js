@@ -1,37 +1,21 @@
 // webpack.common.js - common webpack config
 
+const LEGACY_CONFIG = 'legacy';
+const MODERN_CONFIG = 'modern';
+
 // node modules
-const webpack = require('webpack');
 const path = require('path');
-const git = require('git-rev-sync');
-const moment = require('moment');
 const merge = require('webpack-merge');
 // webpack plugins
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+
 // config files
 const pkg = require('./package.json');
-
-// File banner banner
-const configureBanner = () => {
-    return {
-        banner: [
-            '/*!',
-            ' * @project        ' + pkg.copyright,
-            ' * @name           ' + '[filebase]',
-            ' * @author         ' + pkg.author,
-            ' * @build          ' + moment().format('llll') + ' ET',
-            ' * @release        ' + git.long() + ' [' + git.branch() + ']',
-            ' * @copyright      Copyright (c) ' + moment().format('YYYY') + ' ' + pkg.copyright,
-            ' *',
-            ' */',
-            ''
-        ].join('\n'),
-        raw: true
-    };
-};
 
 // Vue loader
 const configureVueLoader = () => {
@@ -86,8 +70,8 @@ const configureImageLoader = () => {
 };
 
 // Postcss loader
-const configurePostcssLoader = (build) => {
-    if (build) {
+const configurePostcssLoader = (buildType) => {
+    if (buildType === LEGACY_CONFIG) {
         return {
             test: /\.pcss$/,
             use: [
@@ -110,10 +94,43 @@ const configurePostcssLoader = (build) => {
                 }
             ]
         };
-    } else {
+    }
+    if (buildType === MODERN_CONFIG) {
         return {
             test: /\.pcss$/,
             loader: 'ignore-loader'
+        };
+    }
+};
+
+// Manifest
+const configureManifest = (fileName) => {
+    return {
+        fileName: fileName,
+        basePath: pkg.paths.manifest.basePath,
+        map: (file) => {
+            file.name = file.name.replace(/(\.[a-f0-9]{32})(\..*)$/, '$2');
+            return file;
+        },
+    };
+};
+
+// HtmlWebpackPlugin twig manifest macros
+const configureHtmlWebpack = (buildType) => {
+    if (buildType === LEGACY_CONFIG) {
+        return {
+            inject: false,
+            hash: false,
+            template: path.resolve(__dirname, pkg.paths.manifest.template.twigLegacy),
+            filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigLegacy),
+        };
+    }
+    if (buildType === MODERN_CONFIG) {
+        return {
+            inject: false,
+            hash: false,
+            template: path.resolve(__dirname, pkg.paths.manifest.template.twigModern),
+            filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigModern),
         };
     }
 };
@@ -152,20 +169,19 @@ const baseConfig = {
     },
     plugins: [
         new VueLoaderPlugin(),
-        new webpack.BannerPlugin(configureBanner()),
     ]
 };
 
 // Legacy webpack config
 const legacyConfig = {
     output: {
-        filename: path.join('./js', '[name]-legacy.js'),
+        filename: path.join('./js', '[name]-legacy.[chunkhash].js'),
     },
     module: {
         rules: [
             configureBabelLoader(Object.values(pkg.babelConfig.legacyBrowsers)),
             configureImageLoader(),
-            configurePostcssLoader(true),
+            configurePostcssLoader(LEGACY_CONFIG),
         ],
     },
     plugins: [
@@ -179,31 +195,47 @@ const legacyConfig = {
             filename: path.join('./css', '[name].css'),
             chunkFilename: "[id].css"
         }),
-        new CopyWebpackPlugin([]),
+        new CopyWebpackPlugin(
+            []
+        ),
+        new ManifestPlugin(
+            configureManifest('manifest-legacy.json')
+        ),
+        new HtmlWebpackPlugin(
+            configureHtmlWebpack(LEGACY_CONFIG)
+        ),
     ]
 };
 
 // Modern webpack config
 const modernConfig = {
     output: {
-        filename: path.join('./js', '[name].js'),
+        filename: path.join('./js', '[name].[chunkhash].js'),
     },
     module: {
         rules: [
             configureBabelLoader(Object.values(pkg.babelConfig.modernBrowsers)),
-            configurePostcssLoader(false),
+            configurePostcssLoader(MODERN_CONFIG),
         ],
     },
+    plugins: [
+        new ManifestPlugin(
+            configureManifest('manifest.json')
+        ),
+        new HtmlWebpackPlugin(
+            configureHtmlWebpack(MODERN_CONFIG)
+        ),
+    ]
 };
 
 // Common module exports
 module.exports = {
     'legacyConfig': merge(
-        baseConfig,
         legacyConfig,
+        baseConfig,
     ),
     'modernConfig': merge(
-        baseConfig,
         modernConfig,
+        baseConfig,
     ),
 };

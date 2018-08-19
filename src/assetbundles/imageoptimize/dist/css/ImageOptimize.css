@@ -2,8 +2,8 @@
  * @project        nystudio107
  * @name           imageoptimize.css
  * @author         andrew@nystudio107.com
- * @build          Sat, Aug 18, 2018 2:18 AM ET
- * @release        8e579cd6f64a36e359c53229265b3f951536c6d8 [develop]
+ * @build          Sun, Aug 19, 2018 4:56 AM ET
+ * @release        17f3684ba858ad3b22b0670fdc0ce6d49233195e [develop]
  * @copyright      Copyright (c) 2018 nystudio107
  *
  */table.image-optimize{table-layout:fixed}.image-optimize h2{font-weight:700;color:#29323d}table.data thead th.io-format-column,table.data thead th.io-name-column{width:20%}table.data thead th.io-command-column,table.data thead th.io-installed-column{width:50%}.block{display:block}.inline-block{display:inline-block}.inline{display:inline}.table{display:table}.hidden{display:none}.relative{position:relative}.uppercase{text-transform:uppercase}

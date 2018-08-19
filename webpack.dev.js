@@ -1,5 +1,8 @@
 // webpack.dev.js - developmental builds
 
+const LEGACY_CONFIG = 'legacy';
+const MODERN_CONFIG = 'modern';
+
 // webpack plugins
 const merge = require('webpack-merge');
 // config files

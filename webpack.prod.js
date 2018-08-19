@@ -1,8 +1,14 @@
 // webpack.prod.js - production builds
 
+const LEGACY_CONFIG = 'legacy';
+const MODERN_CONFIG = 'modern';
+
 // node modules
+const webpack = require('webpack');
 const glob = require("glob-all");
 const path = require('path');
+const git = require('git-rev-sync');
+const moment = require('moment');
 // webpack plugins
 const merge = require('webpack-merge');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
@@ -23,15 +29,81 @@ class TailwindExtractor {
     }
 }
 
-// Configure the PurgeCSS paths
-const configurePurgeCssPaths = () => {
-    let paths = [];
+// File banner banner
+const configureBanner = () => {
+    return {
+        banner: [
+            '/*!',
+            ' * @project        ' + pkg.copyright,
+            ' * @name           ' + '[filebase]',
+            ' * @author         ' + pkg.author,
+            ' * @build          ' + moment().format('llll') + ' ET',
+            ' * @release        ' + git.long() + ' [' + git.branch() + ']',
+            ' * @copyright      Copyright (c) ' + moment().format('YYYY') + ' ' + pkg.copyright,
+            ' *',
+            ' */',
+            ''
+        ].join('\n'),
+        raw: true
+    };
+};
 
+// Configure PurgeCSS
+const configurePurgeCss = () => {
+    let paths = [];
+    // Configure whitelist paths
     for (const [key, value] of Object.entries(pkg.purgeCss.paths)) {
         paths.push(path.join(__dirname, value));
     }
 
-    return paths;
+    return {
+        paths: glob.sync(paths),
+        whitelist: whitelister(pkg.purgeCss.whitelist),
+        whitelistPatterns: pkg.purgeCss.whitelistPatterns,
+        extractors: [{
+            extractor: TailwindExtractor,
+            extensions: pkg.purgeCss.extensions
+        }]
+    };
+};
+
+// Configure optimization
+const configureOptimization = (buildType) => {
+    if (buildType === LEGACY_CONFIG) {
+        return {
+            splitChunks: {
+            },
+            minimizer: [
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                }),
+                new OptimizeCSSAssetsPlugin({
+                    cssProcessorOptions: {
+                        map: {
+                            inline: false,
+                            annotation: true,
+                        },
+                        safe: true,
+                        discardComments: true
+                    },
+                })
+            ]
+        };
+    }
+    if (buildType === MODERN_CONFIG) {
+        return {
+            splitChunks: {},
+            minimizer: [
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                }),
+            ]
+        };
+    }
 };
 
 // Production module exports
@@ -41,37 +113,14 @@ module.exports = [
         {
             mode: 'production',
             devtool: 'source-map',
-            optimization: {
-                splitChunks: {
-                },
-                minimizer: [
-                    new UglifyJsPlugin({
-                        cache: true,
-                        parallel: true,
-                        sourceMap: true
-                    }),
-                    new OptimizeCSSAssetsPlugin({
-                        cssProcessorOptions: {
-                            map: {
-                                inline: false,
-                                annotation: true,
-                            },
-                            safe: true,
-                            discardComments: true
-                        },
-                    })
-                ]
-            },
+            optimization: configureOptimization(LEGACY_CONFIG),
             plugins: [
-                new PurgecssPlugin({
-                    paths: glob.sync(configurePurgeCssPaths()),
-                    whitelist: whitelister(pkg.purgeCss.whitelist),
-                    whitelistPatterns: pkg.purgeCss.whitelistPatterns,
-                    extractors: [{
-                            extractor: TailwindExtractor,
-                            extensions: pkg.purgeCss.extensions
-                        }]
-                })
+                new PurgecssPlugin(
+                    configurePurgeCss()
+                ),
+                new webpack.BannerPlugin(
+                    configureBanner()
+                ),
             ]
         }
     ),
@@ -80,17 +129,7 @@ module.exports = [
         {
             mode: 'production',
             devtool: 'source-map',
-            optimization: {
-                splitChunks: {
-                },
-                minimizer: [
-                    new UglifyJsPlugin({
-                        cache: true,
-                        parallel: true,
-                        sourceMap: true
-                    }),
-                ]
-            },
+            optimization: configureOptimization(MODERN_CONFIG),
         }
     ),
 ];
