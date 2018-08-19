@@ -9,9 +9,6 @@
 {% block head %}
     {{ parent() }}
     {{ includeCssModule("imageoptimize") }}
-{% endblock %}
-
-{% block content %}
     {% include "image-optimize/_includes/safari-nomodule-fix.twig" %}
     {{ includeJsModule("imageoptimize") }}
 {% endblock %}
