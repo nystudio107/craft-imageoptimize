@@ -8,4 +8,4 @@
     {# Older browsers load this file (and module-supporting #}
     {# browsers know *not* to load this file). #}
     <script nomodule src="{{ hashLookup[jsModuleName] }}"></script>
-{%- endmacro %}
+{%- endmacro includeLegacyModule %}

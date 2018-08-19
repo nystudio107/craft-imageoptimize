@@ -130,6 +130,11 @@ module.exports = [
             mode: 'production',
             devtool: 'source-map',
             optimization: configureOptimization(MODERN_CONFIG),
+            plugins: [
+                new webpack.BannerPlugin(
+                    configureBanner()
+                ),
+            ]
         }
     ),
 ];

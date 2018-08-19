@@ -4,6 +4,12 @@
 {% set welcomeLegacyJs = "welcome-legacy" %}
 
 {% from "image-optimize/_includes/macros.twig" import includeJsModule %}
+{% from "image-optimize/_includes/macros.twig" import includeCssModule %}
+
+{% block head %}
+    {{ parent() }}
+    {{ includeCssModule("imageoptimize") }}
+{% endblock %}
 
 {% block content %}
     {% include "image-optimize/_includes/safari-nomodule-fix.twig" %}

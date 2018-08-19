@@ -1,5 +1,6 @@
 // webpack.common.js - common webpack config
 
+const CSS_CONFIG = 'css';
 const LEGACY_CONFIG = 'legacy';
 const MODERN_CONFIG = 'modern';
 
@@ -133,6 +134,14 @@ const configureHtmlWebpack = (buildType) => {
             filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigModern),
         };
     }
+    if (buildType === CSS_CONFIG) {
+        return {
+            inject: false,
+            hash: false,
+            template: path.resolve(__dirname, pkg.paths.manifest.template.twigCss),
+            filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigCss),
+        };
+    }
 };
 
 // Entries from package.json
@@ -192,7 +201,7 @@ const legacyConfig = {
         }),
         new MiniCssExtractPlugin({
             path: path.resolve(__dirname, pkg.paths.dist.base),
-            filename: path.join('./css', '[name].css'),
+            filename: path.join('./css', '[name].[chunkhash].css'),
             chunkFilename: "[id].css"
         }),
         new CopyWebpackPlugin(
@@ -203,6 +212,9 @@ const legacyConfig = {
         ),
         new HtmlWebpackPlugin(
             configureHtmlWebpack(LEGACY_CONFIG)
+        ),
+        new HtmlWebpackPlugin(
+            configureHtmlWebpack(CSS_CONFIG)
         ),
     ]
 };

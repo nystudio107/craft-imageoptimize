@@ -7,6 +7,11 @@
     {%- endif -%}
 {%- endmacro %}
 
+{% macro includeCssModule(cssModuleName) -%}
+    {% from "image-optimize/_includes/include-css-module.twig" import includeCssModule %}
+    {{ includeCssModule(cssModuleName) }}
+{%- endmacro includeCssModule %}
+
 {% macro includeJsModule(jsModuleName) -%}
     {% from "image-optimize/_includes/include-modern-module.twig" import includeModernModule %}
     {% from "image-optimize/_includes/include-legacy-module.twig" import includeLegacyModule %}

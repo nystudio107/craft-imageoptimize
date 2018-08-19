@@ -33,9 +33,6 @@ class ImageOptimizeAsset extends AssetBundle
         $this->depends = [
             CpAsset::class,
         ];
-        $this->css = [
-            'css/imageoptimize.css',
-        ];
 
         parent::init();
     }
