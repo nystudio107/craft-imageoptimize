@@ -14,7 +14,7 @@
         "url": "git+https://github.com/nystudio107/craft-imageoptimize.git"
     },
     "author": "andrew@nystudio107.com",
-    "license": "Craft License",
+    "license": "proprietary",
     "bugs": {
         "url": "https://github.com/nystudio107/craft-imageoptimize/issues"
     },
