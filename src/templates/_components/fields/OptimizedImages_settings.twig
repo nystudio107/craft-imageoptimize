@@ -15,8 +15,13 @@
 
 {% import "_includes/forms" as forms %}
 
+{% from "image-optimize/_includes/macros.twig" import includeJsModule %}
+{% from "image-optimize/_includes/macros.twig" import includeCssModule %}
+
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
+
+{{ includeCssModule("imageoptimize") }}
 
 <div class="field" id="{{ id }}-fields">
     <!-- displayOptimizedImageVariants -->
@@ -52,7 +57,7 @@
     <div class="input ltr">
         <input type="hidden" name="variants" value="">
 
-        <div class="matrix matrix-field" id="{{ id }}" style="position: relative;">
+        <div class="matrix" id="{{ id }}" style="position: relative;">
             <div class="io-menu-clone" style="display: none;">
                 <div class="menu">
                     <ul class="padded">

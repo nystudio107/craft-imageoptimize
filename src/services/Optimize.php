@@ -48,7 +48,7 @@ class Optimize extends Component
      *
      * @param GetAssetUrlEvent $event
      *
-     * @return string
+     * @return null|string
      * @throws InvalidConfigException
      */
     public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
@@ -56,7 +56,7 @@ class Optimize extends Component
         Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
-        if ($settings->transformMethod != 'craft') {
+        if ($settings->transformMethod !== 'craft') {
             $asset = $event->asset;
             $transform = $event->transform;
             // If there's no transform requested, and we can't manipulate the image anyway, just return the URL
@@ -69,17 +69,17 @@ class Optimize extends Component
             // If we're passed in null, make a dummy AssetTransform model
             if (empty($transform)) {
                 $transform = new AssetTransform([
-                    'height' => $asset->height,
-                    'width' => $asset->width,
+                    'height'    => $asset->height,
+                    'width'     => $asset->width,
                     'interlace' => 'line',
                 ]);
             }
             // If we're passed an array, make an AssetTransform model out of it
-            if (is_array($transform)) {
+            if (\is_array($transform)) {
                 $transform = new AssetTransform($transform);
             }
             // If we're passing in a string, look up the asset transform in the db
-            if (is_string($transform)) {
+            if (\is_string($transform)) {
                 $assetTransforms = Craft::$app->getAssetTransforms();
                 $transform = $assetTransforms->getTransformByHandle($transform);
             }
@@ -100,7 +100,7 @@ class Optimize extends Component
      *
      * @param GenerateTransformEvent $event
      *
-     * @return string
+     * @return null|string
      */
     public function handleGenerateTransformEvent(GenerateTransformEvent $event)
     {
@@ -109,9 +109,9 @@ class Optimize extends Component
 
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
+        if ($settings->transformMethod === 'craft' && $event->asset !== null) {
             // Apply any filters to the image
-            if (!empty($event->transformIndex->transform)) {
+            if ($event->transformIndex->transform !== null) {
                 $this->applyFiltersToImage($event->transformIndex->transform, $event->asset, $event->image);
             }
             // Save the transformed image to a temp file
@@ -169,7 +169,7 @@ class Optimize extends Component
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod == 'craft' && !empty($event->asset)) {
+        if ($settings->transformMethod === 'craft' && $event->asset !== null) {
             $this->cleanupImageVariants($event->asset, $event->transformIndex);
         }
     }
@@ -275,7 +275,7 @@ class Optimize extends Component
                         $quality
                     );
 
-                    if (!empty($outputPath)) {
+                    if ($outputPath !== null) {
                         // Get info on the original and the created variant
                         $originalFileSize = @filesize($tempPath);
                         $variantFileSize = @filesize($outputPath);
@@ -336,9 +336,9 @@ class Optimize extends Component
                 if (!empty($imageProcessors[$processor])) {
                     $thisImageProcessor = $imageProcessors[$processor];
                     $result[] = [
-                        'format' => $imageFormat,
-                        'creator' => $processor,
-                        'command' => $thisImageProcessor['commandPath']
+                        'format'    => $imageFormat,
+                        'creator'   => $processor,
+                        'command'   => $thisImageProcessor['commandPath']
                             .' '
                             .$thisImageProcessor['commandOptions'],
                         'installed' => is_file($thisImageProcessor['commandPath']),
@@ -368,9 +368,9 @@ class Optimize extends Component
                 if (!empty($imageVariantCreators[$variantCreator])) {
                     $thisVariantCreator = $imageVariantCreators[$variantCreator];
                     $result[] = [
-                        'format' => $imageFormat,
-                        'creator' => $variantCreator,
-                        'command' => $thisVariantCreator['commandPath']
+                        'format'    => $imageFormat,
+                        'creator'   => $variantCreator,
+                        'command'   => $thisVariantCreator['commandPath']
                             .' '
                             .$thisVariantCreator['commandOptions'],
                         'installed' => is_file($thisVariantCreator['commandPath']),
@@ -390,29 +390,33 @@ class Optimize extends Component
      * @param Asset          $asset
      * @param Image          $image
      */
+
     protected function applyFiltersToImage(AssetTransform $transform, Asset $asset, Image $image)
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Only try to apply filters to Raster images
         if ($image instanceof Raster) {
             $imagineImage = $image->getImagineImage();
-            if ($settings->autoSharpenScaledImages) {
-                // See if the image has been scaled >= 50%
-                $widthScale = $asset->getWidth() / $image->getWidth();
-                $heightScale = $asset->getHeight() / $image->getHeight();
-                if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
-                    $imagineImage->effects()
-                        ->sharpen();
-                    Craft::debug(
-                        Craft::t(
-                            'image-optimize',
-                            'Image transform >= 50%, sharpened the transformed image: {name}',
-                            [
-                                'name' => $asset->title,
-                            ]
-                        ),
-                        __METHOD__
-                    );
+            if ($imagineImage !== null) {
+                // Handle auto-sharpening scaled down images
+                if ($settings->autoSharpenScaledImages) {
+                    // See if the image has been scaled >= 50%
+                    $widthScale = $asset->getWidth() / $image->getWidth();
+                    $heightScale = $asset->getHeight() / $image->getHeight();
+                    if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
+                        $imagineImage->effects()
+                            ->sharpen();
+                        Craft::debug(
+                            Craft::t(
+                                'image-optimize',
+                                'Image transform >= 50%, sharpened the transformed image: {name}',
+                                [
+                                    'name' => $asset->title,
+                                ]
+                            ),
+                            __METHOD__
+                        );
+                    }
                 }
             }
         }
@@ -475,7 +479,7 @@ class Optimize extends Component
         $shellCommand->setCommand($command);
 
         // If we don't have proc_open, maybe we've got exec
-        if (!function_exists('proc_open') && function_exists('exec')) {
+        if (!\function_exists('proc_open') && \function_exists('exec')) {
             $shellCommand->useExec = true;
         }
 
@@ -581,9 +585,9 @@ class Optimize extends Component
                         }
                         try {
                             $variantPath = $asset->getFolder()->path.$assetTransforms->getTransformSubpath(
-                                    $asset,
-                                    $transformIndex
-                                );
+                                $asset,
+                                $transformIndex
+                            );
                         } catch (InvalidConfigException $e) {
                             $variantPath = '';
                             Craft::error(

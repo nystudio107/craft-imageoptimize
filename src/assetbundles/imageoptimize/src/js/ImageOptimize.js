@@ -9,3 +9,6 @@
  * @package   ImageOptimize
  * @since     1.2.0
  */
+
+// Import our CSS
+import styles from '../css/app.pcss';

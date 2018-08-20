@@ -13,14 +13,14 @@
  */
 #}
 
-{% from 'image-optimize/macros' import configWarning %}
+{% from 'image-optimize/_includes/macros' import configWarning %}
 
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
 <div class="readable">
-    
+
     <!-- transformMethod -->
     {{ forms.selectField({
         label: "Transform Method"|t('image-optimize'),
@@ -117,7 +117,7 @@
                 </div>
             </div>
         {% endif %}
-    
+
         {% if variantCreators is defined and variantCreators |length %}
             <h3>{{ 'Active Image Variant Creators' }}</h3>
             <table id="variantCreators" class="data collapsible image-optimize">

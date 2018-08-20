@@ -1,0 +1,14 @@
+{
+  "vendors~confetti~vue.js": "/cpresources/imageoptimize/js/vendors~confetti~vue-legacy.1e150b9a3825a680b683.js",
+  "vendors~confetti~vue.js.map": "/cpresources/imageoptimize/js/vendors~confetti~vue-legacy.1e150b9a3825a680b683.js.map",
+  "imageoptimize.css": "/cpresources/imageoptimize/css/imageoptimize.5c2a9acc33f65ffa2d5d.css",
+  "imageoptimize.js": "/cpresources/imageoptimize/js/imageoptimize-legacy.5c2a9acc33f65ffa2d5d.js",
+  "imageoptimize.js.map": "/cpresources/imageoptimize/js/imageoptimize-legacy.5c2a9acc33f65ffa2d5d.js.map",
+  "welcome.js": "/cpresources/imageoptimize/js/welcome-legacy.757f335c9dd03eef82d1.js",
+  "welcome.js.map": "/cpresources/imageoptimize/js/welcome-legacy.757f335c9dd03eef82d1.js.map",
+  "confetti.js": "/cpresources/imageoptimize/js/confetti-legacy.baad1576cc19758e2f00.js",
+  "confetti.js.map": "/cpresources/imageoptimize/js/confetti-legacy.baad1576cc19758e2f00.js.map",
+  "css/imageoptimize.5c2a9acc33f65ffa2d5d.css.map": "/cpresources/imageoptimize/css/imageoptimize.5c2a9acc33f65ffa2d5d.css.map",
+  "../../../templates/_includes/include-legacy-module.twig": "/cpresources/imageoptimize/../../../templates/_includes/include-legacy-module.twig",
+  "../../../templates/_includes/include-css-module.twig": "/cpresources/imageoptimize/../../../templates/_includes/include-css-module.twig"
+}

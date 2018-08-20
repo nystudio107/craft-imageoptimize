@@ -49,7 +49,7 @@ class OptimizedImages extends Component
      *
      * @return OptimizedImage|null
      */
-    public function createOptimizedImages(Asset $asset, $variants = [])
+    public function createOptimizedImages(Asset $asset, array $variants = [])
     {
         Craft::beginProfile('createOptimizedImages', __METHOD__);
         if (empty($variants)) {
@@ -88,7 +88,7 @@ class OptimizedImages extends Component
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
-                $finalFormat = $variant['format'] == null ? $asset->getExtension() : $variant['format'];
+                $finalFormat = $variant['format'] ?? $asset->getExtension();
                 // Only try the transform if it's possible
                 if (Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
@@ -104,9 +104,9 @@ class OptimizedImages extends Component
                 } else {
                     Craft::error(
                         'Could not create transform for: '.$asset->title
-                        ." - Final format: ".$finalFormat
-                        ." - Element extension: ".$asset->getExtension()
-                        ." - canManipulateAsImage: ".Image::canManipulateAsImage($asset->getExtension()),
+                        .' - Final format: '.$finalFormat
+                        .' - Element extension: '.$asset->getExtension()
+                        .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension()),
                         __METHOD__
                     );
                 }
@@ -133,9 +133,9 @@ class OptimizedImages extends Component
             } else {
                 Craft::error(
                     'Could not create transform for: '.$asset->title
-                    ." - Final format: ".$finalFormat
-                    ." - Element extension: ".$asset->getExtension()
-                    ." - canManipulateAsImage: ".Image::canManipulateAsImage($asset->getExtension()),
+                    .' - Final format: '.$finalFormat
+                    .' - Element extension: '.$asset->getExtension()
+                    .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension()),
                     __METHOD__
                 );
             }
@@ -193,7 +193,7 @@ class OptimizedImages extends Component
         $settings = ImageOptimize::$plugin->getSettings();
         $transform = new AssetTransform();
         $transform->format = $variant['format'];
-        $useAspectRatio = isset($variant['useAspectRatio']) ? $variant['useAspectRatio'] : true;
+        $useAspectRatio = $variant['useAspectRatio'] ?? true;
         if ($useAspectRatio) {
             $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
         } else {
@@ -201,11 +201,11 @@ class OptimizedImages extends Component
         }
         $width = $variant['width'] * $retinaSize;
         $transform->width = $width;
-        $transform->height = intval($width / $aspectRatio);
+        $transform->height = (int)($width / $aspectRatio);
         // Image quality
         $quality = $variant['quality'];
-        if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
-            $quality = intval($quality * (1.5 / intval($retinaSize)));
+        if ($settings->lowerQualityRetinaImageVariants && $retinaSize !== '1') {
+            $quality = (int)($quality * (1.5 / (int)$retinaSize));
         }
         $transform->quality = $quality;
         // Interlaced (progressive JPEGs or interlaced PNGs)
@@ -237,7 +237,7 @@ class OptimizedImages extends Component
             __METHOD__
         );
         // Update the model
-        if (!empty($url)) {
+        if ($url !== null) {
             $model->variantSourceWidths[] = $variant['width'];
             $model->variantHeights[$transform->width] = $asset->getHeight($transform);
             // Store & prefetch image at the image URL
@@ -276,7 +276,7 @@ class OptimizedImages extends Component
         if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
             // Create a new OptimizedImage model and populate it
             $model = new OptimizedImage();
-            if (!empty($asset)) {
+            if ($asset !== null) {
                 $this->populateOptimizedImageModel(
                     $asset,
                     $field->variants,
@@ -284,7 +284,7 @@ class OptimizedImages extends Component
                 );
             }
             // Save our field data directly into the content table
-            if (!empty($field->handle)) {
+            if ($field->handle !== null) {
                 $asset->setFieldValue($field->handle, $field->serializeValue($model));
                 $table = $asset->getContentTable();
                 $column = $asset->getFieldColumnPrefix().$field->handle;

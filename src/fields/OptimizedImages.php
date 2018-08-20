@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\fields;
 
+use craft\fields\Matrix;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
@@ -21,6 +22,8 @@ use craft\elements\Asset;
 use craft\helpers\Json;
 use craft\validators\ArrayValidator;
 
+use yii\base\InvalidConfigException;
+use yii\db\Exception;
 use yii\db\Schema;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
@@ -91,8 +94,7 @@ class OptimizedImages extends Field
     {
         // Unset any deprecated properties
         if (!empty($config)) {
-            unset($config['transformMethod']);
-            unset($config['imgixDomain']);
+            unset($config['transformMethod'], $config['imgixDomain']);
         }
         parent::__construct($config);
     }
@@ -116,7 +118,7 @@ class OptimizedImages extends Field
         parent::init();
 
         // Handle cases where the plugin has been uninstalled
-        if (!empty(ImageOptimize::$plugin)) {
+        if (ImageOptimize::$plugin !== null) {
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
                 if (empty($this->variants)) {
@@ -155,10 +157,10 @@ class OptimizedImages extends Field
     {
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
-        if (!empty($asset) && $asset instanceof Asset && !empty($asset->id)) {
+        if ($asset !== null && $asset instanceof Asset && $asset->id !== null) {
             // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_ESSENTIALS treat it as a new asset
             $scenario = $asset->getScenario();
-            if ($isNew || $scenario == Asset::SCENARIO_FILEOPS || $asset->propagating) {
+            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || $asset->propagating) {
                 /**
                  * If this is a newly uploaded/created Asset, we can save the variants
                  * via a queue job to prevent it from blocking
@@ -170,7 +172,11 @@ class OptimizedImages extends Field
                  * the image with the ImageEditor, so we need to update the variants
                  * immediately, so the AssetSelectorHud displays the new images
                  */
-                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+                try {
+                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+                } catch (Exception $e) {
+                    Craft::error($e->getMessage(), __METHOD__);
+                }
             }
         }
     }
@@ -181,31 +187,21 @@ class OptimizedImages extends Field
     public function normalizeValue($value, ElementInterface $asset = null)
     {
         // If we're passed in a string, assume it's JSON-encoded, and decode it
-        if (is_string($value) && !empty($value)) {
+        if (\is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
         // If we're passed in an array, make a model from it
-        if (is_array($value)) {
+        if (\is_array($value)) {
             // Create a new OptimizedImage model and populate it
             $model = new OptimizedImage($value);
+        } elseif ($value instanceof OptimizedImage) {
+            $model = $value;
         } else {
-            if ($value instanceof OptimizedImage) {
-                $model = $value;
-            } else {
-                // Just create a new empty model
-                $model = new OptimizedImage(null);
-            }
+            // Just create a new empty model
+            $model = new OptimizedImage(null);
         }
 
         return $model;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function serializeValue($value, ElementInterface $element = null)
-    {
-        return parent::serializeValue($value, $element);
     }
 
     /**
@@ -225,17 +221,28 @@ class OptimizedImages extends Field
     public function getSettingsHtml()
     {
         $namespace = Craft::$app->getView()->getNamespace();
-        if (strpos($namespace, 'craft\\fields\\Matrix') !== false) {
+        if (strpos($namespace, Matrix::class) !== false) {
             // Render an error template, since the field only works when attached to an Asset
-            return Craft::$app->getView()->renderTemplate(
-                'image-optimize/_components/fields/OptimizedImages_error',
-                [
-                ]
-            );
+            try {
+                return Craft::$app->getView()->renderTemplate(
+                    'image-optimize/_components/fields/OptimizedImages_error',
+                    [
+                    ]
+                );
+            } catch (\Twig_Error_Loader $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            } catch (\yii\base\Exception $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
         }
 
-        $reflect = new \ReflectionClass($this);
-        $thisId = $reflect->getShortName();
+        try {
+            $reflect = new \ReflectionClass($this);
+            $thisId = $reflect->getShortName();
+        } catch (\ReflectionException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+            $thisId = 0;
+        }
         $id = Craft::$app->getView()->formatInputId($thisId);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
@@ -258,16 +265,24 @@ class OptimizedImages extends Field
         $aspectRatios[] = $aspectRatio;
 
         // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'image-optimize/_components/fields/OptimizedImages_settings',
-            [
-                'field'        => $this,
-                'aspectRatios' => $aspectRatios,
-                'id'           => $id,
-                'name'         => $this->handle,
-                'namespace'    => $namespacedId,
-            ]
-        );
+        try {
+            return Craft::$app->getView()->renderTemplate(
+                'image-optimize/_components/fields/OptimizedImages_settings',
+                [
+                    'field'        => $this,
+                    'aspectRatios' => $aspectRatios,
+                    'id'           => $id,
+                    'name'         => $this->handle,
+                    'namespace'    => $namespacedId,
+                ]
+            );
+        } catch (\Twig_Error_Loader $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        } catch (\yii\base\Exception $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+
+        return '';
     }
 
     /**
@@ -275,10 +290,14 @@ class OptimizedImages extends Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        if (!empty($element) && $element instanceof Asset && !empty($this->handle)) {
+        if ($element !== null && $element instanceof Asset && $this->handle !== null) {
             /** @var Asset $element */
             // Register our asset bundle
-            Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+            try {
+                Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+            } catch (InvalidConfigException $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
 
             // Get our id and namespace
             $id = Craft::$app->getView()->formatInputId($this->handle);
@@ -298,27 +317,41 @@ class OptimizedImages extends Field
             $settings = ImageOptimize::$plugin->getSettings();
 
             // Render the input template
-            return Craft::$app->getView()->renderTemplate(
-                'image-optimize/_components/fields/OptimizedImages_input',
-                [
-                    'name'        => $this->handle,
-                    'value'       => $value,
-                    'variants'    => $this->variants,
-                    'field'       => $this,
-                    'settings'    => $settings,
-                    'elementId'   => $element->id,
-                    'format'      => $element->getExtension(),
-                    'id'          => $id,
-                    'nameSpaceId' => $nameSpaceId,
-                ]
-            );
-        } else {
-            // Render an error template, since the field only works when attached to an Asset
+            try {
+                return Craft::$app->getView()->renderTemplate(
+                    'image-optimize/_components/fields/OptimizedImages_input',
+                    [
+                        'name'        => $this->handle,
+                        'value'       => $value,
+                        'variants'    => $this->variants,
+                        'field'       => $this,
+                        'settings'    => $settings,
+                        'elementId'   => $element->id,
+                        'format'      => $element->getExtension(),
+                        'id'          => $id,
+                        'nameSpaceId' => $nameSpaceId,
+                    ]
+                );
+            } catch (\Twig_Error_Loader $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            } catch (\yii\base\Exception $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
+        }
+
+        // Render an error template, since the field only works when attached to an Asset
+        try {
             return Craft::$app->getView()->renderTemplate(
                 'image-optimize/_components/fields/OptimizedImages_error',
                 [
                 ]
             );
+        } catch (\Twig_Error_Loader $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        } catch (\yii\base\Exception $e) {
+            Craft::error($e->getMessage(), __METHOD__);
         }
+
+        return '';
     }
 }

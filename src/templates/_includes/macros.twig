@@ -1,0 +1,22 @@
+{% macro configWarning(setting, file) -%}
+    {%- set configArray = craft.app.config.getConfigFromFile(file) -%}
+    {%- if configArray[setting] is defined -%}
+        {{- "This is being overridden by the `#{setting}` setting in the `config/#{file}.php` file." |raw }}
+    {%- else -%}
+        {{ false }}
+    {%- endif -%}
+{%- endmacro %}
+
+{% macro includeCssModule(cssModuleName) -%}
+    {% from "image-optimize/_includes/include-css-module.twig" import includeCssModule %}
+    {{ includeCssModule(cssModuleName) }}
+{%- endmacro includeCssModule %}
+
+{% macro includeJsModule(jsModuleName) -%}
+    {% from "image-optimize/_includes/include-modern-module.twig" import includeModernModule %}
+    {% from "image-optimize/_includes/include-legacy-module.twig" import includeLegacyModule %}
+    {# Browsers with ES module support load this file. #}
+    {{ includeModernModule(jsModuleName) }}
+    {# Older browsers load this file (and module-supporting #}
+    {{ includeLegacyModule(jsModuleName) }}
+{%- endmacro includeJsModule %}

@@ -13,7 +13,6 @@ namespace nystudio107\imageoptimize\variables;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
-use Craft;
 use craft\elements\Asset;
 use craft\helpers\Template;
 
@@ -69,12 +68,11 @@ class ImageOptimizeVariable
         $result = false;
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
         foreach ($variantCreators as $variantCreator) {
-            if ($variantCreator['creator'] == 'cwebp' && $variantCreator['installed']) {
+            if ($variantCreator['creator'] === 'cwebp' && $variantCreator['installed']) {
                 $result = true;
             }
         }
 
         return $result;
     }
-
 }

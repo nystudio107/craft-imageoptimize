@@ -13,11 +13,9 @@ namespace nystudio107\imageoptimize\jobs;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 
 use Craft;
-use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\console\Application as ConsoleApplication;
-use craft\db\QueryAbortedException;
 use craft\elements\Asset;
 use craft\elements\db\ElementQuery;
 use craft\helpers\App;

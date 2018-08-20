@@ -1,11 +1,14 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
-{% extends '_layouts/cp' %}
+{% extends 'image-optimize/_layouts/imageoptimize-cp.twig' %}
+
+{% from "image-optimize/_includes/macros.twig" import includeJsModule %}
+
 {% set title = 'Welcome to ImageOptimize!' %}
 
 {% set linkGetStarted = url('settings/plugins/image-optimize') %}
-{% set docsUrl = "https://github.com/nystudio107/craft-imageoptimize/blob/master/README.md" %}
+{% set docsUrl = "https://github.com/nystudio107/craft-imageoptimize/blob/v1/README.md" %}
 
-{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
+{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeWelcomeAsset") %}
 {% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
 
 {% set crumbs = [
@@ -13,18 +16,18 @@
     { label: "Welcome"|t, url: url('image-optimize/welcome') },
 ] %}
 
-{% set content %}
-    <div style="text-align:center; margin:0 auto; padding: 5% 10%;">
+{% block content %}
+    <div id="cp-nav-content" class="readable" style="text-align:center; margin:0 auto; padding: 5% 10%;">
+        <confetti>
+        </confetti>
         <img src="{{ baseAssetsUrl ~ '/img/ImageOptimize-icon.svg' }}" width="30%" height="auto" />
         <h2>Thanks for using ImageOptimize!</h2>
-        <p>ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like <a href="https://imgix.com" target="_blank">Imgix</a>, with zero template changes.</p>
+        <p>ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft CMS assets.</p>
+        <p>It works equally well with native Craft image transforms, and image services like <a href="https://imgix.com" target="_blank" rel="noopener">Imgix</a>, with zero template changes.</p>
 
-        <p>You use the native Craft UI/UX to create your image transforms, whether in the AdminCP or via your templates. ImageOptimize takes care of the rest, optimizing all of your image transforms automatically by running a variety of image optimization tools on them.</p>
-
-        <p>ImageOptimize also comes with an <strong>OptimizedImages</strong> Field that makes creating responsive image sizes for <code>{{ '<img srcset="">' |escape }}</code> or <code>{{ '<picture>' |escape }}</code> elements sublimely easy. These responsive image transforms are created when an asset is <em>saved</em>, rather than at page load time, to ensure that frontend performance is optimal.</p>
-
-        <p>Because ImageOptimize has already pre-generated and saved the URLs to your optimized image variants, no additional database requests are needed to fetch this information (unlike with Assets or Transforms).</p>
+        <p>For more information, please <a href="{{ docsUrl }}" target="_blank" rel="noopener">see the documentation</a>.</p>
         <p>
+            &nbsp;
         </p>
         <p>
             <a href="{{ linkGetStarted }}"><button class="btn submit">Get Started</button></a>
@@ -32,7 +35,10 @@
     </div>
     <div style="text-align:center; margin:0 auto; padding: 0;">
         <p class="instructions">
-            Brought to you by <a href="http://nystudio107.com" target="_blank">nystudio107</a>
+            Brought to you by <a href="http://nystudio107.com" target="_blank" rel="noopener">nystudio107</a>
         </p>
     </div>
-{% endset %}
+    {# include our JavaScript modules #}
+    {{ parent() }}
+    {{ includeJsModule("welcome") }}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% macro includeLegacyModule(jsModuleName) -%}
+    {% set hashLookup = {
+        <% var obj = htmlWebpackPlugin.files.chunks; %>
+        <% Object.keys(obj).forEach(function(key) { %>
+            "<%= key %>": "<%= obj[key].entry %>",
+        <% }); %>
+    } %}
+    {# Older browsers load this file (and module-supporting #}
+    {# browsers know *not* to load this file). #}
+    <script nomodule src="{{ hashLookup[jsModuleName] }}"></script>
+{%- endmacro includeLegacyModule %}

@@ -1,0 +1,14 @@
+{% extends "_layouts/cp" %}
+
+{% set welcomeJs = "welcome" %}
+{% set welcomeLegacyJs = "welcome-legacy" %}
+
+{% from "image-optimize/_includes/macros.twig" import includeJsModule %}
+{% from "image-optimize/_includes/macros.twig" import includeCssModule %}
+
+{% block head %}
+    {{ parent() }}
+    {{ includeCssModule("imageoptimize") }}
+    {% include "image-optimize/_includes/safari-nomodule-fix.twig" %}
+    {{ includeJsModule("imageoptimize") }}
+{% endblock %}
