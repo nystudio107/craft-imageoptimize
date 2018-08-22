@@ -34,8 +34,6 @@
             ]
         },
         "copyFiles": [
-            {
-            }
         ],
         "manifest": {
             "basePath": "",
