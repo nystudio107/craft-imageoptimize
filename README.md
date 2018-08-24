@@ -6,7 +6,7 @@ Automatically create & optimize responsive image transforms, using either native
 
 ![Screenshot](resources/img/plugin-logo.png)
 
-**Note**: _This plugin costs $59.00 in the Craft plugin store._
+**Note**: _The license fee for this plugin is $59.00 via the Craft Plugin Store._
 
 ## Requirements
 
