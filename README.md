@@ -6,11 +6,11 @@ Automatically create & optimize responsive image transforms, using either native
 
 ![Screenshot](resources/img/plugin-logo.png)
 
-**Note**: _This plugin will cost $59.00 once Craft 3 GA is released._
+**Note**: _This plugin costs $59.00 in the Craft plugin store._
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-RC12 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
