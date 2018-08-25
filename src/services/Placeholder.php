@@ -107,7 +107,12 @@ class Placeholder extends Component
         $colorPalette = [];
         if (!empty($tempPath)) {
             // Extract the color palette
-            $palette = ColorThief::getPalette($tempPath, 5);
+            try {
+                $palette = ColorThief::getPalette($tempPath, 5);
+            } catch (\Exception $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+                return [];
+            }
             // Convert RGB to hex color
             foreach ($palette as $colors) {
                 $colorPalette[] = sprintf('#%02x%02x%02x', $colors[0], $colors[1], $colors[2]);
