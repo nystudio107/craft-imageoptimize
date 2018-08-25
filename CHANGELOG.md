@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.39 - 2018.08.25
+### Changed
+* Added a try/catch around ColorThief, to catch errors thrown due to empty/transparent images
+
 ## 1.4.38 - 2018.08.20
 ### Changed
 * Fixed an incompatibility with the Spoon plugin by removing `matrix-field` class from field type settings
