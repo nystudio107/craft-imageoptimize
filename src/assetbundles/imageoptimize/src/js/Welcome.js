@@ -18,4 +18,5 @@ const main = async () => {
     });
 };
 // Execute async function
-main().then({});
+main().then( (value) => {
+});

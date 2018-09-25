@@ -4,4 +4,6 @@ import styles from '../css/app.pcss';
 const main = async () => {
 };
 
-main().then({});
+// Execute async function
+main().then( (value) => {
+});
