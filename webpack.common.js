@@ -1,19 +1,17 @@
 // webpack.common.js - common webpack config
-
-const CSS_CONFIG = 'css';
 const LEGACY_CONFIG = 'legacy';
 const MODERN_CONFIG = 'modern';
 
 // node modules
 const path = require('path');
 const merge = require('webpack-merge');
+
 // webpack plugins
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const WebpackNotifierPlugin = require('webpack-notifier');
 
 // config files
 const pkg = require('./package.json');
@@ -36,9 +34,9 @@ const configureBabelLoader = (browserList) => {
             options: {
                 presets: [
                     [
-                        'env', {
+                        '@babel/preset-env', {
                         modules: false,
-                        useBuiltIns: true,
+                        useBuiltIns: 'entry',
                         targets: {
                             browsers: browserList,
                         },
@@ -46,10 +44,9 @@ const configureBabelLoader = (browserList) => {
                     ],
                 ],
                 plugins: [
-                    'syntax-dynamic-import',
+                    '@babel/syntax-dynamic-import',
                     [
-                        "transform-runtime", {
-                        "polyfill": false,
+                        "@babel/transform-runtime", {
                         "regenerator": true
                     }
                     ]
@@ -74,7 +71,7 @@ const configureImageLoader = () => {
 const configurePostcssLoader = (buildType) => {
     if (buildType === LEGACY_CONFIG) {
         return {
-            test: /\.pcss$/,
+            test: /\.(pcss|css)$/,
             use: [
                 MiniCssExtractPlugin.loader,
                 {
@@ -98,7 +95,7 @@ const configurePostcssLoader = (buildType) => {
     }
     if (buildType === MODERN_CONFIG) {
         return {
-            test: /\.pcss$/,
+            test: /\.(pcss|css)$/,
             loader: 'ignore-loader'
         };
     }
@@ -116,34 +113,6 @@ const configureManifest = (fileName) => {
     };
 };
 
-// HtmlWebpackPlugin twig manifest macros
-const configureHtmlWebpack = (buildType) => {
-    if (buildType === LEGACY_CONFIG) {
-        return {
-            inject: false,
-            hash: false,
-            template: path.resolve(__dirname, pkg.paths.manifest.template.twigLegacy),
-            filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigLegacy),
-        };
-    }
-    if (buildType === MODERN_CONFIG) {
-        return {
-            inject: false,
-            hash: false,
-            template: path.resolve(__dirname, pkg.paths.manifest.template.twigModern),
-            filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigModern),
-        };
-    }
-    if (buildType === CSS_CONFIG) {
-        return {
-            inject: false,
-            hash: false,
-            template: path.resolve(__dirname, pkg.paths.manifest.template.twigCss),
-            filename: path.resolve(__dirname, pkg.paths.manifest.filename.twigCss),
-        };
-    }
-};
-
 // Entries from package.json
 const configureEntries = () => {
     let entries = {};
@@ -159,6 +128,11 @@ const configureEntries = () => {
 const baseConfig = {
     name: pkg.name,
     entry: configureEntries(),
+    watchOptions: {
+        ignored: /node_modules/,
+        aggregateTimeout: 300,
+        poll: 500
+    },
     output: {
         path: path.resolve(__dirname, pkg.paths.dist.base),
         publicPath: pkg.paths.dist.public
@@ -174,18 +148,27 @@ const baseConfig = {
         ],
     },
     optimization: {
-        splitChunks: {},
+        splitChunks: {
+            cacheGroups: {
+                default: false,
+                common: false,
+                styles: {
+                    name: pkg.vars.cssName,
+                    test: /\.(pcss|css)$/,
+                    chunks: 'all',
+                    enforce: true
+                }
+            }
+        }
     },
     plugins: [
+        new WebpackNotifierPlugin({title: 'Webpack', excludeWarnings: true, alwaysNotify: true}),
         new VueLoaderPlugin(),
     ]
 };
 
 // Legacy webpack config
 const legacyConfig = {
-    output: {
-        filename: path.join('./js', '[name]-legacy.[chunkhash].js'),
-    },
     module: {
         rules: [
             configureBabelLoader(Object.values(pkg.babelConfig.legacyBrowsers)),
@@ -194,15 +177,9 @@ const legacyConfig = {
         ],
     },
     plugins: [
-        new CleanWebpackPlugin(pkg.paths.dist.clean, {
-            root: path.resolve(__dirname, pkg.paths.dist.base),
-            verbose: true,
-            dry: false
-        }),
         new MiniCssExtractPlugin({
             path: path.resolve(__dirname, pkg.paths.dist.base),
             filename: path.join('./css', '[name].[chunkhash].css'),
-            chunkFilename: "[id].css"
         }),
         new CopyWebpackPlugin(
             pkg.paths.copyFiles
@@ -210,20 +187,11 @@ const legacyConfig = {
         new ManifestPlugin(
             configureManifest('manifest-legacy.json')
         ),
-        new HtmlWebpackPlugin(
-            configureHtmlWebpack(LEGACY_CONFIG)
-        ),
-        new HtmlWebpackPlugin(
-            configureHtmlWebpack(CSS_CONFIG)
-        ),
     ]
 };
 
 // Modern webpack config
 const modernConfig = {
-    output: {
-        filename: path.join('./js', '[name].[chunkhash].js'),
-    },
     module: {
         rules: [
             configureBabelLoader(Object.values(pkg.babelConfig.modernBrowsers)),
@@ -233,9 +201,6 @@ const modernConfig = {
     plugins: [
         new ManifestPlugin(
             configureManifest('manifest.json')
-        ),
-        new HtmlWebpackPlugin(
-            configureHtmlWebpack(MODERN_CONFIG)
         ),
     ]
 };

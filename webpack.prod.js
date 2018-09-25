@@ -1,5 +1,4 @@
 // webpack.prod.js - production builds
-
 const LEGACY_CONFIG = 'legacy';
 const MODERN_CONFIG = 'modern';
 
@@ -9,12 +8,15 @@ const glob = require("glob-all");
 const path = require('path');
 const git = require('git-rev-sync');
 const moment = require('moment');
+
 // webpack plugins
 const merge = require('webpack-merge');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const PurgecssPlugin = require("purgecss-webpack-plugin");
-const whitelister = require('purgecss-whitelister')
+const whitelister = require('purgecss-whitelister');
+
 // config files
 const pkg = require('./package.json');
 const common = require('./webpack.common.js');
@@ -67,18 +69,32 @@ const configurePurgeCss = () => {
     };
 };
 
+// Configure clean webpack
+const configureCleanWebpack = () => {
+    return {
+        root: path.resolve(__dirname, pkg.paths.dist.base),
+        verbose: true,
+        dry: false
+    };
+};
+
+// Configure terser
+const configureTerser = () => {
+    return {
+        cache: true,
+        parallel: true,
+        sourceMap: true
+    };
+};
+
 // Configure optimization
 const configureOptimization = (buildType) => {
     if (buildType === LEGACY_CONFIG) {
         return {
-            splitChunks: {
-            },
             minimizer: [
-                new UglifyJsPlugin({
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true
-                }),
+                new TerserPlugin(
+                    configureTerser()
+                ),
                 new OptimizeCSSAssetsPlugin({
                     cssProcessorOptions: {
                         map: {
@@ -94,13 +110,10 @@ const configureOptimization = (buildType) => {
     }
     if (buildType === MODERN_CONFIG) {
         return {
-            splitChunks: {},
             minimizer: [
-                new UglifyJsPlugin({
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true
-                }),
+                new TerserPlugin(
+                    configureTerser()
+                ),
             ]
         };
     }
@@ -111,10 +124,16 @@ module.exports = [
     merge(
         common.legacyConfig,
         {
+            output: {
+                filename: path.join('./js', '[name]-legacy.[chunkhash].js'),
+            },
             mode: 'production',
             devtool: 'source-map',
             optimization: configureOptimization(LEGACY_CONFIG),
             plugins: [
+                new CleanWebpackPlugin(pkg.paths.dist.clean,
+                    configureCleanWebpack()
+                ),
                 new PurgecssPlugin(
                     configurePurgeCss()
                 ),
@@ -127,6 +146,9 @@ module.exports = [
     merge(
         common.modernConfig,
         {
+            output: {
+                filename: path.join('./js', '[name].[chunkhash].js'),
+            },
             mode: 'production',
             devtool: 'source-map',
             optimization: configureOptimization(MODERN_CONFIG),

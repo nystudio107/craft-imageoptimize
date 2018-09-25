@@ -15,13 +15,10 @@
 
 {% import "_includes/forms" as forms %}
 
-{% from "image-optimize/_includes/macros.twig" import includeJsModule %}
-{% from "image-optimize/_includes/macros.twig" import includeCssModule %}
-
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
-{{ includeCssModule("imageoptimize") }}
+{{ craft.imageOptimize.includeCssModule("styles.css") }}
 
 <div class="field" id="{{ id }}-fields">
     <!-- displayOptimizedImageVariants -->

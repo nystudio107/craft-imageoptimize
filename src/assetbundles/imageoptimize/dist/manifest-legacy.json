@@ -1,14 +1,14 @@
 {
-  "vendors~confetti~vue.js": "/cpresources/imageoptimize/js/vendors~confetti~vue-legacy.1e150b9a3825a680b683.js",
-  "vendors~confetti~vue.js.map": "/cpresources/imageoptimize/js/vendors~confetti~vue-legacy.1e150b9a3825a680b683.js.map",
-  "imageoptimize.css": "/cpresources/imageoptimize/css/imageoptimize.5c2a9acc33f65ffa2d5d.css",
-  "imageoptimize.js": "/cpresources/imageoptimize/js/imageoptimize-legacy.5c2a9acc33f65ffa2d5d.js",
-  "imageoptimize.js.map": "/cpresources/imageoptimize/js/imageoptimize-legacy.5c2a9acc33f65ffa2d5d.js.map",
-  "welcome.js": "/cpresources/imageoptimize/js/welcome-legacy.757f335c9dd03eef82d1.js",
-  "welcome.js.map": "/cpresources/imageoptimize/js/welcome-legacy.757f335c9dd03eef82d1.js.map",
-  "confetti.js": "/cpresources/imageoptimize/js/confetti-legacy.baad1576cc19758e2f00.js",
-  "confetti.js.map": "/cpresources/imageoptimize/js/confetti-legacy.baad1576cc19758e2f00.js.map",
-  "css/imageoptimize.5c2a9acc33f65ffa2d5d.css.map": "/cpresources/imageoptimize/css/imageoptimize.5c2a9acc33f65ffa2d5d.css.map",
-  "../../../templates/_includes/include-legacy-module.twig": "/cpresources/imageoptimize/../../../templates/_includes/include-legacy-module.twig",
-  "../../../templates/_includes/include-css-module.twig": "/cpresources/imageoptimize/../../../templates/_includes/include-css-module.twig"
+  "vendors~confetti~vue.js": "/cpresources/imageoptimize/js/vendors~confetti~vue-legacy.ac162427c46f69b09789.js",
+  "vendors~confetti~vue.js.map": "/cpresources/imageoptimize/js/vendors~confetti~vue-legacy.ac162427c46f69b09789.js.map",
+  "imageoptimize.js": "/cpresources/imageoptimize/js/imageoptimize-legacy.99d45fcc5a09cf24c5a6.js",
+  "imageoptimize.js.map": "/cpresources/imageoptimize/js/imageoptimize-legacy.99d45fcc5a09cf24c5a6.js.map",
+  "welcome.js": "/cpresources/imageoptimize/js/welcome-legacy.4a8e15e9a9efd3e8c3af.js",
+  "welcome.js.map": "/cpresources/imageoptimize/js/welcome-legacy.4a8e15e9a9efd3e8c3af.js.map",
+  "confetti.js": "/cpresources/imageoptimize/js/confetti-legacy.5e9f75d57c0ca074ca73.js",
+  "confetti.js.map": "/cpresources/imageoptimize/js/confetti-legacy.5e9f75d57c0ca074ca73.js.map",
+  "styles.css": "/cpresources/imageoptimize/css/styles.486e4c5e3df07ef3233c.css",
+  "styles.js": "/cpresources/imageoptimize/js/styles-legacy.486e4c5e3df07ef3233c.js",
+  "styles.js.map": "/cpresources/imageoptimize/js/styles-legacy.486e4c5e3df07ef3233c.js.map",
+  "css/styles.486e4c5e3df07ef3233c.css.map": "/cpresources/imageoptimize/css/styles.486e4c5e3df07ef3233c.css.map"
 }

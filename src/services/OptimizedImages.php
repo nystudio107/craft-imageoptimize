@@ -88,7 +88,7 @@ class OptimizedImages extends Component
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
-                $finalFormat = $variant['format'] ?? $asset->getExtension();
+                $finalFormat = empty($variant['format']) ? $asset->getExtension() : $variant['format'];
                 // Only try the transform if it's possible
                 if (Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
@@ -204,7 +204,7 @@ class OptimizedImages extends Component
         $transform->height = (int)($width / $aspectRatio);
         // Image quality
         $quality = $variant['quality'];
-        if ($settings->lowerQualityRetinaImageVariants && $retinaSize !== '1') {
+        if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
             $quality = (int)($quality * (1.5 / (int)$retinaSize));
         }
         $transform->quality = $quality;
@@ -237,7 +237,7 @@ class OptimizedImages extends Component
             __METHOD__
         );
         // Update the model
-        if ($url !== null) {
+        if (!empty($url)) {
             $model->variantSourceWidths[] = $variant['width'];
             $model->variantHeights[$transform->width] = $asset->getHeight($transform);
             // Store & prefetch image at the image URL
