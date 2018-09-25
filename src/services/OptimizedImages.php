@@ -88,7 +88,7 @@ class OptimizedImages extends Component
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
-                $finalFormat = $variant['format'] ?? $asset->getExtension();
+                $finalFormat = !empty($variant['format']) ? $variant['format'] : $asset->getExtension();
                 // Only try the transform if it's possible
                 if (Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
