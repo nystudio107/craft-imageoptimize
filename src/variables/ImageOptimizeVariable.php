@@ -21,7 +21,7 @@ use craft\helpers\Template;
  * @package   ImageOptimize
  * @since     1.4.0
  */
-class ImageOptimizeVariable
+class ImageOptimizeVariable extends ManifestVariable
 {
     // Public Methods
     // =========================================================================

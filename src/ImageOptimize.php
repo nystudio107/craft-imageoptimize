@@ -506,7 +506,7 @@ class ImageOptimize extends Plugin
     {
         return [
             // Make webpack async bundle loading work out of published AssetBundles
-            '/cpresources/imageoptimize/<resourceType:{handle}>/<fileName>' => 'image-optimize/cp-nav/resource',
+            '/cpresources/imageoptimize/<resourceType:{handle}>/<fileName>' => 'image-optimize/manifest/resource',
         ];
     }
 
