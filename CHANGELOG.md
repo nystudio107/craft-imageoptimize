@@ -4,6 +4,7 @@
 ### Changed
 * Added a try/catch around ColorThief, to catch errors thrown due to empty/transparent images
 * Fix a regression that could cause Optimized Images to not be generated correctly
+* Modernized package.json and webpack build
 
 ## 1.4.38 - 2018.08.20
 ### Changed
