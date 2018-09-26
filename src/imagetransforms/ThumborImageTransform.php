@@ -10,24 +10,28 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
+use nystudio107\imageoptimize\ImageOptimize;
+
 use craft\elements\Asset;
+use craft\helpers\ArrayHelper;
+use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
+
+use Thumbor\Url\Builder;
+use Thumbor\Url\BuilderFactory;
+use Psr\Http\Message\ResponseInterface;
+
+use Craft;
 
 /**
  * @author    nystudio107
  * @package   ImageOptimize
  * @since     1.0.0
  */
-interface ImageTransformInterface
+class ThumborImageTransform extends ImageTransform implements ImageTransformInterface
 {
     // Constants
     // =========================================================================
-
-    const IMAGE_TRANSFORM_MAP = [
-        'craft' => CraftImageTransform::class,
-        'imgix' => ImgixImageTransform::class,
-        'thumbor' => ThumborImageTransform::class,
-    ];
 
     // Static Methods
     // =========================================================================
@@ -38,23 +42,32 @@ interface ImageTransformInterface
      * @param array               $params
      *
      * @return string|null
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = []);
+    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    {
+    }
 
     /**
      * @param string $url
      *
      * @return string
      */
-    public static function getWebPUrl(string $url): string;
+    public static function getWebPUrl(string $url): string
+    {
+    }
 
     /**
      * @param Asset $asset
      * @param array $params
      *
-     * @return mixed
+     * @return null|string
+     * @throws \yii\base\InvalidConfigException
      */
-    public static function getPurgeUrl(Asset $asset, array $params = []);
+    public static function getPurgeUrl(Asset $asset, array $params = [])
+    {
+    }
 
     /**
      * @param string $url
@@ -62,23 +75,14 @@ interface ImageTransformInterface
      *
      * @return bool
      */
-    public static function purgeUrl(string $url, array $params = []): bool;
-
-
-    /**
-     * @param Asset $asset
-     *
-     * @return mixed
-     */
-    public static function getAssetUri(Asset $asset);
-
-    /**
-     * @param string $url
-     */
-    public static function prefetchRemoteFile($url);
+    public static function purgeUrl(string $url, array $params = []): bool
+    {
+    }
 
     /**
      * @return array
      */
-    public static function getTransformParams(): array;
+    public static function getTransformParams(): array
+    {
+    }
 }
