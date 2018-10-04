@@ -36,17 +36,7 @@
         "copyFiles": [
         ],
         "manifest": {
-            "basePath": "",
-            "template": {
-                "twigCss": "./src/templates/_src/include-css-module.twig",
-                "twigModern": "./src/templates/_src/include-modern-module.twig",
-                "twigLegacy": "./src/templates/_src/include-legacy-module.twig"
-            },
-            "filename": {
-                "twigCss": "./src/templates/_includes/include-css-module.twig",
-                "twigModern": "./src/templates/_includes/include-modern-module.twig",
-                "twigLegacy": "./src/templates/_includes/include-legacy-module.twig"
-            }
+            "basePath": ""
         },
         "templates": "./src/templates/"
     },
