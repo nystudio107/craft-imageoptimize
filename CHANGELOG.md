@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.40 - 2018.10.05
+### Changed
+* Updated build process
+
 ## 1.4.39 - 2018.09.25
 ### Changed
 * Added a try/catch around ColorThief, to catch errors thrown due to empty/transparent images
