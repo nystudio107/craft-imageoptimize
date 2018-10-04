@@ -12,6 +12,7 @@ const moment = require('moment');
 // webpack plugins
 const merge = require('webpack-merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const PurgecssPlugin = require("purgecss-webpack-plugin");
@@ -87,10 +88,58 @@ const configureTerser = () => {
     };
 };
 
+
+// Postcss loader
+const configurePostcssLoader = (buildType) => {
+    if (buildType === LEGACY_CONFIG) {
+        return {
+            test: /\.(pcss|css)$/,
+            use: [
+                MiniCssExtractPlugin.loader,
+                {
+                    loader: 'css-loader',
+                    options: {
+                        importLoaders: 2,
+                        sourceMap: true
+                    }
+                },
+                {
+                    loader: 'resolve-url-loader'
+                },
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        sourceMap: true
+                    }
+                }
+            ]
+        };
+    }
+    // Don't generate CSS for the modern config in production
+    if (buildType === MODERN_CONFIG) {
+        return {
+            test: /\.(pcss|css)$/,
+            loader: 'ignore-loader'
+        };
+    }
+};
+
 // Configure optimization
 const configureOptimization = (buildType) => {
     if (buildType === LEGACY_CONFIG) {
         return {
+            splitChunks: {
+                cacheGroups: {
+                    default: false,
+                    common: false,
+                    styles: {
+                        name: pkg.vars.cssName,
+                        test: /\.(pcss|css|vue)$/,
+                        chunks: 'all',
+                        enforce: true
+                    }
+                }
+            },
             minimizer: [
                 new TerserPlugin(
                     configureTerser()
@@ -130,10 +179,19 @@ module.exports = [
             mode: 'production',
             devtool: 'source-map',
             optimization: configureOptimization(LEGACY_CONFIG),
+            module: {
+                rules: [
+                    configurePostcssLoader(LEGACY_CONFIG),
+                ],
+            },
             plugins: [
                 new CleanWebpackPlugin(pkg.paths.dist.clean,
                     configureCleanWebpack()
                 ),
+                new MiniCssExtractPlugin({
+                    path: path.resolve(__dirname, pkg.paths.dist.base),
+                    filename: path.join('./css', '[name].[chunkhash].css'),
+                }),
                 new PurgecssPlugin(
                     configurePurgeCss()
                 ),
@@ -152,6 +210,11 @@ module.exports = [
             mode: 'production',
             devtool: 'source-map',
             optimization: configureOptimization(MODERN_CONFIG),
+            module: {
+                rules: [
+                    configurePostcssLoader(MODERN_CONFIG),
+                ],
+            },
             plugins: [
                 new webpack.BannerPlugin(
                     configureBanner()

@@ -33,6 +33,43 @@ const configureDevServer = (buildType) => {
     };
 };
 
+// Postcss loader
+const configurePostcssLoader = (buildType) => {
+    // Don't generate CSS for the legacy config in development
+    if (buildType === LEGACY_CONFIG) {
+        return {
+            test: /\.(pcss|css)$/,
+            loader: 'ignore-loader'
+        };
+    }
+    if (buildType === MODERN_CONFIG) {
+        return {
+            test: /\.(pcss|css)$/,
+            use: [
+                {
+                    loader: 'style-loader',
+                },
+                {
+                    loader: 'css-loader',
+                    options: {
+                        importLoaders: 2,
+                        sourceMap: true
+                    }
+                },
+                {
+                    loader: 'resolve-url-loader'
+                },
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        sourceMap: true
+                    }
+                }
+            ]
+        };
+    }
+};
+
 // Development module exports
 module.exports = [
     merge(
@@ -45,6 +82,11 @@ module.exports = [
             mode: 'development',
             devtool: 'inline-source-map',
             devServer: configureDevServer(LEGACY_CONFIG),
+            module: {
+                rules: [
+                    configurePostcssLoader(LEGACY_CONFIG),
+                ],
+            },
             plugins: [
                 new webpack.HotModuleReplacementPlugin()
             ],
@@ -60,6 +102,11 @@ module.exports = [
             mode: 'development',
             devtool: 'inline-source-map',
             devServer: configureDevServer(MODERN_CONFIG),
+            module: {
+                rules: [
+                    configurePostcssLoader(MODERN_CONFIG),
+                ],
+            },
             plugins: [
                 new webpack.HotModuleReplacementPlugin()
             ],

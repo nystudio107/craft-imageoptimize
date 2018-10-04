@@ -9,7 +9,6 @@ const merge = require('webpack-merge');
 // webpack plugins
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
 
@@ -67,40 +66,6 @@ const configureImageLoader = () => {
     };
 };
 
-// Postcss loader
-const configurePostcssLoader = (buildType) => {
-    if (buildType === LEGACY_CONFIG) {
-        return {
-            test: /\.(pcss|css)$/,
-            use: [
-                MiniCssExtractPlugin.loader,
-                {
-                    loader: 'css-loader',
-                    options: {
-                        importLoaders: 1,
-                        sourceMap: true
-                    }
-                },
-                {
-                    loader: 'resolve-url-loader'
-                },
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                }
-            ]
-        };
-    }
-    if (buildType === MODERN_CONFIG) {
-        return {
-            test: /\.(pcss|css)$/,
-            loader: 'ignore-loader'
-        };
-    }
-};
-
 // Manifest
 const configureManifest = (fileName) => {
     return {
@@ -116,7 +81,6 @@ const configureManifest = (fileName) => {
 // Entries from package.json
 const configureEntries = () => {
     let entries = {};
-
     for (const [key, value] of Object.entries(pkg.entries)) {
         entries[key] = path.resolve(__dirname, pkg.paths.src.js + value);
     }
@@ -128,11 +92,6 @@ const configureEntries = () => {
 const baseConfig = {
     name: pkg.name,
     entry: configureEntries(),
-    watchOptions: {
-        ignored: /node_modules/,
-        aggregateTimeout: 300,
-        poll: 500
-    },
     output: {
         path: path.resolve(__dirname, pkg.paths.dist.base),
         publicPath: pkg.paths.dist.public
@@ -147,20 +106,6 @@ const baseConfig = {
             configureVueLoader(),
         ],
     },
-    optimization: {
-        splitChunks: {
-            cacheGroups: {
-                default: false,
-                common: false,
-                styles: {
-                    name: pkg.vars.cssName,
-                    test: /\.(pcss|css)$/,
-                    chunks: 'all',
-                    enforce: true
-                }
-            }
-        }
-    },
     plugins: [
         new WebpackNotifierPlugin({title: 'Webpack', excludeWarnings: true, alwaysNotify: true}),
         new VueLoaderPlugin(),
@@ -173,14 +118,9 @@ const legacyConfig = {
         rules: [
             configureBabelLoader(Object.values(pkg.babelConfig.legacyBrowsers)),
             configureImageLoader(),
-            configurePostcssLoader(LEGACY_CONFIG),
         ],
     },
     plugins: [
-        new MiniCssExtractPlugin({
-            path: path.resolve(__dirname, pkg.paths.dist.base),
-            filename: path.join('./css', '[name].[chunkhash].css'),
-        }),
         new CopyWebpackPlugin(
             pkg.paths.copyFiles
         ),
@@ -195,7 +135,6 @@ const modernConfig = {
     module: {
         rules: [
             configureBabelLoader(Object.values(pkg.babelConfig.modernBrowsers)),
-            configurePostcssLoader(MODERN_CONFIG),
         ],
     },
     plugins: [
