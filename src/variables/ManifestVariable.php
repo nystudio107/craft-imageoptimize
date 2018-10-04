@@ -62,6 +62,19 @@ class ManifestVariable
     }
 
     /**
+     * Returns the uglified loadCSS rel=preload Polyfill as per:
+     * https://github.com/filamentgroup/loadCSS#how-to-use-loadcss-recommended-example
+     *
+     * @return string
+     */
+    public static function includeCssRelPreloadPolyfill(): string
+    {
+        return Template::raw(
+            ManifestHelper::getCssRelPreloadPolyfill()
+        );
+    }
+
+    /**
      * @param string     $moduleName
      * @param bool       $async
      * @param null|array $config
@@ -96,7 +109,7 @@ class ManifestVariable
     /**
      * Include the Safari 10.1 nomodule fix JavaScript
      *
-     * @return null|\Twig_Markup
+     * @return \Twig_Markup
      */
     public function includeSafariNomoduleFix()
     {
