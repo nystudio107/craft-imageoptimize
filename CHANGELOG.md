@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.4.40 - 2018.10.05
+### Added
+* Add Super Table conditional for field
+
 ### Changed
 * Updated build process
 
