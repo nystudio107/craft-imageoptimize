@@ -63,7 +63,14 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             // $builder->resize($transform->width, $transform->height);
         } else {
             $builder->resize($transform->width, $transform->height);
-            $builder->addFilter('focal', self::getFocalPoint($asset));
+
+            $focalPoint = self::getFocalPoint($asset);
+
+            if ($focalPoint) {
+                $builder->addFilter('focal', $focalPoint);
+            } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position)) {
+                // code...
+            }
         }
 
         return (string) $builder;
@@ -120,6 +127,11 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
     protected static function getFocalPoint(Asset $asset)
     {
         $focalPoint = $asset->getFocalPoint();
+
+        if (!$focalPoint) {
+            return;
+        }
+
         $box = array_map('intval', [
             'top' => $focalPoint['y'] * $asset->height - 1,
             'left' => $focalPoint['x'] * $asset->width - 1,
