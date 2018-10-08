@@ -123,17 +123,21 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
     protected static function getFocalPoint(Asset $asset)
     {
         $focalPoint = $asset->getFocalPoint();
-        $x = $focalPoint['x'] * $asset->width;
-        $y = $focalPoint['y'] * $asset->height;
+        $box = array_map('intval', [
+            'top' => $focalPoint['y'] * $asset->height - 1,
+            'left' => $focalPoint['x'] * $asset->width - 1,
+            'bottom' => $focalPoint['y'] * $asset->height + 1,
+            'right' => $focalPoint['x'] * $asset->width + 1,
+        ]);
 
         return implode('', [
-            $x - 1,
+            $box['top'],
             'x',
-            $y - 1,
+            $box['left'],
             ':',
-            $x + 1,
+            $box['bottom'],
             'x',
-            $y + 1,
+            $box['right'],
         ]);
     }
 }
