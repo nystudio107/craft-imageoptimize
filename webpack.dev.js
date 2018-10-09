@@ -3,11 +3,11 @@ const LEGACY_CONFIG = 'legacy';
 const MODERN_CONFIG = 'modern';
 
 // node modules
+const merge = require('webpack-merge');
 const path = require('path');
+const webpack = require('webpack');
 
 // webpack plugins
-const merge = require('webpack-merge');
-const webpack = require('webpack');
 
 // config files
 const pkg = require('./package.json');
@@ -18,7 +18,7 @@ const configureDevServer = (buildType) => {
     return {
         contentBase: './web',
         host: '0.0.0.0',
-        public: pkg.paths.dist.devPublic,
+        public: pkg.project.urls.devPublic,
         https: false,
         hot: true,
         hotOnly: true,
@@ -77,7 +77,7 @@ module.exports = [
         {
             output: {
                 filename: path.join('./js', '[name]-legacy.[hash].js'),
-                publicPath: pkg.paths.dist.devPublic + '/',
+                publicPath: pkg.project.urls.devPublic + '/',
             },
             mode: 'development',
             devtool: 'inline-source-map',
@@ -97,7 +97,7 @@ module.exports = [
         {
             output: {
                 filename: path.join('./js', '[name].[hash].js'),
-                publicPath: pkg.paths.dist.devPublic + '/',
+                publicPath: pkg.project.urls.devPublic + '/',
             },
             mode: 'development',
             devtool: 'inline-source-map',
