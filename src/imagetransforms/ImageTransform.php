@@ -94,7 +94,7 @@ abstract class ImageTransform implements ImageTransformInterface
     public static function getAssetUri(Asset $asset)
     {
         $volume = $asset->getVolume();
-        $assetPath = $file->getPath();
+        $assetPath = $asset->getPath();
 
         // Account for volume types with a subfolder setting
         // e.g. craftcms/aws-s3, craftcms/google-cloud
