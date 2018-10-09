@@ -46,12 +46,6 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $assetUri = self::getAssetUri($asset);
-
-        // TODO: should this be in getAssetUri
-        if ($asset->volume instanceof craft\awss3\Volume) {
-            $assetUri = implode('/', array_filter([$asset->volume->subfolder, $asset->path]));
-        }
-
         $baseUrl = $params['baseUrl'];
         $securityKey = $params['securityKey'] ?: null;
         $builder = \Thumbor\Url\Builder::construct($baseUrl, $securityKey, $assetUri);
@@ -63,13 +57,15 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             // $builder->resize($transform->width, $transform->height);
         } else {
             $builder->resize($transform->width, $transform->height);
-
             $focalPoint = self::getFocalPoint($asset);
 
             if ($focalPoint) {
                 $builder->addFilter('focal', $focalPoint);
-            } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position)) {
-                // code...
+            } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position, $matches)) {
+                $v = str_replace('center', 'middle', $matches[1]);
+                $h = $matches[2];
+
+                $builder->valign($v)->halign($h);
             }
         }
 
