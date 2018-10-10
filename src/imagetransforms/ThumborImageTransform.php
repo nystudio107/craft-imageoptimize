@@ -16,7 +16,7 @@ use craft\elements\Asset;
 use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
-
+use Thumbor\Url\Builder as UrlBuilder;
 use Psr\Http\Message\ResponseInterface;
 
 use Craft;
@@ -45,10 +45,65 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
      */
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
+        return (string) self::getUrlBuilderForTransform($asset, $transform, $params);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return string
+     */
+    public static function getWebPUrl(string $url): string
+    {
+        // TODO: waiting for @khalwat :)
+        return $url;
+
+        $builder = self::getUrlBuilderForTransform($asset, $transform, $params)
+            ->addFilter('format', 'webp');
+
+        return (string) $builder;
+    }
+
+    /**
+     * @param string $url
+     * @param array  $params
+     *
+     * @return bool
+     */
+    public static function purgeUrl(string $url, array $params = []): bool
+    {
+        return false;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTransformParams(): array
+    {
+        $settings = ImageOptimize::$plugin->getSettings();
+        $params = [
+            'baseUrl' => $settings->thumborBaseUrl,
+            'securityKey' => $settings->thumborSecurityKey,
+        ];
+
+        return $params;
+    }
+
+    /**
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
+     *
+     * @return UrlBuilder
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     */
+    private static function getUrlBuilderForTransform(Asset $asset, $transform, array $params = []): UrlBuilder
+    {
         $assetUri = self::getAssetUri($asset);
         $baseUrl = $params['baseUrl'];
         $securityKey = $params['securityKey'] ?: null;
-        $builder = \Thumbor\Url\Builder::construct($baseUrl, $securityKey, $assetUri);
+        $builder = UrlBuilder::construct($baseUrl, $securityKey, $assetUri);
         $settings = ImageOptimize::$plugin->getSettings();
 
         if ($transform->mode === 'fit') {
@@ -85,64 +140,34 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             $builder->addFilter('format', $format);
         }
 
-        // TODO: should we use $defaultImageQuality?
         // https://thumbor.readthedocs.io/en/latest/quality.html
         if ($quality = self::getQuality($transform)) {
             $builder->addFilter('quality', $quality);
         }
 
-        return (string) $builder;
-    }
+        if (property_exists($transform, 'interlace')) {
+            // Progressive JPEGs are configured on the server level,
+            // not as an option: https://thumbor.readthedocs.io/en/latest/jpegtran.html
+        }
 
-    /**
-     * @param string $url
-     *
-     * @return string
-     */
-    public static function getWebPUrl(string $url): string
-    {
-        return $url;
-    }
+        if ($settings->autoSharpenScaledImages) {
+            // See if the image has been scaled >= 50%
+            $widthScale = $asset->getWidth() / ($transform->width ?? $asset->getWidth());
+            $heightScale = $asset->getHeight() / ($transform->height ?? $asset->getHeight());
+            if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
 
-    /**
-     * @param Asset $asset
-     * @param array $params
-     *
-     * @return null|string
-     * @throws \yii\base\InvalidConfigException
-     */
-    public static function getPurgeUrl(Asset $asset, array $params = [])
-    {
-    }
+                // https://thumbor.readthedocs.io/en/latest/sharpen.html
+                $builder->addFilter('sharpen', .5, .5, 'true');
+            }
+        }
 
-    /**
-     * @param string $url
-     * @param array  $params
-     *
-     * @return bool
-     */
-    public static function purgeUrl(string $url, array $params = []): bool
-    {
-    }
-
-    /**
-     * @return array
-     */
-    public static function getTransformParams(): array
-    {
-        $settings = ImageOptimize::$plugin->getSettings();
-        $params = [
-            'baseUrl' => $settings->thumborBaseUrl,
-            'securityKey' => $settings->thumborSecurityKey,
-        ];
-
-        return $params;
+        return $builder;
     }
 
     /**
      * @return string|null
      */
-    protected static function getFocalPoint(Asset $asset)
+    private static function getFocalPoint(Asset $asset)
     {
         $focalPoint = $asset->getFocalPoint();
 
@@ -173,7 +198,7 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
      *
      * @return string|null
      */
-    protected static function getFormat($transform)
+    private static function getFormat($transform)
     {
         $format = str_replace(
             ['Auto', 'jpg'],
@@ -189,7 +214,7 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
      *
      * @return int
      */
-    protected static function getQuality($transform)
+    private static function getQuality($transform)
     {
         return $transform->quality ?? Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
     }
