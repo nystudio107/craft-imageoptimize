@@ -2,6 +2,7 @@
 
 ## 1.4.41 - 2018.10.09
 ### Changed
+* Fixed an issue where volumes with sub-folders such as Amazon S3 or Google Cloud didn't generate the correct URLs
 
 ## 1.4.40 - 2018.10.05
 ### Added
