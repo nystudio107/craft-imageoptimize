@@ -52,28 +52,42 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         $settings = ImageOptimize::$plugin->getSettings();
 
         if ($transform->mode === 'fit') {
+
+            // https://thumbor.readthedocs.io/en/latest/usage.html#fit-in
             $builder->fitIn($transform->width, $transform->height);
         } elseif ($transform->mode === 'stretch') {
+
             // AFAIK, this isn't possible with Thumbor…throw exception?
             // https://github.com/thumbor/thumbor/issues/1123
             $builder
                 ->resize($transform->width, $transform->height)
                 ->addFilter('upscale');
         } else {
+
+            https://thumbor.readthedocs.io/en/latest/usage.html#image-size
             $builder->resize($transform->width, $transform->height);
 
             if ($focalPoint = self::getFocalPoint($asset)) {
+
+                https://thumbor.readthedocs.io/en/latest/focal.html
                 $builder->addFilter('focal', $focalPoint);
             } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position, $matches)) {
                 $v = str_replace('center', 'middle', $matches[1]);
                 $h = $matches[2];
 
+                https://thumbor.readthedocs.io/en/latest/usage.html#horizontal-align
                 $builder->valign($v)->halign($h);
             }
         }
 
+        // https://thumbor.readthedocs.io/en/latest/format.html
         if ($format = self::getFormat($transform)) {
             $builder->addFilter('format', $format);
+        }
+
+        // https://thumbor.readthedocs.io/en/latest/quality.html
+        if ($transform->quality) {
+            $builder->addFilter('quality', $transform->quality);
         }
 
         return (string) $builder;
