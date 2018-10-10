@@ -49,17 +49,20 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         $baseUrl = $params['baseUrl'];
         $securityKey = $params['securityKey'] ?: null;
         $builder = \Thumbor\Url\Builder::construct($baseUrl, $securityKey, $assetUri);
+        $settings = ImageOptimize::$plugin->getSettings();
 
         if ($transform->mode === 'fit') {
             $builder->fitIn($transform->width, $transform->height);
         } elseif ($transform->mode === 'stretch') {
-            // TODO: not sure?
-            // $builder->resize($transform->width, $transform->height);
+            // AFAIK, this isn't possible with Thumbor…throw exception?
+            // https://github.com/thumbor/thumbor/issues/1123
+            $builder
+                ->resize($transform->width, $transform->height)
+                ->addFilter('upscale');
         } else {
             $builder->resize($transform->width, $transform->height);
-            $focalPoint = self::getFocalPoint($asset);
 
-            if ($focalPoint) {
+            if ($focalPoint = self::getFocalPoint($asset)) {
                 $builder->addFilter('focal', $focalPoint);
             } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position, $matches)) {
                 $v = str_replace('center', 'middle', $matches[1]);
@@ -67,6 +70,10 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
 
                 $builder->valign($v)->halign($h);
             }
+        }
+
+        if ($format = self::getFormat($transform)) {
+            $builder->addFilter('format', $format);
         }
 
         return (string) $builder;
@@ -118,14 +125,14 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     protected static function getFocalPoint(Asset $asset)
     {
         $focalPoint = $asset->getFocalPoint();
 
         if (!$focalPoint) {
-            return;
+            return null;
         }
 
         $box = array_map('intval', [
@@ -144,5 +151,21 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             'x',
             $box['right'],
         ]);
+    }
+
+    /**
+     * @param AssetTransform|null $transform
+     *
+     * @return string|null
+     */
+    protected static function getFormat($transform)
+    {
+        $format = str_replace(
+            ['Auto', 'jpg'],
+            ['', 'jpeg'],
+            $transform->format
+        );
+
+        return $format ?: null;
     }
 }
