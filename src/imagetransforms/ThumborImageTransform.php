@@ -64,18 +64,18 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
                 ->addFilter('upscale');
         } else {
 
-            https://thumbor.readthedocs.io/en/latest/usage.html#image-size
+            // https://thumbor.readthedocs.io/en/latest/usage.html#image-size
             $builder->resize($transform->width, $transform->height);
 
             if ($focalPoint = self::getFocalPoint($asset)) {
 
-                https://thumbor.readthedocs.io/en/latest/focal.html
+                // https://thumbor.readthedocs.io/en/latest/focal.html
                 $builder->addFilter('focal', $focalPoint);
             } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position, $matches)) {
                 $v = str_replace('center', 'middle', $matches[1]);
                 $h = $matches[2];
 
-                https://thumbor.readthedocs.io/en/latest/usage.html#horizontal-align
+                // https://thumbor.readthedocs.io/en/latest/usage.html#horizontal-align
                 $builder->valign($v)->halign($h);
             }
         }
@@ -85,9 +85,10 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             $builder->addFilter('format', $format);
         }
 
+        // TODO: should we use $defaultImageQuality?
         // https://thumbor.readthedocs.io/en/latest/quality.html
-        if ($transform->quality) {
-            $builder->addFilter('quality', $transform->quality);
+        if ($quality = self::getQuality($transform)) {
+            $builder->addFilter('quality', $quality);
         }
 
         return (string) $builder;
@@ -181,5 +182,15 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         );
 
         return $format ?: null;
+    }
+
+    /**
+     * @param AssetTransform|null $transform
+     *
+     * @return int
+     */
+    protected static function getQuality($transform)
+    {
+        return $transform->quality ?? Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
     }
 }
