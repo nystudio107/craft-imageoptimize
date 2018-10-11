@@ -46,7 +46,7 @@ class ManifestVariable
         self::$config['server']['manifestPath'] = Craft::getAlias($bundle->sourcePath);
         $useDevServer = getenv('NYS_PLUGIN_DEVSERVER');
         if ($useDevServer !== false) {
-            self::$config['useDevServer'] = $useDevServer;
+            self::$config['useDevServer'] = (bool)$useDevServer;
         }
     }
 
