@@ -3,6 +3,8 @@
 ## 1.4.41 - 2018.10.09
 ### Changed
 * Fixed an issue where volumes with sub-folders such as Amazon S3 or Google Cloud didn't generate the correct URLs
+* Fixed the build process so it will no longer look for `devServer` on installs
+* Added a link to the **variant does not exist** to aid in diagnosing what is wrong 
 
 ## 1.4.40 - 2018.10.05
 ### Added
