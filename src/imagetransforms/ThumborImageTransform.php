@@ -28,9 +28,6 @@ use Craft;
  */
 class ThumborImageTransform extends ImageTransform implements ImageTransformInterface
 {
-    // Constants
-    // =========================================================================
-
     // Static Methods
     // =========================================================================
 
@@ -111,12 +108,12 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             // https://thumbor.readthedocs.io/en/latest/usage.html#fit-in
             $builder->fitIn($transform->width, $transform->height);
         } elseif ($transform->mode === 'stretch') {
-
-            // AFAIK, this isn't possible with Thumbor…throw exception?
-            // https://github.com/thumbor/thumbor/issues/1123
             $builder
                 ->resize($transform->width, $transform->height)
                 ->addFilter('upscale');
+
+            // https://github.com/thumbor/thumbor/issues/1123
+            Craft::warning('Thumbor has no equivalent to the "stretch" transform mode. The resulting image will be resized and cropped, but not stretched.', __METHOD__);
         } else {
 
             // https://thumbor.readthedocs.io/en/latest/usage.html#image-size
@@ -146,11 +143,11 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         }
 
         if (property_exists($transform, 'interlace')) {
-            // Progressive JPEGs are configured on the server level,
-            // not as an option: https://thumbor.readthedocs.io/en/latest/jpegtran.html
+            Craft::warning('Thumbor enables progressive JPEGs on the server-level, not as a request option. See https://thumbor.readthedocs.io/en/latest/jpegtran.html', __METHOD__);
         }
 
         if ($settings->autoSharpenScaledImages) {
+
             // See if the image has been scaled >= 50%
             $widthScale = $asset->getWidth() / ($transform->width ?? $asset->getWidth());
             $heightScale = $asset->getHeight() / ($transform->height ?? $asset->getHeight());
