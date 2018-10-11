@@ -166,10 +166,16 @@
                                     </div>
                                     <div style="text-align: center; padding-top: 10px;">
                                         <span style="color: {{ thisStrokeColor }}">
+                                            {% if thisUrl | length %}
+                                                <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
+                                            {% endif %}
                                             {% set thisFormat = thisUrl |split('.') |last %}
                                             <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
                                             <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
-                                        </span>
+                                            {% if thisUrl | length %}
+                                                </a>
+                                            {% endif %}
+                                       </span>
                                     </div>
                                 {% endif %}
                             </div>
