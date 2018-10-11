@@ -15,7 +15,7 @@ class ManifestVariable
 
     protected static $config = [
         // If `devMode` is on, use webpack-dev-server to all for HMR (hot module reloading)
-        'useDevServer' => true,
+        'useDevServer' => false,
         // Manifest names
         'manifest'     => [
             'legacy' => 'manifest-legacy.json',
@@ -44,6 +44,10 @@ class ManifestVariable
         ManifestHelper::invalidateCaches();
         $bundle = new ImageOptimizeAsset();
         self::$config['server']['manifestPath'] = Craft::getAlias($bundle->sourcePath);
+        $useDevServer = getenv('NYS_PLUGIN_DEVSERVER');
+        if ($useDevServer !== false) {
+            self::$config['useDevServer'] = $useDevServer;
+        }
     }
 
     /**

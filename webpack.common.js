@@ -95,7 +95,7 @@ const baseConfig = {
     entry: configureEntries(),
     output: {
         path: path.resolve(__dirname, pkg.project.paths.dist.base),
-        publicPath: pkg.project.urls.public
+        publicPath: pkg.project.urls.publicPath
     },
     resolve: {
         alias: {
