@@ -244,7 +244,12 @@ class OptimizedImages extends Component
             //ImageOptimize::$transformClass::prefetchRemoteFile($url);
             $model->optimizedImageUrls[$transform->width] = $url;
             // Store & prefetch image at the webp URL
-            $webPUrl = ImageOptimize::$transformClass::getWebPUrl($url);
+            $webPUrl = ImageOptimize::$transformClass::getWebPUrl(
+                $url,
+                $asset,
+                $transform,
+                ImageOptimize::$transformParams
+            );
             //ImageOptimize::$transformClass::prefetchRemoteFile($webPUrl);
             $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;
             $model->focalPoint = $asset->focalPoint;
