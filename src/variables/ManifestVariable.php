@@ -75,7 +75,7 @@ class ManifestVariable
     public function includeInlineCssTags(string $path): \Twig_Markup
     {
         return Template::raw(
-            ManifestHelper::getCssRelPreloadPolyfill()
+            ManifestHelper::getCssInlineTags($path)
         );
     }
 
@@ -162,7 +162,7 @@ class ManifestVariable
     public function includeFileFromManifest(string $fileName, string $type = 'legacy', $config = null): \Twig_Markup
     {
         return Template::raw(
-            ManifestHelper::getFileFromManifest($fileName, $type, $config)
+            ManifestHelper::getFileFromManifest($config, $fileName, $type)
         );
     }
 }
