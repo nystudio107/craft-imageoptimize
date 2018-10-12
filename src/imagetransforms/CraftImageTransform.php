@@ -44,11 +44,14 @@ class CraftImageTransform extends ImageTransform implements ImageTransformInterf
     }
 
     /**
-     * @param string $url
+     * @param string              $url
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
      * @return string
      */
-    public static function getWebPUrl(string $url): string
+    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
         $url = self::appendExtension($url, '.webp');
 

@@ -15,7 +15,7 @@ class ManifestVariable
 
     protected static $config = [
         // If `devMode` is on, use webpack-dev-server to all for HMR (hot module reloading)
-        'useDevServer' => true,
+        'useDevServer' => false,
         // Manifest names
         'manifest'     => [
             'legacy' => 'manifest-legacy.json',
@@ -44,6 +44,10 @@ class ManifestVariable
         ManifestHelper::invalidateCaches();
         $bundle = new ImageOptimizeAsset();
         self::$config['server']['manifestPath'] = Craft::getAlias($bundle->sourcePath);
+        $useDevServer = getenv('NYS_PLUGIN_DEVSERVER');
+        if ($useDevServer !== false) {
+            self::$config['useDevServer'] = (bool)$useDevServer;
+        }
     }
 
     /**
@@ -51,10 +55,10 @@ class ManifestVariable
      * @param bool       $async
      * @param null|array $config
      *
-     * @return null|\Twig_Markup
+     * @return \Twig_Markup
      * @throws \yii\web\NotFoundHttpException
      */
-    public function includeCssModule(string $moduleName, bool $async = false, $config = null)
+    public function includeCssModule(string $moduleName, bool $async = false, $config = null): \Twig_Markup
     {
         return Template::raw(
             ManifestHelper::getCssModuleTags(self::$config, $moduleName, $async)
@@ -62,12 +66,26 @@ class ManifestVariable
     }
 
     /**
+     * Returns the CSS file in $path wrapped in <style></style> tags
+     *
+     * @param string $path
+     *
+     * @return \Twig_Markup
+     */
+    public function includeInlineCssTags(string $path): \Twig_Markup
+    {
+        return Template::raw(
+            ManifestHelper::getCssInlineTags($path)
+        );
+    }
+
+    /**
      * Returns the uglified loadCSS rel=preload Polyfill as per:
      * https://github.com/filamentgroup/loadCSS#how-to-use-loadcss-recommended-example
      *
-     * @return string
+     * @return \Twig_Markup
      */
-    public static function includeCssRelPreloadPolyfill(): string
+    public static function includeCssRelPreloadPolyfill(): \Twig_Markup
     {
         return Template::raw(
             ManifestHelper::getCssRelPreloadPolyfill()
@@ -111,10 +129,40 @@ class ManifestVariable
      *
      * @return \Twig_Markup
      */
-    public function includeSafariNomoduleFix()
+    public function includeSafariNomoduleFix(): \Twig_Markup
     {
         return Template::raw(
             ManifestHelper::getSafariNomoduleFix()
+        );
+    }
+
+    /**
+     * Returns the contents of a file from a URI path
+     *
+     * @param string $path
+     *
+     * @return \Twig_Markup
+     */
+    public function includeFile(string $path): \Twig_Markup
+    {
+        return Template::raw(
+            ManifestHelper::getFile($path)
+        );
+    }
+
+    /**
+     * Returns the contents of a file from the $fileName in the manifest
+     *
+     * @param string $fileName
+     * @param string $type
+     * @param null   $config
+     *
+     * @return \Twig_Markup
+     */
+    public function includeFileFromManifest(string $fileName, string $type = 'legacy', $config = null): \Twig_Markup
+    {
+        return Template::raw(
+            ManifestHelper::getFileFromManifest($config, $fileName, $type)
         );
     }
 }
