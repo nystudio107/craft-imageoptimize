@@ -3,20 +3,20 @@ const LEGACY_CONFIG = 'legacy';
 const MODERN_CONFIG = 'modern';
 
 // node modules
-const webpack = require('webpack');
-const glob = require("glob-all");
-const path = require('path');
 const git = require('git-rev-sync');
+const glob = require('glob-all');
+const merge = require('webpack-merge');
 const moment = require('moment');
+const path = require('path');
+const webpack = require('webpack');
 
 // webpack plugins
-const merge = require('webpack-merge');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const PurgecssPlugin = require('purgecss-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const PurgecssPlugin = require("purgecss-webpack-plugin");
-const whitelister = require('purgecss-whitelister');
+const WhitelisterPlugin = require('purgecss-whitelister');
 
 // config files
 const pkg = require('./package.json');
@@ -32,17 +32,17 @@ class TailwindExtractor {
     }
 }
 
-// File banner banner
+// Configure file banner
 const configureBanner = () => {
     return {
         banner: [
             '/*!',
-            ' * @project        ' + pkg.copyright,
+            ' * @project        ' + pkg.project.name,
             ' * @name           ' + '[filebase]',
-            ' * @author         ' + pkg.author,
+            ' * @author         ' + pkg.author.name,
             ' * @build          ' + moment().format('llll') + ' ET',
             ' * @release        ' + git.long() + ' [' + git.branch() + ']',
-            ' * @copyright      Copyright (c) ' + moment().format('YYYY') + ' ' + pkg.copyright,
+            ' * @copyright      Copyright (c) ' + moment().format('YYYY') + ' ' + pkg.project.copyright,
             ' *',
             ' */',
             ''
@@ -51,77 +51,13 @@ const configureBanner = () => {
     };
 };
 
-// Configure PurgeCSS
-const configurePurgeCss = () => {
-    let paths = [];
-    // Configure whitelist paths
-    for (const [key, value] of Object.entries(pkg.purgeCss.paths)) {
-        paths.push(path.join(__dirname, value));
-    }
-
-    return {
-        paths: glob.sync(paths),
-        whitelist: whitelister(pkg.purgeCss.whitelist),
-        whitelistPatterns: pkg.purgeCss.whitelistPatterns,
-        extractors: [{
-            extractor: TailwindExtractor,
-            extensions: pkg.purgeCss.extensions
-        }]
-    };
-};
-
-// Configure clean webpack
+// Configure Clean webpack
 const configureCleanWebpack = () => {
     return {
-        root: path.resolve(__dirname, pkg.paths.dist.base),
+        root: path.resolve(__dirname, pkg.project.paths.dist.base),
         verbose: true,
         dry: false
     };
-};
-
-// Configure terser
-const configureTerser = () => {
-    return {
-        cache: true,
-        parallel: true,
-        sourceMap: true
-    };
-};
-
-
-// Postcss loader
-const configurePostcssLoader = (buildType) => {
-    if (buildType === LEGACY_CONFIG) {
-        return {
-            test: /\.(pcss|css)$/,
-            use: [
-                MiniCssExtractPlugin.loader,
-                {
-                    loader: 'css-loader',
-                    options: {
-                        importLoaders: 2,
-                        sourceMap: true
-                    }
-                },
-                {
-                    loader: 'resolve-url-loader'
-                },
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        sourceMap: true
-                    }
-                }
-            ]
-        };
-    }
-    // Don't generate CSS for the modern config in production
-    if (buildType === MODERN_CONFIG) {
-        return {
-            test: /\.(pcss|css)$/,
-            loader: 'ignore-loader'
-        };
-    }
 };
 
 // Configure optimization
@@ -133,7 +69,7 @@ const configureOptimization = (buildType) => {
                     default: false,
                     common: false,
                     styles: {
-                        name: pkg.vars.cssName,
+                        name: pkg.project.vars.cssName,
                         test: /\.(pcss|css|vue)$/,
                         chunks: 'all',
                         enforce: true
@@ -168,6 +104,69 @@ const configureOptimization = (buildType) => {
     }
 };
 
+// Configure Postcss loader
+const configurePostcssLoader = (buildType) => {
+    if (buildType === LEGACY_CONFIG) {
+        return {
+            test: /\.(pcss|css)$/,
+            use: [
+                MiniCssExtractPlugin.loader,
+                {
+                    loader: 'css-loader',
+                    options: {
+                        importLoaders: 2,
+                        sourceMap: true
+                    }
+                },
+                {
+                    loader: 'resolve-url-loader'
+                },
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        sourceMap: true
+                    }
+                }
+            ]
+        };
+    }
+    // Don't generate CSS for the modern config in production
+    if (buildType === MODERN_CONFIG) {
+        return {
+            test: /\.(pcss|css)$/,
+            loader: 'ignore-loader'
+        };
+    }
+};
+
+// Configure PurgeCSS
+const configurePurgeCss = () => {
+    let paths = [];
+    // Configure whitelist paths
+    for (const [key, value] of Object.entries(pkg.project.purgeCssConfig.paths)) {
+        paths.push(path.join(__dirname, value));
+    }
+
+    return {
+        paths: glob.sync(paths),
+        whitelist: WhitelisterPlugin(pkg.project.purgeCssConfig.whitelist),
+        whitelistPatterns: pkg.project.purgeCssConfig.whitelistPatterns,
+        extractors: [{
+            extractor: TailwindExtractor,
+            extensions: pkg.project.purgeCssConfig.extensions
+        }]
+    };
+};
+
+// Configure terser
+const configureTerser = () => {
+    return {
+        cache: true,
+        parallel: true,
+        sourceMap: true
+    };
+};
+
 // Production module exports
 module.exports = [
     merge(
@@ -185,11 +184,11 @@ module.exports = [
                 ],
             },
             plugins: [
-                new CleanWebpackPlugin(pkg.paths.dist.clean,
+                new CleanWebpackPlugin(pkg.project.paths.dist.clean,
                     configureCleanWebpack()
                 ),
                 new MiniCssExtractPlugin({
-                    path: path.resolve(__dirname, pkg.paths.dist.base),
+                    path: path.resolve(__dirname, pkg.project.paths.dist.base),
                     filename: path.join('./css', '[name].[chunkhash].css'),
                 }),
                 new PurgecssPlugin(

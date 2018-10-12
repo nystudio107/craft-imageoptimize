@@ -15,15 +15,8 @@ const WebpackNotifierPlugin = require('webpack-notifier');
 // config files
 const pkg = require('./package.json');
 
-// Vue loader
-const configureVueLoader = () => {
-    return {
-        test: /\.vue$/,
-        loader: 'vue-loader'
-    };
-};
 
-// Babel loader
+// Configure Babel loader
 const configureBabelLoader = (browserList) => {
     return {
         test: /\.js$/,
@@ -55,7 +48,17 @@ const configureBabelLoader = (browserList) => {
     };
 };
 
-// Image loader
+// Configure Entries from package.json
+const configureEntries = () => {
+    let entries = {};
+    for (const [key, value] of Object.entries(pkg.project.entries)) {
+        entries[key] = path.resolve(__dirname, pkg.project.paths.src.js + value);
+    }
+
+    return entries;
+};
+
+// Configure Image loader
 const configureImageLoader = () => {
     return {
         test: /\.png|jpe?g|gif|svg$/,
@@ -66,11 +69,11 @@ const configureImageLoader = () => {
     };
 };
 
-// Manifest
+// Configure Manifest
 const configureManifest = (fileName) => {
     return {
         fileName: fileName,
-        basePath: pkg.paths.manifest.basePath,
+        basePath: pkg.project.manifestConfig.basePath,
         map: (file) => {
             file.name = file.name.replace(/(\.[a-f0-9]{32})(\..*)$/, '$2');
             return file;
@@ -78,14 +81,12 @@ const configureManifest = (fileName) => {
     };
 };
 
-// Entries from package.json
-const configureEntries = () => {
-    let entries = {};
-    for (const [key, value] of Object.entries(pkg.entries)) {
-        entries[key] = path.resolve(__dirname, pkg.paths.src.js + value);
-    }
-
-    return entries;
+// Configure Vue loader
+const configureVueLoader = () => {
+    return {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+    };
 };
 
 // The base webpack config
@@ -93,8 +94,8 @@ const baseConfig = {
     name: pkg.name,
     entry: configureEntries(),
     output: {
-        path: path.resolve(__dirname, pkg.paths.dist.base),
-        publicPath: pkg.paths.dist.public
+        path: path.resolve(__dirname, pkg.project.paths.dist.base),
+        publicPath: pkg.project.urls.publicPath
     },
     resolve: {
         alias: {
@@ -116,13 +117,13 @@ const baseConfig = {
 const legacyConfig = {
     module: {
         rules: [
-            configureBabelLoader(Object.values(pkg.babelConfig.legacyBrowsers)),
+            configureBabelLoader(Object.values(pkg.project.babelConfig.legacyBrowsers)),
             configureImageLoader(),
         ],
     },
     plugins: [
         new CopyWebpackPlugin(
-            pkg.paths.copyFiles
+            pkg.project.copyWebpackConfig
         ),
         new ManifestPlugin(
             configureManifest('manifest-legacy.json')
@@ -134,7 +135,7 @@ const legacyConfig = {
 const modernConfig = {
     module: {
         rules: [
-            configureBabelLoader(Object.values(pkg.babelConfig.modernBrowsers)),
+            configureBabelLoader(Object.values(pkg.project.babelConfig.modernBrowsers)),
         ],
     },
     plugins: [
@@ -145,6 +146,7 @@ const modernConfig = {
 };
 
 // Common module exports
+// noinspection WebpackConfigHighlighting
 module.exports = {
     'legacyConfig': merge(
         legacyConfig,

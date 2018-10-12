@@ -1,10 +1,10 @@
 /*!
- * @project        nystudio107
+ * @project        undefined
  * @name           vendors~confetti~vue.fdc3565b6903d8b98227.js
- * @author         andrew@nystudio107.com
- * @build          Thu, Oct 4, 2018 5:12 PM ET
- * @release        b8485da33957e4e7c0f54eacee1646a799401098 [develop]
- * @copyright      Copyright (c) 2018 nystudio107
+ * @author         Andrew Welch
+ * @build          Thu, Oct 11, 2018 5:35 PM ET
+ * @release        f7a63ad48c66c791df31f2749a57069166c2c720 [develop]
+ * @copyright      Copyright (c) 2018 undefined
  *
  */
 (window.webpackJsonp=window.webpackJsonp||[]).push([[0],[,,,function(e,t,n){"use strict";n.r(t),function(e,n){

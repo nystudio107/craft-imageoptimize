@@ -41,11 +41,14 @@ abstract class ImageTransform implements ImageTransformInterface
     }
 
     /**
-     * @param string $url
+     * @param string              $url
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
      * @return string
      */
-    public static function getWebPUrl(string $url): string
+    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
         return $url;
     }
@@ -94,10 +97,15 @@ abstract class ImageTransform implements ImageTransformInterface
     public static function getAssetUri(Asset $asset)
     {
         $volume = $asset->getVolume();
-        $assetUrl = AssetsHelper::generateUrl($volume, $asset);
-        $assetUri = parse_url($assetUrl, PHP_URL_PATH);
+        $assetPath = $asset->getPath();
 
-        return $assetUri;
+        // Account for volume types with a subfolder setting
+        // e.g. craftcms/aws-s3, craftcms/google-cloud
+        if ($volume->subfolder ?? null) {
+            return rtrim($volume->subfolder, '/').'/'.$assetPath;
+        }
+
+        return $assetPath;
     }
 
     /**

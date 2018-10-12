@@ -1,87 +1,100 @@
 {
-    "name": "imageoptimize",
+    "name": "image-optimize",
     "version": "1.0.0",
-    "description": "Automatically optimize images after they've been transformed",
-    "copyright": "nystudio107",
-    "main": "index.js",
-    "scripts": {
-        "dev": "webpack-dev-server --config webpack.dev.js --progress --hide-modules",
-        "build": "webpack --config webpack.prod.js"
+    "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.",
+    "keywords": [],
+    "homepage": "https://github.com/nystudio107/craft-imageoptimize",
+    "bugs": {
+        "email": "info@nystudio107.com",
+        "url": "https://github.com/nystudio107/craft-imageoptimize/issues"
     },
+    "license": "SEE LICENSE IN LICENSE.md",
+    "author": {
+        "name": "Andrew Welch",
+        "email": "andrew@nystudio107.com",
+        "url": "https://nystudio107.com/"
+    },
+    "browser": "./src/ImageOptimize.php",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/nystudio107/craft-imageoptimize.git"
     },
-    "author": "andrew@nystudio107.com",
-    "license": "proprietary",
-    "bugs": {
-        "url": "https://github.com/nystudio107/craft-imageoptimize/issues"
+    "private": true,
+    "scripts": {
+        "dev": "webpack-dev-server --config webpack.dev.js --progress --hide-modules",
+        "build": "webpack --config webpack.prod.js"
     },
-    "homepage": "https://github.com/nystudio107/craft-imageoptimize",
-    "paths": {
-        "src": {
-            "base": "./src/assetbundles/imageoptimize/src/",
-            "js": "./src/assetbundles/imageoptimize/src/js/",
-            "css": "./src/assetbundles/imageoptimize/src/css/"
+    "project": {
+        "paths": {
+            "name": "Image Optimize",
+            "copyright": "nystudio107",
+            "src": {
+                "base": "./src/assetbundles/imageoptimize/src/",
+                "css": "./src/assetbundles/imageoptimize/src/css/",
+                "js": "./src/assetbundles/imageoptimize/src/js/"
+            },
+            "dist": {
+                "base": "./src/assetbundles/imageoptimize/dist/",
+                "clean": [
+                    "./js",
+                    "./css"
+                ]
+            },
+            "templates": "./src/templates/"
         },
-        "dist": {
-            "base": "./src/assetbundles/imageoptimize/dist/",
-            "public": "/cpresources/imageoptimize/",
-            "devPublic": "http://192.168.10.10:8080",
-            "clean": [
-                "./js",
-                "./css"
+        "urls": {
+            "publicPath": "/cpresources/imageoptimize/"
+        },
+        "vars": {
+            "cssName": "styles"
+        },
+        "entries": {
+            "imageoptimize": "ImageOptimize.js",
+            "welcome": "Welcome.js"
+        },
+        "babelConfig": {
+            "legacyBrowsers": [
+                "> 1%",
+                "last 2 versions",
+                "Firefox ESR"
+            ],
+            "modernBrowsers": [
+                "last 2 Chrome versions",
+                "not Chrome < 60",
+                "last 2 Safari versions",
+                "not Safari < 10.1",
+                "last 2 iOS versions",
+                "not iOS < 10.3",
+                "last 2 Firefox versions",
+                "not Firefox < 54",
+                "last 2 Edge versions",
+                "not Edge < 15"
             ]
         },
-        "copyFiles": [
-        ],
-        "manifest": {
+        "copyWebpackConfig": [],
+        "devServerConfig": {
+            "public": "http://192.168.10.10:8080",
+            "host": "0.0.0.0",
+            "poll": true
+        },
+        "manifestConfig": {
             "basePath": ""
         },
-        "templates": "./src/templates/"
-    },
-    "entries": {
-        "imageoptimize": "ImageOptimize.js",
-        "welcome": "Welcome.js"
-    },
-    "babelConfig": {
-        "legacyBrowsers": [
-            "> 1%",
-            "last 2 versions",
-            "Firefox ESR"
-        ],
-        "modernBrowsers": [
-            "last 2 Chrome versions",
-            "not Chrome < 60",
-            "last 2 Safari versions",
-            "not Safari < 10.1",
-            "last 2 iOS versions",
-            "not iOS < 10.3",
-            "last 2 Firefox versions",
-            "not Firefox < 54",
-            "last 2 Edge versions",
-            "not Edge < 15"
-        ]
-    },
-    "purgeCss": {
-        "paths": [
-            "./src/templates/**/*.{twig,html}"
-        ],
-        "whitelist": [
-            "../css/components.pcss"
-        ],
-        "whitelistPatterns": [],
-        "extensions": [
-            "html",
-            "js",
-            "twig",
-            "vue"
-        ]
-    },
-    "urls": {},
-    "vars": {
-        "cssName": "styles",
-        "jsName": "imageoptimize"
+        "purgeCssConfig": {
+            "paths": [
+                "./src/templates/**/*.{twig,html}"
+            ],
+            "whitelist": [
+                "../css/components.pcss"
+            ],
+            "whitelistPatterns": [],
+            "extensions": [
+                "html",
+                "js",
+                "twig",
+                "vue"
+            ]
+        }
     },
     "devDependencies": {
         "@babel/core": "^7.1.0",
@@ -114,6 +127,7 @@
         "purgecss-webpack-plugin": "^1.3.0",
         "purgecss-whitelister": "^2.2.0",
         "resolve-url-loader": "^3.0.0",
+        "sane": "^4.0.1",
         "style-loader": "^0.23.0",
         "terser-webpack-plugin": "^1.1.0",
         "vue-loader": "^15.4.2",
