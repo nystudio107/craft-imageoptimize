@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.4.41 - 2018.10.09
+## 1.4.41 - 2018.10.11
 ### Changed
 * Fixed an issue where volumes with sub-folders such as Amazon S3 or Google Cloud didn't generate the correct URLs
 * Fixed the build process so it will no longer look for `devServer` on installs
