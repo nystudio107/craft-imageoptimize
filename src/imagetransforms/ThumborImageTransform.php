@@ -50,11 +50,8 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
      *
      * @return string
      */
-    public static function getWebPUrl(string $url): string
+     public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
-        // TODO: waiting for @khalwat :)
-        return $url;
-
         $builder = self::getUrlBuilderForTransform($asset, $transform, $params)
             ->addFilter('format', 'webp');
 
