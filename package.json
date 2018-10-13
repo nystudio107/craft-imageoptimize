@@ -25,9 +25,9 @@
         "build": "webpack --config webpack.prod.js"
     },
     "project": {
+        "name": "Image Optimize",
+        "copyright": "nystudio107",
         "paths": {
-            "name": "Image Optimize",
-            "copyright": "nystudio107",
             "src": {
                 "base": "./src/assetbundles/imageoptimize/src/",
                 "css": "./src/assetbundles/imageoptimize/src/css/",
