@@ -4,7 +4,7 @@
 
 Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](resources/img/plugin-banner.jpg)
 
 **Note**: _The license fee for this plugin is $59.00 via the Craft Plugin Store._
 
