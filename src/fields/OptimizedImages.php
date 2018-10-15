@@ -59,6 +59,11 @@ class OptimizedImages extends Field
     // =========================================================================
 
     /**
+     * @var array
+     */
+    public $ignoreFilesOfType = [];
+
+    /**
      * @var bool
      */
     public $displayOptimizedImageVariants = true;
