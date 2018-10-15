@@ -49,6 +49,17 @@ class Settings extends Model
     public $imgixSecurityToken = '';
 
     /**
+     * @var string Base URL for Thumbor transform service
+     */
+    public $thumborBaseUrl = '';
+
+    /**
+     * @var string The optional security key used by Thumbor to create secure
+     *      image URLs
+     */
+    public $thumborSecurityKey = '';
+
+    /**
      * @var bool Should the image variants in an Asset Volume be automatically
      *      re-saved when saving an OptimizedImages field, saving an Asset
      *      Volume that has an OptimizedImages field in its layout, or saving
@@ -281,6 +292,10 @@ class Settings extends Model
             ['imgixApiKey', 'default', 'value' => ''],
             ['imgixSecurityToken', 'string'],
             ['imgixSecurityToken', 'default', 'value' => ''],
+            ['thumborBaseUrl', 'string'],
+            ['thumborBaseUrl', 'default', 'value' => ''],
+            ['thumborSecurityKey', 'string'],
+            ['thumborSecurityKey', 'default', 'value' => ''],
             [
                 [
                     'automaticallyResaveImageVariants',
@@ -327,6 +342,8 @@ class Settings extends Model
             'imgixDomain',
             'imgixApiKey',
             'imgixSecurityToken',
+            'thumborBaseUrl',
+            'thumborSecurityKey',
             'createColorPalette',
             'createPlaceholderSilhouettes',
             'lowerQualityRetinaImageVariants',

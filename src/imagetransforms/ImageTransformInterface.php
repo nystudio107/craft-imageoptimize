@@ -26,6 +26,7 @@ interface ImageTransformInterface
     const IMAGE_TRANSFORM_MAP = [
         'craft' => CraftImageTransform::class,
         'imgix' => ImgixImageTransform::class,
+        'thumbor' => ThumborImageTransform::class,
     ];
 
     // Static Methods
