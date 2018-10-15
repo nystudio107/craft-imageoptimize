@@ -85,7 +85,7 @@
                 "./src/templates/**/*.{twig,html}"
             ],
             "whitelist": [
-                "../css/components/**/*.{css,pcss}"
+                "./src/assetbundles/image-optimize/src/css/components/**/*.{css,pcss}"
             ],
             "whitelistPatterns": [],
             "extensions": [
