@@ -3,6 +3,7 @@
 ## 1.4.41 - 2018.10.15
 ### Added
 * Added the ability to have OptimizedImages fields ignore `SVG` and/or `GIF` files
+
 ### Changed
 * Fixed an issue where volumes with sub-folders such as Amazon S3 or Google Cloud didn't generate the correct URLs
 * Fixed the build process so it will no longer look for `devServer` on installs
