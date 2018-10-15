@@ -22,7 +22,7 @@
     "private": true,
     "scripts": {
         "dev": "webpack-dev-server --config webpack.dev.js",
-        "build": "webpack --config webpack.prod.js"
+        "build": "webpack --config webpack.prod.js --progress --hide-modules"
     },
     "project": {
         "name": "Image Optimize",
