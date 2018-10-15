@@ -9,6 +9,9 @@ const sane = require('sane');
 const webpack = require('webpack');
 
 // webpack plugins
+const Dashboard = require('webpack-dashboard');
+const DashboardPlugin = require('webpack-dashboard/plugin');
+const dashboard = new Dashboard();
 
 // config files
 const pkg = require('./package.json');
@@ -20,6 +23,7 @@ const configureDevServer = (buildType) => {
         public: pkg.project.devServerConfig.public,
         contentBase: path.resolve(__dirname, pkg.project.paths.templates),
         host: pkg.project.devServerConfig.host,
+        quiet: true,
         hot: true,
         hotOnly: true,
         overlay: true,
@@ -99,7 +103,7 @@ module.exports = [
                 ],
             },
             plugins: [
-                new webpack.HotModuleReplacementPlugin()
+                new webpack.HotModuleReplacementPlugin(),
             ],
         }
     ),
@@ -119,7 +123,8 @@ module.exports = [
                 ],
             },
             plugins: [
-                new webpack.HotModuleReplacementPlugin()
+                new webpack.HotModuleReplacementPlugin(),
+                new DashboardPlugin(dashboard.setData),
             ],
         }
     ),

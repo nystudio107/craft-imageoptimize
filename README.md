@@ -2,9 +2,9 @@
 
 # ImageOptimize plugin for Craft CMS 3.x
 
-Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.
+Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix or Thumbor, with zero template changes.
 
-![Screenshot](resources/img/plugin-logo.png)
+![Screenshot](resources/img/plugin-banner.jpg)
 
 **Note**: _The license fee for this plugin is $59.00 via the Craft Plugin Store._
 
@@ -29,7 +29,7 @@ If you want to use ImageOptimize with Cloudinary, install the [Cloudinary](https
 
 ![Screenshot](resources/screenshots/image-optimize-field-composite2.jpg)
 
-ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com), with zero template changes.
+ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com) or [Thumbor](http://thumbor.org/), with zero template changes.
 
 You use the native Craft UI/UX to create your image transforms, whether in the AdminCP or via your templates. ImageOptimize takes care of the rest, optimizing all of your image transforms automatically by running a variety of image optimization tools on them.
 
@@ -39,7 +39,7 @@ Because ImageOptimize has already pre-generated and saved the URLs to your optim
 
 As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
-Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [Imgix](https://www.imgix.com/) to create the responsive image transforms.
+Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [Imgix](https://www.imgix.com/) or [Thumbor](http://thumbor.org/) to create the responsive image transforms.
 
 It's important to create optimized images for frontend delivery, especially for mobile devices. If you want to learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
 
@@ -49,7 +49,7 @@ ImageOptimize works equally well with both local and remote assets such as Amazo
 
 ## Configuring ImageOptimize
 
-The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [Imgix](https://imgix.com). The setting you choose here will apply globally to all of your image transforms.
+The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [Imgix](https://imgix.com) or [Thumbor](http://thumbor.org/). The setting you choose here will apply globally to all of your image transforms.
 
 ### Native Craft Images
 

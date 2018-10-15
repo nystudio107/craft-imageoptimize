@@ -29,8 +29,8 @@ class Manifest
     // Constants
     // =========================================================================
 
-    const CACHE_KEY = 'twigpack';
-    const CACHE_TAG = 'twigpack';
+    const CACHE_KEY = 'twigpack-image-optimize';
+    const CACHE_TAG = 'twigpack-image-optimize';
 
     const DEVMODE_CACHE_DURATION = 1;
 

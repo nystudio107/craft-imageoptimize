@@ -31,6 +31,7 @@
         options: {
             'craft': 'Craft'|t('image-optimize'),
             'imgix': "Imgix"|t('image-optimize'),
+            'thumbor': "Thumbor"|t('image-optimize'),
         },
         class: 'io-transform-method',
         warning: configWarning('transformMethod', 'image-optimize'),
@@ -63,6 +64,26 @@
             name: 'imgixSecurityToken',
             value: settings.imgixSecurityToken,
             warning: configWarning('imgixSecurityToken', 'image-optimize'),
+        }) }}
+    </div>
+    <div class="io-method-settings io-thumbor-method"{% if settings.transformMethod != 'thumbor' %} style="display: none;"{% endif %}>
+        <!-- thumborBaseUrl -->
+        {{ forms.textField({
+            label: 'Thumbor Base URL',
+            instructions: "The base URL to use for the Thumbor transforms."|t('image-optimize'),
+            id: 'thumborBaseUrl',
+            name: 'thumborBaseUrl',
+            value: settings.thumborBaseUrl,
+            warning: configWarning('thumborBaseUrl', 'image-optimize'),
+        }) }}
+        <!-- thumborSecurityKey -->
+        {{ forms.textField({
+            label: 'Thumbor Security Key',
+            instructions: "The optional [security key](https://thumbor.readthedocs.io/en/latest/security.html) used by Thumbor to create secure image urls."|t('image-optimize'),
+            id: 'thumborSecurityKey',
+            name: 'thumborSecurityKey',
+            value: settings.thumborSecurityKey,
+            warning: configWarning('thumborSecurityKey', 'image-optimize'),
         }) }}
     </div>
     <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>

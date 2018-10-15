@@ -119,14 +119,14 @@ class OptimizedImages extends Component
             if (Image::canManipulateAsImage($finalFormat)
                 && Image::canManipulateAsImage($finalFormat)
                 && $asset->height > 0) {
-                $variant =         [
-                    'width'          => $asset->width,
+                $variant = [
+                    'width' => $asset->width,
                     'useAspectRatio' => false,
-                    'aspectRatioX'   => $asset->width,
-                    'aspectRatioY'   => $asset->height,
-                    'retinaSizes'    => ['1'],
-                    'quality'        => 0,
-                    'format'         => $finalFormat,
+                    'aspectRatioX' => $asset->width,
+                    'aspectRatioY' => $asset->height,
+                    'retinaSizes' => ['1'],
+                    'quality' => 0,
+                    'format' => $finalFormat,
                 ];
                 list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, 1);
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
@@ -145,6 +145,190 @@ class OptimizedImages extends Component
 
     // Protected Methods
     // =========================================================================
+
+    /**
+     * @param Field            $field
+     * @param ElementInterface $asset
+     *
+     * @throws \yii\db\Exception
+     */
+    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset)
+    {
+        /** @var Asset $asset */
+        if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
+            $createVariants = true;
+            $sourceType = $asset->getMimeType();
+            if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
+                if (\in_array($sourceType, array_values($field->ignoreFilesOfType), false)) {
+                    $createVariants = false;
+                }
+            }
+            Craft::error(print_r($sourceType, true), 'image-optimize');
+            // Create a new OptimizedImage model and populate it
+            $model = new OptimizedImage();
+            // Empty our the optimized image URLs
+            $model->optimizedImageUrls = [];
+            $model->optimizedWebPImageUrls = [];
+            $model->variantSourceWidths = [];
+            $model->placeholderWidth = 0;
+            $model->placeholderHeight = 0;
+            if ($asset !== null && $createVariants) {
+                $this->populateOptimizedImageModel(
+                    $asset,
+                    $field->variants,
+                    $model
+                );
+            }
+            // Save our field data directly into the content table
+            if ($field->handle !== null) {
+                $asset->setFieldValue($field->handle, $field->serializeValue($model));
+                $table = $asset->getContentTable();
+                $column = $asset->getFieldColumnPrefix().$field->handle;
+                $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
+                Craft::$app->db->createCommand()
+                    ->update($table, [
+                        $column => $data,
+                    ], [
+                        'elementId' => $asset->getId(),
+                    ], [], false)
+                    ->execute();
+            }
+        }
+    }
+
+    /**
+     * Re-save all of the assets in all of the volumes
+     *
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function resaveAllVolumesAssets()
+    {
+        $volumes = Craft::$app->getVolumes()->getAllVolumes();
+        foreach ($volumes as $volume) {
+            if (is_subclass_of($volume, Volume::class)) {
+                /** @var Volume $volume */
+                $this->resaveVolumeAssets($volume);
+            }
+        }
+    }
+
+    /**
+     * Re-save all of the Asset elements in the Volume $volume that have an
+     * OptimizedImages field in the FieldLayout
+     *
+     * @param Volume $volume
+     *
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function resaveVolumeAssets(Volume $volume)
+    {
+        $needToReSave = false;
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $volume->getFieldLayout();
+        // Loop through the fields in the layout to see if there is an OptimizedImages field
+        if ($fieldLayout) {
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof OptimizedImagesField) {
+                    $needToReSave = true;
+                }
+            }
+        }
+        if ($needToReSave) {
+            try {
+                $siteId = Craft::$app->getSites()->getPrimarySite()->id;
+            } catch (SiteNotFoundException $e) {
+                $siteId = 0;
+                Craft::error(
+                    'Failed to get primary site: '.$e->getMessage(),
+                    __METHOD__
+                );
+            }
+
+            $queue = Craft::$app->getQueue();
+            $jobId = $queue->push(new ResaveOptimizedImages([
+                'description' => Craft::t('image-optimize', 'Optimizing images in {name}', ['name' => $volume->name]),
+                'criteria' => [
+                    'siteId' => $siteId,
+                    'volumeId' => $volume->id,
+                    'status' => null,
+                    'enabledForSite' => false,
+                ],
+            ]));
+            Craft::debug(
+                Craft::t(
+                    'image-optimize',
+                    'Started resaveVolumeAssets queue job id: {jobId}',
+                    [
+                        'jobId' => $jobId,
+                    ]
+                ),
+                __METHOD__
+            );
+        }
+    }
+
+    /**
+     * Re-save an individual asset
+     *
+     * @param int $id
+     */
+    public function resaveAsset(int $id)
+    {
+        $queue = Craft::$app->getQueue();
+        $jobId = $queue->push(new ResaveOptimizedImages([
+            'description' => Craft::t('image-optimize', 'Optimizing image id {id}', ['id' => $id]),
+            'criteria' => [
+                'id' => $id,
+                'status' => null,
+                'enabledForSite' => false,
+            ],
+        ]));
+        Craft::debug(
+            Craft::t(
+                'image-optimize',
+                'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
+                [
+                    'elementId' => $id,
+                    'jobId' => $jobId,
+                ]
+            ),
+            __METHOD__
+        );
+    }
+
+    /**
+     * Create an optimized SVG data uri
+     * See: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
+     *
+     * @param string $uri
+     *
+     * @return string
+     */
+    public function encodeOptimizedSVGDataUri(string $uri): string
+    {
+        // First, uri encode everything
+        $uri = rawurlencode($uri);
+        $replacements = [
+            // remove newlines
+            '/%0A/' => '',
+            // put spaces back in
+            '/%20/' => ' ',
+            // put equals signs back in
+            '/%3D/' => '=',
+            // put colons back in
+            '/%3A/' => ':',
+            // put slashes back in
+            '/%2F/' => '/',
+            // replace quotes with apostrophes (may break certain SVGs)
+            '/%22/' => "'",
+        ];
+        foreach ($replacements as $pattern => $replacement) {
+            $uri = preg_replace($pattern, $replacement, $uri);
+        }
+
+        return $uri;
+    }
 
     /**
      * @param Asset          $element
@@ -267,176 +451,5 @@ class OptimizedImages extends Component
             );
         }
         Craft::endProfile('addVariantImageToModel', __METHOD__);
-    }
-
-    /**
-     * @param Field            $field
-     * @param ElementInterface $asset
-     *
-     * @throws \yii\db\Exception
-     */
-    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset)
-    {
-        /** @var Asset $asset */
-        if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
-            // Create a new OptimizedImage model and populate it
-            $model = new OptimizedImage();
-            if ($asset !== null) {
-                $this->populateOptimizedImageModel(
-                    $asset,
-                    $field->variants,
-                    $model
-                );
-            }
-            // Save our field data directly into the content table
-            if ($field->handle !== null) {
-                $asset->setFieldValue($field->handle, $field->serializeValue($model));
-                $table = $asset->getContentTable();
-                $column = $asset->getFieldColumnPrefix().$field->handle;
-                $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
-                Craft::$app->db->createCommand()
-                    ->update($table, [
-                        $column => $data,
-                    ], [
-                        'elementId' => $asset->getId(),
-                    ], [], false)
-                    ->execute();
-            }
-        }
-    }
-
-
-    /**
-     * Re-save all of the assets in all of the volumes
-     *
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function resaveAllVolumesAssets()
-    {
-        $volumes = Craft::$app->getVolumes()->getAllVolumes();
-        foreach ($volumes as $volume) {
-            if (is_subclass_of($volume, Volume::class)) {
-                /** @var Volume $volume */
-                $this->resaveVolumeAssets($volume);
-            }
-        }
-    }
-
-    /**
-     * Re-save all of the Asset elements in the Volume $volume that have an
-     * OptimizedImages field in the FieldLayout
-     *
-     * @param Volume $volume
-     *
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function resaveVolumeAssets(Volume $volume)
-    {
-        $needToReSave = false;
-        /** @var FieldLayout $fieldLayout */
-        $fieldLayout = $volume->getFieldLayout();
-        // Loop through the fields in the layout to see if there is an OptimizedImages field
-        if ($fieldLayout) {
-            $fields = $fieldLayout->getFields();
-            foreach ($fields as $field) {
-                if ($field instanceof OptimizedImagesField) {
-                    $needToReSave = true;
-                }
-            }
-        }
-        if ($needToReSave) {
-            try {
-                $siteId = Craft::$app->getSites()->getPrimarySite()->id;
-            } catch (SiteNotFoundException $e) {
-                $siteId = 0;
-                Craft::error(
-                    'Failed to get primary site: '.$e->getMessage(),
-                    __METHOD__
-                );
-            }
-
-            $queue = Craft::$app->getQueue();
-            $jobId = $queue->push(new ResaveOptimizedImages([
-                'description' => Craft::t('image-optimize', 'Optimizing images in {name}', ['name' => $volume->name]),
-                'criteria'    => [
-                    'siteId'         => $siteId,
-                    'volumeId'       => $volume->id,
-                    'status'         => null,
-                    'enabledForSite' => false,
-                ],
-            ]));
-            Craft::debug(
-                Craft::t(
-                    'image-optimize',
-                    'Started resaveVolumeAssets queue job id: {jobId}',
-                    [
-                        'jobId' => $jobId,
-                    ]
-                ),
-                __METHOD__
-            );
-        }
-    }
-
-    /**
-     * Re-save an individual asset
-     *
-     * @param int $id
-     */
-    public function resaveAsset(int $id)
-    {
-        $queue = Craft::$app->getQueue();
-        $jobId = $queue->push(new ResaveOptimizedImages([
-            'description' => Craft::t('image-optimize', 'Optimizing image id {id}', ['id' => $id]),
-            'criteria'    => [
-                'id'             => $id,
-                'status'         => null,
-                'enabledForSite' => false,
-            ],
-        ]));
-        Craft::debug(
-            Craft::t(
-                'image-optimize',
-                'Started resaveAsset queue job id: {jobId} Element id: {elementId}',
-                [
-                    'elementId' => $id,
-                    'jobId'     => $jobId,
-                ]
-            ),
-            __METHOD__
-        );
-    }
-
-    /**
-     * Create an optimized SVG data uri
-     * See: https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
-     *
-     * @param string $uri
-     *
-     * @return string
-     */
-    public function encodeOptimizedSVGDataUri(string $uri): string
-    {
-        // First, uri encode everything
-        $uri = rawurlencode($uri);
-        $replacements = [
-            // remove newlines
-            '/%0A/' => '',
-            // put spaces back in
-            '/%20/' => ' ',
-            // put equals signs back in
-            '/%3D/' => '=',
-            // put colons back in
-            '/%3A/' => ':',
-            // put slashes back in
-            '/%2F/' => '/',
-            // replace quotes with apostrophes (may break certain SVGs)
-            '/%22/' => "'",
-        ];
-        foreach ($replacements as $pattern => $replacement) {
-            $uri = preg_replace($pattern, $replacement, $uri);
-        }
-
-        return $uri;
     }
 }

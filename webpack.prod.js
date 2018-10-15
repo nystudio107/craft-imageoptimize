@@ -11,6 +11,7 @@ const path = require('path');
 const webpack = require('webpack');
 
 // webpack plugins
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -49,6 +50,22 @@ const configureBanner = () => {
         ].join('\n'),
         raw: true
     };
+};
+
+// Configure Bundle Analyzer
+const configureBundleAnalyzer = (buildType) => {
+    if (buildType === LEGACY_CONFIG) {
+        return {
+            analyzerMode: 'static',
+            reportFilename: 'report-legacy.html',
+        };
+    }
+    if (buildType === MODERN_CONFIG) {
+        return {
+            analyzerMode: 'static',
+            reportFilename: 'report-modern.html',
+        };
+    }
 };
 
 // Configure Clean webpack
@@ -197,6 +214,9 @@ module.exports = [
                 new webpack.BannerPlugin(
                     configureBanner()
                 ),
+                new BundleAnalyzerPlugin(
+                    configureBundleAnalyzer(LEGACY_CONFIG),
+                ),
             ]
         }
     ),
@@ -215,8 +235,12 @@ module.exports = [
                 ],
             },
             plugins: [
+                new webpack.optimize.ModuleConcatenationPlugin(),
                 new webpack.BannerPlugin(
                     configureBanner()
+                ),
+                new BundleAnalyzerPlugin(
+                    configureBundleAnalyzer(MODERN_CONFIG),
                 ),
             ]
         }

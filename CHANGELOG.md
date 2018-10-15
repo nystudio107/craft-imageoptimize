@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.42 - 2018.10.15
+### Added
+* Added the ability to have OptimizedImages fields ignore `SVG` and/or `GIF` files
+* Added support [Thumbor](http://thumbor.org/) resizing service
+
 ## 1.4.41 - 2018.10.11
 ### Changed
 * Fixed an issue where volumes with sub-folders such as Amazon S3 or Google Cloud didn't generate the correct URLs

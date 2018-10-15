@@ -21,13 +21,13 @@
     },
     "private": true,
     "scripts": {
-        "dev": "webpack-dev-server --config webpack.dev.js --progress --hide-modules",
-        "build": "webpack --config webpack.prod.js"
+        "dev": "webpack-dev-server --config webpack.dev.js",
+        "build": "webpack --config webpack.prod.js --progress --hide-modules"
     },
     "project": {
+        "name": "Image Optimize",
+        "copyright": "nystudio107",
         "paths": {
-            "name": "Image Optimize",
-            "copyright": "nystudio107",
             "src": {
                 "base": "./src/assetbundles/imageoptimize/src/",
                 "css": "./src/assetbundles/imageoptimize/src/css/",
@@ -136,6 +136,7 @@
         "webpack": "^4.19.1",
         "webpack-bundle-analyzer": "^3.0.2",
         "webpack-cli": "^3.1.1",
+        "webpack-dashboard": "^2.0.0",
         "webpack-dev-server": "^3.1.9",
         "webpack-manifest-plugin": "^2.0.4",
         "webpack-merge": "^4.1.4",
