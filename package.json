@@ -85,7 +85,7 @@
                 "./src/templates/**/*.{twig,html}"
             ],
             "whitelist": [
-                "../css/components.pcss"
+                "../css/components/**/*.{css,pcss}"
             ],
             "whitelistPatterns": [],
             "extensions": [
