@@ -177,13 +177,13 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         ]);
 
         return implode('', [
-            $box['top'],
-            'x',
             $box['left'],
-            ':',
-            $box['bottom'],
             'x',
+            $box['top'],
+            ':',
             $box['right'],
+            'x',
+            $box['bottom'],
         ]);
     }
 
