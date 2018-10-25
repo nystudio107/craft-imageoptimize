@@ -1,5 +1,8 @@
 # ImageOptimize Changelog
 
+## 1.4.43 - 2018.10.15
+### Changed
+
 ## 1.4.42 - 2018.10.15
 ### Added
 * Added the ability to have OptimizedImages fields ignore `SVG` and/or `GIF` files
