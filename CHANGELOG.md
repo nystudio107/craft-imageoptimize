@@ -1,7 +1,8 @@
 # ImageOptimize Changelog
 
-## 1.4.43 - 2018.10.15
+## 1.4.43 - 2018.10.29
 ### Changed
+* Fix Thumbor focal point order
 
 ## 1.4.42 - 2018.10.15
 ### Added
