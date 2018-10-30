@@ -3,6 +3,7 @@
 ## 1.4.43 - 2018.10.29
 ### Changed
 * Fix Thumbor focal point order
+* Fix a regression that broke images in sub-folders for Imgix
 
 ## 1.4.42 - 2018.10.15
 ### Added
