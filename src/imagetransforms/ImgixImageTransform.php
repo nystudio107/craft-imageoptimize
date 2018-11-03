@@ -266,9 +266,21 @@ class ImgixImageTransform extends ImageTransform
     public static function getAssetUri(Asset $asset)
     {
         $volume = $asset->getVolume();
-        $assetUrl = AssetsHelper::generateUrl($volume, $asset);
-        $assetUri = parse_url($assetUrl, PHP_URL_PATH);
 
-        return $assetUri;
+        // If this is a local volume, it implies your are using a "Web Folder"
+        // source in Imgix. We can then also infer that:
+        // - This volume has URLs
+        // - The "Base URL" in Imgix is set to your domain root, per the ImageOptimize docs.
+        //
+        // Therefore, we need to parse the path from the full URL, so that it
+        // includes the path of the volume.
+        if ($volume instanceof \craft\volumes\Local) {
+            $assetUrl = AssetsHelper::generateUrl($volume, $asset);
+            $assetUri = parse_url($assetUrl, PHP_URL_PATH);
+
+            return $assetUri;
+        }
+
+        return parent::getAssetUri($asset);
     }
 }
