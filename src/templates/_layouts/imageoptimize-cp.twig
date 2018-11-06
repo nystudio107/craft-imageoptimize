@@ -2,7 +2,8 @@
 
 {% block head %}
     {{ parent() }}
-    {{ craft.imageOptimize.includeCssModule("styles.css") }}
-    {{ craft.imageOptimize.includeSafariNomoduleFix() }}
-    {{ craft.imageOptimize.includeJsModule("imageoptimize.js", true) }}
+    {{ craft.imageOptimize.includeCssModule("styles.css", false) }}
+    {{ craft.imageOptimize.includeCssModule("vendor.css", false) }}
+    {{ craft.imageOptimize.includeJsModule("vendor.js", false) }}
+    {{ craft.imageOptimize.includeJsModule("imageoptimize.js", false) }}
 {% endblock %}

@@ -11,9 +11,9 @@
 
     export default {
         mounted: function() {
-            this.$confetti.start()
+            this.$confetti.start();
             setTimeout(() => {
-                this.$confetti.stop()
+                this.$confetti.stop();
             }, 5000);
         },
         methods: {

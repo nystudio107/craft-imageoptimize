@@ -18,7 +18,7 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
 
-{{ craft.imageOptimize.includeCssModule("styles.css") }}
+{{ craft.imageOptimize.includeCssModule("styles.css", false) }}
 
 <div class="field" id="{{ id }}-fields">
     {{ forms.checkboxSelectField({
