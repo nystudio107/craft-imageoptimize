@@ -24,77 +24,29 @@
         "dev": "webpack-dev-server --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js --progress --hide-modules"
     },
-    "project": {
-        "name": "Image Optimize",
-        "copyright": "nystudio107",
-        "paths": {
-            "src": {
-                "base": "./src/assetbundles/imageoptimize/src/",
-                "css": "./src/assetbundles/imageoptimize/src/css/",
-                "js": "./src/assetbundles/imageoptimize/src/js/"
-            },
-            "dist": {
-                "base": "./src/assetbundles/imageoptimize/dist/",
-                "clean": [
-                    "./js",
-                    "./css"
-                ]
-            },
-            "templates": "./src/templates/"
-        },
-        "urls": {
-            "publicPath": "/cpresources/imageoptimize/"
-        },
-        "vars": {
-            "cssName": "styles"
-        },
-        "entries": {
-            "imageoptimize": "ImageOptimize.js",
-            "welcome": "Welcome.js"
-        },
-        "babelConfig": {
-            "legacyBrowsers": [
-                "> 1%",
-                "last 2 versions",
-                "Firefox ESR"
-            ],
-            "modernBrowsers": [
-                "last 2 Chrome versions",
-                "not Chrome < 60",
-                "last 2 Safari versions",
-                "not Safari < 10.1",
-                "last 2 iOS versions",
-                "not iOS < 10.3",
-                "last 2 Firefox versions",
-                "not Firefox < 54",
-                "last 2 Edge versions",
-                "not Edge < 15"
-            ]
-        },
-        "copyWebpackConfig": [],
-        "devServerConfig": {
-            "public": "http://192.168.10.10:8080",
-            "host": "0.0.0.0",
-            "poll": true
-        },
-        "manifestConfig": {
-            "basePath": ""
-        },
-        "purgeCssConfig": {
-            "paths": [
-                "./src/templates/**/*.{twig,html}"
-            ],
-            "whitelist": [
-                "../css/components.pcss"
-            ],
-            "whitelistPatterns": [],
-            "extensions": [
-                "html",
-                "js",
-                "twig",
-                "vue"
-            ]
-        }
+    "browserslist": {
+        "production": [
+            "> 1%",
+            "last 2 versions",
+            "Firefox ESR"
+        ],
+        "legacyBrowsers": [
+            "> 1%",
+            "last 2 versions",
+            "Firefox ESR"
+        ],
+        "modernBrowsers": [
+            "last 2 Chrome versions",
+            "not Chrome < 60",
+            "last 2 Safari versions",
+            "not Safari < 10.1",
+            "last 2 iOS versions",
+            "not iOS < 10.3",
+            "last 2 Firefox versions",
+            "not Firefox < 54",
+            "last 2 Edge versions",
+            "not Edge < 15"
+        ]
     },
     "devDependencies": {
         "@babel/core": "^7.1.0",
@@ -109,10 +61,19 @@
         "copy-webpack-plugin": "^4.5.2",
         "css-loader": "^1.0.0",
         "cssnano": "^4.1.0",
+        "dotenv": "^6.1.0",
         "file-loader": "^2.0.0",
         "git-rev-sync": "^1.12.0",
         "glob-all": "^3.1.0",
         "ignore-loader": "^0.1.2",
+        "imagemin": "^6.0.0",
+        "imagemin-gifsicle": "^5.2.0",
+        "imagemin-mozjpeg": "^7.0.0",
+        "imagemin-optipng": "^5.2.1",
+        "imagemin-svgo": "^7.0.0",
+        "imagemin-webp": "^4.1.0",
+        "imagemin-webp-webpack-plugin": "^1.0.2",
+        "img-loader": "^3.0.1",
         "mini-css-extract-plugin": "^0.4.3",
         "moment": "^2.22.2",
         "optimize-css-assets-webpack-plugin": "^5.0.1",

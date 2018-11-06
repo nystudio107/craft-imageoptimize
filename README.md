@@ -328,6 +328,13 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
          sizes="100vw" />
 ```
 
+If you want to check to see if `.webp` is supported on the server so you can conditionally include `.webp` images, you can do:
+
+```twig
+{% if craft.imageOptimize.serverSupportsWebP() %}
+{% endif %}
+```
+
 #### Picture Elements
 
 To use `<picture>` in your templates, you can just do:

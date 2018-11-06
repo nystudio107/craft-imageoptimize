@@ -13,11 +13,8 @@ namespace nystudio107\imageoptimize\imagetransforms;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use craft\elements\Asset;
-use craft\helpers\ArrayHelper;
-use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
 use Thumbor\Url\Builder as UrlBuilder;
-use Psr\Http\Message\ResponseInterface;
 
 use Craft;
 
@@ -26,7 +23,7 @@ use Craft;
  * @package   ImageOptimize
  * @since     1.0.0
  */
-class ThumborImageTransform extends ImageTransform implements ImageTransformInterface
+class ThumborImageTransform extends ImageTransform
 {
     // Static Methods
     // =========================================================================
@@ -42,20 +39,25 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
      */
     public static function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        return (string) self::getUrlBuilderForTransform($asset, $transform, $params);
+        return (string)self::getUrlBuilderForTransform($asset, $transform, $params);
     }
 
     /**
-     * @param string $url
+     * @param string              $url
+     * @param Asset               $asset
+     * @param AssetTransform|null $transform
+     * @param array               $params
      *
      * @return string
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
      */
-     public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
         $builder = self::getUrlBuilderForTransform($asset, $transform, $params)
             ->addFilter('format', 'webp');
 
-        return (string) $builder;
+        return (string)$builder;
     }
 
     /**
@@ -101,7 +103,6 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         $settings = ImageOptimize::$plugin->getSettings();
 
         if ($transform->mode === 'fit') {
-
             // https://thumbor.readthedocs.io/en/latest/usage.html#fit-in
             $builder->fitIn($transform->width, $transform->height);
         } elseif ($transform->mode === 'stretch') {
@@ -117,7 +118,6 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
             $builder->resize($transform->width, $transform->height);
 
             if ($focalPoint = self::getFocalPoint($asset)) {
-
                 // https://thumbor.readthedocs.io/en/latest/focal.html
                 $builder->addFilter('focal', $focalPoint);
             } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position, $matches)) {
@@ -144,12 +144,10 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         }
 
         if ($settings->autoSharpenScaledImages) {
-
             // See if the image has been scaled >= 50%
             $widthScale = $asset->getWidth() / ($transform->width ?? $asset->getWidth());
             $heightScale = $asset->getHeight() / ($transform->height ?? $asset->getHeight());
             if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
-
                 // https://thumbor.readthedocs.io/en/latest/sharpen.html
                 $builder->addFilter('sharpen', .5, .5, 'true');
             }
@@ -177,13 +175,13 @@ class ThumborImageTransform extends ImageTransform implements ImageTransformInte
         ]);
 
         return implode('', [
-            $box['top'],
-            'x',
             $box['left'],
-            ':',
-            $box['bottom'],
             'x',
+            $box['top'],
+            ':',
             $box['right'],
+            'x',
+            $box['bottom'],
         ]);
     }
 

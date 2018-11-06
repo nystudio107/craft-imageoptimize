@@ -1,22 +1,15 @@
-// Dashboard main
-const main = async () => {
-    // Async load the vue module
-    const Vue = await import(/* webpackChunkName: "vue" */ 'vue');
-    // Create our vue instance
-    const vm = new Vue.default({
-        el: "#cp-nav-content",
-        delimiters: ["${", "}"],
-        components: {
-            'confetti': () => import(/* webpackChunkName: "confetti" */ '../vue/Confetti.vue')
-        },
-        data: {
-        },
-        methods: {
-        },
-        mounted() {
-        }
-    });
-};
-// Execute async function
-main().then( (value) => {
+import Vue from 'vue';
+import Confetti from '../vue/Confetti.vue';
+
+const vm = new Vue({
+    el: "#cp-nav-content",
+    components: {
+        'confetti': Confetti,
+    },
+    data: {
+    },
+    methods: {
+    },
+    mounted() {
+    }
 });

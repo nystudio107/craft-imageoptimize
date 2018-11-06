@@ -38,5 +38,5 @@
     </div>
     {# include our JavaScript modules #}
     {{ parent() }}
-    {{ craft.imageOptimize.includeJsModule("welcome.js") }}
+    {{ craft.imageOptimize.includeJsModule("welcome.js", false) }}
 {% endblock %}

@@ -14,6 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use craft\elements\Asset;
 use craft\helpers\ArrayHelper;
+use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\UrlHelper;
 use craft\models\AssetTransform;
 
@@ -27,7 +28,7 @@ use Craft;
  * @package   ImageOptimize
  * @since     1.0.0
  */
-class ImgixImageTransform extends ImageTransform implements ImageTransformInterface
+class ImgixImageTransform extends ImageTransform
 {
     // Constants
     // =========================================================================
@@ -254,5 +255,32 @@ class ImgixImageTransform extends ImageTransform implements ImageTransformInterf
         ];
 
         return $params;
+    }
+
+    /**
+     * @param Asset $asset
+     *
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getAssetUri(Asset $asset)
+    {
+        $volume = $asset->getVolume();
+
+        // If this is a local volume, it implies your are using a "Web Folder"
+        // source in Imgix. We can then also infer that:
+        // - This volume has URLs
+        // - The "Base URL" in Imgix is set to your domain root, per the ImageOptimize docs.
+        //
+        // Therefore, we need to parse the path from the full URL, so that it
+        // includes the path of the volume.
+        if ($volume instanceof \craft\volumes\Local) {
+            $assetUrl = AssetsHelper::generateUrl($volume, $asset);
+            $assetUri = parse_url($assetUrl, PHP_URL_PATH);
+
+            return $assetUri;
+        }
+
+        return parent::getAssetUri($asset);
     }
 }

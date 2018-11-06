@@ -1,7 +1,3 @@
-// webpack.prod.js - production builds
-const LEGACY_CONFIG = 'legacy';
-const MODERN_CONFIG = 'modern';
-
 // node modules
 const git = require('git-rev-sync');
 const glob = require('glob-all');
@@ -13,6 +9,7 @@ const webpack = require('webpack');
 // webpack plugins
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ImageminWebpWebpackPlugin = require('imagemin-webp-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const PurgecssPlugin = require('purgecss-webpack-plugin');
@@ -20,8 +17,9 @@ const TerserPlugin = require('terser-webpack-plugin');
 const WhitelisterPlugin = require('purgecss-whitelister');
 
 // config files
-const pkg = require('./package.json');
 const common = require('./webpack.common.js');
+const pkg = require('./package.json');
+const settings = require('./webpack.settings.js');
 
 // Custom PurgeCSS extractor for Tailwind that allows special characters in
 // class names.
@@ -38,12 +36,12 @@ const configureBanner = () => {
     return {
         banner: [
             '/*!',
-            ' * @project        ' + pkg.project.name,
+            ' * @project        ' + settings.name,
             ' * @name           ' + '[filebase]',
             ' * @author         ' + pkg.author.name,
             ' * @build          ' + moment().format('llll') + ' ET',
             ' * @release        ' + git.long() + ' [' + git.branch() + ']',
-            ' * @copyright      Copyright (c) ' + moment().format('YYYY') + ' ' + pkg.project.copyright,
+            ' * @copyright      Copyright (c) ' + moment().format('YYYY') + ' ' + settings.copyright,
             ' *',
             ' */',
             ''
@@ -53,125 +51,141 @@ const configureBanner = () => {
 };
 
 // Configure Bundle Analyzer
-const configureBundleAnalyzer = (buildType) => {
-    if (buildType === LEGACY_CONFIG) {
-        return {
-            analyzerMode: 'static',
-            reportFilename: 'report-legacy.html',
-        };
-    }
-    if (buildType === MODERN_CONFIG) {
-        return {
-            analyzerMode: 'static',
-            reportFilename: 'report-modern.html',
-        };
-    }
+const configureBundleAnalyzer = () => {
+    return {
+        analyzerMode: 'static',
+        reportFilename: 'report-legacy.html',
+    };
 };
 
 // Configure Clean webpack
 const configureCleanWebpack = () => {
     return {
-        root: path.resolve(__dirname, pkg.project.paths.dist.base),
+        root: path.resolve(__dirname, settings.paths.dist.base),
         verbose: true,
         dry: false
     };
 };
 
-// Configure optimization
-const configureOptimization = (buildType) => {
-    if (buildType === LEGACY_CONFIG) {
-        return {
-            splitChunks: {
-                cacheGroups: {
-                    default: false,
-                    common: false,
-                    styles: {
-                        name: pkg.project.vars.cssName,
-                        test: /\.(pcss|css|vue)$/,
-                        chunks: 'all',
-                        enforce: true
-                    }
+// Configure Image loader
+const configureImageLoader = () => {
+    return {
+        test: /\.(png|jpe?g|gif|svg|webp)$/i,
+        use: [
+            {
+                loader: 'file-loader',
+                options: {
+                    name: 'img/[name].[ext]'
                 }
             },
-            minimizer: [
-                new TerserPlugin(
-                    configureTerser()
-                ),
-                new OptimizeCSSAssetsPlugin({
-                    cssProcessorOptions: {
-                        map: {
-                            inline: false,
-                            annotation: true,
-                        },
-                        safe: true,
-                        discardComments: true
+            {
+                loader: 'img-loader',
+                options: {
+                    plugins: [
+                        require('imagemin-gifsicle')({
+                            interlaced: true,
+                        }),
+                        require('imagemin-mozjpeg')({
+                            progressive: true,
+                            arithmetic: false,
+                        }),
+                        require('imagemin-optipng')({
+                            optimizationLevel: 5,
+                        }),
+                        require('imagemin-svgo')({
+                            plugins: [
+                                {convertPathData: false},
+                            ]
+                        }),
+                    ]
+                }
+            }
+        ]
+    };
+};
+
+// Configure optimization
+const configureOptimization = () => {
+    return {
+        splitChunks: {
+            cacheGroups: {
+                vendor: {
+                    test: /node_modules/,
+                    chunks: "initial",
+                    name: "vendor",
+                    priority: 10,
+                    enforce: true
+                },
+                styles: {
+                    name: settings.vars.cssName,
+                    test: /\.(pcss|css)$/,
+                    chunks: 'all',
+                    enforce: true
+                }
+            }
+        },
+        minimizer: [
+            new TerserPlugin(
+                configureTerser()
+            ),
+            new OptimizeCSSAssetsPlugin({
+                cssProcessorOptions: {
+                    map: {
+                        inline: false,
+                        annotation: true,
                     },
-                })
-            ]
-        };
-    }
-    if (buildType === MODERN_CONFIG) {
-        return {
-            minimizer: [
-                new TerserPlugin(
-                    configureTerser()
-                ),
-            ]
-        };
-    }
+                    safe: true,
+                    discardComments: true
+                },
+            })
+        ]
+    };
 };
 
 // Configure Postcss loader
-const configurePostcssLoader = (buildType) => {
-    if (buildType === LEGACY_CONFIG) {
-        return {
-            test: /\.(pcss|css)$/,
-            use: [
-                MiniCssExtractPlugin.loader,
-                {
-                    loader: 'css-loader',
-                    options: {
-                        importLoaders: 2,
-                        sourceMap: true
-                    }
-                },
-                {
-                    loader: 'resolve-url-loader'
-                },
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        sourceMap: true
-                    }
+const configurePostcssLoader = () => {
+    return {
+        test: /\.(pcss|css)$/,
+        use: [
+            MiniCssExtractPlugin.loader,
+            {
+                loader: 'css-loader',
+                options: {
+                    importLoaders: 2,
+                    sourceMap: true
                 }
-            ]
-        };
-    }
-    // Don't generate CSS for the modern config in production
-    if (buildType === MODERN_CONFIG) {
-        return {
-            test: /\.(pcss|css)$/,
-            loader: 'ignore-loader'
-        };
-    }
+            },
+            {
+                loader: 'resolve-url-loader'
+            },
+            {
+                loader: 'postcss-loader',
+                options: {
+                    sourceMap: true
+                }
+            }
+        ]
+    };
 };
 
 // Configure PurgeCSS
 const configurePurgeCss = () => {
     let paths = [];
     // Configure whitelist paths
-    for (const [key, value] of Object.entries(pkg.project.purgeCssConfig.paths)) {
+    for (const [key, value] of Object.entries(settings.purgeCssConfig.paths)) {
         paths.push(path.join(__dirname, value));
     }
 
     return {
         paths: glob.sync(paths),
-        whitelist: WhitelisterPlugin(pkg.project.purgeCssConfig.whitelist),
-        whitelistPatterns: pkg.project.purgeCssConfig.whitelistPatterns,
-        extractors: [{
-            extractor: TailwindExtractor,
-            extensions: pkg.project.purgeCssConfig.extensions
-        }]
+        whitelist: WhitelisterPlugin(settings.purgeCssConfig.whitelist),
+        whitelistPatterns: settings.purgeCssConfig.whitelistPatterns,
+        extractors: [
+            {
+                extractor: TailwindExtractor,
+                extensions: settings.purgeCssConfig.extensions
+            }
+        ]
     };
 };
 
@@ -190,23 +204,29 @@ module.exports = [
         common.legacyConfig,
         {
             output: {
-                filename: path.join('./js', '[name]-legacy.[chunkhash].js'),
+                filename: path.join('./js', '[name].js'),
+            },
+            resolve: {
+                alias: {
+                    'vue$': 'vue/dist/vue.min.js'
+                }
             },
             mode: 'production',
             devtool: 'source-map',
-            optimization: configureOptimization(LEGACY_CONFIG),
+            optimization: configureOptimization(),
             module: {
                 rules: [
-                    configurePostcssLoader(LEGACY_CONFIG),
+                    configurePostcssLoader(),
+                    configureImageLoader(),
                 ],
             },
             plugins: [
-                new CleanWebpackPlugin(pkg.project.paths.dist.clean,
+                new CleanWebpackPlugin(settings.paths.dist.clean,
                     configureCleanWebpack()
                 ),
                 new MiniCssExtractPlugin({
-                    path: path.resolve(__dirname, pkg.project.paths.dist.base),
-                    filename: path.join('./css', '[name].[chunkhash].css'),
+                    path: path.resolve(__dirname, settings.paths.dist.base),
+                    filename: path.join('./css', '[name].css'),
                 }),
                 new PurgecssPlugin(
                     configurePurgeCss()
@@ -214,33 +234,9 @@ module.exports = [
                 new webpack.BannerPlugin(
                     configureBanner()
                 ),
+                new ImageminWebpWebpackPlugin(),
                 new BundleAnalyzerPlugin(
-                    configureBundleAnalyzer(LEGACY_CONFIG),
-                ),
-            ]
-        }
-    ),
-    merge(
-        common.modernConfig,
-        {
-            output: {
-                filename: path.join('./js', '[name].[chunkhash].js'),
-            },
-            mode: 'production',
-            devtool: 'source-map',
-            optimization: configureOptimization(MODERN_CONFIG),
-            module: {
-                rules: [
-                    configurePostcssLoader(MODERN_CONFIG),
-                ],
-            },
-            plugins: [
-                new webpack.optimize.ModuleConcatenationPlugin(),
-                new webpack.BannerPlugin(
-                    configureBanner()
-                ),
-                new BundleAnalyzerPlugin(
-                    configureBundleAnalyzer(MODERN_CONFIG),
+                    configureBundleAnalyzer(),
                 ),
             ]
         }

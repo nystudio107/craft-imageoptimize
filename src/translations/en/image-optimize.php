@@ -65,4 +65,12 @@ return [
     'Lower Quality Retina Image Variants' => 'Lower Quality Retina Image Variants',
     'Allow Up-Scaled Image Variants' => 'Allow Up-Scaled Image Variants',
     'Manifest file not found at: {manifestPath}' => 'Manifest file not found at: {manifestPath}',
+    'Don\'t create image transforms for files that are of the following types:' => 'Don\'t create image transforms for files that are of the following types:',
+    'Ignore Files' => 'Ignore Files',
+    'GIF' => 'GIF',
+    'The optional [security key](https://thumbor.readthedocs.io/en/latest/security.html) used by Thumbor to create secure image urls.' => 'The optional [security key](https://thumbor.readthedocs.io/en/latest/security.html) used by Thumbor to create secure image urls.',
+    'SVG' => 'SVG',
+    'The base URL to use for the Thumbor transforms.' => 'The base URL to use for the Thumbor transforms.',
+    'Module does not exist in the manifest: {moduleName}' => 'Module does not exist in the manifest: {moduleName}',
+    'Thumbor' => 'Thumbor'
 ];

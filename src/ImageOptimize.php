@@ -505,8 +505,6 @@ class ImageOptimize extends Plugin
     protected function customFrontendRoutes(): array
     {
         return [
-            // Make webpack async bundle loading work out of published AssetBundles
-            '/cpresources/imageoptimize/<resourceType:{handle}>/<fileName>' => 'image-optimize/manifest/resource',
         ];
     }
 
