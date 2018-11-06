@@ -1,9 +1,10 @@
 # ImageOptimize Changelog
 
-## 1.4.43 - 2018.10.29
+## 1.4.43 - 2018.11.05
 ### Changed
 * Fix Thumbor focal point order
 * Fix a regression that broke images in sub-folders for Imgix
+* Retooled the JavaScript build system to be more compatible with edge case server setups
 
 ## 1.4.42 - 2018.10.15
 ### Added
