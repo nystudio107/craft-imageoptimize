@@ -1,0 +1,10 @@
+/*!
+ * @project        Image Optimize
+ * @name           styles.css
+ * @author         Andrew Welch
+ * @build          Tue, Nov 6, 2018 4:01 AM ET
+ * @release        8b49fe31a252df11777737996117c3b8de0479b1 [develop]
+ * @copyright      Copyright (c) 2018 nystudio107
+ *
+ */table.image-optimize{table-layout:fixed}table.data thead th.io-headline-row{padding-top:24px;padding-bottom:24px}.image-optimize h2{font-weight:700;color:#29323d}table.data thead th.io-format-column,table.data thead th.io-name-column{width:20%}table.data thead th.io-command-column,table.data thead th.io-installed-column{width:50%}.block{display:block}.inline-block{display:inline-block}.table{display:table}.hidden{display:none}.relative{position:relative}.uppercase{text-transform:uppercase}
+/*# sourceMappingURL=styles.css.map */

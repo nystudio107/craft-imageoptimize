@@ -3540,6 +3540,12 @@ imagemin@^6.0.0:
     pify "^3.0.0"
     replace-ext "^1.0.0"
 
+img-loader@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/img-loader/-/img-loader-3.0.1.tgz#c279691c0a9e6b94fa7d8318d2a6596d98bcee78"
+  dependencies:
+    loader-utils "^1.1.0"
+
 import-cwd@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz#aa6cf36e722761285cb371ec6519f53e2435b0a9"
@@ -6184,7 +6190,7 @@ schema-utils@^1.0.0:
     ajv-errors "^1.0.0"
     ajv-keywords "^3.1.0"
 
-"scss-parser@github:qodesmith/scss-parser":
+scss-parser@qodesmith/scss-parser:
   version "1.0.0"
   resolved "https://codeload.github.com/qodesmith/scss-parser/tar.gz/6fc86ce46b722b16639712ba8ed90706fa2871dc"
   dependencies:

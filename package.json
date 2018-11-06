@@ -73,6 +73,7 @@
         "imagemin-svgo": "^7.0.0",
         "imagemin-webp": "^4.1.0",
         "imagemin-webp-webpack-plugin": "^1.0.2",
+        "img-loader": "^3.0.1",
         "mini-css-extract-plugin": "^0.4.3",
         "moment": "^2.22.2",
         "optimize-css-assets-webpack-plugin": "^5.0.1",

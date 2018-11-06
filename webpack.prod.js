@@ -75,7 +75,7 @@ const configureImageLoader = () => {
             {
                 loader: 'file-loader',
                 options: {
-                    name: 'img/[name].[hash].[ext]'
+                    name: 'img/[name].[ext]'
                 }
             },
             {
