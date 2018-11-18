@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.4.44 - 2018.11.18
+### Changed
+* Default format and quality to null so they can be omitted if you're generating transforms via Twig
+* Fix an issue with Imgix with images that have no focal point set
+
 ## 1.4.43 - 2018.11.05
 ### Changed
 * Fix Thumbor focal point order

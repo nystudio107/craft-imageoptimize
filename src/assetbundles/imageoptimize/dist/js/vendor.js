@@ -2,8 +2,8 @@
  * @project        Image Optimize
  * @name           vendor.js
  * @author         Andrew Welch
- * @build          Tue, Nov 6, 2018 4:01 AM ET
- * @release        8b49fe31a252df11777737996117c3b8de0479b1 [develop]
+ * @build          Sun, Nov 18, 2018 8:24 PM ET
+ * @release        464656a9e98a74724dd1e3ea4eb7850cdfd1e669 [develop]
  * @copyright      Copyright (c) 2018 nystudio107
  *
  */

@@ -59,9 +59,7 @@ class ImgixImageTransform extends ImageTransform
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
 
-        $domain = isset($params['domain'])
-            ? $params['domain']
-            : 'demos.imgix.net';
+        $domain = $params['domain'] ?? 'demos.imgix.net';
         $builder = new UrlBuilder($domain);
         if ($asset && $builder) {
             $builder->setUseHttps(true);
@@ -113,6 +111,10 @@ class ImgixImageTransform extends ImageTransform
                         break;
 
                     default:
+                        // Set a sane default
+                        if (empty($transform->position)) {
+                            $transform->position = 'center-center';
+                        }
                         // Fit mode
                         $params['fit'] = 'crop';
                         $cropParams = [];
@@ -125,10 +127,11 @@ class ImgixImageTransform extends ImageTransform
                         } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position)) {
                             // Imgix defaults to 'center' if no param is present
                             $filteredCropParams = explode('-', $transform->position);
-                            $filteredCropParams = array_diff($filteredCropParams, ['center']);
+                            $filteredCropParams = array_diff_key($filteredCropParams, ['center']);
                             $cropParams[] = $filteredCropParams;
                         }
-                        if (!empty($cropParams)) {
+                        // Imgix
+                        if (!empty($cropParams) && $transform->position !== 'center-center') {
                             $params['crop'] = implode(',', $cropParams);
                         }
                         break;

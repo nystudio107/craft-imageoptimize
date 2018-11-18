@@ -376,7 +376,7 @@ class OptimizedImages extends Component
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $transform = new AssetTransform();
-        $transform->format = $variant['format'];
+        $transform->format = $variant['format'] ?? null;
         $useAspectRatio = $variant['useAspectRatio'] ?? true;
         if ($useAspectRatio) {
             $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
@@ -387,7 +387,7 @@ class OptimizedImages extends Component
         $transform->width = $width;
         $transform->height = (int)($width / $aspectRatio);
         // Image quality
-        $quality = $variant['quality'];
+        $quality = $variant['quality'] ?? null;
         if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
             $quality = (int)($quality * (1.5 / (int)$retinaSize));
         }
