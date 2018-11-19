@@ -127,7 +127,7 @@ class ImgixImageTransform extends ImageTransform
                         } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position)) {
                             // Imgix defaults to 'center' if no param is present
                             $filteredCropParams = explode('-', $transform->position);
-                            $filteredCropParams = array_diff_key($filteredCropParams, ['center']);
+                            $filteredCropParams = array_diff($filteredCropParams, ['center']);
                             $cropParams[] = $filteredCropParams;
                         }
                         // Imgix
