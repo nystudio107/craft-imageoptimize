@@ -19,7 +19,7 @@ To install ImageOptimize, follow these steps:
 1. Install with Composer via `composer require nystudio107/craft-imageoptimize` from your project directory
 2. Install plugin in the Craft Control Panel under Settings > Plugins
 
-You can also install ImageOptimize via the **Plugin Store** in the Craft AdminCP.
+You can also install ImageOptimize via the **Plugin Store** in the Craft Control Panel.
 
 ImageOptimize works on Craft 3.x.
 
@@ -31,7 +31,7 @@ If you want to use ImageOptimize with Cloudinary, install the [Cloudinary](https
 
 ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com) or [Thumbor](http://thumbor.org/), with zero template changes.
 
-You use the native Craft UI/UX to create your image transforms, whether in the AdminCP or via your templates. ImageOptimize takes care of the rest, optimizing all of your image transforms automatically by running a variety of image optimization tools on them.
+You use the native Craft UI/UX to create your image transforms, whether in the Control Panel or via your templates. ImageOptimize takes care of the rest, optimizing all of your image transforms automatically by running a variety of image optimization tools on them.
 
 ImageOptimize also comes with an **OptimizedImages** Field that makes creating responsive image sizes for `<img srcset="">` or `<picture>` elements sublimely easy. These responsive image transforms are created when an asset is _saved_, rather than at page load time, to ensure that frontend performance is optimal.
 
@@ -82,9 +82,9 @@ See each image optimization tool's documentation for details on the options they
 
 ### Imgix Service Images
 
-If you're using the [Imgix](https://imgix.com) service, ImageOptimize allows you to use the Craft AdminCP UX/UI to create your image transforms, but have Imgix do all of the heavy lifting for you. This means you can use Imgix with zero template changes.
+If you're using the [Imgix](https://imgix.com) service, ImageOptimize allows you to use the Craft Control Panel UX/UI to create your image transforms, but have Imgix do all of the heavy lifting for you. This means you can use Imgix with zero template changes.
 
-Craft will then use Imgix for all Asset URLs, including the original image, its thumbnails, and any Asset transforms you create (whether in the AdminCP or via Twig templates).
+Craft will then use Imgix for all Asset URLs, including the original image, its thumbnails, and any Asset transforms you create (whether in the Control Panel or via Twig templates).
 
 To utilize Imgix, you'll need to enter your **Imgix Source Domain**, and your **Imgix API Key** to allow for auto-purging of changed Assets:
 
@@ -96,7 +96,7 @@ Then configure your Imgix source via your Imgix.com account. If you're using a W
 
 Regardless of how many separate Craft Asset Volumes you've set up, you'll just have one Web Folder source.
 
-For image transforms, and set both **Quality** and **Format** to `Auto` in the AdminCP, it’ll send along `auto=compress,format` to Imgix, which will allow Imgix to compress the image as it sees fit. See the [Automatic Imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
+For image transforms, and set both **Quality** and **Format** to `Auto` in the Control Panel, it’ll send along `auto=compress,format` to Imgix, which will allow Imgix to compress the image as it sees fit. See the [Automatic Imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
 
 You can also set an optional **Imgix Security Token** if you wish to have [secure, signed image URLs](https://docs.imgix.com/setup/securing-images) from Imgix.
 

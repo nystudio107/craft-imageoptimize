@@ -40,7 +40,7 @@
 ### Changed
 * Fixed an incompatibility with the Spoon plugin by removing `matrix-field` class from field type settings
 * Fixed an erroneous 2:2 aspect ratio in the default settings
-* Moved to a modern webpack build config for the AdminCP
+* Moved to a modern webpack build config for the Control Panel
 * Added install confetti
 
 ## 1.4.37 - 2018.08.09
@@ -175,7 +175,7 @@
 
 ## 1.4.14 - 2018.02.09
 ### Changed
-* Fixed an issue where certain settings could not be saved via the AdminCP
+* Fixed an issue where certain settings could not be saved via the Control Panel
 * Check to ensure that `GD` is installed before attempting to generate silhouette placeholders
 * Show a warning on the Settings page if `GD` is not installed
 
@@ -196,7 +196,7 @@
 ### Added
 * Shows an error if an OptimizedImages field is added to anything other than an Asset's layout
 * Added a warning if a config setting is being overridden by the `config.php`
-* Added a number of config settings to the AdminCP GUI
+* Added a number of config settings to the Control Panel GUI
 
 ### Changed
 * `UrlHelper::urlWithProtocol` -> `UrlHelper::urlWithScheme` for Craft CMS 3 RC7 compatibility
