@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.4.45 - 2018.11.28
+### Changed
+* Call `App::maxPowerCaptain()` whenever a queue is manually run (both via web and console request)
+
 ## 1.4.44 - 2018.11.18
 ### Changed
 * Default format and quality to null so they can be omitted if you're generating transforms via Twig
