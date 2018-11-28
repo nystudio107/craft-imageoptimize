@@ -192,11 +192,7 @@ class ThumborImageTransform extends ImageTransform
      */
     private static function getFormat($transform)
     {
-        $format = str_replace(
-            ['Auto', 'jpg'],
-            ['', 'jpeg'],
-            $transform->format
-        );
+        $format = str_replace('jpg', 'jpeg', $transform->format);
 
         return $format ?: null;
     }

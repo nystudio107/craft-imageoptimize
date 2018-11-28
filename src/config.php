@@ -37,6 +37,12 @@ return [
     // The optional security token used to sign image URLs from Imgix
     'imgixSecurityToken' => '',
 
+     // Base URL for Thumbor transform service
+    'thumborBaseUrl' => '',
+
+    // The optional security key used by Thumbor to create secure image URLs
+    'thumborSecurityKey' => '',
+    
     // Should the image variants in an Asset Volume be automatically re-saved when saving
     // an OptimizedImages field, saving an Asset Volume that has an OptimizedImages field
     // in its layout, or saving the ImageOptimized settings. Set this to false only if
