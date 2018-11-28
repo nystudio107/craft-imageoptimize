@@ -3,6 +3,7 @@
 ## 1.4.45 - 2018.11.28
 ### Changed
 * Call `App::maxPowerCaptain()` whenever a queue is manually run (both via web and console request)
+* Minor Thumbor fixes
 
 ## 1.4.44 - 2018.11.18
 ### Changed
