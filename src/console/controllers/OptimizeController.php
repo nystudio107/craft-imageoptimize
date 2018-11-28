@@ -14,6 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\base\Volume;
+use craft\helpers\App;
 use craft\helpers\FileHelper;
 use craft\utilities\ClearCaches;
 
@@ -57,6 +58,8 @@ class OptimizeController extends Controller
                 echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
             }
         }
+        // This might take a while
+        App::maxPowerCaptain();
         Craft::$app->getQueue()->run();
     }
 
