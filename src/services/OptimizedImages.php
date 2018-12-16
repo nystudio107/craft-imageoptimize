@@ -163,7 +163,7 @@ class OptimizedImages extends Component
                     $createVariants = false;
                 }
             }
-            Craft::error(print_r($sourceType, true), 'image-optimize');
+            Craft::info(print_r($sourceType, true), 'image-optimize');
             // Create a new OptimizedImage model and populate it
             $model = new OptimizedImage();
             // Empty our the optimized image URLs
