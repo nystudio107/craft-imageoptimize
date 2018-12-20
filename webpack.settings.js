@@ -25,7 +25,7 @@ module.exports = {
         templates: "./src/templates/"
     },
     urls: {
-        publicPath: ""
+        publicPath: () => process.env.PUBLIC_PATH || "",
     },
     vars: {
         cssName: "styles"
