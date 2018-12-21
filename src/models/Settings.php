@@ -352,6 +352,7 @@ class Settings extends Model
             'imgixSecurityToken',
             'thumborBaseUrl',
             'thumborSecurityKey',
+            'thumborIncludeBucketPrefix',
             'createColorPalette',
             'createPlaceholderSilhouettes',
             'lowerQualityRetinaImageVariants',
