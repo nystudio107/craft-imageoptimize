@@ -60,6 +60,13 @@ class Settings extends Model
     public $thumborSecurityKey = '';
 
     /**
+     * @var bool Optionally prefix your asset path with the bucket name.
+     *      This is useful if your Thumbor configuration does not specify
+     *      an explicit bucket. Only relevant for AWS S3 volumes at this time.
+     */
+    public $thumborIncludeBucketPrefix = false;
+
+    /**
      * @var bool Should the image variants in an Asset Volume be automatically
      *      re-saved when saving an OptimizedImages field, saving an Asset
      *      Volume that has an OptimizedImages field in its layout, or saving
@@ -305,6 +312,7 @@ class Settings extends Model
                     'lowerQualityRetinaImageVariants',
                     'allowUpScaledImageVariants',
                     'autoSharpenScaledImages',
+                    'thumborIncludeBucketPrefix',
                 ],
                 'boolean',
             ],

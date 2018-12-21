@@ -80,6 +80,7 @@ class ThumborImageTransform extends ImageTransform
         $params = [
             'baseUrl' => $settings->thumborBaseUrl,
             'securityKey' => $settings->thumborSecurityKey,
+            'includeBucketPrefix' => $settings->thumborIncludeBucketPrefix,
         ];
 
         return $params;
@@ -96,9 +97,10 @@ class ThumborImageTransform extends ImageTransform
      */
     private static function getUrlBuilderForTransform(Asset $asset, $transform, array $params = []): UrlBuilder
     {
-        $assetUri = self::getAssetUri($asset);
+        $includeBucketPrefix = $params['includeBucketPrefix'] ?? false;
         $baseUrl = $params['baseUrl'];
         $securityKey = $params['securityKey'] ?: null;
+        $assetUri = self::getThumborAssetUri($asset, $includeBucketPrefix);
         $builder = UrlBuilder::construct($baseUrl, $securityKey, $assetUri);
         $settings = ImageOptimize::$plugin->getSettings();
 
@@ -205,5 +207,24 @@ class ThumborImageTransform extends ImageTransform
     private static function getQuality($transform)
     {
         return $transform->quality ?? Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
+    }
+
+    /**
+     * @param Asset $asset
+     * @param bool  $includeBucketPrefix
+     *
+     * @return mixed
+     * @throws \yii\base\InvalidConfigException
+     */
+    public static function getThumborAssetUri(Asset $asset, bool $includeBucketPrefix = false)
+    {
+        $uri = self::getAssetUri($asset);
+        $volume = $asset->getVolume();
+
+        if ($includeBucketPrefix && ($volume->bucket ?? null)) {
+            $uri = $volume->bucket . '/' . $uri;
+        }
+
+        return $uri;
     }
 }

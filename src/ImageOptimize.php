@@ -168,6 +168,7 @@ class ImageOptimize extends Plugin
                     'settings'        => $settings,
                     'imageProcessors' => $imageProcessors,
                     'variantCreators' => $variantCreators,
+                    'awsS3Installed'    => \class_exists(\craft\awss3\Volume::class),
                     'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
                 ]
             );

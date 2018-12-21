@@ -85,6 +85,17 @@
             value: settings.thumborSecurityKey,
             warning: configWarning('thumborSecurityKey', 'image-optimize'),
         }) }}
+        <!-- thumborIncludeBucketPrefix -->
+        {% if awsS3Installed %}
+          {{ forms.lightswitchField({
+              label: 'Include Bucket Prefix',
+              instructions: 'Optionally prefix your asset path with the bucket name. This is useful if your Thumbor configuration does not specify an explicit bucket. Only relevant for AWS S3 volumes at this time.'|t('image-optimize'),
+              id: 'thumborIncludeBucketPrefix',
+              name: 'thumborIncludeBucketPrefix',
+              on: settings.thumborIncludeBucketPrefix,
+              warning: configWarning('thumborIncludeBucketPrefix', 'image-optimize'),
+          }) }}
+        {% endif %}
     </div>
     <div class="field io-method-settings io-craft-method"{% if settings.transformMethod != 'craft' %} style="display: none;"{% endif %}>
         <div class="heading">
