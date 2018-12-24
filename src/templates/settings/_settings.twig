@@ -25,16 +25,12 @@
     {{ forms.selectField({
         label: "Transform Method"|t('image-optimize'),
         instructions: "Choose from Craft native transforms or an image transform service to handle your image transforms site-wide."|t('image-optimize'),
-        id: 'transformMethod',
-        name: 'transformMethod',
-        value: settings.transformMethod,
-        options: {
-            'craft': 'Craft'|t('image-optimize'),
-            'imgix': "Imgix"|t('image-optimize'),
-            'thumbor': "Thumbor"|t('image-optimize'),
-        },
+        id: 'transformClass',
+        name: 'transformClass',
+        value: settings.transformClass,
+        options: imageTransformOptions,
         class: 'io-transform-method',
-        warning: configWarning('transformMethod', 'image-optimize'),
+        warning: configWarning('transformClass', 'image-optimize'),
     }) }}
 
     {# @TODO fill in dynamically #}

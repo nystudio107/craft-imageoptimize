@@ -34,6 +34,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\ReplaceAssetEvent;
 use craft\events\VolumeEvent;
+use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\services\Assets;
@@ -155,6 +156,20 @@ class ImageOptimize extends Plugin
         // Get only the user-editable settings
         $settings = $this->getSettings();
 
+        // Get the image transform types
+        $imageTransformTypeOptions = [];
+        /** @var ImageTransformInterface $class */
+        foreach (ImageOptimize::$plugin->optimize->getAllImageTransformTypes() as $class) {
+            if ($class::isSelectable()) {
+                $imageTransformTypeOptions[] = [
+                    'value' => $class,
+                    'label' => $class::displayName(),
+                ];
+            }
+        }
+        // Sort them by name
+        ArrayHelper::multisort($imageTransformTypeOptions, 'label');
+
         // Render the settings template
         try {
             return Craft::$app->getView()->renderTemplate(
@@ -164,6 +179,7 @@ class ImageOptimize extends Plugin
                     'imageProcessors' => $imageProcessors,
                     'variantCreators' => $variantCreators,
                     'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
+                    'imageTransformOptions' => $imageTransformTypeOptions,
                 ]
             );
         } catch (\Twig_Error_Loader $e) {
