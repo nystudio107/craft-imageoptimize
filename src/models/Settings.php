@@ -33,7 +33,7 @@ class Settings extends Model
         'imgixApiKey',
         'imgixSecurityToken',
         'thumborBaseUrl',
-        'thumborBaseUrl',
+        'thumborSecurityKey',
     ];
 
     // Public Properties
