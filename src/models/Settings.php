@@ -277,18 +277,8 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['transformMethod', 'string'],
-            ['transformMethod', 'default', 'value' => 'craft'],
-            ['imgixDomain', 'string'],
-            ['imgixDomain', 'default', 'value' => ''],
-            ['imgixApiKey', 'string'],
-            ['imgixApiKey', 'default', 'value' => ''],
-            ['imgixSecurityToken', 'string'],
-            ['imgixSecurityToken', 'default', 'value' => ''],
-            ['thumborBaseUrl', 'string'],
-            ['thumborBaseUrl', 'default', 'value' => ''],
-            ['thumborSecurityKey', 'string'],
-            ['thumborSecurityKey', 'default', 'value' => ''],
+            ['transformClass', 'string'],
+            ['transformMethod', 'default', 'value' => CraftImageTransform::class],
             [
                 [
                     'automaticallyResaveImageVariants',
@@ -313,6 +303,7 @@ class Settings extends Model
             ],
             [
                 [
+                    'imageTransformSettings',
                     'defaultVariants',
                     'activeImageProcessors',
                     'activeImageVariantCreators',
@@ -331,12 +322,8 @@ class Settings extends Model
     {
         // Only return user-editable settings
         $fields = [
-            'transformMethod',
-            'imgixDomain',
-            'imgixApiKey',
-            'imgixSecurityToken',
-            'thumborBaseUrl',
-            'thumborSecurityKey',
+            'transformClass',
+            'imageTransformSettings',
             'createColorPalette',
             'createPlaceholderSilhouettes',
             'lowerQualityRetinaImageVariants',
