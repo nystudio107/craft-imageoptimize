@@ -120,6 +120,7 @@ class ImageOptimize extends Plugin
                 ]
             );
         } catch (InvalidConfigException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
         }
         self::$transformParams = self::$plugin->transformMethod->getTransformParams();
         // Add in our Craft components
