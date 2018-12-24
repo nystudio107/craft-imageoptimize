@@ -29,6 +29,17 @@ class ThumborImageTransform extends ImageTransform
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('image-optimize', 'Thumbor');
+    }
+
+    // Public Methods
+    // =========================================================================
+
+    /**
      * @param Asset               $asset
      * @param AssetTransform|null $transform
      * @param array               $params
@@ -84,6 +95,9 @@ class ThumborImageTransform extends ImageTransform
 
         return $params;
     }
+
+    // Private Methods
+    // =========================================================================
 
     /**
      * @param Asset               $asset

@@ -23,6 +23,17 @@ use craft\models\AssetTransform;
  */
 class CraftImageTransform extends ImageTransform
 {
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('image-optimize', 'Craft');
+    }
+
     // Public Methods
     // =========================================================================
 

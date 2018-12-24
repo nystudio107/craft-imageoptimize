@@ -46,6 +46,17 @@ class ImgixImageTransform extends ImageTransform
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('image-optimize', 'Imgix');
+    }
+
+    // Public Methods
+    // =========================================================================
+
+    /**
      * @param Asset               $asset
      * @param AssetTransform|null $transform
      * @param array               $params
