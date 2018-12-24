@@ -109,20 +109,8 @@ class ImageOptimize extends Plugin
         if ($request->getIsConsoleRequest()) {
             $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
         }
-        // Cache our settings
-        $settings = $this->getSettings();
-        // Set the transformMethod component
-        try {
-            $this->set(
-                'transformMethod',
-                [
-                    'class' => $settings->transformClass,
-                ]
-            );
-        } catch (InvalidConfigException $e) {
-            Craft::error($e->getMessage(), __METHOD__);
-        }
-        self::$transformParams = self::$plugin->transformMethod->getTransformParams();
+        // Set the image transform component
+        $this->setImageTransformComponent();
         // Add in our Craft components
         $this->addComponents();
         // Install our global event handlers
@@ -196,6 +184,24 @@ class ImageOptimize extends Plugin
     protected function createSettingsModel()
     {
         return new Settings();
+    }
+
+    /**
+     * Set the transformMethod component
+     */
+    protected function setImageTransformComponent()
+    {
+        $settings = $this->getSettings();
+        $definition = array_merge(
+            $settings->imageTransformSettings[$settings->transformClass] ?? [],
+            ['class' => $settings->transformClass]
+        );
+        try {
+            $this->set('transformMethod', $definition);
+        } catch (InvalidConfigException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+        self::$transformParams = ImageOptimize::$plugin->transformMethod->getTransformParams();
     }
 
     /**
