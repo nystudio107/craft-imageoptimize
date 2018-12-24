@@ -34,6 +34,9 @@ class CraftImageTransform extends ImageTransform
         return Craft::t('image-optimize', 'Craft');
     }
 
+    // Public Properties
+    // =========================================================================
+
     // Public Methods
     // =========================================================================
 

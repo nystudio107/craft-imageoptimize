@@ -36,6 +36,19 @@ class ThumborImageTransform extends ImageTransform
         return Craft::t('image-optimize', 'Thumbor');
     }
 
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var string
+     */
+    public $baseUrl;
+
+    /**
+     * @var string
+     */
+    public $securityKey;
+
     // Public Methods
     // =========================================================================
 

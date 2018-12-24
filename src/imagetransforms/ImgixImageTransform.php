@@ -53,6 +53,24 @@ class ImgixImageTransform extends ImageTransform
         return Craft::t('image-optimize', 'Imgix');
     }
 
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var string
+     */
+    public $domain;
+
+    /**
+     * @var string
+     */
+    public $apiKey;
+
+    /**
+     * @var string
+     */
+    public $securityToken;
+
     // Public Methods
     // =========================================================================
 
