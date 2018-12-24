@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
+use craft\base\SavableComponentInterface;
 use craft\elements\Asset;
 use craft\models\AssetTransform;
 
@@ -18,7 +19,7 @@ use craft\models\AssetTransform;
  * @package   ImageOptimize
  * @since     1.5.0
  */
-interface ImageTransformInterface
+interface ImageTransformInterface extends SavableComponentInterface
 {
     // Static Methods
     // =========================================================================
