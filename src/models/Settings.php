@@ -333,5 +333,4 @@ class Settings extends Model
 
         return $fields;
     }
-
 }
