@@ -315,4 +315,18 @@ class ImgixImageTransform extends ImageTransform
 
         return parent::getAssetUri($asset);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+        $rules = array_merge($rules, [
+            [['domain', 'apiKey', 'securityToken'], 'default', 'value' => ''],
+            [['domain', 'apiKey', 'securityToken'], 'string'],
+        ]);
+
+        return $rules;
+    }
 }

@@ -233,4 +233,18 @@ class ThumborImageTransform extends ImageTransform
     {
         return $transform->quality ?? Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+        $rules = array_merge($rules, [
+            [['baseUrl', 'securityKey'], 'default', 'value' => ''],
+            [['baseUrl', 'securityKey'], 'string'],
+        ]);
+
+        return $rules;
+    }
 }

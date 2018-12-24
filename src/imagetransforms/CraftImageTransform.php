@@ -86,4 +86,16 @@ class CraftImageTransform extends ImageTransform
 
         return $params;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+        $rules = array_merge($rules, [
+        ]);
+
+        return $rules;
+    }
 }
