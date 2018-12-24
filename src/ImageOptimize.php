@@ -50,6 +50,7 @@ use markhuot\CraftQL\CraftQL;
 
 use yii\base\Event;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
 
@@ -60,11 +61,12 @@ use yii\base\Exception;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService        optimize
- * @property PlaceholderService     placeholder
- * @property OptimizedImagesService optimizedImages
- * @property Settings               $settings
- * @method   Settings               getSettings()
+ * @property OptimizeService         optimize
+ * @property PlaceholderService      placeholder
+ * @property OptimizedImagesService  optimizedImages
+ * @property ImageTransformInterface transformMethod
+ * @property Settings                $settings
+ * @method   Settings                getSettings()
  */
 class ImageOptimize extends Plugin
 {
@@ -83,14 +85,9 @@ class ImageOptimize extends Plugin
     public static $plugin;
 
     /**
-     * @var ImageTransformInterface
-     */
-    public static $transformClass;
-
-    /**
      * @var array
      */
-    public static $transformParams;
+    public static $transformParams = [];
 
     /**
      * @var bool
@@ -112,10 +109,19 @@ class ImageOptimize extends Plugin
         if ($request->getIsConsoleRequest()) {
             $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
         }
-        // Cache some settings
+        // Cache our settings
         $settings = $this->getSettings();
-        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
-        self::$transformParams = self::$transformClass::getTransformParams();
+        // Set the transformMethod component
+        try {
+            $this->set(
+                'transformMethod',
+                [
+                    'class' => $settings->transformClass,
+                ]
+            );
+        } catch (InvalidConfigException $e) {
+        }
+        self::$transformParams = self::$plugin->transformMethod->getTransformParams();
         // Add in our Craft components
         $this->addComponents();
         // Install our global event handlers
@@ -302,12 +308,12 @@ class ImageOptimize extends Plugin
                 /** @var Asset $element */
                 $element = $event->asset;
                 // Purge the URL
-                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
                     $element,
                     ImageOptimize::$transformParams
                 );
                 if ($purgeUrl) {
-                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                 }
             }
         );
@@ -348,12 +354,12 @@ class ImageOptimize extends Plugin
                 $asset = $event->element;
                 if (!$event->isNew) {
                     // Purge the URL
-                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                    $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
                         $asset,
                         ImageOptimize::$transformParams
                     );
                     if ($purgeUrl) {
-                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                        ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                     }
                 }
             }
@@ -371,12 +377,12 @@ class ImageOptimize extends Plugin
                 /** @var Asset $asset */
                 $asset = $event->element;
                 // Purge the URL
-                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
                     $asset,
                     ImageOptimize::$transformParams
                 );
                 if ($purgeUrl) {
-                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                 }
             }
         );

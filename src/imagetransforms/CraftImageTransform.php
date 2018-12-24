@@ -23,7 +23,7 @@ use craft\models\AssetTransform;
  */
 class CraftImageTransform extends ImageTransform
 {
-    // Static Methods
+    // Public Methods
     // =========================================================================
 
     /**
@@ -33,7 +33,7 @@ class CraftImageTransform extends ImageTransform
      *
      * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $generateTransformsBeforePageLoad = $params['generateTransformsBeforePageLoad'] ?? true;
         // Generate the URLs to the optimized images
@@ -51,9 +51,9 @@ class CraftImageTransform extends ImageTransform
      *
      * @return string
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
-        $url = self::appendExtension($url, '.webp');
+        $url = $this->appendExtension($url, '.webp');
 
         return $url;
     }
@@ -61,7 +61,7 @@ class CraftImageTransform extends ImageTransform
     /**
      * @return array
      */
-    public static function getTransformParams(): array
+    public function getTransformParams(): array
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Get our $generateTransformsBeforePageLoad setting

@@ -16,19 +16,10 @@ use craft\models\AssetTransform;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.0.0
+ * @since     1.5.0
  */
 interface ImageTransformInterface
 {
-    // Constants
-    // =========================================================================
-
-    const IMAGE_TRANSFORM_MAP = [
-        'craft' => CraftImageTransform::class,
-        'imgix' => ImgixImageTransform::class,
-        'thumbor' => ThumborImageTransform::class,
-    ];
-
     // Static Methods
     // =========================================================================
 
@@ -39,7 +30,7 @@ interface ImageTransformInterface
      *
      * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = []);
+    public function getTransformUrl(Asset $asset, $transform, array $params = []);
 
     /**
      * @param string              $url
@@ -49,7 +40,7 @@ interface ImageTransformInterface
      *
      * @return string
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string;
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string;
 
     /**
      * @param Asset $asset
@@ -57,7 +48,7 @@ interface ImageTransformInterface
      *
      * @return mixed
      */
-    public static function getPurgeUrl(Asset $asset, array $params = []);
+    public function getPurgeUrl(Asset $asset, array $params = []);
 
     /**
      * @param string $url
@@ -65,7 +56,7 @@ interface ImageTransformInterface
      *
      * @return bool
      */
-    public static function purgeUrl(string $url, array $params = []): bool;
+    public function purgeUrl(string $url, array $params = []): bool;
 
 
     /**
@@ -73,15 +64,15 @@ interface ImageTransformInterface
      *
      * @return mixed
      */
-    public static function getAssetUri(Asset $asset);
+    public function getAssetUri(Asset $asset);
 
     /**
      * @param string $url
      */
-    public static function prefetchRemoteFile($url);
+    public function prefetchRemoteFile($url);
 
     /**
      * @return array
      */
-    public static function getTransformParams(): array;
+    public function getTransformParams(): array;
 }

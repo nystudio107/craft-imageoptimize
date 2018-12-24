@@ -37,9 +37,9 @@ class ThumborImageTransform extends ImageTransform
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
-        return (string)self::getUrlBuilderForTransform($asset, $transform, $params);
+        return (string)$this->getUrlBuilderForTransform($asset, $transform, $params);
     }
 
     /**
@@ -52,9 +52,9 @@ class ThumborImageTransform extends ImageTransform
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
-        $builder = self::getUrlBuilderForTransform($asset, $transform, $params)
+        $builder = $this->getUrlBuilderForTransform($asset, $transform, $params)
             ->addFilter('format', 'webp');
 
         return (string)$builder;
@@ -66,7 +66,7 @@ class ThumborImageTransform extends ImageTransform
      *
      * @return bool
      */
-    public static function purgeUrl(string $url, array $params = []): bool
+    public function purgeUrl(string $url, array $params = []): bool
     {
         return false;
     }
@@ -74,7 +74,7 @@ class ThumborImageTransform extends ImageTransform
     /**
      * @return array
      */
-    public static function getTransformParams(): array
+    public function getTransformParams(): array
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $params = [
@@ -94,9 +94,9 @@ class ThumborImageTransform extends ImageTransform
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
-    private static function getUrlBuilderForTransform(Asset $asset, $transform, array $params = []): UrlBuilder
+    private function getUrlBuilderForTransform(Asset $asset, $transform, array $params = []): UrlBuilder
     {
-        $assetUri = self::getAssetUri($asset);
+        $assetUri = $this->getAssetUri($asset);
         $baseUrl = $params['baseUrl'];
         $securityKey = $params['securityKey'] ?: null;
         $builder = UrlBuilder::construct($baseUrl, $securityKey, $assetUri);
@@ -117,7 +117,7 @@ class ThumborImageTransform extends ImageTransform
             // https://thumbor.readthedocs.io/en/latest/usage.html#image-size
             $builder->resize($transform->width, $transform->height);
 
-            if ($focalPoint = self::getFocalPoint($asset)) {
+            if ($focalPoint = $this->getFocalPoint($asset)) {
                 // https://thumbor.readthedocs.io/en/latest/focal.html
                 $builder->addFilter('focal', $focalPoint);
             } elseif (preg_match('/(top|center|bottom)-(left|center|right)/', $transform->position, $matches)) {
@@ -130,12 +130,12 @@ class ThumborImageTransform extends ImageTransform
         }
 
         // https://thumbor.readthedocs.io/en/latest/format.html
-        if ($format = self::getFormat($transform)) {
+        if ($format = $this->getFormat($transform)) {
             $builder->addFilter('format', $format);
         }
 
         // https://thumbor.readthedocs.io/en/latest/quality.html
-        if ($quality = self::getQuality($transform)) {
+        if ($quality = $this->getQuality($transform)) {
             $builder->addFilter('quality', $quality);
         }
 
@@ -159,7 +159,7 @@ class ThumborImageTransform extends ImageTransform
     /**
      * @return string|null
      */
-    private static function getFocalPoint(Asset $asset)
+    private function getFocalPoint(Asset $asset)
     {
         $focalPoint = $asset->getFocalPoint();
 
@@ -190,7 +190,7 @@ class ThumborImageTransform extends ImageTransform
      *
      * @return string|null
      */
-    private static function getFormat($transform)
+    private function getFormat($transform)
     {
         $format = str_replace('jpg', 'jpeg', $transform->format);
 
@@ -202,7 +202,7 @@ class ThumborImageTransform extends ImageTransform
      *
      * @return int
      */
-    private static function getQuality($transform)
+    private function getQuality($transform)
     {
         return $transform->quality ?? Craft::$app->getConfig()->getGeneral()->defaultImageQuality;
     }

@@ -12,18 +12,23 @@ namespace nystudio107\imageoptimize\imagetransforms;
 
 use nystudio107\imageoptimize\helpers\UrlHelper;
 
+use craft\base\SavableComponent;
 use craft\elements\Asset;
-use craft\helpers\Assets as AssetsHelper;
 use craft\models\AssetTransform;
 
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.0.0
+ * @since     1.5.0
  */
-abstract class ImageTransform implements ImageTransformInterface
+abstract class ImageTransform extends SavableComponent implements ImageTransformInterface
 {
-    // Public Static Methods
+    // Traits
+    // =========================================================================
+
+    use ImageTransformTrait;
+
+    // Public Methods
     // =========================================================================
 
     /**
@@ -33,7 +38,7 @@ abstract class ImageTransform implements ImageTransformInterface
      *
      * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $url = null;
 
@@ -48,7 +53,7 @@ abstract class ImageTransform implements ImageTransformInterface
      *
      * @return string
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
         return $url;
     }
@@ -59,7 +64,7 @@ abstract class ImageTransform implements ImageTransformInterface
      *
      * @return null|string
      */
-    public static function getPurgeUrl(Asset $asset, array $params = [])
+    public function getPurgeUrl(Asset $asset, array $params = [])
     {
         $url = null;
 
@@ -72,7 +77,7 @@ abstract class ImageTransform implements ImageTransformInterface
      *
      * @return bool
      */
-    public static function purgeUrl(string $url, array $params = []): bool
+    public function purgeUrl(string $url, array $params = []): bool
     {
         return true;
     }
@@ -80,7 +85,7 @@ abstract class ImageTransform implements ImageTransformInterface
     /**
      * @return array
      */
-    public static function getTransformParams(): array
+    public function getTransformParams(): array
     {
         $params = [
         ];
@@ -94,7 +99,7 @@ abstract class ImageTransform implements ImageTransformInterface
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getAssetUri(Asset $asset)
+    public function getAssetUri(Asset $asset)
     {
         $volume = $asset->getVolume();
         $assetPath = $asset->getPath();
@@ -111,7 +116,7 @@ abstract class ImageTransform implements ImageTransformInterface
     /**
      * @param string $url
      */
-    public static function prefetchRemoteFile($url)
+    public function prefetchRemoteFile($url)
     {
         // Get an absolute URL with protocol that curl will be happy with
         $url = UrlHelper::absoluteUrlWithProtocol($url);
@@ -134,9 +139,9 @@ abstract class ImageTransform implements ImageTransformInterface
      *
      * @return string
      */
-    public static function appendExtension($pathOrUrl, $extension): string
+    public function appendExtension($pathOrUrl, $extension): string
     {
-        $path = self::decomposeUrl($pathOrUrl);
+        $path = $this->decomposeUrl($pathOrUrl);
         $path_parts = pathinfo($path['path']);
         $new_path = $path_parts['filename'] . '.' . $path_parts['extension'] . $extension;
         if (!empty($path_parts['dirname']) && $path_parts['dirname'] !== '.') {
@@ -158,7 +163,7 @@ abstract class ImageTransform implements ImageTransformInterface
      *
      * @return array
      */
-    protected static function decomposeUrl($pathOrUrl): array
+    protected function decomposeUrl($pathOrUrl): array
     {
         $result = array();
 

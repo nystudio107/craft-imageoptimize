@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\models;
 
 use craft\base\Model;
 use craft\validators\ArrayValidator;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 
 /**
  * ImageOptimize Settings model
@@ -22,42 +23,31 @@ use craft\validators\ArrayValidator;
  */
 class Settings extends Model
 {
+    // Constants
+    // =========================================================================
+
+    const DEPRECATED_PROPERTIES = [
+        'generatePlacholders',
+        'transformMethod',
+        'imgixDomain',
+        'imgixApiKey',
+        'imgixSecurityToken',
+        'thumborBaseUrl',
+        'thumborBaseUrl',
+    ];
+
     // Public Properties
     // =========================================================================
 
     /**
-     * What transform method should be used for image transforms?
-     *
-     * @var string
+     * @var string The image transform class to use for image transforms
      */
-    public $transformMethod = 'craft';
+    public $transformClass = CraftImageTransform::class;
 
     /**
-     * @var string Domain for the Imgix transform service
+     * @var array Settings for the image transform components
      */
-    public $imgixDomain = '';
-
-    /**
-     * @var string API Key for the Imgix transform service
-     */
-    public $imgixApiKey = '';
-
-    /**
-     * @var string The optional security token used to sign image URLs from
-     *      Imgix
-     */
-    public $imgixSecurityToken = '';
-
-    /**
-     * @var string Base URL for Thumbor transform service
-     */
-    public $thumborBaseUrl = '';
-
-    /**
-     * @var string The optional security key used by Thumbor to create secure
-     *      image URLs
-     */
-    public $thumborSecurityKey = '';
+    public $imageTransformSettings = [];
 
     /**
      * @var bool Should the image variants in an Asset Volume be automatically
@@ -273,8 +263,11 @@ class Settings extends Model
     {
         // Unset any deprecated properties
         if (!empty($config)) {
-            unset($config['generatePlacholders']);
+            foreach (self::DEPRECATED_PROPERTIES as $prop) {
+                unset($config[$prop]);
+            }
         }
+
         parent::__construct($config);
     }
 

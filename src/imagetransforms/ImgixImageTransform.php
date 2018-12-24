@@ -54,7 +54,7 @@ class ImgixImageTransform extends ImageTransform
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
@@ -147,7 +147,7 @@ class ImgixImageTransform extends ImageTransform
                 $builder->setSignKey($settings->imgixSecurityToken);
             }
             // Finally, create the Imgix URL for this transformed image
-            $assetUri = self::getAssetUri($asset);
+            $assetUri = $this->getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
             Craft::debug(
                 'Imgix transform created for: '.$assetUri.' - Params: '.print_r($params, true).' - URL: '.$url,
@@ -166,7 +166,7 @@ class ImgixImageTransform extends ImageTransform
      *
      * @return string
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
         $url = preg_replace('/fm=[^&]*/', 'fm=webp', $url);
 
@@ -180,7 +180,7 @@ class ImgixImageTransform extends ImageTransform
      * @return null|string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getPurgeUrl(Asset $asset, array $params = [])
+    public function getPurgeUrl(Asset $asset, array $params = [])
     {
         $url = null;
 
@@ -191,7 +191,7 @@ class ImgixImageTransform extends ImageTransform
         if ($asset && $builder) {
             $builder->setUseHttps(true);
             // Create the Imgix URL for purging this image
-            $assetUri = self::getAssetUri($asset);
+            $assetUri = $this->getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
             // Strip the query string so we just pass in the raw URL
             $url = UrlHelper::stripQueryString($url);
@@ -206,7 +206,7 @@ class ImgixImageTransform extends ImageTransform
      *
      * @return bool
      */
-    public static function purgeUrl(string $url, array $params = []): bool
+    public function purgeUrl(string $url, array $params = []): bool
     {
         $result = false;
         $apiKey = isset($params['api-key'])
@@ -249,7 +249,7 @@ class ImgixImageTransform extends ImageTransform
     /**
      * @return array
      */
-    public static function getTransformParams(): array
+    public function getTransformParams(): array
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $params = [
@@ -266,7 +266,7 @@ class ImgixImageTransform extends ImageTransform
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getAssetUri(Asset $asset)
+    public function getAssetUri(Asset $asset)
     {
         $volume = $asset->getVolume();
 
