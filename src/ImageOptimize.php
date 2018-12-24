@@ -139,7 +139,7 @@ class ImageOptimize extends Plugin
         /** @var Controller $controller */
         $controller = Craft::$app->controller;
 
-        return $controller->renderTemplate('image-optimize/_settings', [
+        return $controller->renderTemplate('image-optimize/settings/index.twig', [
             'plugin'       => $this,
             'settingsHtml' => $settingsHtml,
         ]);
@@ -158,7 +158,7 @@ class ImageOptimize extends Plugin
         // Render the settings template
         try {
             return Craft::$app->getView()->renderTemplate(
-                'image-optimize/settings',
+                'image-optimize/settings/_settings.twig',
                 [
                     'settings'        => $settings,
                     'imageProcessors' => $imageProcessors,
