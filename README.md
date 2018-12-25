@@ -670,7 +670,7 @@ If you have `devMode` on, ImageOptimize will log stats for images that it create
 2017-09-10 07:28:23 [192.168.10.1][1][-][info][nystudio107\imageoptimize\services\Optimize::createImageVariants] painted-face_170903_02341359b54c06c953b6.23303620.jpg -> painted-face_170903_02341359b54c06c953b6.23303620.jpg.webp -> Original: 36.9K, Variant: 12.8K -> Savings: 65.3%
 ```
 
-## Writing an Image Transform
+## Writing your own Image Transform class
 
 ImageOptimize was written in an extensible way so that you can write your own Image Transform method to work with any service you like. It comes with built-in support for Craft, Imgix, and Thumbor but you can add your own by writing a class that extends the `ImageTransform` abstract class:
 
