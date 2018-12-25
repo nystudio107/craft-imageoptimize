@@ -172,8 +172,8 @@ class ImgixImageTransform extends ImageTransform
             // Remove the api-key param
             unset($params['api-key']);
             // Apply the Security Token, if set
-            if (!empty($settings->imgixSecurityToken)) {
-                $builder->setSignKey($settings->imgixSecurityToken);
+            if (!empty($this->securityToken)) {
+                $builder->setSignKey($this->securityToken);
             }
             // Finally, create the Imgix URL for this transformed image
             $assetUri = $this->getAssetUri($asset);
@@ -282,8 +282,8 @@ class ImgixImageTransform extends ImageTransform
     {
         $settings = ImageOptimize::$plugin->getSettings();
         $params = [
-            'domain'  => $settings->imgixDomain,
-            'api-key' => $settings->imgixApiKey,
+            'domain'  => $this->domain,
+            'api-key' => $this->apiKey,
         ];
 
         return $params;
