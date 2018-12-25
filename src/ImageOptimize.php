@@ -151,8 +151,6 @@ class ImageOptimize extends Plugin
      */
     public function settingsHtml()
     {
-        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
-        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
         // Get only the user-editable settings
         $settings = $this->getSettings();
 
@@ -177,8 +175,6 @@ class ImageOptimize extends Plugin
                 'image-optimize/settings/_settings.twig',
                 [
                     'settings'        => $settings,
-                    'imageProcessors' => $imageProcessors,
-                    'variantCreators' => $variantCreators,
                     'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
                     'imageTransformTypeOptions' => $imageTransformTypeOptions,
                     'allImageTransformTypes' => $allImageTransformTypes,
