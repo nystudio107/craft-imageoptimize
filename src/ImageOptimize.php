@@ -208,7 +208,7 @@ class ImageOptimize extends Plugin
     {
         $settings = $this->getSettings();
         $definition = array_merge(
-            $settings->imageTransformSettings[$settings->transformClass] ?? [],
+            $settings->imageTransformTypeSettings[$settings->transformClass] ?? [],
             ['class' => $settings->transformClass]
         );
         try {
