@@ -47,7 +47,7 @@ class Settings extends Model
     /**
      * @var array Settings for the image transform components
      */
-    public $imageTransformSettings = [];
+    public $imageTransformTypeSettings = [];
 
     /**
      * @var bool Should the image variants in an Asset Volume be automatically
@@ -303,7 +303,7 @@ class Settings extends Model
             ],
             [
                 [
-                    'imageTransformSettings',
+                    'imageTransformTypeSettings',
                     'defaultVariants',
                     'activeImageProcessors',
                     'activeImageVariantCreators',
@@ -323,7 +323,7 @@ class Settings extends Model
         // Only return user-editable settings
         $fields = [
             'transformClass',
-            'imageTransformSettings',
+            'imageTransformTypeSettings',
             'createColorPalette',
             'createPlaceholderSilhouettes',
             'lowerQualityRetinaImageVariants',

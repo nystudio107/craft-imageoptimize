@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\services;
 
+use craft\errors\MissingComponentException;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
@@ -22,6 +23,7 @@ use craft\events\AssetTransformImageEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\Component as ComponentHelper;
 use craft\helpers\FileHelper;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\Image as ImageHelper;
@@ -31,6 +33,8 @@ use craft\models\AssetTransformIndex;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
 use yii\base\InvalidConfigException;
@@ -91,6 +95,31 @@ class Optimize extends Component
         $this->trigger(self::EVENT_REGISTER_IMAGE_TRANSFORM_TYPES, $event);
 
         return $event->types;
+    }
+
+    /**
+     * Creates an Image Transform with a given config.
+     *
+     * @param mixed $config The Image Transform’s class name, or its config,
+     *                      with a `type` value and optionally a `settings` value
+     *
+     * @return null|ImageTransformInterface The Image Transform
+     */
+    public function createImageTransformType($config): ImageTransformInterface
+    {
+        if (is_string($config)) {
+            $config = ['type' => $config];
+        }
+
+        try {
+            /** @var ImageTransform $imageTransform */
+            $imageTransform = ComponentHelper::createComponent($config, ImageTransformInterface::class);
+        } catch (\Throwable $e) {
+            $imageTransform = null;
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+
+        return $imageTransform;
     }
 
     /**

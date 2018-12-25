@@ -157,9 +157,10 @@ class ImageOptimize extends Plugin
         $settings = $this->getSettings();
 
         // Get the image transform types
+        $allImageTransformTypes = ImageOptimize::$plugin->optimize->getAllImageTransformTypes();
         $imageTransformTypeOptions = [];
         /** @var ImageTransformInterface $class */
-        foreach (ImageOptimize::$plugin->optimize->getAllImageTransformTypes() as $class) {
+        foreach ($allImageTransformTypes as $class) {
             if ($class::isSelectable()) {
                 $imageTransformTypeOptions[] = [
                     'value' => $class,
@@ -179,7 +180,9 @@ class ImageOptimize extends Plugin
                     'imageProcessors' => $imageProcessors,
                     'variantCreators' => $variantCreators,
                     'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
-                    'imageTransformOptions' => $imageTransformTypeOptions,
+                    'imageTransformTypeOptions' => $imageTransformTypeOptions,
+                    'allImageTransformTypes' => $allImageTransformTypes,
+                    'imageTransform' => ImageOptimize::$plugin->transformMethod,
                 ]
             );
         } catch (\Twig_Error_Loader $e) {
@@ -410,7 +413,6 @@ class ImageOptimize extends Plugin
             }
         );
     }
-
 
     /**
      * Install our miscellaneous event handlers

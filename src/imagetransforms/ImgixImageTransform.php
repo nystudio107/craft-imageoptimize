@@ -319,6 +319,16 @@ class ImgixImageTransform extends ImageTransform
     /**
      * @inheritdoc
      */
+    public function getSettingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate('image-optimize/settings/image-transforms/imgix.twig', [
+            'imageTransform' => $this,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         $rules = parent::rules();
