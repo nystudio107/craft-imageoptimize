@@ -33,9 +33,9 @@
         warning: configWarning('transformClass', 'image-optimize'),
     }) }}
 
-    {% for key,type in allImageTransformTypes %}
+    {% for type in allImageTransformTypes %}
         {% set isCurrent = (type == className(imageTransform)) %}
-        <div id="{{ type|id }}" class="io-method-settings {{ 'io-' ~ key|id ~ '-method' }}" {% if not isCurrent %} hidden{% endif %}>
+        <div id="{{ type|id }}" class="io-method-settings {{ 'io-' ~ type|id ~ '-method' }}" {% if not isCurrent %} hidden{% endif %}>
             {% namespace 'types['~type~']' %}
                 {% set _imageTransform = isCurrent ? imageTransform : craft.imageOptimize.createImageTransformType(type) %}
                 {{ _imageTransform.getSettingsHtml()|raw }}
@@ -113,7 +113,8 @@ new Craft.AdminTable({
 });
 $('.io-transform-method').change(function(ev) {
     $('.io-method-settings').addClass('hidden');
-    var value = 'io-' + $(ev.target).find("option:selected").text() + '-method';
+    var value = 'io-' + Craft.formatInputId($(ev.target).val()) + '-method';
+    console.log(value);
     $('.' + value).removeClass('hidden');
 });
 {% endjs %}
