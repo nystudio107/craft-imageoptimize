@@ -711,7 +711,7 @@ use vendor\package\MyImageTransform;
 No module or plugin bootstrapping code needed to get it working.
 
 If you want to wrap your `ImageTransform` into a plugin or module,
-simply listen for the `EVENT_REGISTER_IMAGE_TRANSFORM_TYPES` to add your `ImageTransform` to the types that ImageOptimize knows about.
+simply listen for the `EVENT_REGISTER_IMAGE_TRANSFORM_TYPES` event to add your `ImageTransform` to the types that ImageOptimize knows about.
 
 ```php
 use vendor\package\imagetransforms\MyImageTransform;
