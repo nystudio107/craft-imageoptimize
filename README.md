@@ -670,6 +670,66 @@ If you have `devMode` on, ImageOptimize will log stats for images that it create
 2017-09-10 07:28:23 [192.168.10.1][1][-][info][nystudio107\imageoptimize\services\Optimize::createImageVariants] painted-face_170903_02341359b54c06c953b6.23303620.jpg -> painted-face_170903_02341359b54c06c953b6.23303620.jpg.webp -> Original: 36.9K, Variant: 12.8K -> Savings: 65.3%
 ```
 
+## Writing an Image Transform
+
+ImageOptimize was written in an extensible way so that you can write your own Image Transform method to work with any service you like. It comes with built-in support for Craft, Imgix, and Thumbor but you can add your own by writing a class that extends the `ImageTransform` abstract class:
+
+```php
+<?php
+
+namespace vendor\package;
+
+use nystudio107\imageoptimize\imagetransforms\ImageTransform;
+
+class MyImageTransform extends ImageTransform
+{
+    // Your method overrides go here
+}
+```
+
+The `ImageTransform` abstract class _extends_ `craft\base\SavableComponent` to allow it to display & save settings, and _implements_ `nystudio107\imageoptimize\imagetransforms\ImageTransformInterface` to handle the image transforms. See those classes, or the implemented `ImageTransform` classes in `nystudio107\imageoptimize\imagetransforms` for details.
+
+Once you have your `ImageTransform` class, you need to let ImageOptimize know about it.
+
+If your `ImageTransform` is a separate stand-alone Composer package, you can simply `composer require` your package, and add the class to your `config/image-optimize.php` multi-environment config file:
+
+```php
+
+use vendor\package\MyImageTransform;
+
+...
+
+    // The default Image Transform type classes
+    'defaultImageTransformTypes' => [
+        CraftImageTransform::class,
+        ImgixImageTransform::class,
+        ThumborImageTransform::class,
+        MyImageTransform::class,
+    ],
+```
+
+No module or plugin bootstrapping code needed to get it working.
+
+If you want to wrap your `ImageTransform` into a plugin or module,
+simply listen for the `EVENT_REGISTER_IMAGE_TRANSFORM_TYPES` to add your `ImageTransform` to the types that ImageOptimize knows about.
+
+```php
+use vendor\package\imagetransforms\MyImageTransform;
+
+use nystudio107\imageoptimize\services\Optimize;
+use craft\events\RegisterComponentTypesEvent;
+use yii\base\Event;
+
+Event::on(Optimize::class,
+     Optimize::EVENT_REGISTER_IMAGE_TRANSFORM_TYPES,
+     function(RegisterComponentTypesEvent $event) {
+         $event->types[] = MyImageTransform::class;
+     }
+);
+```
+
+Although ImageOptimize itself uses the same mechanisms internally for `ImageTranform` implementations, this allows you to update & maintain an `ImageTransform` entirely independent of ImageOptimize.
+
 ## ImageOptimize Roadmap
 
 Some things to do, and ideas for potential features:
