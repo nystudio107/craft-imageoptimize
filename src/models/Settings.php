@@ -10,9 +10,13 @@
 
 namespace nystudio107\imageoptimize\models;
 
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
+
 use craft\base\Model;
 use craft\validators\ArrayValidator;
-use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 
 /**
  * ImageOptimize Settings model
@@ -101,6 +105,15 @@ class Settings extends Model
      *      automatically sharpened
      */
     public $autoSharpenScaledImages = true;
+
+    /**
+     * @var ImageTransformInterface[] The default Image Transform type classes
+     */
+    public $defaultImageTransformTypes = [
+        CraftImageTransform::class,
+        ImgixImageTransform::class,
+        ThumborImageTransform::class,
+    ];
 
     /**
      * @var array Default aspect ratios
@@ -304,6 +317,7 @@ class Settings extends Model
             [
                 [
                     'imageTransformTypeSettings',
+                    'defaultImageTransformTypes',
                     'defaultVariants',
                     'activeImageProcessors',
                     'activeImageVariantCreators',

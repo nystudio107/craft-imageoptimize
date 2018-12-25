@@ -8,6 +8,10 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
+
 /**
  * ImageOptimize config.php
  *
@@ -25,24 +29,14 @@
  */
 
 return [
-    //  What transform method should be used for image transforms?
-    'transformMethod' => 'craft',
+    //  The image transform class to use for image transforms
+    'transformClass' => CraftImageTransform::class,
 
-    // Domain for the Imgix transform service
-    'imgixDomain' => '',
+    /**
+     * @var array Settings for the image transform components
+     */
+    'imageTransformTypeSettings' => [],
 
-    // API key for the Imgix transform service
-    'imgixApiKey' => '',
-
-    // The optional security token used to sign image URLs from Imgix
-    'imgixSecurityToken' => '',
-
-     // Base URL for Thumbor transform service
-    'thumborBaseUrl' => '',
-
-    // The optional security key used by Thumbor to create secure image URLs
-    'thumborSecurityKey' => '',
-    
     // Should the image variants in an Asset Volume be automatically re-saved when saving
     // an OptimizedImages field, saving an Asset Volume that has an OptimizedImages field
     // in its layout, or saving the ImageOptimized settings. Set this to false only if
@@ -73,6 +67,13 @@ return [
 
     // Controls whether images scaled down >= 50% should be automatically sharpened
     'autoSharpenScaledImages' => true,
+
+    // The default Image Transform type classes
+    'defaultImageTransformTypes' => [
+        CraftImageTransform::class,
+        ImgixImageTransform::class,
+        ThumborImageTransform::class,
+    ],
 
     // Default aspect ratios
     'defaultAspectRatios' => [

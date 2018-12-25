@@ -10,8 +10,12 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use craft\errors\MissingComponentException;
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
 
 use Craft;
 use craft\base\Component;
@@ -32,11 +36,7 @@ use craft\models\AssetTransform;
 use craft\models\AssetTransformIndex;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
-use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
-use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
+
 use yii\base\InvalidConfigException;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
@@ -73,6 +73,12 @@ class Optimize extends Component
      */
     const EVENT_REGISTER_IMAGE_TRANSFORM_TYPES = 'registerImageTransformTypes';
 
+    const DEFAULT_IMAGE_TRANSFORM_TYPES = [
+        CraftImageTransform::class,
+        ImgixImageTransform::class,
+        ThumborImageTransform::class,
+    ];
+
     // Public Methods
     // =========================================================================
 
@@ -83,11 +89,11 @@ class Optimize extends Component
      */
     public function getAllImageTransformTypes(): array
     {
-        $imageTransformTypes = [
-            CraftImageTransform::class,
-            ImgixImageTransform::class,
-            ThumborImageTransform::class,
-        ];
+
+        $imageTransformTypes = array_merge(
+            ImageOptimize::$plugin->getSettings()->defaultImageTransformTypes ?? [],
+            self::DEFAULT_IMAGE_TRANSFORM_TYPES
+        );
 
         $event = new RegisterComponentTypesEvent([
             'types' => $imageTransformTypes
