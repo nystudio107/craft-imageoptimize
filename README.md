@@ -701,9 +701,6 @@ use vendor\package\MyImageTransform;
 
     // The default Image Transform type classes
     'defaultImageTransformTypes' => [
-        CraftImageTransform::class,
-        ImgixImageTransform::class,
-        ThumborImageTransform::class,
         MyImageTransform::class,
     ],
 ```

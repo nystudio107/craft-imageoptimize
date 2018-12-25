@@ -9,8 +9,6 @@
  */
 
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
 
 /**
  * ImageOptimize config.php
@@ -70,9 +68,6 @@ return [
 
     // The default Image Transform type classes
     'defaultImageTransformTypes' => [
-        CraftImageTransform::class,
-        ImgixImageTransform::class,
-        ThumborImageTransform::class,
     ],
 
     // Default aspect ratios
