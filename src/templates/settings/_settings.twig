@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  * @link      https://nystudio107.com
  * @package   ImageOptimize
- * @since     1.2.0
+ * @since     1.5.0
  */
 #}
 
@@ -114,7 +114,6 @@ new Craft.AdminTable({
 $('.io-transform-method').change(function(ev) {
     $('.io-method-settings').hide();
     var value = 'io-' + Craft.formatInputId($(ev.target).val()) + '-method';
-    console.log(value);
     $('.' + value).slideDown();
 });
 {% endjs %}
