@@ -276,6 +276,24 @@ class Settings extends Model
     {
         // Unset any deprecated properties
         if (!empty($config)) {
+            // Handle migrating old Imagix settings
+            if (isset($config['imgixDomain'])) {
+                $config['imageTransformTypeSettings'][ImgixImageTransform::class]['domain'] = $config['imgixDomain'];
+            }
+            if (isset($config['imgixApiKey'])) {
+                $config['imageTransformTypeSettings'][ImgixImageTransform::class]['apiKey'] = $config['imgixApiKey'];
+            }
+            if (isset($config['imgixSecurityToken'])) {
+                $config['imageTransformTypeSettings'][ImgixImageTransform::class]['securityToken'] = $config['imgixSecurityToken'];
+            }
+            // Handle migrating old Thumbor settings
+            if (isset($config['thumborBaseUrl'])) {
+                $config['imageTransformTypeSettings'][ThumborImageTransform::class]['baseUrl'] = $config['thumborBaseUrl'];
+            }
+            if (isset($config['thumborSecurityKey'])) {
+                $config['imageTransformTypeSettings'][ThumborImageTransform::class]['securityKey'] = $config['thumborSecurityKey'];
+            }
+            // Remove deprecated properties
             foreach (self::DEPRECATED_PROPERTIES as $prop) {
                 unset($config[$prop]);
             }
@@ -291,7 +309,7 @@ class Settings extends Model
     {
         return [
             ['transformClass', 'string'],
-            ['transformMethod', 'default', 'value' => CraftImageTransform::class],
+            ['transformClass', 'default', 'value' => CraftImageTransform::class],
             [
                 [
                     'automaticallyResaveImageVariants',
