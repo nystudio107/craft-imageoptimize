@@ -35,7 +35,7 @@
 
     {% for type in allImageTransformTypes %}
         {% set isCurrent = (type == className(imageTransform)) %}
-        <div id="{{ type|id }}" class="io-method-settings {{ 'io-' ~ type|id ~ '-method' }}{% if not isCurrent %} hidden{% endif %}">
+        <div id="{{ type|id }}" class="io-method-settings {{ 'io-' ~ type|id ~ '-method' }}" {% if not isCurrent %} style="display: none;"{% endif %}>
             {% namespace 'types['~type~']' %}
                 {% set _imageTransform = isCurrent ? imageTransform : craft.imageOptimize.createImageTransformType(type) %}
                 {{ _imageTransform.getSettingsHtml()|raw }}
@@ -112,9 +112,9 @@ new Craft.AdminTable({
     tableSelector: '#variantCreators',
 });
 $('.io-transform-method').change(function(ev) {
-    $('.io-method-settings').addClass('hidden');
+    $('.io-method-settings').hide();
     var value = 'io-' + Craft.formatInputId($(ev.target).val()) + '-method';
     console.log(value);
-    $('.' + value).removeClass('hidden');
+    $('.' + value).slideDown();
 });
 {% endjs %}
