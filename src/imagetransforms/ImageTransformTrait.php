@@ -5,7 +5,7 @@
  * Automatically optimize images after they've been transformed
  *
  * @link      https://nystudio107.com
- * @copyright Copyright (c) 2017 nystudio107
+ * @copyright Copyright (c) 2018 nystudio107
  */
 
 namespace nystudio107\imageoptimize\imagetransforms;
@@ -17,6 +17,6 @@ namespace nystudio107\imageoptimize\imagetransforms;
  */
 trait ImageTransformTrait
 {
-    // Properties
+    // Public Properties
     // =========================================================================
 }

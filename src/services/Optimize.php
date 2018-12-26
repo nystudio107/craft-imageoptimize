@@ -89,7 +89,6 @@ class Optimize extends Component
      */
     public function getAllImageTransformTypes(): array
     {
-
         $imageTransformTypes = array_unique(array_merge(
             ImageOptimize::$plugin->getSettings()->defaultImageTransformTypes ?? [],
             self::DEFAULT_IMAGE_TRANSFORM_TYPES
