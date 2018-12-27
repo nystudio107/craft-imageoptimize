@@ -280,7 +280,6 @@ class ImgixImageTransform extends ImageTransform
      */
     public function getTransformParams(): array
     {
-        $settings = ImageOptimize::$plugin->getSettings();
         $params = [
             'domain'  => $this->domain,
             'api-key' => $this->apiKey,

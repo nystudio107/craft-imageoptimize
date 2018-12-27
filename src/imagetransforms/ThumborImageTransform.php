@@ -100,7 +100,6 @@ class ThumborImageTransform extends ImageTransform
      */
     public function getTransformParams(): array
     {
-        $settings = ImageOptimize::$plugin->getSettings();
         $params = [
             'baseUrl' => $this->baseUrl,
             'securityKey' => $this->securityKey,

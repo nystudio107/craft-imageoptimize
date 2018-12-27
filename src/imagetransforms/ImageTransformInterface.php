@@ -21,7 +21,7 @@ use craft\models\AssetTransform;
  */
 interface ImageTransformInterface extends SavableComponentInterface
 {
-    // Static Methods
+    // Public Methods
     // =========================================================================
 
     /**

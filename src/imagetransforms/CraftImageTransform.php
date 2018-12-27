@@ -5,7 +5,7 @@
  * Automatically optimize images after they've been transformed
  *
  * @link      https://nystudio107.com
- * @copyright Copyright (c) 2017 nystudio107
+ * @copyright Copyright (c) 2018 nystudio107
  */
 
 namespace nystudio107\imageoptimize\imagetransforms;
@@ -19,7 +19,7 @@ use craft\models\AssetTransform;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.0.0
+ * @since     1.5.0
  */
 class CraftImageTransform extends ImageTransform
 {
