@@ -3,6 +3,7 @@
 ## 1.5.0 - 2018.12.28
 ### Changed
 * Refactored out the `ImageTransform` interface to use Yii2's DI to allow them to be stand-alone components
+* Respond to `Assets::EVENT_GET_ASSET_THUMB_URL` for direct thumbnail generation from third party image transform services
 
 ## 1.4.45 - 2018.11.28
 ### Changed
