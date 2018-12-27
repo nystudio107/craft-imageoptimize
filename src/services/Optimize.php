@@ -24,6 +24,7 @@ use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\VolumeException;
 use craft\events\AssetTransformImageEvent;
+use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -174,6 +175,37 @@ class Optimize extends Component
             );
         }
         Craft::endProfile('handleGetAssetUrlEvent', __METHOD__);
+
+        return $url;
+    }
+
+    /**
+     * Handle responding to EVENT_GET_ASSET_THUMB_URL events
+     *
+     * @param GetAssetThumbUrlEvent $event
+     *
+     * @return null|string
+     */
+    public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event)
+    {
+        Craft::beginProfile('handleGetAssetThumbUrlEvent', __METHOD__);
+        $url = null;
+        if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
+            $asset = $event->asset;
+            $transform = new AssetTransform([
+                'height'    => $event->height,
+                'width'     => $event->width,
+                'interlace' => 'line',
+            ]);
+            // Generate an image transform url
+            ImageOptimize::$transformParams['generateTransformsBeforePageLoad'] = $event->generate;
+            $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
+                $asset,
+                $transform,
+                ImageOptimize::$transformParams
+            );
+        }
+        Craft::endProfile('handleGetAssetThumbUrlEvent', __METHOD__);
 
         return $url;
     }

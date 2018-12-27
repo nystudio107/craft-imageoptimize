@@ -27,6 +27,7 @@ use craft\elements\Asset;
 use craft\events\AssetTransformImageEvent;
 use craft\events\ElementEvent;
 use craft\events\FieldEvent;
+use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
@@ -281,6 +282,22 @@ class ImageOptimize extends Plugin
                 );
                 // Return the URL to the asset URL or null to let Craft handle it
                 $event->url = ImageOptimize::$plugin->optimize->handleGetAssetUrlEvent(
+                    $event
+                );
+            }
+        );
+
+        // Handler: Assets::EVENT_GET_ASSET_THUMB_URL
+        Event::on(
+            Assets::class,
+            Assets::EVENT_GET_ASSET_THUMB_URL,
+            function (GetAssetThumbUrlEvent $event) {
+                Craft::debug(
+                    'Assets::EVENT_GET_ASSET_THUMB_URL',
+                    __METHOD__
+                );
+                // Return the URL to the asset URL or null to let Craft handle it
+                $event->url = ImageOptimize::$plugin->optimize->handleGetAssetThumbUrlEvent(
                     $event
                 );
             }
