@@ -10,6 +10,11 @@
 
 namespace nystudio107\imageoptimize\models;
 
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
+
 use craft\base\Model;
 use craft\validators\ArrayValidator;
 
@@ -22,42 +27,31 @@ use craft\validators\ArrayValidator;
  */
 class Settings extends Model
 {
+    // Constants
+    // =========================================================================
+
+    const DEPRECATED_PROPERTIES = [
+        'generatePlacholders',
+        'transformMethod',
+        'imgixDomain',
+        'imgixApiKey',
+        'imgixSecurityToken',
+        'thumborBaseUrl',
+        'thumborSecurityKey',
+    ];
+
     // Public Properties
     // =========================================================================
 
     /**
-     * What transform method should be used for image transforms?
-     *
-     * @var string
+     * @var string The image transform class to use for image transforms
      */
-    public $transformMethod = 'craft';
+    public $transformClass = CraftImageTransform::class;
 
     /**
-     * @var string Domain for the Imgix transform service
+     * @var array Settings for the image transform components
      */
-    public $imgixDomain = '';
-
-    /**
-     * @var string API Key for the Imgix transform service
-     */
-    public $imgixApiKey = '';
-
-    /**
-     * @var string The optional security token used to sign image URLs from
-     *      Imgix
-     */
-    public $imgixSecurityToken = '';
-
-    /**
-     * @var string Base URL for Thumbor transform service
-     */
-    public $thumborBaseUrl = '';
-
-    /**
-     * @var string The optional security key used by Thumbor to create secure
-     *      image URLs
-     */
-    public $thumborSecurityKey = '';
+    public $imageTransformTypeSettings = [];
 
     /**
      * @var bool Should the image variants in an Asset Volume be automatically
@@ -111,6 +105,15 @@ class Settings extends Model
      *      automatically sharpened
      */
     public $autoSharpenScaledImages = true;
+
+    /**
+     * @var ImageTransformInterface[] The default Image Transform type classes
+     */
+    public $defaultImageTransformTypes = [
+        CraftImageTransform::class,
+        ImgixImageTransform::class,
+        ThumborImageTransform::class,
+    ];
 
     /**
      * @var array Default aspect ratios
@@ -273,8 +276,29 @@ class Settings extends Model
     {
         // Unset any deprecated properties
         if (!empty($config)) {
-            unset($config['generatePlacholders']);
+            // Handle migrating old Imagix settings
+            if (isset($config['imgixDomain'])) {
+                $config['imageTransformTypeSettings'][ImgixImageTransform::class]['domain'] = $config['imgixDomain'];
+            }
+            if (isset($config['imgixApiKey'])) {
+                $config['imageTransformTypeSettings'][ImgixImageTransform::class]['apiKey'] = $config['imgixApiKey'];
+            }
+            if (isset($config['imgixSecurityToken'])) {
+                $config['imageTransformTypeSettings'][ImgixImageTransform::class]['securityToken'] = $config['imgixSecurityToken'];
+            }
+            // Handle migrating old Thumbor settings
+            if (isset($config['thumborBaseUrl'])) {
+                $config['imageTransformTypeSettings'][ThumborImageTransform::class]['baseUrl'] = $config['thumborBaseUrl'];
+            }
+            if (isset($config['thumborSecurityKey'])) {
+                $config['imageTransformTypeSettings'][ThumborImageTransform::class]['securityKey'] = $config['thumborSecurityKey'];
+            }
+            // Remove deprecated properties
+            foreach (self::DEPRECATED_PROPERTIES as $prop) {
+                unset($config[$prop]);
+            }
         }
+
         parent::__construct($config);
     }
 
@@ -284,18 +308,8 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['transformMethod', 'string'],
-            ['transformMethod', 'default', 'value' => 'craft'],
-            ['imgixDomain', 'string'],
-            ['imgixDomain', 'default', 'value' => ''],
-            ['imgixApiKey', 'string'],
-            ['imgixApiKey', 'default', 'value' => ''],
-            ['imgixSecurityToken', 'string'],
-            ['imgixSecurityToken', 'default', 'value' => ''],
-            ['thumborBaseUrl', 'string'],
-            ['thumborBaseUrl', 'default', 'value' => ''],
-            ['thumborSecurityKey', 'string'],
-            ['thumborSecurityKey', 'default', 'value' => ''],
+            ['transformClass', 'string'],
+            ['transformClass', 'default', 'value' => CraftImageTransform::class],
             [
                 [
                     'automaticallyResaveImageVariants',
@@ -320,6 +334,8 @@ class Settings extends Model
             ],
             [
                 [
+                    'imageTransformTypeSettings',
+                    'defaultImageTransformTypes',
                     'defaultVariants',
                     'activeImageProcessors',
                     'activeImageVariantCreators',
@@ -338,12 +354,8 @@ class Settings extends Model
     {
         // Only return user-editable settings
         $fields = [
-            'transformMethod',
-            'imgixDomain',
-            'imgixApiKey',
-            'imgixSecurityToken',
-            'thumborBaseUrl',
-            'thumborSecurityKey',
+            'transformClass',
+            'imageTransformTypeSettings',
             'createColorPalette',
             'createPlaceholderSilhouettes',
             'lowerQualityRetinaImageVariants',
@@ -353,5 +365,4 @@ class Settings extends Model
 
         return $fields;
     }
-
 }

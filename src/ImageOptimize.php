@@ -27,6 +27,7 @@ use craft\elements\Asset;
 use craft\events\AssetTransformImageEvent;
 use craft\events\ElementEvent;
 use craft\events\FieldEvent;
+use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
@@ -34,6 +35,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\ReplaceAssetEvent;
 use craft\events\VolumeEvent;
+use craft\helpers\ArrayHelper;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout;
 use craft\services\Assets;
@@ -50,6 +52,7 @@ use markhuot\CraftQL\CraftQL;
 
 use yii\base\Event;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
 
@@ -60,11 +63,12 @@ use yii\base\Exception;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService        optimize
- * @property PlaceholderService     placeholder
- * @property OptimizedImagesService optimizedImages
- * @property Settings               $settings
- * @method   Settings               getSettings()
+ * @property OptimizeService         optimize
+ * @property PlaceholderService      placeholder
+ * @property OptimizedImagesService  optimizedImages
+ * @property ImageTransformInterface transformMethod
+ * @property Settings                $settings
+ * @method   Settings                getSettings()
  */
 class ImageOptimize extends Plugin
 {
@@ -83,14 +87,9 @@ class ImageOptimize extends Plugin
     public static $plugin;
 
     /**
-     * @var ImageTransformInterface
-     */
-    public static $transformClass;
-
-    /**
      * @var array
      */
-    public static $transformParams;
+    public static $transformParams = [];
 
     /**
      * @var bool
@@ -112,10 +111,8 @@ class ImageOptimize extends Plugin
         if ($request->getIsConsoleRequest()) {
             $this->controllerNamespace = 'nystudio107\imageoptimize\console\controllers';
         }
-        // Cache some settings
-        $settings = $this->getSettings();
-        self::$transformClass = ImageTransformInterface::IMAGE_TRANSFORM_MAP[$settings->transformMethod];
-        self::$transformParams = self::$transformClass::getTransformParams();
+        // Set the image transform component
+        $this->setImageTransformComponent();
         // Add in our Craft components
         $this->addComponents();
         // Install our global event handlers
@@ -144,7 +141,7 @@ class ImageOptimize extends Plugin
         /** @var Controller $controller */
         $controller = Craft::$app->controller;
 
-        return $controller->renderTemplate('image-optimize/_settings', [
+        return $controller->renderTemplate('image-optimize/settings/index.twig', [
             'plugin'       => $this,
             'settingsHtml' => $settingsHtml,
         ]);
@@ -155,20 +152,34 @@ class ImageOptimize extends Plugin
      */
     public function settingsHtml()
     {
-        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
-        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
         // Get only the user-editable settings
         $settings = $this->getSettings();
+
+        // Get the image transform types
+        $allImageTransformTypes = ImageOptimize::$plugin->optimize->getAllImageTransformTypes();
+        $imageTransformTypeOptions = [];
+        /** @var ImageTransformInterface $class */
+        foreach ($allImageTransformTypes as $class) {
+            if ($class::isSelectable()) {
+                $imageTransformTypeOptions[] = [
+                    'value' => $class,
+                    'label' => $class::displayName(),
+                ];
+            }
+        }
+        // Sort them by name
+        ArrayHelper::multisort($imageTransformTypeOptions, 'label');
 
         // Render the settings template
         try {
             return Craft::$app->getView()->renderTemplate(
-                'image-optimize/settings',
+                'image-optimize/settings/_settings.twig',
                 [
                     'settings'        => $settings,
-                    'imageProcessors' => $imageProcessors,
-                    'variantCreators' => $variantCreators,
                     'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
+                    'imageTransformTypeOptions' => $imageTransformTypeOptions,
+                    'allImageTransformTypes' => $allImageTransformTypes,
+                    'imageTransform' => ImageOptimize::$plugin->transformMethod,
                 ]
             );
         } catch (\Twig_Error_Loader $e) {
@@ -189,6 +200,24 @@ class ImageOptimize extends Plugin
     protected function createSettingsModel()
     {
         return new Settings();
+    }
+
+    /**
+     * Set the transformMethod component
+     */
+    protected function setImageTransformComponent()
+    {
+        $settings = $this->getSettings();
+        $definition = array_merge(
+            $settings->imageTransformTypeSettings[$settings->transformClass] ?? [],
+            ['class' => $settings->transformClass]
+        );
+        try {
+            $this->set('transformMethod', $definition);
+        } catch (InvalidConfigException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+        self::$transformParams = ImageOptimize::$plugin->transformMethod->getTransformParams();
     }
 
     /**
@@ -258,6 +287,22 @@ class ImageOptimize extends Plugin
             }
         );
 
+        // Handler: Assets::EVENT_GET_ASSET_THUMB_URL
+        Event::on(
+            Assets::class,
+            Assets::EVENT_GET_ASSET_THUMB_URL,
+            function (GetAssetThumbUrlEvent $event) {
+                Craft::debug(
+                    'Assets::EVENT_GET_ASSET_THUMB_URL',
+                    __METHOD__
+                );
+                // Return the URL to the asset URL or null to let Craft handle it
+                $event->url = ImageOptimize::$plugin->optimize->handleGetAssetThumbUrlEvent(
+                    $event
+                );
+            }
+        );
+
         // Handler: AssetTransforms::EVENT_GENERATE_TRANSFORM
         Event::on(
             AssetTransforms::class,
@@ -302,12 +347,12 @@ class ImageOptimize extends Plugin
                 /** @var Asset $element */
                 $element = $event->asset;
                 // Purge the URL
-                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
                     $element,
                     ImageOptimize::$transformParams
                 );
                 if ($purgeUrl) {
-                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                 }
             }
         );
@@ -348,12 +393,12 @@ class ImageOptimize extends Plugin
                 $asset = $event->element;
                 if (!$event->isNew) {
                     // Purge the URL
-                    $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                    $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
                         $asset,
                         ImageOptimize::$transformParams
                     );
                     if ($purgeUrl) {
-                        ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                        ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                     }
                 }
             }
@@ -371,17 +416,16 @@ class ImageOptimize extends Plugin
                 /** @var Asset $asset */
                 $asset = $event->element;
                 // Purge the URL
-                $purgeUrl = ImageOptimize::$transformClass::getPurgeUrl(
+                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
                     $asset,
                     ImageOptimize::$transformParams
                 );
                 if ($purgeUrl) {
-                    ImageOptimize::$transformClass::purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
                 }
             }
         );
     }
-
 
     /**
      * Install our miscellaneous event handlers
@@ -488,7 +532,7 @@ class ImageOptimize extends Plugin
                     'UrlManager::EVENT_REGISTER_SITE_URL_RULES',
                     __METHOD__
                 );
-                // Register our AdminCP routes
+                // Register our Control Panel routes
                 $event->rules = array_merge(
                     $event->rules,
                     $this->customFrontendRoutes()

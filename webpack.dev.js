@@ -29,6 +29,7 @@ const configureDevServer = () => {
         stats: 'errors-only',
         watchOptions: {
             poll: !!parseInt(settings.devServerConfig.poll()),
+            ignored: /node_modules/,
         },
         headers: {
             'Access-Control-Allow-Origin': '*'

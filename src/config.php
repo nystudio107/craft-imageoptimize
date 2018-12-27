@@ -8,6 +8,8 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+
 /**
  * ImageOptimize config.php
  *
@@ -25,17 +27,13 @@
  */
 
 return [
-    //  What transform method should be used for image transforms?
-    'transformMethod' => 'craft',
+    //  The image transform class to use for image transforms
+    'transformClass' => CraftImageTransform::class,
 
-    // Domain for the Imgix transform service
-    'imgixDomain' => '',
-
-    // API key for the Imgix transform service
-    'imgixApiKey' => '',
-
-    // The optional security token used to sign image URLs from Imgix
-    'imgixSecurityToken' => '',
+    /**
+     * @var array Settings for the image transform components
+     */
+    'imageTransformTypeSettings' => [],
 
     // Should the image variants in an Asset Volume be automatically re-saved when saving
     // an OptimizedImages field, saving an Asset Volume that has an OptimizedImages field
@@ -67,6 +65,10 @@ return [
 
     // Controls whether images scaled down >= 50% should be automatically sharpened
     'autoSharpenScaledImages' => true,
+
+    // The default Image Transform type classes
+    'defaultImageTransformTypes' => [
+    ],
 
     // Default aspect ratios
     'defaultAspectRatios' => [

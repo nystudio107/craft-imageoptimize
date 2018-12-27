@@ -46,6 +46,35 @@ class ImgixImageTransform extends ImageTransform
     // =========================================================================
 
     /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('image-optimize', 'Imgix');
+    }
+
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var string
+     */
+    public $domain;
+
+    /**
+     * @var string
+     */
+    public $apiKey;
+
+    /**
+     * @var string
+     */
+    public $securityToken;
+
+    // Public Methods
+    // =========================================================================
+
+    /**
      * @param Asset               $asset
      * @param AssetTransform|null $transform
      * @param array               $params
@@ -54,7 +83,7 @@ class ImgixImageTransform extends ImageTransform
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $url = null;
         $settings = ImageOptimize::$plugin->getSettings();
@@ -143,11 +172,11 @@ class ImgixImageTransform extends ImageTransform
             // Remove the api-key param
             unset($params['api-key']);
             // Apply the Security Token, if set
-            if (!empty($settings->imgixSecurityToken)) {
-                $builder->setSignKey($settings->imgixSecurityToken);
+            if (!empty($this->securityToken)) {
+                $builder->setSignKey($this->securityToken);
             }
             // Finally, create the Imgix URL for this transformed image
-            $assetUri = self::getAssetUri($asset);
+            $assetUri = $this->getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
             Craft::debug(
                 'Imgix transform created for: '.$assetUri.' - Params: '.print_r($params, true).' - URL: '.$url,
@@ -166,7 +195,7 @@ class ImgixImageTransform extends ImageTransform
      *
      * @return string
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
         $url = preg_replace('/fm=[^&]*/', 'fm=webp', $url);
 
@@ -180,7 +209,7 @@ class ImgixImageTransform extends ImageTransform
      * @return null|string
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getPurgeUrl(Asset $asset, array $params = [])
+    public function getPurgeUrl(Asset $asset, array $params = [])
     {
         $url = null;
 
@@ -191,7 +220,7 @@ class ImgixImageTransform extends ImageTransform
         if ($asset && $builder) {
             $builder->setUseHttps(true);
             // Create the Imgix URL for purging this image
-            $assetUri = self::getAssetUri($asset);
+            $assetUri = $this->getAssetUri($asset);
             $url = $builder->createURL($assetUri, $params);
             // Strip the query string so we just pass in the raw URL
             $url = UrlHelper::stripQueryString($url);
@@ -206,7 +235,7 @@ class ImgixImageTransform extends ImageTransform
      *
      * @return bool
      */
-    public static function purgeUrl(string $url, array $params = []): bool
+    public function purgeUrl(string $url, array $params = []): bool
     {
         $result = false;
         $apiKey = isset($params['api-key'])
@@ -249,12 +278,11 @@ class ImgixImageTransform extends ImageTransform
     /**
      * @return array
      */
-    public static function getTransformParams(): array
+    public function getTransformParams(): array
     {
-        $settings = ImageOptimize::$plugin->getSettings();
         $params = [
-            'domain'  => $settings->imgixDomain,
-            'api-key' => $settings->imgixApiKey,
+            'domain'  => $this->domain,
+            'api-key' => $this->apiKey,
         ];
 
         return $params;
@@ -266,7 +294,7 @@ class ImgixImageTransform extends ImageTransform
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      */
-    public static function getAssetUri(Asset $asset)
+    public function getAssetUri(Asset $asset)
     {
         $volume = $asset->getVolume();
 
@@ -285,5 +313,29 @@ class ImgixImageTransform extends ImageTransform
         }
 
         return parent::getAssetUri($asset);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate('image-optimize/settings/image-transforms/imgix.twig', [
+            'imageTransform' => $this,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+        $rules = array_merge($rules, [
+            [['domain', 'apiKey', 'securityToken'], 'default', 'value' => ''],
+            [['domain', 'apiKey', 'securityToken'], 'string'],
+        ]);
+
+        return $rules;
     }
 }

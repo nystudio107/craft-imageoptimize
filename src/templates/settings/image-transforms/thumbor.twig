@@ -1,0 +1,22 @@
+{% from 'image-optimize/_includes/macros' import configWarning %}
+
+{% import "_includes/forms" as forms %}
+
+<!-- thumborBaseUrl -->
+{{ forms.textField({
+    label: 'Thumbor Base URL',
+    instructions: "The base URL to use for the Thumbor transforms."|t('image-optimize'),
+    id: 'baseUrl',
+    name: 'baseUrl',
+    value: imageTransform.baseUrl,
+    warning: configWarning('imageTransformTypeSettings', 'image-optimize'),
+}) }}
+<!-- thumborSecurityKey -->
+{{ forms.textField({
+    label: 'Thumbor Security Key',
+    instructions: "The optional [security key](https://thumbor.readthedocs.io/en/latest/security.html) used by Thumbor to create secure image urls."|t('image-optimize'),
+    id: 'securityKey',
+    name: 'securityKey',
+    value: imageTransform.securityKey,
+    warning: configWarning('imageTransformTypeSettings', 'image-optimize'),
+}) }}

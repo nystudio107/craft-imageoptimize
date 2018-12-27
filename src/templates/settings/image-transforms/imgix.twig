@@ -1,0 +1,31 @@
+{% from 'image-optimize/_includes/macros' import configWarning %}
+
+{% import "_includes/forms" as forms %}
+
+<!-- imgixDomain -->
+{{ forms.textField({
+    label: 'Imgix Source Domain',
+    instructions: "The source domain to use for the Imgix transforms."|t('image-optimize'),
+    id: 'domain',
+    name: 'domain',
+    value: imageTransform.domain,
+    warning: configWarning('imageTransformTypeSettings', 'image-optimize'),
+}) }}
+<!-- imgixApiKey -->
+{{ forms.textField({
+    label: 'Imgix API Key',
+    instructions: "The API key to use for the Imgix transforms (needed for auto-purging changed assets)."|t('image-optimize'),
+    id: 'apiKey',
+    name: 'apiKey',
+    value: imageTransform.apiKey,
+    warning: configWarning('imageTransformTypeSettings', 'image-optimize'),
+}) }}
+<!-- imgixSecurityToken -->
+{{ forms.textField({
+    label: 'Imgix Security Token',
+    instructions: "The optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix."|t('image-optimize'),
+    id: 'securityToken',
+    name: 'securityToken',
+    value: imageTransform.securityToken,
+    warning: configWarning('imageTransformTypeSettings', 'image-optimize'),
+}) }}

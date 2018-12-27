@@ -5,7 +5,7 @@
  * Automatically optimize images after they've been transformed
  *
  * @link      https://nystudio107.com
- * @copyright Copyright (c) 2017 nystudio107
+ * @copyright Copyright (c) 2018 nystudio107
  */
 
 namespace nystudio107\imageoptimize\imagetransforms;
@@ -19,11 +19,25 @@ use craft\models\AssetTransform;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.0.0
+ * @since     1.5.0
  */
 class CraftImageTransform extends ImageTransform
 {
     // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('image-optimize', 'Craft');
+    }
+
+    // Public Properties
+    // =========================================================================
+
+    // Public Methods
     // =========================================================================
 
     /**
@@ -33,7 +47,7 @@ class CraftImageTransform extends ImageTransform
      *
      * @return string|null
      */
-    public static function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
         $generateTransformsBeforePageLoad = $params['generateTransformsBeforePageLoad'] ?? true;
         // Generate the URLs to the optimized images
@@ -51,9 +65,9 @@ class CraftImageTransform extends ImageTransform
      *
      * @return string
      */
-    public static function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
-        $url = self::appendExtension($url, '.webp');
+        $url = $this->appendExtension($url, '.webp');
 
         return $url;
     }
@@ -61,7 +75,7 @@ class CraftImageTransform extends ImageTransform
     /**
      * @return array
      */
-    public static function getTransformParams(): array
+    public function getTransformParams(): array
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Get our $generateTransformsBeforePageLoad setting
@@ -71,5 +85,31 @@ class CraftImageTransform extends ImageTransform
         ];
 
         return $params;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        return Craft::$app->getView()->renderTemplate('image-optimize/settings/image-transforms/craft.twig', [
+            'imageTransform' => $this,
+            'imageProcessors' => $imageProcessors,
+            'variantCreators' => $variantCreators,
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        $rules = parent::rules();
+        $rules = array_merge($rules, [
+        ]);
+
+        return $rules;
     }
 }

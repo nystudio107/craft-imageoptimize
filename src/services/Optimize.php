@@ -11,6 +11,11 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
 
 use Craft;
 use craft\base\Component;
@@ -19,8 +24,11 @@ use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\VolumeException;
 use craft\events\AssetTransformImageEvent;
+use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
+use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\Component as ComponentHelper;
 use craft\helpers\FileHelper;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\Image as ImageHelper;
@@ -29,6 +37,7 @@ use craft\models\AssetTransform;
 use craft\models\AssetTransformIndex;
 
 use mikehaertl\shellcommand\Command as ShellCommand;
+
 use yii\base\InvalidConfigException;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
@@ -40,8 +49,84 @@ use yii\base\InvalidConfigException;
  */
 class Optimize extends Component
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event RegisterComponentTypesEvent The event that is triggered when registering
+     *        Image Transform types
+     *
+     * Image Transform types must implement [[ImageTransformInterface]]. [[ImageTransform]]
+     * provides a base implementation.
+     *
+     * ```php
+     * use nystudio107\imageoptimize\services\Optimize;
+     * use craft\events\RegisterComponentTypesEvent;
+     * use yii\base\Event;
+     *
+     * Event::on(Optimize::class,
+     *     Optimize::EVENT_REGISTER_IMAGE_TRANSFORM_TYPES,
+     *     function(RegisterComponentTypesEvent $event) {
+     *         $event->types[] = MyImageTransform::class;
+     *     }
+     * );
+     * ```
+     */
+    const EVENT_REGISTER_IMAGE_TRANSFORM_TYPES = 'registerImageTransformTypes';
+
+    const DEFAULT_IMAGE_TRANSFORM_TYPES = [
+        CraftImageTransform::class,
+        ImgixImageTransform::class,
+        ThumborImageTransform::class,
+    ];
+
     // Public Methods
     // =========================================================================
+
+    /**
+     * Returns all available field type classes.
+     *
+     * @return string[] The available field type classes
+     */
+    public function getAllImageTransformTypes(): array
+    {
+        $imageTransformTypes = array_unique(array_merge(
+            ImageOptimize::$plugin->getSettings()->defaultImageTransformTypes ?? [],
+            self::DEFAULT_IMAGE_TRANSFORM_TYPES
+        ), SORT_REGULAR);
+
+        $event = new RegisterComponentTypesEvent([
+            'types' => $imageTransformTypes
+        ]);
+        $this->trigger(self::EVENT_REGISTER_IMAGE_TRANSFORM_TYPES, $event);
+
+        return $event->types;
+    }
+
+    /**
+     * Creates an Image Transform with a given config.
+     *
+     * @param mixed $config The Image Transform’s class name, or its config,
+     *                      with a `type` value and optionally a `settings` value
+     *
+     * @return null|ImageTransformInterface The Image Transform
+     */
+    public function createImageTransformType($config): ImageTransformInterface
+    {
+        if (is_string($config)) {
+            $config = ['type' => $config];
+        }
+
+        try {
+            /** @var ImageTransform $imageTransform */
+            $imageTransform = ComponentHelper::createComponent($config, ImageTransformInterface::class);
+        } catch (\Throwable $e) {
+            $imageTransform = null;
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+
+        return $imageTransform;
+    }
 
     /**
      * Handle responding to EVENT_GET_ASSET_URL events
@@ -55,8 +140,7 @@ class Optimize extends Component
     {
         Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
-        $settings = ImageOptimize::$plugin->getSettings();
-        if ($settings->transformMethod !== 'craft') {
+        if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
             $asset = $event->asset;
             $transform = $event->transform;
             // If there's no transform requested, and we can't manipulate the image anyway, just return the URL
@@ -84,13 +168,44 @@ class Optimize extends Component
                 $transform = $assetTransforms->getTransformByHandle($transform);
             }
             // Generate an image transform url
-            $url = ImageOptimize::$transformClass::getTransformUrl(
+            $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
                 $asset,
                 $transform,
                 ImageOptimize::$transformParams
             );
         }
         Craft::endProfile('handleGetAssetUrlEvent', __METHOD__);
+
+        return $url;
+    }
+
+    /**
+     * Handle responding to EVENT_GET_ASSET_THUMB_URL events
+     *
+     * @param GetAssetThumbUrlEvent $event
+     *
+     * @return null|string
+     */
+    public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event)
+    {
+        Craft::beginProfile('handleGetAssetThumbUrlEvent', __METHOD__);
+        $url = null;
+        if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
+            $asset = $event->asset;
+            $transform = new AssetTransform([
+                'height'    => $event->height,
+                'width'     => $event->width,
+                'interlace' => 'line',
+            ]);
+            // Generate an image transform url
+            ImageOptimize::$transformParams['generateTransformsBeforePageLoad'] = $event->generate;
+            $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
+                $asset,
+                $transform,
+                ImageOptimize::$transformParams
+            );
+        }
+        Craft::endProfile('handleGetAssetThumbUrlEvent', __METHOD__);
 
         return $url;
     }
@@ -107,9 +222,8 @@ class Optimize extends Component
         Craft::beginProfile('handleGenerateTransformEvent', __METHOD__);
         $tempPath = null;
 
-        $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod === 'craft' && $event->asset !== null) {
+        if (ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform && $event->asset !== null) {
             // Apply any filters to the image
             if ($event->transformIndex->transform !== null) {
                 $this->applyFiltersToImage($event->transformIndex->transform, $event->asset, $event->image);
@@ -169,7 +283,7 @@ class Optimize extends Component
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Only do this for local Craft transforms
-        if ($settings->transformMethod === 'craft' && $event->asset !== null) {
+        if (ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform && $event->asset !== null) {
             $this->cleanupImageVariants($event->asset, $event->transformIndex);
         }
     }

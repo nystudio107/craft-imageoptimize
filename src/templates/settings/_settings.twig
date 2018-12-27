@@ -1,0 +1,119 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Image Optimize plugin for Craft CMS 3.x
+ *
+ * Image Optimize Settings.twig
+ *
+ * @author    nystudio107
+ * @copyright Copyright (c) 2017 nystudio107
+ * @link      https://nystudio107.com
+ * @package   ImageOptimize
+ * @since     1.5.0
+ */
+#}
+
+{% from 'image-optimize/_includes/macros' import configWarning %}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
+
+<div class="readable">
+
+    <!-- transformClass -->
+    {{ forms.selectField({
+        label: "Transform Method"|t('image-optimize'),
+        instructions: "Choose from Craft native transforms or an image transform service to handle your image transforms site-wide."|t('image-optimize'),
+        id: 'transformClass',
+        name: 'transformClass',
+        value: settings.transformClass,
+        options: imageTransformTypeOptions,
+        class: 'io-transform-method',
+        warning: configWarning('transformClass', 'image-optimize'),
+    }) }}
+
+    {% for type in allImageTransformTypes %}
+        {% set isCurrent = (type == className(imageTransform)) %}
+        <div id="{{ type|id }}" class="io-method-settings {{ 'io-' ~ type|id ~ '-method' }}" {% if not isCurrent %} style="display: none;"{% endif %}>
+            {% namespace 'imageTransformTypeSettings['~type~']' %}
+                {% set _imageTransform = isCurrent ? imageTransform : craft.imageOptimize.createImageTransformType(type) %}
+                {{ _imageTransform.getSettingsHtml()|raw }}
+            {% endnamespace %}
+        </div>
+    {% endfor %}
+
+    <div class="field">
+        <div class="heading">
+            <h2>OptimizedImages Field Settings</h2>
+            <div class="instructions">
+                <p>ImageOptimize also comes with an <strong>OptimizedImages</strong> Field that you can add to an Asset Volume's layout. The OptimizedImages Field makes creating responsive image sizes for <code>{{ '<img srcset="">' |escape }}</code> or <code>{{ '<picture>' |escape }}</code> elements sublimely easy.</p><p>These responsive image transforms are created when an asset is <em>saved</em>, rather than at page load time, to ensure that frontend performance is optimal.</p>
+            </div>
+        </div>
+    </div>
+    <!-- createColorPalette -->
+    {{ forms.lightswitchField({
+        label: "Create Color Palette"|t('image-optimize'),
+        instructions: "Controls whether a dominant color palette should be created for image variants. It takes a bit of time, so if you never plan to use it, you can turn it off."|t('image-optimize'),
+        'id': 'createColorPalette',
+        'name': 'createColorPalette',
+        'on': settings.createColorPalette,
+        'warning': configWarning('createColorPalette', 'image-optimize')
+    }) }}
+    <!-- createPlaceholderSilhouettes -->
+    {% if not gdInstalled %}
+        <div class="field">
+            <p class="warning">You do not have the <code>GD</code> PHP extension installed, so placeholder silhouettes cannot be generated. An SVG box will be used instead.</p>
+        </div>
+    {% endif %}
+    {{ forms.lightswitchField({
+        label: "Create Placeholder Silhouettes"|t('image-optimize'),
+        instructions: "Controls whether SVG placeholder silhouettes should be created for image variants. It takes a bit of time, so if you never plan to use them, you can turn it off."|t('image-optimize'),
+        'id': 'createPlaceholderSilhouettes',
+        'name': 'createPlaceholderSilhouettes',
+        'on': settings.createPlaceholderSilhouettes,
+        'warning': configWarning('createPlaceholderSilhouettes', 'image-optimize')
+    }) }}
+    <!-- lowerQualityRetinaImageVariants -->
+    {{ forms.lightswitchField({
+        label: "Lower Quality Retina Image Variants"|t('image-optimize'),
+        instructions: "Controls whether retina images are automatically created with reduced quality as per <a href='https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/' target='_blank'>here</a>."|t('image-optimize') |raw,
+        'id': 'lowerQualityRetinaImageVariants',
+        'name': 'lowerQualityRetinaImageVariants',
+        'on': settings.lowerQualityRetinaImageVariants,
+        'warning': configWarning('lowerQualityRetinaImageVariants', 'image-optimize')
+    }) }}
+    <!-- allowUpScaledImageVariants -->
+    {{ forms.lightswitchField({
+        label: "Allow Up-Scaled Image Variants"|t('image-optimize'),
+        instructions: "Controls whether Optimized Image Variants are created that would be up-scaled to be larger than the original source image."|t('image-optimize'),
+        'id': 'allowUpScaledImageVariants',
+        'name': 'allowUpScaledImageVariants',
+        'on': settings.allowUpScaledImageVariants,
+        'warning': configWarning('allowUpScaledImageVariants', 'image-optimize')
+    }) }}
+    <!-- autoSharpenScaledImages -->
+    {{ forms.lightswitchField({
+        label: "Auto Sharpen Scaled Images"|t('image-optimize'),
+        instructions: "Controls whether images scaled down >= 50% should be automatically sharpened."|t('image-optimize'),
+        'id': 'autoSharpenScaledImages',
+        'name': 'autoSharpenScaledImages',
+        'on': settings.autoSharpenScaledImages,
+        'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
+    }) }}
+
+</div>
+
+{% js %}
+new Craft.AdminTable({
+    tableSelector: '#imageProcessors',
+});
+new Craft.AdminTable({
+    tableSelector: '#variantCreators',
+});
+$('.io-transform-method').change(function(ev) {
+    $('.io-method-settings').hide();
+    var value = 'io-' + Craft.formatInputId($(ev.target).val()) + '-method';
+    $('.' + value).slideDown();
+});
+{% endjs %}
