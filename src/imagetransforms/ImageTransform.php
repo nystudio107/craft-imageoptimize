@@ -14,6 +14,8 @@ use nystudio107\imageoptimize\helpers\UrlHelper;
 
 use craft\base\SavableComponent;
 use craft\elements\Asset;
+use craft\helpers\FileHelper;
+use craft\helpers\StringHelper;
 use craft\models\AssetTransform;
 
 /**
@@ -28,15 +30,38 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
 
     use ImageTransformTrait;
 
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public static function displayName(): string
+    {
+        return Craft::t('image-optimize', 'Generic Transform');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getTemplatesRoot(): array
+    {
+        $reflect = new \ReflectionClass(static::class);
+        $classPath = FileHelper::normalizePath(
+            dirname($reflect->getFileName())
+            . '/../templates'
+        )
+        . DIRECTORY_SEPARATOR;
+        $id = StringHelper::toKebabCase($reflect->getShortName());
+
+        return [$id, $classPath];
+    }
+
     // Public Methods
     // =========================================================================
 
     /**
-     * @param Asset               $asset
-     * @param AssetTransform|null $transform
-     * @param array               $params
-     *
-     * @return string|null
+     * @inheritdoc
      */
     public function getTransformUrl(Asset $asset, $transform, array $params = [])
     {
@@ -46,12 +71,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     }
 
     /**
-     * @param string              $url
-     * @param Asset               $asset
-     * @param AssetTransform|null $transform
-     * @param array               $params
-     *
-     * @return string
+     * @inheritdoc
      */
     public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
     {
@@ -59,10 +79,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     }
 
     /**
-     * @param Asset $asset
-     * @param array $params
-     *
-     * @return null|string
+     * @inheritdoc
      */
     public function getPurgeUrl(Asset $asset, array $params = [])
     {
@@ -72,10 +89,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     }
 
     /**
-     * @param string $url
-     * @param array  $params
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function purgeUrl(string $url, array $params = []): bool
     {
@@ -83,21 +97,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     }
 
     /**
-     * @return array
-     */
-    public function getTransformParams(): array
-    {
-        $params = [
-        ];
-
-        return $params;
-    }
-
-    /**
-     * @param Asset $asset
-     *
-     * @return mixed
-     * @throws \yii\base\InvalidConfigException
+     * @inheritdoc
      */
     public function getAssetUri(Asset $asset)
     {
@@ -129,6 +129,17 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
         ]);
         curl_exec($ch);
         curl_close($ch);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTransformParams(): array
+    {
+        $params = [
+        ];
+
+        return $params;
     }
 
     /**

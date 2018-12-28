@@ -14,8 +14,8 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
-use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
+use nystudio107\imageoptimizeimgix\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimizethumbor\imagetransforms\ThumborImageTransform;
 
 use Craft;
 use craft\base\Component;

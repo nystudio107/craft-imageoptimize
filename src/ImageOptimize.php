@@ -32,6 +32,7 @@ use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterTemplateRootsEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\ReplaceAssetEvent;
 use craft\events\VolumeEvent;
@@ -47,6 +48,7 @@ use craft\services\Volumes;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
 use craft\web\UrlManager;
+use craft\web\View;
 
 use markhuot\CraftQL\CraftQL;
 
@@ -263,6 +265,10 @@ class ImageOptimize extends Plugin
         // Install only for non-console site requests
         if ($request->getIsSiteRequest() && !$request->getIsConsoleRequest()) {
             $this->installSiteEventListeners();
+        }
+        // Install only for non-console cp requests
+        if ($request->getIsCpRequest() && !$request->getIsConsoleRequest()) {
+            $this->installCpEventListeners();
         }
     }
 
@@ -537,6 +543,36 @@ class ImageOptimize extends Plugin
                     $event->rules,
                     $this->customFrontendRoutes()
                 );
+            }
+        );
+    }
+
+    /**
+     * Install site event listeners for cp requests only
+     */
+    protected function installCpEventListeners()
+    {
+        // Handler: Plugins::EVENT_AFTER_LOAD_PLUGINS
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_LOAD_PLUGINS,
+            function () {
+                    // Install these only after all other plugins have loaded
+                    Event::on(
+                        View::class,
+                        View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
+                        function (RegisterTemplateRootsEvent $e) {
+                            // Register the root directodies
+                            $allImageTransformTypes = ImageOptimize::$plugin->optimize->getAllImageTransformTypes();
+                            /** @var ImageTransformInterface $imageTransformType */
+                            foreach ($allImageTransformTypes as $imageTransformType) {
+                                list($id, $baseDir) = $imageTransformType::getTemplatesRoot();
+                                if (is_dir($baseDir)) {
+                                    $e->roots[$id] = $baseDir;
+                                }
+                            }
+                        }
+                    );
             }
         );
     }

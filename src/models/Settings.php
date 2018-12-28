@@ -110,9 +110,6 @@ class Settings extends Model
      * @var ImageTransformInterface[] The default Image Transform type classes
      */
     public $defaultImageTransformTypes = [
-        CraftImageTransform::class,
-        ImgixImageTransform::class,
-        ThumborImageTransform::class,
     ];
 
     /**
