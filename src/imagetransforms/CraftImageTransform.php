@@ -94,7 +94,7 @@ class CraftImageTransform extends ImageTransform
     {
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
-        return Craft::$app->getView()->renderTemplate('image-optimize/settings/image-transforms/craft.twig', [
+        return Craft::$app->getView()->renderTemplate('craft-image-transform/settings/image-transforms/craft.twig', [
             'imageTransform' => $this,
             'imageProcessors' => $imageProcessors,
             'variantCreators' => $variantCreators,
