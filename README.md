@@ -705,7 +705,7 @@ use vendor\package\MyImageTransform;
     ],
 ```
 
-No module or plugin bootstrapping code needed to get it working.
+No module or plugin bootstrapping code needed to get it working. For an example of how this works, check out [craft-imageoptimize-imgix](https://github.com/nystudio107/craft-imageoptimize-imgix) & [craft-imageoptimize-thumbor](https://github.com/nystudio107/craft-imageoptimize-thumbor).
 
 If you want to wrap your `ImageTransform` into a plugin or module,
 simply listen for the `EVENT_REGISTER_IMAGE_TRANSFORM_TYPES` event to add your `ImageTransform` to the types that ImageOptimize knows about.
@@ -726,6 +726,8 @@ Event::on(Optimize::class,
 ```
 
 Although ImageOptimize itself uses the same mechanisms internally for `ImageTranform` implementations, this allows you to update & maintain an `ImageTransform` entirely independent of ImageOptimize.
+
+This technique is discussed in depth in the [Writing Craft Plugins with Extensible Components](https://nystudio107.com/blog/writing-craft-plugins-with-extensible-components) article.
 
 ## ImageOptimize Roadmap
 
