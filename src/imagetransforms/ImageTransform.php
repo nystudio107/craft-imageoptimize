@@ -54,9 +54,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
         . DIRECTORY_SEPARATOR;
         $id = StringHelper::toKebabCase($reflect->getShortName());
 
-        return [
-            $id, $classPath
-        ];
+        return [$id, $classPath];
     }
 
     // Public Methods
