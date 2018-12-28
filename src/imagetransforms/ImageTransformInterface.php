@@ -21,6 +21,15 @@ use craft\models\AssetTransform;
  */
 interface ImageTransformInterface extends SavableComponentInterface
 {
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @return array
+     * @throws \ReflectionException
+     */
+    public static function getTemplatesRoot(): array;
+
     // Public Methods
     // =========================================================================
 
@@ -58,7 +67,6 @@ interface ImageTransformInterface extends SavableComponentInterface
      * @return bool
      */
     public function purgeUrl(string $url, array $params = []): bool;
-
 
     /**
      * @param Asset $asset

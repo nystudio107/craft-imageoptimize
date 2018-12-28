@@ -14,6 +14,8 @@ use nystudio107\imageoptimize\helpers\UrlHelper;
 
 use craft\base\SavableComponent;
 use craft\elements\Asset;
+use craft\helpers\FileHelper;
+use craft\helpers\StringHelper;
 use craft\models\AssetTransform;
 
 /**
@@ -27,6 +29,28 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     // =========================================================================
 
     use ImageTransformTrait;
+
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @return array
+     * @throws \ReflectionException
+     */
+    public static function getTemplatesRoot(): array
+    {
+        $reflect = new \ReflectionClass(static::class);
+        $classPath = FileHelper::normalizePath(
+            dirname($reflect->getFileName())
+            . '/../templates'
+        )
+        . DIRECTORY_SEPARATOR;
+        $id = StringHelper::toKebabCase($reflect->getShortName());
+
+        return [
+            $id, $classPath
+        ];
+    }
 
     // Public Methods
     // =========================================================================
