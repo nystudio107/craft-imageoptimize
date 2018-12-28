@@ -72,5 +72,9 @@ return [
     'SVG' => 'SVG',
     'The base URL to use for the Thumbor transforms.' => 'The base URL to use for the Thumbor transforms.',
     'Module does not exist in the manifest: {moduleName}' => 'Module does not exist in the manifest: {moduleName}',
-    'Thumbor' => 'Thumbor'
+    'Thumbor' => 'Thumbor',
+    'Optionally prefix your asset path with the bucket name. This is useful if your Thumbor configuration does not specify an explicit bucket. Only relevant for AWS S3 volumes at this time.' => 'Optionally prefix your asset path with the bucket name. This is useful if your Thumbor configuration does not specify an explicit bucket. Only relevant for AWS S3 volumes at this time.',
+    'Object failed to validate' => 'Object failed to validate',
+    'Is not a Model object.' => 'Is not a Model object.',
+    'Generic Transform' => 'Generic Transform'
 ];
