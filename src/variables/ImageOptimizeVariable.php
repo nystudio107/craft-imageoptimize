@@ -89,4 +89,14 @@ class ImageOptimizeVariable extends ManifestVariable
     {
         return ImageOptimize::$plugin->optimize->createImageTransformType($config);
     }
+
+    /**
+     * Return whether we are running Craft 3.1 or later
+     *
+     * @return bool
+     */
+    public function craft31(): bool
+    {
+        return ImageOptimize::$craft31;
+    }
 }
