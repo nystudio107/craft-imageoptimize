@@ -84,6 +84,8 @@
         "purgecss-whitelister": "^2.2.0",
         "resolve-url-loader": "^3.0.0",
         "sane": "^4.0.1",
+        "stylelint": "^9.9.0",
+        "stylelint-config-recommended": "^2.1.0",
         "style-loader": "^0.23.0",
         "terser-webpack-plugin": "^1.1.0",
         "vue-loader": "^15.4.2",
