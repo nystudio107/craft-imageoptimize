@@ -517,7 +517,7 @@ Should you want to access the height of a given variant, you can do that via:
 
 ```twig
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
-    {{ optimizedImages.variantHeight[VARIANT_WIDTH] }}
+    {{ optimizedImages.variantHeights[VARIANT_WIDTH] }}
 ```
 
 ...where `VARIANT_WIDTH` is the width of the image variant.
@@ -526,7 +526,7 @@ Or to iterate through the `width` as well as the `height`, you can do:
 
 ```
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
-    {% for width,height in optimizedImages.variantHeight %}
+    {% for width,height in optimizedImages.variantHeights %}
         {{ width ~ ' - ' ~ height }}
     {% endfor %}
 ```
