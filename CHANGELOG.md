@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.5.4 - 2019.02.22
+### Changed
+* Fixed an issue where focal points weren't always respected for Imgix
+
 ## 1.5.3 - 2019.02.07
 ### Changed
 * Fixed an issue where `.env` vars were not actually parsed
