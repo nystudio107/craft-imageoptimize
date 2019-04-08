@@ -10,13 +10,17 @@
 
 namespace nystudio107\imageoptimize\models;
 
+use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
 
 use craft\base\Model;
+use craft\behaviors\EnvAttributeParserBehavior;
 use craft\validators\ArrayValidator;
+
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * ImageOptimize Settings model
@@ -362,4 +366,29 @@ class Settings extends Model
 
         return $fields;
     }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        $craft31Behaviors = [];
+        if (ImageOptimize::$craft31) {
+            $craft31Behaviors = [
+                'parser' => [
+                    'class' => EnvAttributeParserBehavior::class,
+                    'attributes' => [
+                    ],
+                ]
+            ];
+        }
+
+        return array_merge($craft31Behaviors, [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::class,
+                // 'attributeTypes' will be composed automatically according to `rules()`
+            ],
+        ]);
+    }
+
 }
