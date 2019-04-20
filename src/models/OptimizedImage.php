@@ -117,7 +117,7 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function src(int $width = 0): string
     {
@@ -133,7 +133,7 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return null|string|\Twig_Markup
+     * @return null|string|\Twig\Markup
      */
     public function getSrc(int $width = 0): string
     {
@@ -146,7 +146,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcset(bool $dpr = false): string
     {
@@ -171,7 +171,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetWidth(int $width, bool $dpr = false): string
     {
@@ -188,7 +188,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetMinWidth(int $width, bool $dpr = false): string
     {
@@ -204,7 +204,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetMaxWidth(int $width, bool $dpr = false): string
     {
@@ -219,7 +219,7 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcWebp(int $width = 0): string
     {
@@ -248,7 +248,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetWebp(bool $dpr = false): string
     {
@@ -274,7 +274,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetWidthWebp(int $width, bool $dpr = false): string
     {
@@ -291,7 +291,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetMinWidthWebp(int $width, bool $dpr = false): string
     {
@@ -308,7 +308,7 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function srcsetMaxWidthWebp(int $width, bool $dpr = false): string
     {
@@ -351,7 +351,7 @@ class OptimizedImage extends Model
     /**
      * Return a base64-encoded placeholder image
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function placeholderImage()
     {
@@ -392,7 +392,7 @@ class OptimizedImage extends Model
      *
      * @param string|null $color
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function placeholderBox(string $color = null)
     {
@@ -429,7 +429,7 @@ class OptimizedImage extends Model
     /**
      * Return a silhouette of the image as an SVG placeholder
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function placeholderSilhouette()
     {
@@ -582,9 +582,9 @@ class OptimizedImage extends Model
     /**
      * Return a default placeholder image
      *
-     * @return \Twig_Markup
+     * @return \Twig\Markup
      */
-    protected function defaultPlaceholderImage(): \Twig_Markup
+    protected function defaultPlaceholderImage(): \Twig\Markup
     {
         $width = 1;
         $height = 1;

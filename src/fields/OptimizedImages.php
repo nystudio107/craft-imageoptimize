@@ -236,7 +236,7 @@ class OptimizedImages extends Field
                     [
                     ]
                 );
-            } catch (\Twig_Error_Loader $e) {
+            } catch (\Twig\Error\LoaderError $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             } catch (\yii\base\Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
@@ -283,7 +283,7 @@ class OptimizedImages extends Field
                     'namespace'    => $namespacedId,
                 ]
             );
-        } catch (\Twig_Error_Loader $e) {
+        } catch (\Twig\Error\LoaderError $e) {
             Craft::error($e->getMessage(), __METHOD__);
         } catch (\yii\base\Exception $e) {
             Craft::error($e->getMessage(), __METHOD__);
@@ -339,7 +339,7 @@ class OptimizedImages extends Field
                         'nameSpaceId' => $nameSpaceId,
                     ]
                 );
-            } catch (\Twig_Error_Loader $e) {
+            } catch (\Twig\Error\LoaderError $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             } catch (\yii\base\Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
@@ -353,7 +353,7 @@ class OptimizedImages extends Field
                 [
                 ]
             );
-        } catch (\Twig_Error_Loader $e) {
+        } catch (\Twig\Error\LoaderError $e) {
             Craft::error($e->getMessage(), __METHOD__);
         } catch (\yii\base\Exception $e) {
             Craft::error($e->getMessage(), __METHOD__);
