@@ -151,7 +151,21 @@ class OptimizedImages extends Field
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
-            ['variants', ArrayValidator::class],
+            [
+                [
+                    'displayOptimizedImageVariants',
+                    'displayDominantColorPalette',
+                    'displayLazyLoadPlaceholderImages',
+                ],
+                'boolean',
+            ],
+            [
+                [
+                    'ignoreFilesOfType',
+                    'variants',
+                ],
+                ArrayValidator::class
+            ],
         ]);
 
         return $rules;
