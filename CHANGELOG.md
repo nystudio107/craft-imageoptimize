@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.5.5 - 2019.04.22
+### Changed
+* Updated Twig namespacing to be compliant with deprecated class aliases in 2.7.x
+
 ## 1.5.4 - 2019.02.22
 ### Changed
 * Fixed an issue where focal points weren't always respected for Imgix
