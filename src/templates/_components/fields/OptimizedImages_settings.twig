@@ -14,6 +14,7 @@
 #}
 
 {% import "_includes/forms" as forms %}
+{% from 'image-optimize/_includes/macros' import checkboxGroupField %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
@@ -210,7 +211,7 @@
                                 {% if field.variants[loop.index0]['retinaSizes'] is defined and field.variants[loop.index0]['retinaSizes'] |length %}
                                     {% set retinaValues = field.variants[loop.index0]['retinaSizes'] %}
                                 {% endif %}
-                                {{ forms.checkboxGroupField({
+                                {{ checkboxGroupField({
                                     label: "Retina Sizes"|t('image-optimize'),
                                     instructions: "The additional retina sizes that should be created for this variant."|t('image-optimize'),
                                     id: 'variants-' ~ loop.index0 ~ '-retinaSizes',

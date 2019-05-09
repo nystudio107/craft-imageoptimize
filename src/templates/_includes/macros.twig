@@ -6,3 +6,13 @@
         {{ false }}
     {%- endif -%}
 {%- endmacro %}
+
+{% macro checkboxGroupField(config) %}
+    {% import "_includes/forms" as forms %}
+    {% import _self as macros %}
+    {{ forms.field(config, macros.checkboxGroup(config)) }}
+{% endmacro %}
+
+{% macro checkboxGroup(config) %}
+    {% include "image-optimize/_includes/checkboxGroup" with config only %}
+{% endmacro %}
