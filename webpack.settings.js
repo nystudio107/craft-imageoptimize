@@ -34,6 +34,11 @@ module.exports = {
         "imageoptimize": "ImageOptimize.js",
         "welcome": "Welcome.js",
     },
+    babelLoaderConfig: {
+        exclude: [
+            /(node_modules|bower_components)/
+        ],
+    },
     copyWebpackConfig: [
     ],
     devServerConfig: {

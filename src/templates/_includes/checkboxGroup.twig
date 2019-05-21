@@ -1,0 +1,42 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Image Optimize plugin for Craft CMS 3.x
+ *
+ * Custom `checkboxGroup` input. Checkbox group doesn't allow access to checkbox, therefore we can't control the ID.
+ * For this reason we use create the a custom `checkboxGroup` that will use Craft native checkboxes.
+ *
+ * @author    nystudio107
+ * @copyright Copyright (c) 2017 nystudio107
+ * @link      https://nystudio107.com
+ * @package   ImageOptimize
+ * @since     1.5.6
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% if name is defined and name %}
+    <input type="hidden" name="{{ name }}" value="">
+{% endif -%}
+
+{%- set options = (options is defined ? options : []) %}
+{%- set values = (values is defined ? values : []) %}
+{%- set name = (name is defined and name ? name~'[]' : null) %}
+
+<div class="checkbox-group"
+        {%- if block('attr') is defined %} {{ block('attr') }}{% endif %}>
+    {%- for key, option in options %}
+        {%- if option is not iterable %}
+            {%- set option = {label: option, value: key} %}
+        {%- endif %}
+        <div>
+            {{ forms.checkbox({
+                id:       (id is defined ? id ~ '-' ~ key : null),
+                name:      name,
+                checked:   (option.value is defined and option.value in values),
+                autofocus: (autofocus is defined and autofocus and loop.first and not craft.app.request.isMobileBrowser(true))
+            }|merge(option)) }}
+        </div>
+    {%- endfor %}
+</div>

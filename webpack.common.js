@@ -16,18 +16,18 @@ const settings = require('./webpack.settings.js');
 const configureBabelLoader = (browserList) => {
     return {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: settings.babelLoaderConfig.exclude,
         use: {
             loader: 'babel-loader',
             options: {
                 presets: [
                     [
                         '@babel/preset-env', {
-                        useBuiltIns: 'usage',
-                        targets: {
-                            browsers: browserList,
-                        },
-                    }
+                            useBuiltIns: 'usage',
+                            targets: {
+                                browsers: browserList,
+                            },
+                        }
                     ],
                 ],
                 plugins: [],
