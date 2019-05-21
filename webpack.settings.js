@@ -35,7 +35,9 @@ module.exports = {
         "welcome": "Welcome.js",
     },
     babelLoaderConfig: {
-        exclude: '',
+        exclude: [
+            /(node_modules|bower_components)/
+        ],
     },
     copyWebpackConfig: [
     ],
