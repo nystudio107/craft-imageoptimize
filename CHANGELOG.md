@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.5.6 - 2019.05.21
+### Changed
+* Fixed an issue where newly added Image Variant blocks had incorrect ids on the Retina checkboxes
+* Updated build system
+
 ## 1.5.5 - 2019.04.22
 ### Changed
 * Updated Twig namespacing to be compliant with deprecated class aliases in 2.7.x
