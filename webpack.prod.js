@@ -8,7 +8,7 @@ const webpack = require('webpack');
 
 // webpack plugins
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const ImageminWebpWebpackPlugin = require('imagemin-webp-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -61,7 +61,7 @@ const configureBundleAnalyzer = () => {
 // Configure Clean webpack
 const configureCleanWebpack = () => {
     return {
-        root: path.resolve(__dirname, settings.paths.dist.base),
+        cleanOnceBeforeBuildPatterns: settings.paths.dist.clean,
         verbose: true,
         dry: false
     };
@@ -221,7 +221,7 @@ module.exports = [
                 ],
             },
             plugins: [
-                new CleanWebpackPlugin(settings.paths.dist.clean,
+                new CleanWebpackPlugin(
                     configureCleanWebpack()
                 ),
                 new MiniCssExtractPlugin({

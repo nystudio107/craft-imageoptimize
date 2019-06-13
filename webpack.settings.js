@@ -17,9 +17,7 @@ module.exports = {
         dist: {
             base: "./src/assetbundles/imageoptimize/dist/",
             clean: [
-                "./img",
-                "./css",
-                "./js"
+                '**/*',
             ]
         },
         templates: "./src/templates/"

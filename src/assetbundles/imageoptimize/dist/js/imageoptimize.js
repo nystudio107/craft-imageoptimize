@@ -2,9 +2,9 @@
  * @project        Image Optimize
  * @name           imageoptimize.js
  * @author         Andrew Welch
- * @build          Thu, Dec 20, 2018 12:49 AM ET
- * @release        cbf575c3ae313952cca16ad83d84791f3692bb1e [develop]
- * @copyright      Copyright (c) 2018 nystudio107
+ * @build          Thu, Jun 13, 2019 4:40 PM ET
+ * @release        c24cd1572fcf45b5fb937bf5e68ab373e935f4a8 [develop]
+ * @copyright      Copyright (c) 2019 nystudio107
  *
  */!function(e){function r(r){for(var n,i,f=r[0],l=r[1],p=r[2],a=0,s=[];a<f.length;a++)i=f[a],o[i]&&s.push(o[i][0]),o[i]=0;for(n in l)Object.prototype.hasOwnProperty.call(l,n)&&(e[n]=l[n]);for(c&&c(r);s.length;)s.shift()();return u.push.apply(u,p||[]),t()}function t(){for(var e,r=0;r<u.length;r++){for(var t=u[r],n=!0,f=1;f<t.length;f++){var l=t[f];0!==o[l]&&(n=!1)}n&&(u.splice(r--,1),e=i(i.s=t[0]))}return e}var n={},o={0:0},u=[];function i(r){if(n[r])return n[r].exports;var t=n[r]={i:r,l:!1,exports:{}};return e[r].call(t.exports,t,t.exports,i),t.l=!0,t.exports}i.m=e,i.c=n,i.d=function(e,r,t){i.o(e,r)||Object.defineProperty(e,r,{enumerable:!0,get:t})},i.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},i.t=function(e,r){if(1&r&&(e=i(e)),8&r)return e;if(4&r&&"object"==typeof e&&e&&e.__esModule)return e;var t=Object.create(null);if(i.r(t),Object.defineProperty(t,"default",{enumerable:!0,value:e}),2&r&&"string"!=typeof e)for(var n in e)i.d(t,n,function(r){return e[r]}.bind(null,n));return t},i.n=function(e){var r=e&&e.__esModule?function(){return e.default}:function(){return e};return i.d(r,"a",r),r},i.o=function(e,r){return Object.prototype.hasOwnProperty.call(e,r)},i.p="";var f=window.webpackJsonp=window.webpackJsonp||[],l=f.push.bind(f);f.push=r,f=f.slice();for(var p=0;p<f.length;p++)r(f[p]);var c=l;u.push([4,1]),t()}({4:function(e,r,t){"use strict";t.r(r);t(5),t(6)},6:function(e,r,t){e.exports=t.p+"img/ImageOptimize-icon.svg"}});
 //# sourceMappingURL=imageoptimize.js.map

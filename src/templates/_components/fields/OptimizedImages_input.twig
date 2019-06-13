@@ -205,9 +205,23 @@
     {% if field.displayDominantColorPalette %}
         <div class="field">
             <div class="heading">
+                <label>{{ 'Lightness:' |t('image-optimize') }} </label>
+                <div class="io-field-section-container">
+                    <p style="fill: #AAA; color: #AAA;">
+                    {% if value.lightness |length %}
+                        {{ value.lightness }}%
+                    {% else %}
+                        --
+                    {% endif %}
+                </p>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <div class="heading">
                 <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
                 {% if value.colorPalette |length %}
-                    <div class="io-field-section-container">
+                    <div class="">
                     {%- for dominantColor in value.colorPalette -%}
                         <div style="display: inline-block; width: 20%;">
                             <div style="height: 30px; background-color: {{ dominantColor }}">
