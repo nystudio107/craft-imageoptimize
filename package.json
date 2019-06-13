@@ -21,7 +21,8 @@
     },
     "private": true,
     "scripts": {
-        "dev": "webpack-dev-server --config webpack.dev.js",
+        "debug": "webpack-dev-server --config webpack.dev.js",
+        "dev": "webpack-dashboard -- webpack-dev-server --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js --progress --hide-modules"
     },
     "browserslist": {
@@ -102,7 +103,7 @@
     },
     "dependencies": {
         "@babel/polyfill": "^7.0.0",
-        "tailwindcss": "^0.6.6",
+        "tailwindcss": "^1.0.0",
         "vue": "^2.5.17",
         "vue-confetti": "^0.4.2"
     }
