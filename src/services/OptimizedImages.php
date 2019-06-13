@@ -352,6 +352,7 @@ class OptimizedImages extends Component
                 // Generate the color palette for the image
                 if ($settings->createColorPalette) {
                     $model->colorPalette = $placeholder->generateColorPalette($tempPath);
+                    $model->lightness = $placeholder->calculateLightness($model->colorPalette);
                 }
                 // Generate the Potrace SVG
                 if ($settings->createPlaceholderSilhouettes) {

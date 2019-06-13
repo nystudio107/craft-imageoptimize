@@ -80,6 +80,11 @@ class OptimizedImage extends Model
     /**
      * @var int
      */
+    public $lightness;
+
+    /**
+     * @var int
+     */
     public $placeholderWidth;
 
     /**

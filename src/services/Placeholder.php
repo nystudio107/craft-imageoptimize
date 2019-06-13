@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\lib\Potracio;
 
 use Craft;
@@ -111,6 +112,7 @@ class Placeholder extends Component
                 $palette = ColorThief::getPalette($tempPath, 5);
             } catch (\Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
+
                 return [];
             }
             // Convert RGB to hex color
@@ -123,6 +125,31 @@ class Placeholder extends Component
         return $colorPalette;
     }
 
+    /**
+     * @param array $colors
+     *
+     * @return float|int|null
+     */
+    public function calculateLightness(array $colors)
+    {
+        $lightness = null;
+        if (!empty($colors)) {
+            $lightness = 0;
+            $colorWeight = count($colors);
+            $colorCount = 0;
+            foreach ($colors as $color) {
+                $rgb = ColorHelper::HTMLToRGB($color);
+                $hsl = ColorHelper::RGBToHSL($rgb);
+                $lightness += $hsl['l'] * $colorWeight;
+                $colorCount += $colorWeight;
+                $colorWeight--;
+            }
+
+            $lightness /= $colorCount;
+        }
+
+        return $lightness === null ? $lightness : (int)$lightness;
+    }
     /**
      * Generate an SVG image via Potrace
      *
