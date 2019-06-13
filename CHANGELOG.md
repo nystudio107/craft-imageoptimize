@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.5.7 - 2019.06.13
+### Added
+* Added a `lightness` calculation based on a weighted average of the extracted dominant color palette to give you an idea of the image's overall lightness
+
 ### Changed
 * Don't force the format for fallback images
 * Rebuilt assets to fix npm vulnerabilities

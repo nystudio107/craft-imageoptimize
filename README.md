@@ -469,7 +469,7 @@ For extra visual lusciousness, you could also apply a [CSS blur filter](https://
 
 ImageOptimize extracts a color palette composed of the 5 most dominant colors used by an image that you can access from your templates:
 
-```
+```twig
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
     {% for color in optimizedImages.colorPalette %}
         <div style="background-color: {{ color }}">
@@ -483,6 +483,19 @@ ImageOptimize extracts a color palette composed of the 5 most dominant colors us
 Dominant Color Palette
 
 These colors are sorted by color dominance, and can be used to style other HTML elements with complimentary colors.
+
+### Lightness
+
+ImageOptimize will also calculate the overall lightness of an image for you. It does this by doing a weighted average of the dominant color palette. You can access this from your templates:
+
+```twig
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {% if optimizedImages.lightness | length %}
+        {% set lightnessPercentage = optimizedImages.lightness %}
+    {% endif %}
+```
+
+The `lightness` field is a percentage from `0` (black) to `100` (white). You can use this to decide what color text to use to overlay the image, for example.
 
 ### Iterating Through URLs
 
