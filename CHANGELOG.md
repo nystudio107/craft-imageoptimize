@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.5.7 - 2019.06.13
+### Changed
+* Don't force the format for fallback images
+* Rebuilt assets to fix npm vulnerabilities
+
 ## 1.5.6 - 2019.05.21
 ### Changed
 * Fixed an issue where newly added Image Variant blocks had incorrect ids on the Retina checkboxes
