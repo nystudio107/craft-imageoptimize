@@ -126,7 +126,6 @@ class OptimizedImages extends Component
                     'aspectRatioY' => $asset->height,
                     'retinaSizes' => ['1'],
                     'quality' => 0,
-                    'format' => $finalFormat,
                 ];
                 list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, 1);
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
