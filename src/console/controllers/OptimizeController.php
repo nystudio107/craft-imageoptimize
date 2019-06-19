@@ -14,6 +14,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
 use craft\base\Volume;
+use craft\elements\Asset;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
 use craft\utilities\ClearCaches;
@@ -85,6 +86,29 @@ class OptimizeController extends Controller
                 \call_user_func_array($action, $cacheOption['params']);
             } else {
                 $action();
+            }
+        }
+    }
+
+    /**
+     * Individually queue all assets for optimizing. We run the query
+     * in small batches so we never hit a memory limit.
+     *
+     */
+    public function actionQueueAssets()
+    {
+        $query = Asset::find();
+        $batchSize = 100;
+        $assetCount = $query->count();
+        $numberOfBatches = ceil($assetCount / $batchSize);
+        $query->limit($batchSize);
+        $queue = Craft::$app->getQueue();
+
+        for ($i = 0; $i < $numberOfBatches; ++$i) {
+            $query->offset = $batchSize * $i;
+
+            foreach ($query->all() as $asset) {
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
             }
         }
     }
