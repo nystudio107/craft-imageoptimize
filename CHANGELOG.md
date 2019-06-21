@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.5.8 - 2019.06.24
+### Changed
+* Fixed an issue where ImageOptimize was not handling assets it didn't know how to transform property, resulting in generic thumbnails if you used the [Embedded Assets](https://github.com/spicywebau/craft-embedded-assets/) plugin
+
 ## 1.5.7 - 2019.06.13
 ### Added
 * Added a `lightness` calculation based on a weighted average of the extracted dominant color palette to give you an idea of the image's overall lightness
