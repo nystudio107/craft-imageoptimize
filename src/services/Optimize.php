@@ -189,7 +189,7 @@ class Optimize extends Component
     public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetThumbUrlEvent', __METHOD__);
-        $url = null;
+        $url = $event->url;
         if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
             $asset = $event->asset;
             if (ImageHelper::canManipulateAsImage($asset->getExtension())) {
