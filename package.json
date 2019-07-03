@@ -102,7 +102,7 @@
         "webpack-notifier": "^1.6.0"
     },
     "dependencies": {
-        "core-js": "^2.6.5",
+        "core-js": "^3.0.0",
         "regenerator-runtime": "^0.13.2",
         "tailwindcss": "^1.0.0",
         "vue": "^2.5.17",
