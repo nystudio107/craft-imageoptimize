@@ -413,8 +413,7 @@ class OptimizedImages extends Component
         // Generate an image transform url
         $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
             $asset,
-            $transform,
-            ImageOptimize::$transformParams
+            $transform
         );
         Craft::info(
             'URL created: '.print_r($url, true),
@@ -431,8 +430,7 @@ class OptimizedImages extends Component
             $webPUrl = ImageOptimize::$plugin->transformMethod->getWebPUrl(
                 $url,
                 $asset,
-                $transform,
-                ImageOptimize::$transformParams
+                $transform
             );
             //ImageOptimize::$plugin->transformMethod->prefetchRemoteFile($webPUrl);
             $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;

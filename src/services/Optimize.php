@@ -170,8 +170,7 @@ class Optimize extends Component
             // Generate an image transform url
             $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
                 $asset,
-                $transform,
-                ImageOptimize::$transformParams
+                $transform
             );
         }
         Craft::endProfile('handleGetAssetUrlEvent', __METHOD__);
@@ -198,13 +197,13 @@ class Optimize extends Component
                     'width' => $event->width,
                     'interlace' => 'line',
                 ]);
+                /** @var ImageTransform $transformMethod */
+                $transformMethod = ImageOptimize::$plugin->transformMethod;
                 // Generate an image transform url
-                ImageOptimize::$transformParams['generateTransformsBeforePageLoad'] = $event->generate;
-                $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
-                    $asset,
-                    $transform,
-                    ImageOptimize::$transformParams
-                );
+                if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
+                    $transformMethod->generateTransformsBeforePageLoad = $event->generate;
+                }
+                $url = $transformMethod->getTransformUrl($asset, $transform);
             }
         }
         Craft::endProfile('handleGetAssetThumbUrlEvent', __METHOD__);
