@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.5.8 - 2019.06.24
+## 1.6.0 - 2019.07.05
 ### Changed
 * Fixed an issue where ImageOptimize was not handling assets it didn't know how to transform property, resulting in generic thumbnails if you used the [Embedded Assets](https://github.com/spicywebau/craft-embedded-assets/) plugin
 
