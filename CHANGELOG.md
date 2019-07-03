@@ -3,6 +3,7 @@
 ## 1.6.0 - 2019.07.05
 ### Changed
 * Fixed an issue where ImageOptimize was not handling assets it didn't know how to transform property, resulting in generic thumbnails if you used the [Embedded Assets](https://github.com/spicywebau/craft-embedded-assets/) plugin
+* Updated `ImageTransformInterface` to remove the deprecated `$params`
 
 ## 1.5.7 - 2019.06.13
 ### Added
