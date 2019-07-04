@@ -16,6 +16,7 @@ use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimizeimgix\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimizethumbor\imagetransforms\ThumborImageTransform;
+use nystudio107\imageoptimizesharp\imagetransforms\SharpImageTransform;
 
 use Craft;
 use craft\base\Component;
@@ -77,6 +78,7 @@ class Optimize extends Component
     const DEFAULT_IMAGE_TRANSFORM_TYPES = [
         CraftImageTransform::class,
         ImgixImageTransform::class,
+        SharpImageTransform::class,
         ThumborImageTransform::class,
     ];
 
