@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.6.0 - 2019.07.05
+### Added
+* Added support for Sharp via [AWS Serverless Image Handler](https://aws.amazon.com/solutions/serverless-image-handler/) as a Transform Method
+
 ### Changed
 * Fixed an issue where ImageOptimize was not handling assets it didn't know how to transform property, resulting in generic thumbnails if you used the [Embedded Assets](https://github.com/spicywebau/craft-embedded-assets/) plugin
 * Updated `ImageTransformInterface` to remove the deprecated `$params`
