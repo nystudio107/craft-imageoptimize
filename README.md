@@ -167,12 +167,25 @@ If you want to generate only responsive image variants for a specific Asset Volu
 ./craft image-optimize/optimize/create blogImages
 ```
 
-Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
+Craft CMS also comes with several [built-in Console Commands](https://nystudio107.com/blog/exploring-the-craft-cms-3-console-command-line-interface-cli) that are useful for Image Transforms:
 
 ```
-./craft image-optimize/optimize/clear
+./craft clear-caches/asset-indexing-data
 ```
+
 Clear the Asset transform index cache tables, to force the re-creation of transformed images
+
+```
+./craft index-assets/all
+```
+
+Re-indexes assets across all volumes.
+
+```
+./craft index-assets/one
+```
+
+Re-indexes assets from the given volume handle.
 
 Normally ImageOptimize will regenerate image variants if you change an OptimizedImages field, save the ImageOptimize preferences, or save an Assets Volume that contains an OptimizedImages field, to ensure that all of your image variants are in sync.
 
