@@ -29,7 +29,7 @@ If you want to use ImageOptimize with Cloudinary, install the [Cloudinary](https
 
 ![Screenshot](resources/screenshots/image-optimize-field-composite2.jpg)
 
-ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com) or [Thumbor](http://thumbor.org/), with zero template changes.
+ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft 3 assets. It works equally well with native Craft image transforms, and image services like [Imgix](https://imgix.com), [Thumbor](http://thumbor.org/), [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service) with zero template changes.
 
 You use the native Craft UI/UX to create your image transforms, whether in the Control Panel or via your templates. ImageOptimize takes care of the rest, optimizing all of your image transforms automatically by running a variety of image optimization tools on them.
 
@@ -39,7 +39,7 @@ Because ImageOptimize has already pre-generated and saved the URLs to your optim
 
 As configured by default, all of these are _lossless_ image optimizations that remove metadata and otherwise optimize the images without changing their appearance in any way.
 
-Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [Imgix](https://www.imgix.com/) or [Thumbor](http://thumbor.org/) to create the responsive image transforms.
+Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [Imgix](https://www.imgix.com/), [Thumbor](http://thumbor.org/), or [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service) to create the responsive image transforms.
 
 It's important to create optimized images for frontend delivery, especially for mobile devices. If you want to learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
 
@@ -49,7 +49,7 @@ ImageOptimize works equally well with both local and remote assets such as Amazo
 
 ## Configuring ImageOptimize
 
-The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [Imgix](https://imgix.com) or [Thumbor](http://thumbor.org/). The setting you choose here will apply globally to all of your image transforms.
+The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [Imgix](https://imgix.com), [Thumbor](http://thumbor.org/), or [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service). The setting you choose here will apply globally to all of your image transforms.
 
 ### Native Craft Images
 
@@ -698,7 +698,7 @@ If you have `devMode` on, ImageOptimize will log stats for images that it create
 
 ## Writing your own Image Transform class
 
-ImageOptimize was written in an extensible way so that you can write your own Image Transform method to work with any service you like. It comes with built-in support for Craft, Imgix, and Thumbor but you can add your own by writing a class that extends the `ImageTransform` abstract class:
+ImageOptimize was written in an extensible way so that you can write your own Image Transform method to work with any service you like. It comes with built-in support for Craft, Imgix, Thumbor, and Sharp JS but you can add your own by writing a class that extends the `ImageTransform` abstract class:
 
 ```php
 <?php
@@ -731,7 +731,7 @@ use vendor\package\MyImageTransform;
     ],
 ```
 
-No module or plugin bootstrapping code needed to get it working. For an example of how this works, check out [craft-imageoptimize-imgix](https://github.com/nystudio107/craft-imageoptimize-imgix) & [craft-imageoptimize-thumbor](https://github.com/nystudio107/craft-imageoptimize-thumbor).
+No module or plugin bootstrapping code needed to get it working. For an example of how this works, check out [craft-imageoptimize-imgix](https://github.com/nystudio107/craft-imageoptimize-imgix) & [craft-imageoptimize-thumbor](https://github.com/nystudio107/craft-imageoptimize-thumbor) & [craft-imageoptimize-sharp](https://github.com/nystudio107/craft-imageoptimize-sharp).
 
 If you want to wrap your `ImageTransform` into a plugin or module,
 simply listen for the `EVENT_REGISTER_IMAGE_TRANSFORM_TYPES` event to add your `ImageTransform` to the types that ImageOptimize knows about.
