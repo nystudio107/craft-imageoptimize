@@ -19,7 +19,7 @@ use craft\models\AssetTransform;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.5.0
+ * @since     1.6.0
  */
 class CraftImageTransform extends ImageTransform
 {
@@ -37,54 +37,44 @@ class CraftImageTransform extends ImageTransform
     // Public Properties
     // =========================================================================
 
+    /**
+     * @var bool
+     */
+    public $generateTransformsBeforePageLoad;
+
     // Public Methods
     // =========================================================================
 
     /**
-     * @param Asset               $asset
-     * @param AssetTransform|null $transform
-     * @param array               $params
-     *
-     * @return string|null
+     * @inheritDoc
      */
-    public function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function init()
     {
-        $generateTransformsBeforePageLoad = $params['generateTransformsBeforePageLoad'] ?? true;
+        $settings = ImageOptimize::$plugin->getSettings();
+        // Get our $generateTransformsBeforePageLoad setting
+        $this->generateTransformsBeforePageLoad = $settings->generateTransformsBeforePageLoad ?? true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTransformUrl(Asset $asset, $transform)
+    {
         // Generate the URLs to the optimized images
         $assets = Craft::$app->getAssets();
-        $url = $assets->getAssetUrl($asset, $transform, $generateTransformsBeforePageLoad);
+        $url = $assets->getAssetUrl($asset, $transform, $this->generateTransformsBeforePageLoad);
 
         return $url;
     }
 
     /**
-     * @param string              $url
-     * @param Asset               $asset
-     * @param AssetTransform|null $transform
-     * @param array               $params
-     *
-     * @return string
+     * @inheritDoc
      */
-    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform): string
     {
         $url = $this->appendExtension($url, '.webp');
 
         return $url;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTransformParams(): array
-    {
-        $settings = ImageOptimize::$plugin->getSettings();
-        // Get our $generateTransformsBeforePageLoad setting
-        $generateTransformsBeforePageLoad = $settings->generateTransformsBeforePageLoad ?? true;
-        $params = [
-            'generateTransformsBeforePageLoad' => $generateTransformsBeforePageLoad,
-        ];
-
-        return $params;
     }
 
     /**
@@ -94,11 +84,22 @@ class CraftImageTransform extends ImageTransform
     {
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+
         return Craft::$app->getView()->renderTemplate('craft-image-transform/settings/image-transforms/craft.twig', [
             'imageTransform' => $this,
             'imageProcessors' => $imageProcessors,
             'variantCreators' => $variantCreators,
         ]);
+    }
+
+    /**
+     * No savable fields for this component
+     *
+     * @return array
+     */
+    public function fields()
+    {
+        return [];
     }
 
     /**

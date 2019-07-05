@@ -89,11 +89,6 @@ class ImageOptimize extends Plugin
     public static $plugin;
 
     /**
-     * @var array
-     */
-    public static $transformParams = [];
-
-    /**
      * @var bool
      */
     public static $generatePlaceholders = true;
@@ -225,7 +220,6 @@ class ImageOptimize extends Plugin
         } catch (InvalidConfigException $e) {
             Craft::error($e->getMessage(), __METHOD__);
         }
-        self::$transformParams = ImageOptimize::$plugin->transformMethod->getTransformParams();
     }
 
     /**
@@ -359,12 +353,9 @@ class ImageOptimize extends Plugin
                 /** @var Asset $element */
                 $element = $event->asset;
                 // Purge the URL
-                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
-                    $element,
-                    ImageOptimize::$transformParams
-                );
+                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl($element);
                 if ($purgeUrl) {
-                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl);
                 }
             }
         );
@@ -405,12 +396,9 @@ class ImageOptimize extends Plugin
                 $asset = $event->element;
                 if (!$event->isNew) {
                     // Purge the URL
-                    $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
-                        $asset,
-                        ImageOptimize::$transformParams
-                    );
+                    $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl($asset);
                     if ($purgeUrl) {
-                        ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                        ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl);
                     }
                 }
             }
@@ -428,12 +416,9 @@ class ImageOptimize extends Plugin
                 /** @var Asset $asset */
                 $asset = $event->element;
                 // Purge the URL
-                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl(
-                    $asset,
-                    ImageOptimize::$transformParams
-                );
+                $purgeUrl = ImageOptimize::$plugin->transformMethod->getPurgeUrl($asset);
                 if ($purgeUrl) {
-                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl, ImageOptimize::$transformParams);
+                    ImageOptimize::$plugin->transformMethod->purgeUrl($purgeUrl);
                 }
             }
         );

@@ -16,6 +16,7 @@ use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimizeimgix\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimizethumbor\imagetransforms\ThumborImageTransform;
+use nystudio107\imageoptimizesharp\imagetransforms\SharpImageTransform;
 
 use Craft;
 use craft\base\Component;
@@ -77,6 +78,7 @@ class Optimize extends Component
     const DEFAULT_IMAGE_TRANSFORM_TYPES = [
         CraftImageTransform::class,
         ImgixImageTransform::class,
+        SharpImageTransform::class,
         ThumborImageTransform::class,
     ];
 
@@ -170,8 +172,7 @@ class Optimize extends Component
             // Generate an image transform url
             $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
                 $asset,
-                $transform,
-                ImageOptimize::$transformParams
+                $transform
             );
         }
         Craft::endProfile('handleGetAssetUrlEvent', __METHOD__);
@@ -189,7 +190,7 @@ class Optimize extends Component
     public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetThumbUrlEvent', __METHOD__);
-        $url = null;
+        $url = $event->url;
         if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
             $asset = $event->asset;
             if (ImageHelper::canManipulateAsImage($asset->getExtension())) {
@@ -198,13 +199,13 @@ class Optimize extends Component
                     'width' => $event->width,
                     'interlace' => 'line',
                 ]);
+                /** @var ImageTransform $transformMethod */
+                $transformMethod = ImageOptimize::$plugin->transformMethod;
                 // Generate an image transform url
-                ImageOptimize::$transformParams['generateTransformsBeforePageLoad'] = $event->generate;
-                $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
-                    $asset,
-                    $transform,
-                    ImageOptimize::$transformParams
-                );
+                if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
+                    $transformMethod->generateTransformsBeforePageLoad = $event->generate;
+                }
+                $url = $transformMethod->getTransformUrl($asset, $transform);
             }
         }
         Craft::endProfile('handleGetAssetThumbUrlEvent', __METHOD__);

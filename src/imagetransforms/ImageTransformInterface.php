@@ -17,7 +17,7 @@ use craft\models\AssetTransform;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.5.0
+ * @since     1.6.0
  */
 interface ImageTransformInterface extends SavableComponentInterface
 {
@@ -41,11 +41,10 @@ interface ImageTransformInterface extends SavableComponentInterface
      *
      * @param Asset               $asset
      * @param AssetTransform|null $transform
-     * @param array               $params
      *
      * @return string|null
      */
-    public function getTransformUrl(Asset $asset, $transform, array $params = []);
+    public function getTransformUrl(Asset $asset, $transform);
 
     /**
      * Return a URL to the webp version of the transformed image
@@ -53,31 +52,28 @@ interface ImageTransformInterface extends SavableComponentInterface
      * @param string              $url
      * @param Asset               $asset
      * @param AssetTransform|null $transform
-     * @param array               $params
      *
      * @return string
      */
-    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string;
+    public function getWebPUrl(string $url, Asset $asset, $transform): string;
 
     /**
      * Return the URL that should be used to purge the Asset
      *
      * @param Asset $asset
-     * @param array $params
      *
      * @return mixed
      */
-    public function getPurgeUrl(Asset $asset, array $params = []);
+    public function getPurgeUrl(Asset $asset);
 
     /**
      * Purge the URL from the service's cache
      *
      * @param string $url
-     * @param array  $params
      *
      * @return bool
      */
-    public function purgeUrl(string $url, array $params = []): bool;
+    public function purgeUrl(string $url): bool;
 
     /**
      * Return the URI to the asset
@@ -94,11 +90,4 @@ interface ImageTransformInterface extends SavableComponentInterface
      * @param string $url
      */
     public function prefetchRemoteFile($url);
-
-    /**
-     * Get the parameters needed for this transform
-     *
-     * @return array
-     */
-    public function getTransformParams(): array;
 }

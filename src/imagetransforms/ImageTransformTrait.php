@@ -13,7 +13,7 @@ namespace nystudio107\imageoptimize\imagetransforms;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.5.0
+ * @since     1.6.0
  */
 trait ImageTransformTrait
 {

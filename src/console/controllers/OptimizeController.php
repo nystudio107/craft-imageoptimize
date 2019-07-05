@@ -62,30 +62,4 @@ class OptimizeController extends Controller
         App::maxPowerCaptain();
         Craft::$app->getQueue()->run();
     }
-
-    /**
-     * Clear the Asset transform index cache tables, to force the re-creation of transformed images
-     */
-    public function actionClear()
-    {
-        foreach (ClearCaches::cacheOptions() as $cacheOption) {
-            if ($cacheOption['key'] !== 'transform-indexes') {
-                continue;
-            }
-
-            $action = $cacheOption['action'];
-
-            if (\is_string($action)) {
-                try {
-                    FileHelper::clearDirectory($action);
-                } catch (\Throwable $e) {
-                    Craft::warning("Could not clear the directory {$action}: ".$e->getMessage(), __METHOD__);
-                }
-            } elseif (isset($cacheOption['params'])) {
-                \call_user_func_array($action, $cacheOption['params']);
-            } else {
-                $action();
-            }
-        }
-    }
 }

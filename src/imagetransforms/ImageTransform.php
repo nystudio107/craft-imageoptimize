@@ -21,7 +21,7 @@ use craft\models\AssetTransform;
 /**
  * @author    nystudio107
  * @package   ImageOptimize
- * @since     1.5.0
+ * @since     1.6.0
  */
 abstract class ImageTransform extends SavableComponent implements ImageTransformInterface
 {
@@ -63,7 +63,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     /**
      * @inheritdoc
      */
-    public function getTransformUrl(Asset $asset, $transform, array $params = [])
+    public function getTransformUrl(Asset $asset, $transform)
     {
         $url = null;
 
@@ -73,7 +73,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     /**
      * @inheritdoc
      */
-    public function getWebPUrl(string $url, Asset $asset, $transform, array $params = []): string
+    public function getWebPUrl(string $url, Asset $asset, $transform): string
     {
         return $url;
     }
@@ -81,7 +81,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     /**
      * @inheritdoc
      */
-    public function getPurgeUrl(Asset $asset, array $params = [])
+    public function getPurgeUrl(Asset $asset)
     {
         $url = null;
 
@@ -91,7 +91,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     /**
      * @inheritdoc
      */
-    public function purgeUrl(string $url, array $params = []): bool
+    public function purgeUrl(string $url): bool
     {
         return true;
     }
@@ -129,17 +129,6 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
         ]);
         curl_exec($ch);
         curl_close($ch);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getTransformParams(): array
-    {
-        $params = [
-        ];
-
-        return $params;
     }
 
     /**
