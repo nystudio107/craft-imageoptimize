@@ -200,7 +200,7 @@ If you wish to dynamically create Optimized Image Variants in your templates wit
 To create Optimized Image Variants dynamically in your templates, you can do:
 
 ```
-{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
     someAsset,
     [
         {
@@ -220,7 +220,7 @@ To create Optimized Image Variants dynamically in your templates, you can do:
 All of these fields are required, and they are analogous to the settings provided by the Field. The `retinaSizes` is an array of multipliers for the retina variants. For instance, if we wanted both normal resolution and 2x variants of the above image, we'd do:
 
 ```
-{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
     someAsset,
     [
         {
@@ -240,7 +240,7 @@ All of these fields are required, and they are analogous to the settings provide
 You can create as many Optimized Image Variants as you like, by just including another array of settings. For example, to create both 200x and 400x image variants, we could do:
 
 ```
-{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
     someAsset,
     [
         {
@@ -271,7 +271,7 @@ The `optimizedImages` object that is returned to you can be used in your templat
 **N.B.:** Because they are lengthy operations, by default the generation of the dominant color palette and the generation of the placeholder silhouette are off. You can enable them via an additional parameter passed down to `craft.imageOptimize.createOptimizedImages`:
 
 ```
-{% set optimzedImages = craft.imageOptimize.createOptimizedImages(
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
     someAsset,
     [
         {
