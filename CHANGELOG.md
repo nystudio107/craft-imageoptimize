@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.1 - 2019.08.13
+### Changed
+* Added more robust sanity checking if an invalid URL or path is being passed into `ImageTransform::appendExtension()`
+
 ## 1.6.0 - 2019.07.05
 ### Added
 * Added support for Sharp via [AWS Serverless Image Handler](https://aws.amazon.com/solutions/serverless-image-handler/) as a Transform Method
