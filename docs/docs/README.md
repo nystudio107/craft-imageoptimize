@@ -4,7 +4,7 @@
 
 Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix or Thumbor, with zero template changes.
 
-![Screenshot](./docs/docs/resources/img/plugin-banner.jpg)
+![Screenshot](./resources/img/plugin-banner.jpg)
 
 **Note**: _The license fee for this plugin is $59.00 via the Craft Plugin Store._
 
@@ -31,16 +31,5 @@ You can also install ImageOptimize via the **Plugin Store** in the Craft Control
 ImageOptimize works on Craft 3.x.
 
 If you want to use ImageOptimize with Cloudinary, install the [Cloudinary](https://github.com/timkelty/craft3-cloudinary) plugin that will make Cloudinary available as a file system for Craft CMS 3.
-
-## Documentation
-
-Click here -> [Image Optimize Documentation](https://nystudio107.com/plugins/imageoptimize/documentation)
-
-## ImageOptimize Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Consider supporting image optimization services like Cloudinary, TinyPNG, kraken.io, Uploadcare, and ImageOptim
-* Add support for additional image optimization tools
 
 Brought to you by [nystudio107](https://nystudio107.com)
