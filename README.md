@@ -34,7 +34,7 @@ If you want to use ImageOptimize with Cloudinary, install the [Cloudinary](https
 
 ## Documentation
 
-Click here -> [Eager Beaver Documentation](https://nystudio107.com/plugins/eager-beaver/documentation)
+Click here -> [Image Optimize Documentation](https://nystudio107.com/plugins/imageoptimize/documentation)
 
 ## ImageOptimize Roadmap
 
