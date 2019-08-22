@@ -4,6 +4,7 @@ module.exports = {
     base: '/docs/image-optimize/',
     dest: '../../../../sites/nystudio107/web/docs/image-optimize',
     themeConfig: {
+        displayAllHeaders: true,
         sidebar: [
             ['/', 'Image Optimize plugin for Craft CMS 3.x'],
             ['/Overview', 'Image Optimize Overview'],
