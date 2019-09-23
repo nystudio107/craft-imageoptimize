@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.2 - 2019.08.26
+### Changed
+*
+
 ## 1.6.1 - 2019.08.13
 ### Changed
 * Added more robust sanity checking if an invalid URL or path is being passed into `ImageTransform::appendExtension()`
