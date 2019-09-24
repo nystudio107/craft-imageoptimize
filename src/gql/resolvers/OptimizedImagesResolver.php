@@ -5,7 +5,7 @@
  * @license https://craftcms.github.io/license/
  */
 
-namespace craft\gql\resolvers\elements;
+namespace nystudio107\imageoptimize\gql\resolvers;
 
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -19,6 +19,8 @@ class OptimizedImagesResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo)
     {
-        // TODO: Implement resolve() method.
+        $fieldName = $resolveInfo->fieldName;
+
+        return $source->$fieldName;
     }
 }

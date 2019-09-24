@@ -1,18 +1,20 @@
 <?php
 /**
- * @link https://craftcms.com/
+ * @link      https://craftcms.com/
  * @copyright Copyright (c) Pixel & Tonic, Inc.
- * @license https://craftcms.github.io/license/
+ * @license   https://craftcms.github.io/license/
  */
 
-namespace nystudio107\gql\types\generators;
+namespace nystudio107\imageoptimize\gql\types\generators;
+
+use nystudio107\imageoptimize\gql\resolvers\OptimizedImagesResolver;
+use nystudio107\imageoptimize\fields\OptimizedImages;
 
 use craft\fields\Table as TableField;
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
-use craft\gql\types\DateTime;
-use craft\gql\types\TableRow;
+
 use GraphQL\Type\Definition\Type;
 
 /**
@@ -27,28 +29,33 @@ class OptimizedImagesGenerator implements GeneratorInterface
      */
     public static function generateTypes($context = null): array
     {
-        /** @var TableField $context */
+        /** @var OptimizedImages $context */
         $typeName = self::getName($context);
 
-        $contentFields = [];
-
-        foreach ($context->columns as $columnKey => $columnDefinition) {
-            $cellType = in_array($columnDefinition['type'], ['date', 'time'], true) ? DateTime::getType() : Type::string();
-            $contentFields[$columnKey] = $cellType;
-            $contentFields[$columnDefinition['handle']] = $cellType;
-        }
-
-        // Generate a type for each entry type
-        $tableRowType = GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity($typeName, new TableRow([
+        $optimizedImagesProps = [
+            'name' => Type::string(),
+            'street' => Type::string(),
+            'street2' => Type::string(),
+            'postalCode' => Type::string(),
+            'city' => Type::string(),
+            'state' => Type::string(),
+            'country' => Type::string(),
+            'latitude' => Type::float(),
+            'longitude' => Type::float(),
+        ];
+        $optimizedImagesProperty = GqlEntityRegistry::createEntity($typeName, new OptimizedImagesResolver([
             'name' => $typeName,
-            'fields' => function () use ($contentFields) {
-                return $contentFields;
-            }
+            'description' => 'This entity has all the OptimizedImages properties',
+            'fields' => function () use ($optimizedImagesProps) {
+                return $optimizedImagesProps;
+            },
         ]));
 
-        TypeLoader::registerType($typeName, function () use ($tableRowType) { return $tableRowType ;});
+        TypeLoader::registerType($typeName, function () use ($optimizedImagesProperty) {
+            return $optimizedImagesProperty;
+        });
 
-        return [$tableRowType];
+        return [$optimizedImagesProperty];
     }
 
     /**
@@ -57,7 +64,6 @@ class OptimizedImagesGenerator implements GeneratorInterface
     public static function getName($context = null): string
     {
         /** @var TableField $context */
-        return $context->handle . '_TableRow';
+        return $context->handle.'_OptimizedImages';
     }
-
 }

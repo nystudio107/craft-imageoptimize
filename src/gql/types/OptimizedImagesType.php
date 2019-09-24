@@ -5,7 +5,7 @@
  * @license https://craftcms.github.io/license/
  */
 
-namespace nystudio107\gql\types;
+namespace nystudio107\imageoptimize\gql\types;
 
 use craft\gql\base\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;

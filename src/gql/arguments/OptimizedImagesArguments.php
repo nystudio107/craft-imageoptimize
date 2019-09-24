@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace craft\gql\arguments\elements;
+namespace nystudio107\imageoptimize\gql\arguments;
 
 use craft\gql\base\Arguments;
 use GraphQL\Type\Definition\Type;
@@ -30,11 +30,6 @@ class OptimizedImagesArguments extends Arguments
                 'name' => 'group',
                 'type' => Type::listOf(Type::string()),
                 'description' => 'Narrows the query results based on the tag groups the tags belong to per the group’s handles.'
-            ],
-            'groupId' => [
-                'name' => 'groupId',
-                'type' => Type::listOf(Type::int()),
-                'description' => 'Narrows the query results based on the tag groups the tags belong to, per the groups’ IDs.'
             ],
         ]);
     }

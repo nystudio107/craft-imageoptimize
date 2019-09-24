@@ -10,7 +10,7 @@
 
 namespace nystudio107\imageoptimize\fields;
 
-use craft\fields\Matrix;
+use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
@@ -19,6 +19,7 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\elements\Asset;
+use craft\fields\Matrix;
 use craft\helpers\Json;
 use craft\validators\ArrayValidator;
 
@@ -169,6 +170,21 @@ class OptimizedImages extends Field
         ]);
 
         return $rules;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 1.6.2
+     */
+    public function getContentGqlType()
+    {
+        $typeArray = OptimizedImagesGenerator::generateTypes($this);
+Craft::dd($typeArray);
+        return [
+            'name' => $this->handle,
+            'description' => 'Optimized Images field',
+            'type' => array_shift($typeArray),
+        ];
     }
 
     /**
