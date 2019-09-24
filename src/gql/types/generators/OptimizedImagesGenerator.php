@@ -7,7 +7,7 @@
 
 namespace nystudio107\imageoptimize\gql\types\generators;
 
-use nystudio107\imageoptimize\gql\resolvers\OptimizedImagesResolver;
+use nystudio107\imageoptimize\gql\types\OptimizedImagesType;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 
 use craft\fields\Table as TableField;
@@ -24,6 +24,8 @@ use GraphQL\Type\Definition\Type;
  */
 class OptimizedImagesGenerator implements GeneratorInterface
 {
+    public static $count = 0;
+
     /**
      * @inheritdoc
      */
@@ -33,17 +35,9 @@ class OptimizedImagesGenerator implements GeneratorInterface
         $typeName = self::getName($context);
 
         $optimizedImagesProps = [
-            'name' => Type::string(),
-            'street' => Type::string(),
-            'street2' => Type::string(),
-            'postalCode' => Type::string(),
-            'city' => Type::string(),
-            'state' => Type::string(),
-            'country' => Type::string(),
-            'latitude' => Type::float(),
-            'longitude' => Type::float(),
+            'optimizedImageUrls' => Type::listOf(Type::string())
         ];
-        $optimizedImagesProperty = GqlEntityRegistry::createEntity($typeName, new OptimizedImagesResolver([
+        $optimizedImagesProperty = GqlEntityRegistry::createEntity($typeName, new OptimizedImagesType([
             'name' => $typeName,
             'description' => 'This entity has all the OptimizedImages properties',
             'fields' => function () use ($optimizedImagesProps) {
@@ -64,6 +58,6 @@ class OptimizedImagesGenerator implements GeneratorInterface
     public static function getName($context = null): string
     {
         /** @var TableField $context */
-        return $context->handle.'_OptimizedImages';
+        return $context->handle.self::$count++.'_OptimizedImages';
     }
 }

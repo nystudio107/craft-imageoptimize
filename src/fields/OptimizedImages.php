@@ -179,7 +179,7 @@ class OptimizedImages extends Field
     public function getContentGqlType()
     {
         $typeArray = OptimizedImagesGenerator::generateTypes($this);
-Craft::dd($typeArray);
+
         return [
             'name' => $this->handle,
             'description' => 'Optimized Images field',
