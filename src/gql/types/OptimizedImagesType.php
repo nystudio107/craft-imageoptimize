@@ -36,6 +36,49 @@ class OptimizedImagesType extends ObjectType
                 return $source->src($width);
                 break;
 
+            // Special-case the `srcWebp` field with arguments
+            case 'srcWebp':
+                $width = $arguments['width'] ?? 0;
+
+                return $source->srcWebp($width);
+                break;
+
+            // Special-case the `srcset` field with arguments
+            case 'srcset':
+                $dpr = $arguments['dpr'] ?? false;
+
+                return $source->srcset($dpr);
+                break;
+
+            // Special-case the `srcsetWebp` field with arguments
+            case 'srcsetWebp':
+                $dpr = $arguments['dpr'] ?? false;
+
+                return $source->srcsetWebp($dpr);
+                break;
+
+            // Special-case the `maxSrcsetWidth` field
+            case 'maxSrcsetWidth':
+                return $source->maxSrcsetWidth();
+                break;
+
+            // Special-case the `placeholderImage` field
+            case 'placeholderImage':
+                return $source->placeholderImage();
+                break;
+
+            // Special-case the `placeholderBox` field
+            case 'placeholderBox':
+                $color = $arguments['color'] ?? null;
+
+                return $source->placeholderBox($color);
+                break;
+
+            // Special-case the `placeholderSilhouette` field
+            case 'placeholderSilhouette':
+                return $source->placeholderSilhouette();
+                break;
+
             // Special-case the `srcUrls` field
             case 'srcUrls':
                 $result = [];

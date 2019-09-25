@@ -107,6 +107,21 @@ class OptimizedImagesGenerator implements GeneratorInterface
                 'description' => 'Return the first image variant URL or the specific one passed in via `width`',
                 'type' => Type::listOf(Type::listOf(Type::string())),
             ],
+            'maxSrcsetWidth' => [
+                'name' => 'maxSrcsetWidth',
+                'description' => 'Work around issues with `<img srcset>` returning sizes larger than are available',
+                'type' => Type::int(),
+            ],
+            'placeholderImage' => [
+                'name' => 'placeholderImage',
+                'description' => 'Return a base64-encoded placeholder image',
+                'type' => Type::string(),
+            ],
+            'placeholderSilhouette' => [
+                'name' => 'placeholderSilhouette',
+                'description' => 'Return a silhouette of the image as an SVG placeholder',
+                'type' => Type::string(),
+            ],
             // Dynamic fields with arguments
             'src' => [
                 'name' => 'src',
@@ -116,6 +131,54 @@ class OptimizedImagesGenerator implements GeneratorInterface
                         'name' => 'width',
                         'type' => Type::int(),
                         'description' => 'Width of the image'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'srcWebp' => [
+                'name' => 'srcWebp',
+                'description' => 'Return the first webp image variant URL or the specific one passed in via `width`',
+                'args' => [
+                    'width' => [
+                        'name' => 'width',
+                        'type' => Type::int(),
+                        'description' => 'Width of the image'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'srcset' => [
+                'name' => 'srcset',
+                'description' => 'Return a string of image URLs and their sizes',
+                'args' => [
+                    'dpr' => [
+                        'name' => 'dpr',
+                        'type' => Type::boolean(),
+                        'description' => 'Include dpr images?'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'srcsetWebp' => [
+                'name' => 'srcsetWebp',
+                'description' => 'Return a string of webp image URLs and their sizes',
+                'args' => [
+                    'dpr' => [
+                        'name' => 'dpr',
+                        'type' => Type::boolean(),
+                        'description' => 'Include dpr images?'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'placeholderBox' => [
+                'name' => 'placeholderBox',
+                'description' => 'Return an SVG box as a placeholder image',
+                'args' => [
+                    'color' => [
+                        'name' => 'color',
+                        'type' => Type::string(),
+                        'description' => 'The color for the placeholder box'
                     ],
                 ],
                 'type' => Type::string(),
