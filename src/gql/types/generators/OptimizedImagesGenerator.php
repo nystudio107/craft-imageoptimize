@@ -23,6 +23,9 @@ use GraphQL\Type\Definition\Type;
  */
 class OptimizedImagesGenerator implements GeneratorInterface
 {
+    // Public Static methods
+    // =========================================================================
+
     /**
      * @inheritdoc
      */
@@ -32,70 +35,90 @@ class OptimizedImagesGenerator implements GeneratorInterface
         $typeName = self::getName($context);
 
         $optimizedImagesFields = [
+            // static fields
             'optimizedImageUrls' => [
                 'name' => 'optimizedImageUrls',
                 'description' => 'An array of optimized image variant URLs',
-                'type' => Type::listOf(Type::string())
+                'type' => Type::listOf(Type::string()),
             ],
             'optimizedWebPImageUrls' => [
                 'name' => 'optimizedWebPImageUrls',
                 'description' => 'An array of optimized .webp image variant URLs',
-                'type' => Type::listOf(Type::string())
+                'type' => Type::listOf(Type::string()),
             ],
             'variantSourceWidths' => [
                 'name' => 'variantSourceWidths',
                 'description' => 'An array of the widths of the optimized image variants',
-                'type' => Type::listOf(Type::int())
+                'type' => Type::listOf(Type::int()),
             ],
             'variantHeights' => [
                 'name' => 'variantHeights',
                 'description' => 'An array of the heights of the optimized image variants',
-                'type' => Type::listOf(Type::int())
+                'type' => Type::listOf(Type::int()),
             ],
             'focalPoint' => [
                 'name' => 'focalPoint',
                 'description' => 'An array of the x,y image focal point coords, ranging from 0.0 to 1.0',
-                'type' => Type::listOf(Type::float())
+                'type' => Type::listOf(Type::float()),
             ],
             'originalImageWidth' => [
                 'name' => 'originalImageWidth',
                 'description' => 'The width of the original source image',
-                'type' => Type::int()
+                'type' => Type::int(),
             ],
             'originalImageHeight' => [
                 'name' => 'originalImageHeight',
                 'description' => 'The height of the original source image',
-                'type' => Type::int()
+                'type' => Type::int(),
             ],
             'placeholder' => [
                 'name' => 'placeholder',
                 'description' => 'The base64 encoded placeholder LQIP image',
-                'type' => Type::string()
+                'type' => Type::string(),
             ],
             'placeholderSvg' => [
                 'name' => 'placeholderSvg',
                 'description' => 'The base64 encoded placeholder LQIP SVG image',
-                'type' => Type::string()
+                'type' => Type::string(),
             ],
             'colorPalette' => [
                 'name' => 'colorPalette',
                 'description' => 'An array the 5 most dominant colors in the image',
-                'type' => Type::listOf(Type::string())
+                'type' => Type::listOf(Type::string()),
             ],
             'lightness' => [
                 'name' => 'lightness',
                 'description' => 'The overall lightness of the image, from 0..100',
-                'type' => Type::int()
+                'type' => Type::int(),
             ],
             'placeholderWidth' => [
                 'name' => 'placeholderWidth',
                 'description' => 'The width of the placeholder image',
-                'type' => Type::int()
+                'type' => Type::int(),
             ],
             'placeholderHeight' => [
                 'name' => 'placeholderHeight',
                 'description' => 'The height of the placeholder image',
-                'type' => Type::int()
+                'type' => Type::int(),
+            ],
+            // Dynamic fields
+            'srcUrls' => [
+                'name' => 'srcUrls',
+                'description' => 'Return the first image variant URL or the specific one passed in via `width`',
+                'type' => Type::listOf(Type::listOf(Type::string())),
+            ],
+            // Dynamic fields with arguments
+            'src' => [
+                'name' => 'src',
+                'description' => 'Return the first image variant URL or the specific one passed in via `width`',
+                'args' => [
+                    'width' => [
+                        'name' => 'width',
+                        'type' => Type::int(),
+                        'description' => 'Width of the image'
+                    ],
+                ],
+                'type' => Type::string(),
             ],
         ];
         $optimizedImagesType = GqlEntityRegistry::getEntity($typeName)
