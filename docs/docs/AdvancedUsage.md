@@ -113,6 +113,66 @@ All you need to do is install the plugin, and any queue jobs in Craft CMS 3 will
 
 Also read the article [Robust queue job handling in CraftCMS](https://nystudio107.com/blog/robust-queue-job-handling-in-craft-cms) for other possible solutions.
 
+## GraphQL via Craft CMS 3.3
+
+ImageOptimize has built-in support for accessing the OptimizedImages field via GraphQL using [Craft CMS 3.3's GraphQL](https://docs.craftcms.com/v3/graphql.html) support.
+
+You can access all of the primary OptimizedImages field methods:
+
+```graphql
+{
+  entries(section: "homepage", limit:1) {
+    ...on homepage_homepage_Entry {
+      title
+      uri
+      someAsset {
+        ...on blog_Asset {
+          optimizedImages {
+            src,
+            srcset,
+            srcWebp,
+            srcsetWebp,
+            maxSrcsetWidth,
+            placeholderImage,
+            placeholderBox,
+            placeholderSilhouette
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+...as well as all of the OptimizedImages field properties:
+
+```graphql
+{
+  entries(section: "homepage", limit:1) {
+    ...on homepage_homepage_Entry {
+      title
+      uri
+      someAsset {
+        ...on blog_Asset {
+          optimizedImages {
+            optimizedImageUrls,
+            optimizedWebPImageUrls,
+            variantSourceWidths,
+            originalImageWidth,
+            originalImageHeight
+            placeholder,
+            placeholderSvg,
+            colorPalette,
+            placeholderWidth,
+            placeholderHeight
+          }
+        }
+      }
+    }
+  }
+}
+```
+
 ## GraphQL via CraftQL Plugin
 
 ImageOptimize has built-in support for accessing the OptimizedImages field via GraphQL using the [CraftQL plugin](https://github.com/markhuot/craftql).
