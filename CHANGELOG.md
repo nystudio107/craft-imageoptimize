@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.2 - 2019.08.25
+## 1.6.2 - 2019.09.25
 ### Changed
 * Added support for native GraphQL in Craft 3.3
 
