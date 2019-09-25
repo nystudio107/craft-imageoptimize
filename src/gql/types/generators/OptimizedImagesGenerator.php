@@ -24,8 +24,6 @@ use GraphQL\Type\Definition\Type;
  */
 class OptimizedImagesGenerator implements GeneratorInterface
 {
-    public static $count = 0;
-
     /**
      * @inheritdoc
      */
@@ -37,13 +35,14 @@ class OptimizedImagesGenerator implements GeneratorInterface
         $optimizedImagesProps = [
             'optimizedImageUrls' => Type::listOf(Type::string())
         ];
-        $optimizedImagesProperty = GqlEntityRegistry::createEntity($typeName, new OptimizedImagesType([
+        $optimizedImagesProperty = GqlEntityRegistry::getEntity($typeName)
+            ?: GqlEntityRegistry::createEntity($typeName, new OptimizedImagesType([
             'name' => $typeName,
             'description' => 'This entity has all the OptimizedImages properties',
             'fields' => function () use ($optimizedImagesProps) {
                 return $optimizedImagesProps;
             },
-        ]));
+            ]));
 
         TypeLoader::registerType($typeName, function () use ($optimizedImagesProperty) {
             return $optimizedImagesProperty;
@@ -58,6 +57,6 @@ class OptimizedImagesGenerator implements GeneratorInterface
     public static function getName($context = null): string
     {
         /** @var TableField $context */
-        return $context->handle.self::$count++.'_OptimizedImages';
+        return $context->handle.'_OptimizedImages';
     }
 }
