@@ -31,35 +31,87 @@ class OptimizedImagesGenerator implements GeneratorInterface
         /** @var OptimizedImages $context */
         $typeName = self::getName($context);
 
-        $optimizedImagesProps = [
-            'optimizedImageUrls' => Type::listOf(Type::string()),
-            'optimizedWebPImageUrls' => Type::listOf(Type::string()),
-            'variantSourceWidths' => Type::listOf(Type::int()),
-            'variantHeights' => Type::listOf(Type::int()),
-            'focalPoint' => Type::listOf(Type::float()),
-            'originalImageWidth' => Type::int(),
-            'originalImageHeight' => Type::int(),
-            'placeholder' => Type::string(),
-            'placeholderSvg' => Type::string(),
-            'colorPalette' => Type::listOf(Type::string()),
-            'lightness' => Type::int(),
-            'placeholderWidth' => Type::int(),
-            'placeholderHeight' => Type::int(),
+        $optimizedImagesFields = [
+            'optimizedImageUrls' => [
+                'name' => 'optimizedImageUrls',
+                'description' => 'An array of optimized image variant URLs',
+                'type' => Type::listOf(Type::string())
+            ],
+            'optimizedWebPImageUrls' => [
+                'name' => 'optimizedWebPImageUrls',
+                'description' => 'An array of optimized .webp image variant URLs',
+                'type' => Type::listOf(Type::string())
+            ],
+            'variantSourceWidths' => [
+                'name' => 'variantSourceWidths',
+                'description' => 'An array of the widths of the optimized image variants',
+                'type' => Type::listOf(Type::int())
+            ],
+            'variantHeights' => [
+                'name' => 'variantHeights',
+                'description' => 'An array of the heights of the optimized image variants',
+                'type' => Type::listOf(Type::int())
+            ],
+            'focalPoint' => [
+                'name' => 'focalPoint',
+                'description' => 'An array of the x,y image focal point coords, ranging from 0.0 to 1.0',
+                'type' => Type::listOf(Type::float())
+            ],
+            'originalImageWidth' => [
+                'name' => 'originalImageWidth',
+                'description' => 'The width of the original source image',
+                'type' => Type::int()
+            ],
+            'originalImageHeight' => [
+                'name' => 'originalImageHeight',
+                'description' => 'The height of the original source image',
+                'type' => Type::int()
+            ],
+            'placeholder' => [
+                'name' => 'placeholder',
+                'description' => 'The base64 encoded placeholder LQIP image',
+                'type' => Type::string()
+            ],
+            'placeholderSvg' => [
+                'name' => 'placeholderSvg',
+                'description' => 'The base64 encoded placeholder LQIP SVG image',
+                'type' => Type::string()
+            ],
+            'colorPalette' => [
+                'name' => 'colorPalette',
+                'description' => 'An array the 5 most dominant colors in the image',
+                'type' => Type::listOf(Type::string())
+            ],
+            'lightness' => [
+                'name' => 'lightness',
+                'description' => 'The overall lightness of the image, from 0..100',
+                'type' => Type::int()
+            ],
+            'placeholderWidth' => [
+                'name' => 'placeholderWidth',
+                'description' => 'The width of the placeholder image',
+                'type' => Type::int()
+            ],
+            'placeholderHeight' => [
+                'name' => 'placeholderHeight',
+                'description' => 'The height of the placeholder image',
+                'type' => Type::int()
+            ],
         ];
-        $optimizedImagesProperty = GqlEntityRegistry::getEntity($typeName)
+        $optimizedImagesType = GqlEntityRegistry::getEntity($typeName)
             ?: GqlEntityRegistry::createEntity($typeName, new OptimizedImagesType([
             'name' => $typeName,
             'description' => 'This entity has all the OptimizedImages properties',
-            'fields' => function () use ($optimizedImagesProps) {
-                return $optimizedImagesProps;
+            'fields' => function () use ($optimizedImagesFields) {
+                return $optimizedImagesFields;
             },
             ]));
 
-        TypeLoader::registerType($typeName, function () use ($optimizedImagesProperty) {
-            return $optimizedImagesProperty;
+        TypeLoader::registerType($typeName, function () use ($optimizedImagesType) {
+            return $optimizedImagesType;
         });
 
-        return [$optimizedImagesProperty];
+        return [$optimizedImagesType];
     }
 
     /**
