@@ -28,67 +28,67 @@ class OptimizedImage extends Model
     // =========================================================================
 
     /**
-     * @var array
+     * @var string[] An array of optimized image variant URLs
      */
     public $optimizedImageUrls = [];
 
     /**
-     * @var array
+     * @var string[] An array of optimized .webp image variant URLs
      */
     public $optimizedWebPImageUrls = [];
 
     /**
-     * @var array
+     * @var int[] An array of the widths of the optimized image variants
      */
     public $variantSourceWidths = [];
 
     /**
-     * @var array
+     * @var int[] An array of the heights of the optimized image variants
      */
     public $variantHeights = [];
 
     /**
-     * @var array
+     * @var float[] An array of the x,y image focal point coords, ranging from 0.0 to 1.0
      */
     public $focalPoint;
 
     /**
-     * @var int
+     * @var int The width of the original source image
      */
     public $originalImageWidth;
 
     /**
-     * @var int
+     * @var int The height of the original source image
      */
     public $originalImageHeight;
 
     /**
-     * @var string
+     * @var string The base64 encoded placeholder LQIP image
      */
     public $placeholder = '';
 
     /**
-     * @var
+     * @var string The base64 encoded placeholder LQIP SVG image
      */
     public $placeholderSvg = '';
 
     /**
-     * @var array
+     * @var string[] An array the 5 most dominant colors in the image
      */
     public $colorPalette = [];
 
     /**
-     * @var int
+     * @var int The overall lightness of the image, from 0..100
      */
     public $lightness;
 
     /**
-     * @var int
+     * @var int The width of the placeholder image
      */
     public $placeholderWidth;
 
     /**
-     * @var int
+     * @var int The height of the placeholder image
      */
     public $placeholderHeight;
 
