@@ -90,7 +90,7 @@ Should you need to create an arbitrary placeholder SVG for lazy loading of image
 
 The method signature is `placeholderBox(WIDTH, HEIGHT, COLOR)`.
 
-## Miscelaneous
+## Miscellaneous
 
 The `maxSrcsetWidth()` method allows you to work around issues with `<img srcset>` returning sizes larger than are available as per the [Unexpected Image Sizes](https://medium.com/@MRWwebDesign/responsive-images-the-sizes-attribute-and-unexpected-image-sizes-882a2eadb6db) article. It returns the width of the largest Optimized Image Variant:
 
