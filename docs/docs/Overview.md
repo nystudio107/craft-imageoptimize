@@ -18,6 +18,6 @@ It's important to create optimized images for frontend delivery, especially for 
 
 Once ImageOptimize is installed, optimized versions of image transforms are created without you having to do anything. This makes it great for client-proofing websites.
 
-ImageOptimize works equally well with both local and remote assets such as Amazon S3 buckets.
+ImageOptimize works equally well with both local and remote assets such as Amazon S3 buckets. It also works great with SPAs, giving you access to your optimized image URLs from GraphQL.
 
 Brought to you by [nystudio107](https://nystudio107.com)
