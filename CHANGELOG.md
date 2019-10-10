@@ -1,8 +1,8 @@
 # ImageOptimize Changelog
 
-## 1.6.3 - 2019.10.02
+## 1.6.3 - 2019.10.07
 ### Changed
-* 
+* Force update to `"nystudio107/craft-imageoptimize-imgix": "^1.1.1"`
 
 ## 1.6.2 - 2019.09.25
 ### Changed
