@@ -563,12 +563,20 @@ class Optimize extends Component
                     .escapeshellarg($tempPath)
                     .' ';
             }
+            // Output to a file name
+            $outputFileName = '';
+            if (!empty($thisProcessor['commandOutputFileName']) && $thisProcessor['commandOutputFileName']) {
+                $outputFileName = ' '
+                    .escapeshellarg($tempPath)
+                    .' ';
+            }
             // Build the command to execute
             $cmd =
                 $thisProcessor['commandPath']
                 .$commandOptions
                 .$outputFileFlag
-                .escapeshellarg($tempPath);
+                .escapeshellarg($tempPath)
+                .$outputFileName;
             // Execute the command
             $shellOutput = $this->executeShellCommand($cmd);
             Craft::info($cmd."\n".$shellOutput, __METHOD__);
@@ -640,6 +648,13 @@ class Optimize extends Component
                     .escapeshellarg($outputPath)
                     .' ';
             }
+            // Write to a file if necessary for this variantCreator
+            $outputFileName = '';
+            if (!empty($variantCreatorCommand['commandOutputFileName']) && $variantCreatorCommand['commandOutputFileName']) {
+                $outputFileName = ' '
+                    .escapeshellarg($outputPath)
+                    .' ';
+            }
             // Get the quality setting of this transform
             $commandQualityFlag = '';
             if (!empty($variantCreatorCommand['commandQualityFlag'])) {
@@ -655,7 +670,8 @@ class Optimize extends Component
                 .$commandOptions
                 .$commandQualityFlag
                 .$outputFileFlag
-                .escapeshellarg($tempPath);
+                .escapeshellarg($tempPath)
+                .$outputFileName;
             // Execute the command
             $shellOutput = $this->executeShellCommand($cmd);
             Craft::info($cmd."\n".$shellOutput, __METHOD__);
