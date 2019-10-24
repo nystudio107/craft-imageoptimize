@@ -4,6 +4,7 @@
 ### Changed
 * Force update to `"nystudio107/craft-imageoptimize-imgix": "^1.1.1"`
 * Fixed aspect ratio for CP thumbnail images
+* Default `createPlaceholderSilhouettes` to `false` so people need to enable this setting if they want to use them (they can be on the larger side)
 
 ## 1.6.2 - 2019.09.25
 ### Changed
