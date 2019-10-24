@@ -348,7 +348,7 @@ The first is `.placeholderBox()` which displays a simple inline SVG with the bac
 The second is `.placeholderSilhouette()` which displays an inline SVG silhouette generated from the original image:
 
 ![Screenshot](./resources/screenshots/placeholder-image-silhouette.png)
-(Placholder on the left, actual image on the right)
+(Placholder on the left, actual image on the right). Note that by default, the generation of Placeholder Silhouettes is **off**, because they can add to the db size.
 
 The SVG image itself will only be 300px wide, so apply CSS styles to it such as:
 
