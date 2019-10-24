@@ -53,7 +53,7 @@ return [
 
      // Controls whether SVG placeholder silhouettes should be created for image variants
      // It takes a bit of time, so if you never plan to use them, you can turn it off
-    'createPlaceholderSilhouettes' => true,
+    'createPlaceholderSilhouettes' => false,
 
     // Controls whether retina images are automatically created with reduced quality
     // as per https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/

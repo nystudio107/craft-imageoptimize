@@ -89,7 +89,7 @@ class Settings extends Model
      *      for image variants It takes a bit of time, so if you never plan to
      *      use them, you can turn it off
      */
-    public $createPlaceholderSilhouettes = true;
+    public $createPlaceholderSilhouettes = false;
 
     /**
      * @var bool Controls whether retina images are automatically created with
