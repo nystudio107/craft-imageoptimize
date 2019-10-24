@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.3 - 2019.10.23
+## 1.6.3 - 2019.10.24
 ### Changed
 * Force update to `"nystudio107/craft-imageoptimize-imgix": "^1.1.1"`
 * Fixed aspect ratio for CP thumbnail images
