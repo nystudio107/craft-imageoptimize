@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
+use nystudio107\imageoptimize\helpers\Image as ImageHelper;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
 
@@ -21,11 +22,13 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\Volume;
 use craft\elements\Asset;
+use craft\errors\ImageException;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\models\AssetTransform;
 use craft\models\FieldLayout;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -377,6 +380,20 @@ class OptimizedImages extends Component
         $settings = ImageOptimize::$plugin->getSettings();
         $transform = new AssetTransform();
         $transform->format = $variant['format'] ?? null;
+        // Handle animate .gif images by never changing the format
+        $images = Craft::$app->getImages();
+        if ($asset->extension === 'gif' && !$images->getIsGd()) {
+            $imageSource = $asset->getTransformSource();
+            try {
+                if (ImageHelper::getIsAnimatedGif($imageSource)) {
+                    $transform->format = null;
+                }
+            } catch (ImageException $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            } catch (InvalidConfigException $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
+        }
         $useAspectRatio = $variant['useAspectRatio'] ?? true;
         if ($useAspectRatio) {
             $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
