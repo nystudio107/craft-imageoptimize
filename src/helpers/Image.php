@@ -26,7 +26,7 @@ class Image
 
     /**
      * This is a hacked version of `Raster::loadImage()` because the $_isAnimatedGif
-     * property is private
+     * property is private and there is no `getIsAnimatedGif()` getter
      *
      * @param string $path
      *
