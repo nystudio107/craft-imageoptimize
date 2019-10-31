@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.4 - 2019.10.29
+## 1.6.4 - 2019.10.31
 ### Changed
 * If an image is an animated `.gif` file, never change the file format
 
