@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.4 - 2019.10.31
+### Changed
+* If an image is an animated `.gif` file, never change the file format
+
 ## 1.6.3 - 2019.10.24
 ### Changed
 * Force update to `"nystudio107/craft-imageoptimize-imgix": "^1.1.1"`

@@ -132,11 +132,7 @@
                                             </div>
                                         </a>
                                     </div>
-                                    {% if variant.format == null %}
-                                        {% set thisFormat = format %}
-                                    {% else %}
-                                        {% set thisFormat = variant.format %}
-                                    {% endif %}
+                                    {% set thisFormat = thisUrl |split('.') |last %}
                                     {% if imageSource == value.optimizedWebPImageUrls %}
                                         {% set thisFormat = ".webp" %}
                                     {% endif %}
