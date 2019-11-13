@@ -172,7 +172,6 @@ class OptimizedImages extends Component
                             $createVariants = false;
                             if (is_array($subfolders)) {
                                 foreach ($subfolders as $subfolder) {
-__METHOD__);
                                     if ($asset->getFolder()->uid === $subfolder) {
                                         Craft::info('Matched subfolder uid: '.print_r($subfolder, true), __METHOD__);
                                         $createVariants = true;
