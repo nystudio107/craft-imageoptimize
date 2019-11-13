@@ -76,5 +76,22 @@ return [
     'Optionally prefix your asset path with the bucket name. This is useful if your Thumbor configuration does not specify an explicit bucket. Only relevant for AWS S3 volumes at this time.' => 'Optionally prefix your asset path with the bucket name. This is useful if your Thumbor configuration does not specify an explicit bucket. Only relevant for AWS S3 volumes at this time.',
     'Object failed to validate' => 'Object failed to validate',
     'Is not a Model object.' => 'Is not a Model object.',
-    'Generic Transform' => 'Generic Transform'
+    'Generic Transform' => 'Generic Transform',
+    'Placeholder Silhouette' => 'Placeholder Silhouette',
+    'OptimizedImages fields only work when added to an Asset Volume\'s layout.' => 'OptimizedImages fields only work when added to an Asset Volume\'s layout.',
+    'Sharp' => 'Sharp',
+    'Some Volume' => 'Some Volume',
+    'Placeholder Box' => 'Placeholder Box',
+    'Only apply image transforms to images in the sub-folders:' => 'Only apply image transforms to images in the sub-folders:',
+    'Create Optimized Image Variants for images in the sub-folders:' => 'Create Optimized Image Variants for images in the sub-folders:',
+    'LazyLoad Placeholder Images:' => 'LazyLoad Placeholder Images:',
+    'Dominant Color Palette:' => 'Dominant Color Palette:',
+    'Create image variants for images in the sub-folders:' => 'Create image variants for images in the sub-folders:',
+    'Color Palette not extracted' => 'Color Palette not extracted',
+    'blah blah blah:' => 'blah blah blah:',
+    'Optimized Image Variants:' => 'Optimized Image Variants:',
+    'Placeholder Image' => 'Placeholder Image',
+    'The base URL to use for the Sharp transform service. If Sharp is being used via [AWS Serverless Image Handler](https://aws.amazon.com/solutions/serverless-image-handler/), this is your \'Image handler distribution\' CloudFront distribution URL.' => 'The base URL to use for the Sharp transform service. If Sharp is being used via [AWS Serverless Image Handler](https://aws.amazon.com/solutions/serverless-image-handler/), this is your \'Image handler distribution\' CloudFront distribution URL.',
+    'Lightness:' => 'Lightness:',
+    'Add Variant' => 'Add Variant'
 ];
