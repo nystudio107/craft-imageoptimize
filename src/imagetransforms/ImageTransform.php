@@ -12,11 +12,12 @@ namespace nystudio107\imageoptimize\imagetransforms;
 
 use nystudio107\imageoptimize\helpers\UrlHelper;
 
+use Craft;
 use craft\base\SavableComponent;
 use craft\elements\Asset;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
-use craft\models\AssetTransform;
+use nystudio107\imageoptimize\ImageOptimize;
 
 /**
  * @author    nystudio107
@@ -107,7 +108,11 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
         // Account for volume types with a subfolder setting
         // e.g. craftcms/aws-s3, craftcms/google-cloud
         if ($volume->subfolder ?? null) {
-            return rtrim($volume->subfolder, '/').'/'.$assetPath;
+            $subfolder = $volume->subfolder;
+            if (ImageOptimize::$craft31) {
+                $subfolder = Craft::parseEnv($subfolder);
+            }
+            return rtrim($subfolder, '/').'/'.$assetPath;
         }
 
         return $assetPath;

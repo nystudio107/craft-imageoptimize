@@ -153,12 +153,36 @@ class OptimizedImages extends Component
      * @param ElementInterface $asset
      *
      * @throws \yii\db\Exception
+     * @throws InvalidConfigException
      */
     public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset)
     {
         /** @var Asset $asset */
         if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
             $createVariants = true;
+            Craft::info(print_r($field->fieldVolumeSettings, true), __METHOD__);
+            // See if we're ignoring files in this dir
+            if (!empty($field->fieldVolumeSettings)) {
+                foreach ($field->fieldVolumeSettings as $volumeHandle => $subfolders) {
+                    if ($asset->getVolume()->handle === $volumeHandle) {
+                        if (is_string($subfolders) && $subfolders === '*') {
+                            $createVariants = true;
+                            Craft::info("Matched '*' wildcard ", __METHOD__);
+                        } else {
+                            $createVariants = false;
+                            if (is_array($subfolders)) {
+                                foreach ($subfolders as $subfolder) {
+                                    if ($asset->getFolder()->uid === $subfolder) {
+                                        Craft::info('Matched subfolder uid: '.print_r($subfolder, true), __METHOD__);
+                                        $createVariants = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // See if we should ignore this type of file
             $sourceType = $asset->getMimeType();
             if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
                 if (\in_array($sourceType, array_values($field->ignoreFilesOfType), false)) {

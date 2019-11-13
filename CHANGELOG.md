@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.5 - 2019.11.13
+### Added
+* Added the ability to choose the sub-folders in an asset volume in which Optimized Image Variants will be created
+
+### Changed
+* Parse volumes sub-folders as environment variables
+
 ## 1.6.4 - 2019.10.31
 ### Changed
 * If an image is an animated `.gif` file, never change the file format
