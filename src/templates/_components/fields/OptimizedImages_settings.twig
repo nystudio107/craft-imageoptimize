@@ -25,13 +25,14 @@
 
     {% if fieldVolumes is defined and fieldVolumes | length %}
         {% for fieldVolume in fieldVolumes %}
+            {% set val = field.fieldVolumeSettings[fieldVolume.handle] ?? '*' %}
             {{ forms.checkboxSelectField({
                 label: "Volume: " ~ fieldVolume.name,
                 instructions: "Create Optimized Image Variants for images in the sub-folders:"|t('image-optimize'),
-                name: "fieldVolumes",
+                name: "fieldVolumeSettings[" ~ fieldVolume.handle ~ "]",
                 options: fieldVolume.subfolders,
                 showAllOption: true,
-                values: '*',
+                values: val,
             }) }}
         {% endfor %}
     {% endif %}

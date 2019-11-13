@@ -65,6 +65,11 @@ class OptimizedImages extends Field
     /**
      * @var array
      */
+    public $fieldVolumeSettings = [];
+
+    /**
+     * @var array
+     */
     public $ignoreFilesOfType = [];
 
     /**
