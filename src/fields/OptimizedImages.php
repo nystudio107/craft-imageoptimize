@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\fields;
 
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
 use nystudio107\imageoptimize\ImageOptimize;
@@ -18,9 +19,11 @@ use nystudio107\imageoptimize\models\OptimizedImage;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\base\Volume;
 use craft\elements\Asset;
 use craft\fields\Matrix;
 use craft\helpers\Json;
+use craft\models\FieldLayout;
 use craft\validators\ArrayValidator;
 
 use yii\base\InvalidConfigException;
@@ -249,9 +252,6 @@ class OptimizedImages extends Field
         return Schema::TYPE_TEXT;
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -311,6 +311,7 @@ class OptimizedImages extends Field
                     'id'           => $id,
                     'name'         => $this->handle,
                     'namespace'    => $namespacedId,
+                    'fieldVolumes' => $this->getFieldVolumeInfo($this->handle),
                 ]
             );
         } catch (\Twig\Error\LoaderError $e) {
@@ -390,5 +391,90 @@ class OptimizedImages extends Field
         }
 
         return '';
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Returns an array of asset volumes and their sub-folders
+     *
+     * @param string|null $fieldHandle
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    protected function getFieldVolumeInfo($fieldHandle): array
+    {
+        $result = [];
+        if ($fieldHandle !== null) {
+            $volumes = Craft::$app->getVolumes()->getAllVolumes();
+            $assets = Craft::$app->getAssets();
+            foreach ($volumes as $volume) {
+                if (is_subclass_of($volume, Volume::class)) {
+                    /** @var Volume $volume */
+                    if ($this->volumeHasField($volume, $fieldHandle)) {
+                        $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
+                        $result[] = [
+                            'name' => $volume->name,
+                            'handle' => $volume->handle,
+                            'subfolders' => $this->assembleSourceList($tree),
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * See if the passed $volume has an OptimizedImagesField with the handle $fieldHandle
+     *
+     * @param Volume $volume
+     *
+     * @param string $fieldHandle
+     *
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    protected function volumeHasField(Volume $volume, string $fieldHandle): bool
+    {
+        $result = false;
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $volume->getFieldLayout();
+        // Loop through the fields in the layout to see if there is an OptimizedImages field
+        if ($fieldLayout) {
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof OptimizedImagesField && $field->handle === $fieldHandle) {
+                    $result = true;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Transforms an asset folder tree into a source list.
+     *
+     * @param array $folders
+     * @param bool  $includeNestedFolders
+     *
+     * @return array
+     */
+    protected function assembleSourceList(array $folders, bool $includeNestedFolders = true): array
+    {
+        $sources = [];
+
+        foreach ($folders as $folder) {
+            $children = $folder->getChildren();
+            foreach ($children as $child) {
+                $sources[$child->uid] = $child->name;
+            }
+        }
+
+        return $sources;
     }
 }
