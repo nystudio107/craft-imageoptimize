@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.6 - 2019.11.18
+### Added
+* Added a Preferences item to control whether allow limiting the creation of Optimized Image Variants for images by sub-folders
+
 ## 1.6.5 - 2019.11.13
 ### Added
 * Added the ability to choose the sub-folders in an asset volume in which Optimized Image Variants will be created
