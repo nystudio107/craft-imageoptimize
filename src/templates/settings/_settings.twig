@@ -101,7 +101,15 @@
         'on': settings.autoSharpenScaledImages,
         'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
     }) }}
-
+    <!-- assetVolumeSubFolders -->
+    {{ forms.lightswitchField({
+        label: "Limit by Sub-Folder"|t('image-optimize'),
+        instructions: "Whether to allow limiting the creation of Optimized Image Variants for images by sub-folders."|t('image-optimize'),
+        'id': 'assetVolumeSubFolders',
+        'name': 'assetVolumeSubFolders',
+        'on': settings.assetVolumeSubFolders,
+        'warning': configWarning('assetVolumeSubFolders', 'image-optimize')
+    }) }}
 </div>
 
 {% js %}

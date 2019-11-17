@@ -23,18 +23,20 @@
 
 <div class="field" id="{{ id }}-fields">
 
-    {% if fieldVolumes is defined and fieldVolumes | length %}
-        {% for fieldVolume in fieldVolumes %}
-            {% set val = field.fieldVolumeSettings[fieldVolume.handle] ?? '*' %}
-            {{ forms.checkboxSelectField({
-                label: "Volume: " ~ fieldVolume.name,
-                instructions: "Create Optimized Image Variants for images in the sub-folders:"|t('image-optimize'),
-                name: "fieldVolumeSettings[" ~ fieldVolume.handle ~ "]",
-                options: fieldVolume.subfolders,
-                showAllOption: true,
-                values: val,
-            }) }}
-        {% endfor %}
+    {% if settings.assetVolumeSubFolders %}
+        {% if fieldVolumes is defined and fieldVolumes | length %}
+            {% for fieldVolume in fieldVolumes %}
+                {% set val = field.fieldVolumeSettings[fieldVolume.handle] ?? '*' %}
+                {{ forms.checkboxSelectField({
+                    label: "Volume: " ~ fieldVolume.name,
+                    instructions: "Create Optimized Image Variants for images in the sub-folders:"|t('image-optimize'),
+                    name: "fieldVolumeSettings[" ~ fieldVolume.handle ~ "]",
+                    options: fieldVolume.subfolders,
+                    showAllOption: true,
+                    values: val,
+                }) }}
+            {% endfor %}
+        {% endif %}
     {% endif %}
 
     {{ forms.checkboxSelectField({

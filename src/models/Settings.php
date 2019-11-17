@@ -111,6 +111,12 @@ class Settings extends Model
     public $autoSharpenScaledImages = true;
 
     /**
+     * @var bool Whether to allow limiting the creation of Optimized Image Variants
+     *      for images by sub-folders
+     */
+    public $assetVolumeSubFolders = true;
+
+    /**
      * @var ImageTransformInterface[] The default Image Transform type classes
      */
     public $defaultImageTransformTypes = [
@@ -320,6 +326,7 @@ class Settings extends Model
                     'lowerQualityRetinaImageVariants',
                     'allowUpScaledImageVariants',
                     'autoSharpenScaledImages',
+                    'assetVolumeSubFolders',
                 ],
                 'boolean',
             ],
@@ -362,6 +369,7 @@ class Settings extends Model
             'lowerQualityRetinaImageVariants',
             'allowUpScaledImageVariants',
             'autoSharpenScaledImages',
+            'assetVolumeSubFolders',
         ];
 
         return $fields;
