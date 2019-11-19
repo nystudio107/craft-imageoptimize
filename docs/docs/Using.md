@@ -4,6 +4,13 @@
 
 To create responsive image variants for all of your images, create an **OptimizedImages** Field and add it to the Asset Volume field layout of the images you want optimized.
 
+ImageOptimize will pre-generate all of the Optimized Image Variants in the Asset Volume, so that this rather intensive step is preflighted, rather than being done at runtime.
+
+You can choose to have the Optimized Image Variants created only for specific sub-folders in an Asset Volume if you like:
+
+![Screenshot](./resources/screenshots/image-optimize-field-volumes.png)
+
+
 Think of each **Optimized Images** field as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images. If you need to use more than one `srcset` then you probably need more than one **Optimized Images** field.
 
 **Transform Method** let you choose to use the built-in Craft transforms or a service like [Imgix](https://www.imgix.com/) for the responsive image variants.

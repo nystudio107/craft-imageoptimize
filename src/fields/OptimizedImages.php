@@ -305,6 +305,8 @@ class OptimizedImages extends Field
         }
         $aspectRatio = ['x' => 2, 'y' => 2, 'custom' => true];
         $aspectRatios[] = $aspectRatio;
+        // Get only the user-editable settings
+        $settings = ImageOptimize::$plugin->getSettings();
 
         // Render the settings template
         try {
@@ -312,6 +314,7 @@ class OptimizedImages extends Field
                 'image-optimize/_components/fields/OptimizedImages_settings',
                 [
                     'field'        => $this,
+                    'settings'     => $settings,
                     'aspectRatios' => $aspectRatios,
                     'id'           => $id,
                     'name'         => $this->handle,

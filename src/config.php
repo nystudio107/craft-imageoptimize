@@ -66,6 +66,9 @@ return [
     // Controls whether images scaled down >= 50% should be automatically sharpened
     'autoSharpenScaledImages' => true,
 
+    // Whether to allow limiting the creation of Optimized Image Variants for images by sub-folders
+    'assetVolumeSubFolders' => true,
+
     // The default Image Transform type classes
     'defaultImageTransformTypes' => [
     ],
