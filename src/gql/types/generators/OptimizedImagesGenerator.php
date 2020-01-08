@@ -86,6 +86,11 @@ class OptimizedImagesGenerator implements GeneratorInterface
                 'description' => 'An array the 5 most dominant colors in the image',
                 'type' => Type::listOf(Type::string()),
             ],
+            'colorPaletteRgb' => [
+                'name' => 'colorPaletteRgb',
+                'description' => 'An array the 5 most dominant colors in the image in RGB format',
+                'type' => Type::listOf(Type::listOf(Type::int())),
+            ],
             'lightness' => [
                 'name' => 'lightness',
                 'description' => 'The overall lightness of the image, from 0..100',

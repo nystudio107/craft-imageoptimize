@@ -89,6 +89,11 @@ class OptimizedImagesType extends ObjectType
                 return $result;
                 break;
 
+            // Special-case the `colorPaletteRgb` field
+            case 'colorPaletteRgb':
+                return $source->colorPaletteRgb();
+                break;
+
             // Default to just returning the field value
             default:
                 return $source[$fieldName];
