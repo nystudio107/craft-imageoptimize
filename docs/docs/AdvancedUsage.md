@@ -19,6 +19,17 @@ Dominant Color Palette
 
 These colors are sorted by color dominance, and can be used to style other HTML elements with complimentary colors.
 
+If you need these colors in RGB format for things like CSS gradients, you can do that with `.colorPaletteRgb`:
+
+```twig
+    {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
+    {% for color in optimizedImages.colorPaletteRgb %}
+        <div style="background-color: rgb({{ color.r }}, {{ color.g }}, {{ color.b }}, )">
+        </div>
+    {% endfor %}
+
+```
+
 ## Lightness
 
 ImageOptimize will also calculate the overall lightness of an image for you. It does this by doing a weighted average of the dominant color palette. You can access this from your templates:
@@ -163,6 +174,7 @@ You can access all of the primary OptimizedImages field methods:
             placeholder,
             placeholderSvg,
             colorPalette,
+            colorPaletteRgb,
             placeholderWidth,
             placeholderHeight
           }

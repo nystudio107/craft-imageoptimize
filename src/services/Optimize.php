@@ -145,15 +145,20 @@ class Optimize extends Component
         if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
             $asset = $event->asset;
             $transform = $event->transform;
+            // If the transform is empty in some regard, normalize it to null
+            if (empty($transform)) {
+                $transform = null;
+            }
             // If there's no transform requested, and we can't manipulate the image anyway, just return the URL
             if ($transform === null
-                || !ImageHelper::canManipulateAsImage(pathinfo($asset->filename, PATHINFO_EXTENSION))) {
+                && !ImageHelper::canManipulateAsImage(pathinfo($asset->filename, PATHINFO_EXTENSION))) {
                 $volume = $asset->getVolume();
 
                 return AssetsHelper::generateUrl($volume, $asset);
             }
-            // If we're passed in null, make a dummy AssetTransform model
-            if (empty($transform)) {
+            // If we're passed in null, make a dummy AssetTransform model for Thumbor
+            // For backwards compatibility
+            if ($transform === null && ImageOptimize::$plugin->transformMethod instanceof ThumborImageTransform) {
                 $transform = new AssetTransform([
                     'height'    => $asset->height,
                     'width'     => $asset->width,

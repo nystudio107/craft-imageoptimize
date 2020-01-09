@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.6.7 - 2020.01.08
+### Added
+* Added the ability to retrieve the dominant color palette as RGB values, making things like gradients easier to do
+* ImageOptimize will now send back an Imgix or other transform method URL for `asset.getUrl()` with no transform applied
+
 ## 1.6.6 - 2019.11.19
 ### Added
 * Added a Preferences item to control whether allow limiting the creation of Optimized Image Variants for images by sub-folders

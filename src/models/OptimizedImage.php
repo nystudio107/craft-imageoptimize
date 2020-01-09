@@ -12,6 +12,7 @@ namespace nystudio107\imageoptimize\models;
 
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\helpers\UrlHelper;
+use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 
 use craft\helpers\Template;
 use craft\base\Model;
@@ -351,6 +352,22 @@ class OptimizedImage extends Model
     public function getMaxSrcsetWidth(): int
     {
         return $this->maxSrcsetWidth();
+    }
+
+    /**
+     * Return the colors as an array of RGB colors
+     */
+    public function colorPaletteRgb(): array
+    {
+        $colors = [];
+
+        foreach ($this->colorPalette as $color) {
+            if (!empty($color)) {
+                $colors[] = ColorHelper::HTMLToRGB($color);
+            }
+        }
+
+        return $colors;
     }
 
     /**
