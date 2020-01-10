@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.8 - 2020.01.10
+### Fixed
+* Fixed an issue where an SVG sent in to image transform handler without specifying another format to convert to
+
 ## 1.6.7 - 2020.01.08
 ### Added
 * Added the ability to retrieve the dominant color palette as RGB values, making things like gradients easier to do
