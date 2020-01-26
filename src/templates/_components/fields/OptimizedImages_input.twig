@@ -132,7 +132,8 @@
                                             </div>
                                         </a>
                                     </div>
-                                    {% set thisFormat = thisUrl |split('.') |last %}
+                                    {% set thisFormat = thisUrl | split('.') | last %}
+                                    {% set thisFormat = thisFormat | split('?') | first %}
                                     {% if imageSource == value.optimizedWebPImageUrls %}
                                         {% set thisFormat = ".webp" %}
                                     {% endif %}
