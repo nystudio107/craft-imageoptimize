@@ -174,6 +174,11 @@ class Optimize extends Component
                 $assetTransforms = Craft::$app->getAssetTransforms();
                 $transform = $assetTransforms->getTransformByHandle($transform);
             }
+            // If the final format is an SVG, don't attempt to transform it
+            $finalFormat = empty($transform['format']) ? $asset->getExtension() : $transform['format'];
+            if ($finalFormat === 'svg') {
+                return null;
+            }
             // Generate an image transform url
             $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
                 $asset,
