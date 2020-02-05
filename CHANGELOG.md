@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.9 - 2020.02.05
+### Changed
+* Properly documented how the data in the `imageTransformTypeSettings` config is stored
+
 ## 1.6.8 - 2020.01.27
 ### Fixed
 * Fixed an issue where an SVG sent in to image transform handler without specifying another format to convert to
