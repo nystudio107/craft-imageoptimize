@@ -32,6 +32,17 @@ return [
 
     /**
      * @var array Settings for the image transform components
+     *
+     * The data is stored in the following format, with the key being the class
+     * of the image transform method:
+     *
+     * 'imageTransformTypeSettings' => [
+     *    ImgixImageTransform::class => [
+     *        'domain' => 'XXXXX',
+     *        'apiKey' => 'XXXXX',
+     *        'securityToken' => 'XXXXX',
+     *    ]
+     * ],
      */
     'imageTransformTypeSettings' => [],
 
