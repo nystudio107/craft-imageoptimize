@@ -215,6 +215,10 @@ class Optimize extends Component
                 if ($finalFormat === 'svg') {
                     return null;
                 }
+                // If the extension is uppercase, set transform format to lowercase
+				if ( ctype_upper($finalFormat) ) {
+					$transform['format'] = strtolower($finalFormat);
+				}
                 // Generate an image transform url
                 if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
                     $transformMethod->generateTransformsBeforePageLoad = $event->generate;
