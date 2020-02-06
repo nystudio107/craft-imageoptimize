@@ -210,6 +210,11 @@ class Optimize extends Component
                 ]);
                 /** @var ImageTransform $transformMethod */
                 $transformMethod = ImageOptimize::$plugin->transformMethod;
+                // If the final format is an SVG, don't attempt to transform it
+                $finalFormat = empty($transform['format']) ? $asset->getExtension() : $transform['format'];
+                if ($finalFormat === 'svg') {
+                    return null;
+                }
                 // Generate an image transform url
                 if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
                     $transformMethod->generateTransformsBeforePageLoad = $event->generate;
