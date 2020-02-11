@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.10 - 2020.02.11
+### Changed
+* 
+
 ## 1.6.9 - 2020.02.06
 ### Changed
 * Properly documented how the data in the `imageTransformTypeSettings` config is stored
