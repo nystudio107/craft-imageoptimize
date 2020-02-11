@@ -2,7 +2,7 @@
 
 ## 1.6.10 - 2020.02.11
 ### Changed
-* 
+* Normalize the file format to lowercase before transforming
 
 ## 1.6.9 - 2020.02.06
 ### Changed
