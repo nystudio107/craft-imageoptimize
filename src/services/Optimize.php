@@ -206,6 +206,7 @@ class Optimize extends Component
             if (ImageHelper::canManipulateAsImage($asset->getExtension())) {
                 $transform = new AssetTransform([
                     'width' => $event->width,
+		    'height' => $event->height,
                     'interlace' => 'line',
                 ]);
                 /** @var ImageTransform $transformMethod */
@@ -216,9 +217,9 @@ class Optimize extends Component
                     return null;
                 }
                 // If the extension is uppercase, set transform format to lowercase
-				if ( ctype_upper($finalFormat) ) {
-					$transform['format'] = strtolower($finalFormat);
-				}
+		if ( ctype_upper($finalFormat) ) {
+			$transform['format'] = strtolower($finalFormat);
+		}
                 // Generate an image transform url
                 if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
                     $transformMethod->generateTransformsBeforePageLoad = $event->generate;
