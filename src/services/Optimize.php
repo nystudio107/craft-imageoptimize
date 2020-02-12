@@ -179,7 +179,9 @@ class Optimize extends Component
                 return null;
             }
             // Normalize the extension to lowercase, for some transform methods that require this
-            $transform['format'] = strtolower($finalFormat);
+            if (!empty($transform) && !empty($finalFormat)) {
+                $transform['format'] = strtolower($finalFormat);
+            }
             // Generate an image transform url
             $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
                 $asset,
@@ -218,7 +220,9 @@ class Optimize extends Component
                     return null;
                 }
                 // Normalize the extension to lowercase, for some transform methods that require this
-                $transform['format'] = strtolower($finalFormat);
+                if ($transform !== null && !empty($finalFormat)) {
+                    $transform['format'] = strtolower($finalFormat);
+                }
                 // Generate an image transform url
                 if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
                     $transformMethod->generateTransformsBeforePageLoad = $event->generate;
