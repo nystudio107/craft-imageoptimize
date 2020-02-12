@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.11 - 2020.02.12
+### Changed
+* Sanity check the inputs before normalizaing the file format
+
 ## 1.6.10 - 2020.02.11
 ### Changed
 * Normalize the file format to lowercase before transforming
