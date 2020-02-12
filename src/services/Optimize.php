@@ -160,7 +160,6 @@ class Optimize extends Component
             // For backwards compatibility
             if ($transform === null && ImageOptimize::$plugin->transformMethod instanceof ThumborImageTransform) {
                 $transform = new AssetTransform([
-                    'height'    => $asset->height,
                     'width'     => $asset->width,
                     'interlace' => 'line',
                 ]);
