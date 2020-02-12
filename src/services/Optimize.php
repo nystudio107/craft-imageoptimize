@@ -160,7 +160,6 @@ class Optimize extends Component
             // For backwards compatibility
             if ($transform === null && ImageOptimize::$plugin->transformMethod instanceof ThumborImageTransform) {
                 $transform = new AssetTransform([
-                    'height'    => $asset->height,
                     'width'     => $asset->width,
                     'interlace' => 'line',
                 ]);
@@ -179,6 +178,8 @@ class Optimize extends Component
             if ($finalFormat === 'svg') {
                 return null;
             }
+            // Normalize the extension to lowercase, for some transform methods that require this
+            $transform['format'] = strtolower($finalFormat);
             // Generate an image transform url
             $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
                 $asset,
@@ -206,6 +207,7 @@ class Optimize extends Component
             if (ImageHelper::canManipulateAsImage($asset->getExtension())) {
                 $transform = new AssetTransform([
                     'width' => $event->width,
+		    'height' => $event->height,
                     'interlace' => 'line',
                 ]);
                 /** @var ImageTransform $transformMethod */
@@ -215,6 +217,8 @@ class Optimize extends Component
                 if ($finalFormat === 'svg') {
                     return null;
                 }
+                // Normalize the extension to lowercase, for some transform methods that require this
+                $transform['format'] = strtolower($finalFormat);
                 // Generate an image transform url
                 if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
                     $transformMethod->generateTransformsBeforePageLoad = $event->generate;

@@ -2,7 +2,7 @@ module.exports = {
     title: 'Image Optimize Documentation',
     description: 'Documentation for the Image Optimize plugin',
     base: '/docs/image-optimize/',
-    dest: '~/webdev/sites/nystudio107/web/docs/image-optimize',
+    dest: '../../../sites/nystudio107/web/docs/image-optimize',
     themeConfig: {
         displayAllHeaders: true,
         sidebar: [
