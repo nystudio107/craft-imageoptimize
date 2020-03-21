@@ -62,4 +62,24 @@ class OptimizeController extends Controller
         App::maxPowerCaptain();
         Craft::$app->getQueue()->run();
     }
+
+    /**
+     * Create a single OptimizedImage for the passed in Asset ID
+     *
+     * @param int|null $id
+     */
+    public function actionCreateAsset($id = null)
+    {
+        echo 'Creating optimized image variants'.PHP_EOL;
+
+        if ($id === null) {
+            echo 'No Asset ID specified'.PHP_EOL;
+        } else {
+            // Re-save a single Asset ID
+            ImageOptimize::$plugin->optimizedImages->resaveAsset($id);
+        }
+        // This might take a while
+        App::maxPowerCaptain();
+        Craft::$app->getQueue()->run();
+    }
 }

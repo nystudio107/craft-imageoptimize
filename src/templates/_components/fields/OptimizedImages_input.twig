@@ -134,6 +134,9 @@
                                     </div>
                                     {% set thisFormat = thisUrl | split('.') | last %}
                                     {% set thisFormat = thisFormat | split('?') | first %}
+                                    {% if thisFormat | length > 4 %}
+                                        {% set thisFormat = variant.format %}
+                                    {% endif %}
                                     {% if imageSource == value.optimizedWebPImageUrls %}
                                         {% set thisFormat = ".webp" %}
                                     {% endif %}
