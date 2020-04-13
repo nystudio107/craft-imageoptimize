@@ -72,6 +72,12 @@ If you want to generate only responsive image variants for a specific Asset Volu
 ./craft image-optimize/optimize/create blogImages
 ```
 
+If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `createAsset`:
+
+```
+./craft image-optimize/optimize/createAsset 101
+```
+
 Craft CMS also comes with several [built-in Console Commands](https://nystudio107.com/blog/exploring-the-craft-cms-3-console-command-line-interface-cli) that are useful for Image Transforms:
 
 ```
