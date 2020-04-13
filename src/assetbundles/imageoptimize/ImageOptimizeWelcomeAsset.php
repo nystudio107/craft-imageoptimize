@@ -8,7 +8,7 @@
  * @copyright Copyright (c) 2017 nystudio107
  */
 
-namespace nystudio107\imageoptimize\assetbundles\ImageOptimize;
+namespace nystudio107\imageoptimize\assetbundles\imageoptimize;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
