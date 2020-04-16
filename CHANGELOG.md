@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.13 - 2020.04.16
+### Fixed
+* Fixed Asset Bundle namespace case
+
 ## 1.6.12 - 2020.03.21
 ### Added
 * Added the `createAsset` console command for regenerating the responsive image variants for a single Asset ID
