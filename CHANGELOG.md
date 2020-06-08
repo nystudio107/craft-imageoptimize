@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.14 - 2020.06.08
+### Fixed
+* Ensure image quality is set to `null` as “Auto” setting of image quality
+
 ## 1.6.13 - 2020.04.16
 ### Fixed
 * Fixed Asset Bundle namespace case
