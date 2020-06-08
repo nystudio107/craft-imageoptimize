@@ -427,8 +427,11 @@ class OptimizedImages extends Component
         $transform->width = $width;
         $transform->height = (int)($width / $aspectRatio);
         // Image quality
-        $quality = $variant['quality'] ?? null;
-        if ($settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
+        $quality = (int)($variant['quality'] ?? null);
+        if (empty($quality)) {
+            $quality = null;
+        }
+        if ($quality !== null && $settings->lowerQualityRetinaImageVariants && $retinaSize != '1') {
             $quality = (int)($quality * (1.5 / (int)$retinaSize));
         }
         $transform->quality = $quality;
