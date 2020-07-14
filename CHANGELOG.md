@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.15 - 2020.07.14
+### Added
+* Added support for Redis queue jobs
+
 ## 1.6.14 - 2020.06.08
 ### Fixed
 * Ensure image quality is set to `null` as “Auto” setting of image quality
