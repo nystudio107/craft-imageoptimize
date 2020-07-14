@@ -15,10 +15,10 @@ use nystudio107\imageoptimize\ImageOptimize;
 use Craft;
 use craft\base\Volume;
 use craft\helpers\App;
-use craft\helpers\FileHelper;
-use craft\utilities\ClearCaches;
+use craft\queue\QueueInterface;
 
 use yii\console\Controller;
+use yii\queue\redis\Queue as RedisQueue;
 
 /**
  * Optimize Command
@@ -58,9 +58,7 @@ class OptimizeController extends Controller
                 echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
             }
         }
-        // This might take a while
-        App::maxPowerCaptain();
-        Craft::$app->getQueue()->run();
+        $this->runCraftQueue();
     }
 
     /**
@@ -78,8 +76,21 @@ class OptimizeController extends Controller
             // Re-save a single Asset ID
             ImageOptimize::$plugin->optimizedImages->resaveAsset($id);
         }
+        $this->runCraftQueue();
+    }
+
+    /**
+     *
+     */
+    private function runCraftQueue()
+    {
         // This might take a while
         App::maxPowerCaptain();
-        Craft::$app->getQueue()->run();
+        $queue = Craft::$app->getQueue();
+        if ($queue instanceof QueueInterface) {
+            $queue->run();
+        } elseif ($queue instanceof RedisQueue) {
+            $queue->run(false);
+        }
     }
 }
