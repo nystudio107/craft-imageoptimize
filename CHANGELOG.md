@@ -1,8 +1,11 @@
 # ImageOptimize Changelog
 
-## 1.6.15 - 2020.07.14
+## 1.6.15 - 2020.08.14
 ### Added
 * Added support for Redis queue jobs
+
+### Fixed
+* Fixed an issue with `.webp` URLs not working for URLs with ports in them
 
 ## 1.6.14 - 2020.06.08
 ### Fixed
