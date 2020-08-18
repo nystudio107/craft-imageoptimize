@@ -150,7 +150,9 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
         $path_parts = pathinfo($path['path']);
         $new_path = ($path_parts['filename'] ?? '') . '.' . ($path_parts['extension'] ?? '') . $extension;
         if (!empty($path_parts['dirname']) && $path_parts['dirname'] !== '.') {
-            $new_path = $path_parts['dirname'] . DIRECTORY_SEPARATOR . $new_path;
+            $dirname = $path_parts['dirname'];
+            $dirname = $dirname === '/' ? '' : $dirname;
+            $new_path = $dirname . DIRECTORY_SEPARATOR . $new_path;
             $new_path = preg_replace('/([^:])(\/{2,})/', '$1/', $new_path);
         }
         $output = $path['prefix'] . $new_path . $path['suffix'];
@@ -175,6 +177,9 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
         if (filter_var($pathOrUrl, FILTER_VALIDATE_URL)) {
             $url_parts = parse_url($pathOrUrl);
             $result['prefix'] = $url_parts['scheme'] . '://' . $url_parts['host'];
+            if (!empty($url_parts['port'])) {
+                $result['prefix'] .= ':' . $url_parts['port'];
+            }
             $result['path'] = $url_parts['path'];
             $result['suffix'] = '';
             $result['suffix'] .= empty($url_parts['query']) ? '' : '?' . $url_parts['query'];
