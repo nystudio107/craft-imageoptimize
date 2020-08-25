@@ -170,6 +170,7 @@
                                                 <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
                                             {% endif %}
                                             {% set thisFormat = thisUrl |split('.') |last %}
+                                            {% set thisFormat = thisFormat |split('?') |first %}
                                             <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
                                             <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
                                             {% if thisUrl | length %}
