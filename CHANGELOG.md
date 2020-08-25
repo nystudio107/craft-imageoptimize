@@ -3,6 +3,10 @@
 ## 1.6.15 - 2020.08.25
 ### Added
 * Added support for Redis queue jobs
+* If an Optimized Images field isn't set to create variants for the sub-folder that an Asset is in, it'll display N/A
+
+### Changed
+* Cleaned up the field formatting for Craft CMS 3.5 CSS layout changes
 
 ### Fixed
 * Make missing webp variants display better
