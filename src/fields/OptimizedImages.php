@@ -361,21 +361,22 @@ class OptimizedImages extends Field
             $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
 
             $settings = ImageOptimize::$plugin->getSettings();
-
+            $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
             // Render the input template
             try {
                 return Craft::$app->getView()->renderTemplate(
                     'image-optimize/_components/fields/OptimizedImages_input',
                     [
-                        'name'        => $this->handle,
-                        'value'       => $value,
-                        'variants'    => $this->variants,
-                        'field'       => $this,
-                        'settings'    => $settings,
-                        'elementId'   => $element->id,
-                        'format'      => $element->getExtension(),
-                        'id'          => $id,
-                        'nameSpaceId' => $nameSpaceId,
+                        'name'           => $this->handle,
+                        'value'          => $value,
+                        'variants'       => $this->variants,
+                        'field'          => $this,
+                        'settings'       => $settings,
+                        'elementId'      => $element->id,
+                        'format'         => $element->getExtension(),
+                        'id'             => $id,
+                        'nameSpaceId'    => $nameSpaceId,
+                        'createVariants' => $createVariants,
                     ]
                 );
             } catch (\Twig\Error\LoaderError $e) {
