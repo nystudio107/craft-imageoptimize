@@ -6,6 +6,7 @@
 
 ### Fixed
 * Make missing webp variants display better
+* Fixed an issue where images that were in sub-folders of sub-folders didn't have image variants created for them, if only specific volume sub-folders were chosen for optimization
 
 ### Fixed
 * Fixed an issue with `.webp` URLs not working for URLs with ports in them
