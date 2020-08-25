@@ -9,11 +9,9 @@
 * Cleaned up the field formatting for Craft CMS 3.5 CSS layout changes
 
 ### Fixed
+* Fixed an issue with `.webp` URLs not working for URLs with ports in them
 * Make missing webp variants display better
 * Fixed an issue where images that were in sub-folders of sub-folders didn't have image variants created for them, if only specific volume sub-folders were chosen for optimization
-
-### Fixed
-* Fixed an issue with `.webp` URLs not working for URLs with ports in them
 
 ## 1.6.14 - 2020.06.08
 ### Fixed
