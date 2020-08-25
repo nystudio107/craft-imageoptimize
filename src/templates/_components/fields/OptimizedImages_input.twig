@@ -23,7 +23,7 @@
         <div class="field">
             <div class="heading">
                 <label>{{ 'Optimized Image Variants:' |t('image-optimize') }} </label>
-                <div style="padding: 2px 0px; position: relative;">
+                <div style="padding: 2px 0px; position: relative; width: 100%;">
                     <div style="padding: 10px 0px; display: inline-block;">
                     <span style="fill: #AAA; color: #AAA;">
                         {% if value.focalPoint |length %}
@@ -169,10 +169,11 @@
                                             {% if thisUrl | length %}
                                                 <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
                                             {% endif %}
-                                            {% set thisFormat = thisUrl |split('.') |last %}
+                                                    {% set thisFormat = thisUrl |split('.') |last %}
+                                                    {% set thisFormat = thisFormat |split('?') |first %}
                                             <span class="warning" title="{{ thisFormat ~ (errorMessage |t('image-optimize')) }}" data-icon="alert"></span>
                                             <span style="text-transform: uppercase;">{{ thisFormat }}</span> {{ errorMessage |t('image-optimize') }}
-                                            {% if thisUrl | length %}
+                                                    {% if thisUrl | length %}
                                                 </a>
                                             {% endif %}
                                        </span>
@@ -188,16 +189,20 @@
 {% else %}
     <div class="field">
         <div class="heading">
-            <label>Optimized Image Variants:</label>
-            <p>
-                {% if settings.allowUpScaledImageVariants %}
-                    {% set errorMessage = "This is not an image that can be manipulated" %}
-                {% else %}
-                    {% set errorMessage = "This is not an image that can be manipulated or the images would all be up-scaled" %}
-                {% endif %}
-                <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
-                <span>{{ errorMessage |t('image-optimize') }}</span>
-            </p>
+            {% if createVariants %}
+                <label>Optimized Image Variants:</label>
+                <p>
+                    {% if settings.allowUpScaledImageVariants %}
+                        {% set errorMessage = "This is not an image that can be manipulated" %}
+                    {% else %}
+                        {% set errorMessage = "This is not an image that can be manipulated or the images would all be up-scaled" %}
+                    {% endif %}
+                    <span class="warning" title="{{ 'Focal Point not set'|t('image-optimize') }}" data-icon="alert"></span>
+                    <span>{{ errorMessage |t('image-optimize') }}</span>
+                </p>
+            {% else %}
+                <p>N/A</p>
+            {% endif %}
         </div>
     </div>
 {% endif %}
@@ -206,14 +211,14 @@
         <div class="field">
             <div class="heading">
                 <label>{{ 'Lightness:' |t('image-optimize') }} </label>
-                <div class="io-field-section-container">
+                <div class="io-field-section-container" style="width: 100%;">
                     <p style="fill: #AAA; color: #AAA;">
-                    {% if value.lightness |length %}
-                        {{ value.lightness }}%
-                    {% else %}
-                        --
-                    {% endif %}
-                </p>
+                        {% if value.lightness |length %}
+                            {{ value.lightness }}%
+                        {% else %}
+                            --
+                        {% endif %}
+                    </p>
                 </div>
             </div>
         </div>
@@ -221,16 +226,16 @@
             <div class="heading">
                 <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
                 {% if value.colorPalette |length %}
-                    <div class="">
-                    {%- for dominantColor in value.colorPalette -%}
-                        <div style="display: inline-block; width: 20%;">
-                            <div style="height: 30px; background-color: {{ dominantColor }}">
+                    <div style="width: 100%;">
+                        {%- for dominantColor in value.colorPalette -%}
+                            <div style="display: inline-block; width: 20%;">
+                                <div style="height: 30px; background-color: {{ dominantColor }}">
+                                </div>
+                                <p style="text-align: center; color: #AAA; margin-top: 5px; text-transform: uppercase;">
+                                    {{ dominantColor }}
+                                </p>
                             </div>
-                            <p style="text-align: center; color: #AAA; margin-top: 5px; text-transform: uppercase;">
-                                {{ dominantColor }}
-                            </p>
-                        </div>
-                    {%- endfor -%}
+                        {%- endfor -%}
                     </div>
                 {% else %}
                     <p style="fill: #AAA; color: #AAA;">
@@ -248,64 +253,66 @@
         <div class="field">
             <div class="heading">
                 <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
-                <div class="io-field-section-container">
-                    <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-                    <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                        {{ 'Placeholder Box' |t('image-optimize') }}
-                        &middot;
-                        SVG
-                        &middot;
-                        {{ value.placeholderBoxSize() }}
-                    </p>
-                </div>
-                {% if value.placeholder |length %}
+                <div style="width: 100%;">
                     <div class="io-field-section-container">
-                        <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                        <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
                         <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                            {{ 'Placeholder Image' |t('image-optimize') }}
-                            &middot;
-                            JPG
-                            &middot;
-                            {{ value.placeholderImageSize() }}
-                        </p>
-                    </div>
-                {% endif %}
-                {% if value.placeholderSvg |length %}
-                    <div class="io-field-section-container">
-                        <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
-                        <p style="text-align: center; color: #AAA; margin-top: 5px;">
-                            {{ 'Placeholder Silhouette' |t('image-optimize') }}
+                            {{ 'Placeholder Box' |t('image-optimize') }}
                             &middot;
                             SVG
                             &middot;
-                            {{ value.placeholderSilhouetteSize() }}
+                            {{ value.placeholderBoxSize() }}
                         </p>
                     </div>
-                {% endif %}
+                    {% if value.placeholder |length %}
+                        <div class="io-field-section-container">
+                            <img class="io-soft-shadow-img" src="{{ value.placeholderImage() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                            <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                                {{ 'Placeholder Image' |t('image-optimize') }}
+                                &middot;
+                                JPG
+                                &middot;
+                                {{ value.placeholderImageSize() }}
+                            </p>
+                        </div>
+                    {% endif %}
+                    {% if value.placeholderSvg |length %}
+                        <div class="io-field-section-container">
+                            <img class="io-soft-shadow-img" src="{{ value.placeholderSilhouette() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
+                            <p style="text-align: center; color: #AAA; margin-top: 5px;">
+                                {{ 'Placeholder Silhouette' |t('image-optimize') }}
+                                &middot;
+                                SVG
+                                &middot;
+                                {{ value.placeholderSilhouetteSize() }}
+                            </p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-    </div>
+        </div>
     {% endif %}
 {% endif %}
 {% if craft.imageOptimize.serverSupportsWebP() %}
     {% js %}
-            function canUseWebP() {
-                var elem = document.createElement('canvas');
+        function canUseWebP() {
+        var elem = document.createElement('canvas');
 
-                if (!!(elem.getContext && elem.getContext('2d'))) {
-                    // was able or not to get WebP representation
-                    return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
-                }
-                else {
-                    // very old browser like IE 8, canvas not supported
-                    return false;
-                }
-            }
+        if (!!(elem.getContext && elem.getContext('2d'))) {
+        // was able or not to get WebP representation
+        return elem.toDataURL('image/webp').indexOf('data:image/webp') == 0;
+        }
+        else {
+        // very old browser like IE 8, canvas not supported
+        return false;
+        }
+        }
 
-            if (!canUseWebP()) {
-                $('.io-webp-image').each(function( index ) {
-                    newSrc =  $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
-                    $(this).attr('src', newSrc);
-                });
-            }
+        if (!canUseWebP()) {
+        $('.io-webp-image').each(function( index ) {
+        newSrc =  $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
+        $(this).attr('src', newSrc);
+        });
+        }
     {% endjs %}
 {% endif %}

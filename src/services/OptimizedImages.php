@@ -145,8 +145,52 @@ class OptimizedImages extends Component
         Craft::endProfile('populateOptimizedImageModel', __METHOD__);
     }
 
-    // Protected Methods
-    // =========================================================================
+    /**
+     * Should variants be created for the given OptimizedImages field and the Asset?
+     *
+     * @param $field
+     * @param $asset
+     * @return bool
+     */
+    public function shouldCreateVariants($field, $asset): bool
+    {
+        $createVariants = true;
+        Craft::info(print_r($field->fieldVolumeSettings, true), __METHOD__);
+        // See if we're ignoring files in this dir
+        if (!empty($field->fieldVolumeSettings)) {
+            foreach ($field->fieldVolumeSettings as $volumeHandle => $subfolders) {
+                if ($asset->getVolume()->handle === $volumeHandle) {
+                    if (is_string($subfolders) && $subfolders === '*') {
+                        $createVariants = true;
+                        Craft::info("Matched '*' wildcard ", __METHOD__);
+                    } else {
+                        $createVariants = false;
+                        if (is_array($subfolders)) {
+                            foreach ($subfolders as $subfolder) {
+                                $folder = $asset->getFolder();
+                                while ($folder !== null && !$createVariants) {
+                                    if ($folder->uid === $subfolder) {
+                                        Craft::info('Matched subfolder uid: ' . print_r($subfolder, true), __METHOD__);
+                                        $createVariants = true;
+                                    } else {
+                                        $folder = $folder->getParent();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // See if we should ignore this type of file
+        $sourceType = $asset->getMimeType();
+        if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
+            if (\in_array($sourceType, array_values($field->ignoreFilesOfType), false)) {
+                $createVariants = false;
+            }
+        }
+        return $createVariants;
+    }
 
     /**
      * @param Field            $field
@@ -159,36 +203,7 @@ class OptimizedImages extends Component
     {
         /** @var Asset $asset */
         if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
-            $createVariants = true;
-            Craft::info(print_r($field->fieldVolumeSettings, true), __METHOD__);
-            // See if we're ignoring files in this dir
-            if (!empty($field->fieldVolumeSettings)) {
-                foreach ($field->fieldVolumeSettings as $volumeHandle => $subfolders) {
-                    if ($asset->getVolume()->handle === $volumeHandle) {
-                        if (is_string($subfolders) && $subfolders === '*') {
-                            $createVariants = true;
-                            Craft::info("Matched '*' wildcard ", __METHOD__);
-                        } else {
-                            $createVariants = false;
-                            if (is_array($subfolders)) {
-                                foreach ($subfolders as $subfolder) {
-                                    if ($asset->getFolder()->uid === $subfolder) {
-                                        Craft::info('Matched subfolder uid: '.print_r($subfolder, true), __METHOD__);
-                                        $createVariants = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            // See if we should ignore this type of file
-            $sourceType = $asset->getMimeType();
-            if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
-                if (\in_array($sourceType, array_values($field->ignoreFilesOfType), false)) {
-                    $createVariants = false;
-                }
-            }
+            $createVariants = $this->shouldCreateVariants($field, $asset);
             // Create a new OptimizedImage model and populate it
             $model = new OptimizedImage();
             // Empty our the optimized image URLs
@@ -354,6 +369,9 @@ class OptimizedImages extends Component
 
         return $uri;
     }
+
+    // Protected Methods
+    // =========================================================================
 
     /**
      * @param Asset          $element
