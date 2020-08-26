@@ -20,8 +20,8 @@
 
 {% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
     {% if field.displayOptimizedImageVariants %}
-        <div class="field" style="display: block;">
-            <div class="heading">
+        <div class="field">
+            <div class="heading" style="display: block;">
                 <label>{{ 'Optimized Image Variants:' |t('image-optimize') }} </label>
                 <div style="padding: 2px 0px; position: relative;">
                     <div style="padding: 10px 0px; display: inline-block;">
@@ -187,8 +187,8 @@
         </div>
     {% endif %}
 {% else %}
-    <div class="field" style="display: block;">
-        <div class="heading">
+    <div class="field">
+        <div class="heading" style="display: block;">
             {% if createVariants %}
                 <label>Optimized Image Variants:</label>
                 <p>
@@ -208,8 +208,8 @@
 {% endif %}
 {% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
     {% if field.displayDominantColorPalette %}
-        <div class="field" style="display: block;">
-            <div class="heading">
+        <div class="field">
+            <div class="heading" style="display: block;">
                 <label>{{ 'Lightness:' |t('image-optimize') }} </label>
                 <div class="io-field-section-container">
                     <p style="fill: #AAA; color: #AAA;">
@@ -222,8 +222,8 @@
                 </div>
             </div>
         </div>
-        <div class="field" style="display: block;">
-            <div class="heading">
+        <div class="field">
+            <div class="heading" style="display: block;">
                 <label>{{ 'Dominant Color Palette:' |t('image-optimize') }} </label>
                 {% if value.colorPalette |length %}
                     <div class="io-field-section-container">
@@ -250,8 +250,8 @@
     {% set thisWidth = 400 %}
     {% set thisHeight = (thisWidth / value.placeholderWidth) * value.placeholderHeight %}
     {% if field.displayLazyLoadPlaceholderImages %}
-        <div class="field" style="display: block;">
-            <div class="heading">
+        <div class="field">
+            <div class="heading" style="display: block;">
                 <label>{{ 'LazyLoad Placeholder Images:' |t('image-optimize') }} </label>
                 <div class="io-field-section-container">
                     <img class="io-soft-shadow-img" src="{{ value.placeholderBox() }}" width="{{ thisWidth }}" height="{{ thisHeight }}" />
