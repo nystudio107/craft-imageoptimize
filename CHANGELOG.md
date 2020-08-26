@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.16 - 2020.08.26
+### Changed
+* Cleaned up the field styling to make it look correct on Craft CMS > 3.5.0
+
 ## 1.6.15 - 2020.08.25
 ### Added
 * Added support for Redis queue jobs
