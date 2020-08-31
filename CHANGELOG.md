@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.6.16 - 2020.08.31
+### Changed
+* Cleaned up the field styling to make it look correct on Craft CMS > 3.5.0
+* Default to `false` if `$variant['useAspectRatio']` is somehow null
+
 ## 1.6.15 - 2020.08.25
 ### Added
 * Added support for Redis queue jobs
