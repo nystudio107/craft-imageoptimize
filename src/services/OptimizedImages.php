@@ -435,13 +435,13 @@ class OptimizedImages extends Component
                 Craft::error($e->getMessage(), __METHOD__);
             }
         }
-        $useAspectRatio = $variant['useAspectRatio'] ?? true;
+        $useAspectRatio = $variant['useAspectRatio'] ?? false;
         if ($useAspectRatio) {
-            $aspectRatio = $variant['aspectRatioX'] / $variant['aspectRatioY'];
+            $aspectRatio = (int)$variant['aspectRatioX'] / (int)$variant['aspectRatioY'];
         } else {
-            $aspectRatio = $asset->width / $asset->height;
+            $aspectRatio = (int)$asset->width / (int)$asset->height;
         }
-        $width = $variant['width'] * $retinaSize;
+        $width = (int)$variant['width'] * (int)$retinaSize;
         $transform->width = $width;
         $transform->height = (int)($width / $aspectRatio);
         // Image quality
