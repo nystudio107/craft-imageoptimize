@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.17 - 2020.09.08
+### Changed
+* Sped up image optimization on multi-site setups by not spawning a new optimizing images job if the element is merely propagating to other sites
+
 ## 1.6.16 - 2020.08.31
 ### Changed
 * Cleaned up the field styling to make it look correct on Craft CMS > 3.5.0
