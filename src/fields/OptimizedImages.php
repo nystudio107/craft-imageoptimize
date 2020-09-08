@@ -203,24 +203,27 @@ class OptimizedImages extends Field
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
         if ($asset !== null && $asset instanceof Asset && $asset->id !== null) {
-            // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_ESSENTIALS treat it as a new asset
-            $scenario = $asset->getScenario();
-            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || $asset->propagating) {
-                /**
-                 * If this is a newly uploaded/created Asset, we can save the variants
-                 * via a queue job to prevent it from blocking
-                 */
-                ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
-            } else {
-                /**
-                 * If it's not a newly uploaded/created Asset, they may have edited
-                 * the image with the ImageEditor, so we need to update the variants
-                 * immediately, so the AssetSelectorHud displays the new images
-                 */
-                try {
-                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
-                } catch (Exception $e) {
-                    Craft::error($e->getMessage(), __METHOD__);
+            // If this element is propagating, we don't need to redo the image saving for each site
+            if (!$asset->propagating) {
+                // If the scenario is Asset::SCENARIO_FILEOPS treat it as a new asset
+                $scenario = $asset->getScenario();
+                if ($isNew || $scenario === Asset::SCENARIO_FILEOPS ) {
+                    /**
+                     * If this is a newly uploaded/created Asset, we can save the variants
+                     * via a queue job to prevent it from blocking
+                     */
+                    ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
+                } else {
+                    /**
+                     * If it's not a newly uploaded/created Asset, they may have edited
+                     * the image with the ImageEditor, so we need to update the variants
+                     * immediately, so the AssetSelectorHud displays the new images
+                     */
+                    try {
+                        ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+                    } catch (Exception $e) {
+                        Craft::error($e->getMessage(), __METHOD__);
+                    }
                 }
             }
         }
