@@ -256,11 +256,12 @@ class OptimizedImages extends Component
      * Re-save all of the Asset elements in the Volume $volume that have an
      * OptimizedImages field in the FieldLayout
      *
-     * @param Volume $volume
+     * @param Volume $volume for this volume
+     * @param null $fieldId only for this specific id
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function resaveVolumeAssets(Volume $volume)
+    public function resaveVolumeAssets(Volume $volume, $fieldId = null)
     {
         $needToReSave = false;
         /** @var FieldLayout $fieldLayout */
@@ -294,6 +295,7 @@ class OptimizedImages extends Component
                     'status' => null,
                     'enabledForSite' => false,
                 ],
+                'fieldId' => $fieldId,
             ]));
             Craft::debug(
                 Craft::t(
