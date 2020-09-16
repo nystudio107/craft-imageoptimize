@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.18 - 2020.09.16
+### Changed
+* If an Optimized Images field is edited, only resave the transforms for that specific field
+
 ## 1.6.17 - 2020.09.08
 ### Changed
 * Sped up image optimization on multi-site setups by not spawning a new optimizing images job if the element is merely propagating to other sites
