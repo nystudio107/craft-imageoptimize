@@ -607,7 +607,7 @@ class ImageOptimize extends Plugin
                         }
                     }
                     if ($needToReSave) {
-                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume, $field->id);
+                        ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume, $thisField->id);
                     }
                 }
             }
