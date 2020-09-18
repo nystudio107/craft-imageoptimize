@@ -180,7 +180,8 @@ class Optimize extends Component
             }
             // Normalize the extension to lowercase, for some transform methods that require this
             if (!empty($transform) && !empty($finalFormat)) {
-                $transform['format'] = $transform['format'] === null ? null : strtolower($finalFormat);
+                $format = $transform['format'] ?? null;
+                $transform['format'] = $format === null ? null : strtolower($finalFormat);
             }
             // Generate an image transform url
             $url = ImageOptimize::$plugin->transformMethod->getTransformUrl(
