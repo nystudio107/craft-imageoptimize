@@ -39,6 +39,11 @@ class ResaveOptimizedImages extends BaseJob
      */
     public $criteria;
 
+    /**
+     * @var int|null The id of the field to resave images for, or null for all images
+     */
+    public $fieldId;
+
     // Public Methods
     // =========================================================================
 
@@ -77,22 +82,24 @@ class ResaveOptimizedImages extends BaseJob
                 /** @var  $field Field */
                 foreach ($fields as $field) {
                     if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
-                        if (Craft::$app instanceof ConsoleApplication) {
-                            echo $currentElement.'/'.$totalElements
-                                .' - processing asset: '.$element->title
-                                .' from field: '.$field->name.PHP_EOL;
-                        }
-                        try {
-                            ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
-                        } catch (Exception $e) {
-                            Craft::error($e->getMessage(), __METHOD__);
+                        if ($this->fieldId === null || $field->id == $this->fieldId) {
                             if (Craft::$app instanceof ConsoleApplication) {
-                                echo '[error]: '
-                                    .$e->getMessage()
-                                    .' while processing '
-                                    .$currentElement.'/'.$totalElements
-                                    .' - processing asset: '.$element->title
-                                    .' from field: '.$field->name.PHP_EOL;
+                                echo $currentElement . '/' . $totalElements
+                                    . ' - processing asset: ' . $element->title
+                                    . ' from field: ' . $field->name . PHP_EOL;
+                            }
+                            try {
+                                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
+                            } catch (Exception $e) {
+                                Craft::error($e->getMessage(), __METHOD__);
+                                if (Craft::$app instanceof ConsoleApplication) {
+                                    echo '[error]: '
+                                        . $e->getMessage()
+                                        . ' while processing '
+                                        . $currentElement . '/' . $totalElements
+                                        . ' - processing asset: ' . $element->title
+                                        . ' from field: ' . $field->name . PHP_EOL;
+                                }
                             }
                         }
                     }
