@@ -4,9 +4,12 @@
 ### Changed
 * If an Optimized Images field is edited, only resave the transforms for that specific field
 
-## 1.6.17 - 2020.09.08
+## 1.6.17 - 2020.09.18
 ### Changed
 * Sped up image optimization on multi-site setups by not spawning a new optimizing images job if the element is merely propagating to other sites
+
+### Fixed
+* Fixes issue when using `asset.getUrl({ })` with Imgix, where `format` would be coerced to the image's extension format, when it should have been left as `null`.
 
 ## 1.6.16 - 2020.08.31
 ### Changed
