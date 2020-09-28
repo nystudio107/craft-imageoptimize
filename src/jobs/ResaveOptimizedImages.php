@@ -44,6 +44,12 @@ class ResaveOptimizedImages extends BaseJob
      */
     public $fieldId;
 
+    /**
+     * @var bool Whether image variants should be forced to recreated, even if they already exist on disk
+     * @since 1.6.18
+     */
+    public $force = false;
+
     // Public Methods
     // =========================================================================
 

@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\services;
 
+use craft\errors\AssetTransformException;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\helpers\Image as ImageHelper;
@@ -73,8 +74,9 @@ class OptimizedImages extends Component
      * @param Asset          $asset
      * @param array          $variants
      * @param OptimizedImage $model
+     * @param boolean        $force
      */
-    public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model)
+    public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model, $force = false)
     {
         Craft::beginProfile('populateOptimizedImageModel', __METHOD__);
         $settings = ImageOptimize::$plugin->getSettings();
@@ -98,6 +100,17 @@ class OptimizedImages extends Component
                     && $asset->height > 0) {
                     // Create the transform based on the variant
                     list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, $retinaSize);
+                    // If they want to $force it, claim that the transform file doesn't exist
+                    if ($force) {
+                        $transforms = Craft::$app->getAssetTransforms();
+                        try {
+                            $index = $transforms->getTransformIndex($asset, $transform);
+                            $index->fileExists = false;
+                            $transforms->storeTransformIndexData($index);
+                        } catch (AssetTransformException $e) {
+                            $index = null;
+                        }
+                    }
                     // Only create the image variant if it is not upscaled, or they are okay with it being up-scaled
                     if (($asset->width >= $transform->width && $asset->height >= $transform->height)
                         || $settings->allowUpScaledImageVariants
@@ -195,11 +208,12 @@ class OptimizedImages extends Component
     /**
      * @param Field            $field
      * @param ElementInterface $asset
+     * @param boolean          $force
      *
      * @throws \yii\db\Exception
      * @throws InvalidConfigException
      */
-    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset)
+    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset, $force = false)
     {
         /** @var Asset $asset */
         if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
@@ -216,7 +230,8 @@ class OptimizedImages extends Component
                 $this->populateOptimizedImageModel(
                     $asset,
                     $field->variants,
-                    $model
+                    $model,
+                    $force
                 );
             }
             // Save our field data directly into the content table
@@ -239,15 +254,18 @@ class OptimizedImages extends Component
     /**
      * Re-save all of the assets in all of the volumes
      *
+     * @param int|null $fieldId only for this specific id
+     * @param boolean Should image variants be forced to be recreated?
+     *
      * @throws \yii\base\InvalidConfigException
      */
-    public function resaveAllVolumesAssets()
+    public function resaveAllVolumesAssets($fieldId = null, $force = false)
     {
         $volumes = Craft::$app->getVolumes()->getAllVolumes();
         foreach ($volumes as $volume) {
             if (is_subclass_of($volume, Volume::class)) {
                 /** @var Volume $volume */
-                $this->resaveVolumeAssets($volume);
+                $this->resaveVolumeAssets($volume, $fieldId, $force);
             }
         }
     }
@@ -257,11 +275,12 @@ class OptimizedImages extends Component
      * OptimizedImages field in the FieldLayout
      *
      * @param Volume $volume for this volume
-     * @param null $fieldId only for this specific id
+     * @param int|null $fieldId only for this specific id
+     * @param boolean Should image variants be forced to be recreated?
      *
      * @throws InvalidConfigException
      */
-    public function resaveVolumeAssets(Volume $volume, $fieldId = null)
+    public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = false)
     {
         $needToReSave = false;
         /** @var FieldLayout $fieldLayout */
@@ -296,6 +315,7 @@ class OptimizedImages extends Component
                     'enabledForSite' => false,
                 ],
                 'fieldId' => $fieldId,
+                'force' => $force,
             ]));
             Craft::debug(
                 Craft::t(
@@ -314,8 +334,9 @@ class OptimizedImages extends Component
      * Re-save an individual asset
      *
      * @param int $id
+     * @param boolean Should image variants be forced to be recreated?
      */
-    public function resaveAsset(int $id)
+    public function resaveAsset(int $id, $force = false)
     {
         $queue = Craft::$app->getQueue();
         $jobId = $queue->push(new ResaveOptimizedImages([
@@ -325,6 +346,7 @@ class OptimizedImages extends Component
                 'status' => null,
                 'enabledForSite' => false,
             ],
+            'force' => $force,
         ]));
         Craft::debug(
             Craft::t(
