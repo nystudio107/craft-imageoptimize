@@ -1,8 +1,10 @@
 # ImageOptimize Changelog
 
-## 1.6.18 - 2020.09.16
+## 1.6.18 - 2020.09.28
 ### Changed
 * If an Optimized Images field is edited, only resave the transforms for that specific field
+* Allow an optional `fieldHandle` to be passed in to console commands
+* Allow optional `--force` flag to be passed into console commands
 
 ## 1.6.17 - 2020.09.18
 ### Changed
