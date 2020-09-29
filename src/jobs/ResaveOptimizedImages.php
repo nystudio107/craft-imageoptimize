@@ -95,7 +95,7 @@ class ResaveOptimizedImages extends BaseJob
                                     . ' from field: ' . $field->name . PHP_EOL;
                             }
                             try {
-                                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
+                                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element, $this->force);
                             } catch (Exception $e) {
                                 Craft::error($e->getMessage(), __METHOD__);
                                 if (Craft::$app instanceof ConsoleApplication) {

@@ -10,7 +10,6 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use craft\errors\AssetTransformException;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\helpers\Image as ImageHelper;
@@ -22,6 +21,7 @@ use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\Volume;
+use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\SiteNotFoundException;
@@ -29,6 +29,7 @@ use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\models\AssetTransform;
 use craft\models\FieldLayout;
+
 use yii\base\InvalidConfigException;
 
 /**
@@ -99,16 +100,27 @@ class OptimizedImages extends Component
                     && Image::canManipulateAsImage($asset->getExtension())
                     && $asset->height > 0) {
                     // Create the transform based on the variant
+                    /** @var AssetTransform $transform */
                     list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, $retinaSize);
-                    // If they want to $force it, claim that the transform file doesn't exist
+                    // If they want to $force it, set `fileExists` = 0 in the transform index, then delete the transformed image
                     if ($force) {
                         $transforms = Craft::$app->getAssetTransforms();
                         try {
                             $index = $transforms->getTransformIndex($asset, $transform);
-                            $index->fileExists = false;
+                            $index->fileExists = 0;
                             $transforms->storeTransformIndexData($index);
-                        } catch (AssetTransformException $e) {
-                            $index = null;
+                            $volume = $asset->getVolume();
+                            $transformPath = $asset->folderPath . $transforms->getTransformSubpath($asset, $index);
+                            try {
+                                $volume->deleteFile($transformPath);
+                            } catch (\Throwable $exception) {
+                            }
+                        } catch (\Throwable $e) {
+                            $msg = 'Failed to update transform: '.$e->getMessage();
+                            Craft::error($msg, __METHOD__);
+                            if (Craft::$app instanceof ConsoleApplication) {
+                                echo $msg . PHP_EOL;
+                            }
                         }
                     }
                     // Only create the image variant if it is not upscaled, or they are okay with it being up-scaled
@@ -118,13 +130,18 @@ class OptimizedImages extends Component
                         $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
                     }
                 } else {
-                    Craft::error(
-                        'Could not create transform for: '.$asset->title
+                    $msg = 'Could not create transform for: '.$asset->title
                         .' - Final format: '.$finalFormat
                         .' - Element extension: '.$asset->getExtension()
-                        .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension()),
+                        .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension())
+                        ;
+                    Craft::error(
+                        $msg,
                         __METHOD__
                     );
+                    if (Craft::$app instanceof ConsoleApplication) {
+                        echo $msg . PHP_EOL;
+                    }
                 }
             }
         }

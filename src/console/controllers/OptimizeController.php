@@ -58,6 +58,9 @@ class OptimizeController extends Controller
     public function actionCreate($volumeHandle = null)
     {
         echo 'Creating optimized image variants'.PHP_EOL;
+        if ($this->force) {
+            echo 'Forcing optimized image variants creation via --force'.PHP_EOL;
+        }
 
         $fieldId = null;
         if ($this->field !== null) {
