@@ -29,6 +29,21 @@ use yii\queue\redis\Queue as RedisQueue;
  */
 class OptimizeController extends Controller
 {
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var bool Whether image variants should be forced to recreated, even if they already exist on disk
+     * @since 1.6.18
+     */
+    public $force = false;
+
+    /**
+     * @var string|null Only resave image variants associated with this field handle
+     * @since 1.6.18
+     */
+    public $field = null;
+
     // Public Methods
     // =========================================================================
 
@@ -43,17 +58,27 @@ class OptimizeController extends Controller
     public function actionCreate($volumeHandle = null)
     {
         echo 'Creating optimized image variants'.PHP_EOL;
+        if ($this->force) {
+            echo 'Forcing optimized image variants creation via --force'.PHP_EOL;
+        }
 
+        $fieldId = null;
+        if ($this->field !== null) {
+            $field = Craft::$app->getFields()->getFieldByHandle($this->field);
+            if ($field !== null) {
+                $fieldId = $field->id;
+            }
+        }
         if ($volumeHandle === null) {
             // Re-save all of the optimized image variants in all volumes
-            ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets();
+            ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets($fieldId, $this->force);
         } else {
             // Re-save all of the optimized image variants in a specific volume
             $volumes = Craft::$app->getVolumes();
             $volume = $volumes->getVolumeByHandle($volumeHandle);
             if ($volume) {
                 /** @var Volume $volume */
-                ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume);
+                ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume, $fieldId, $this->force);
             } else {
                 echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
             }
@@ -74,9 +99,21 @@ class OptimizeController extends Controller
             echo 'No Asset ID specified'.PHP_EOL;
         } else {
             // Re-save a single Asset ID
-            ImageOptimize::$plugin->optimizedImages->resaveAsset($id);
+            ImageOptimize::$plugin->optimizedImages->resaveAsset($id, $this->force);
         }
         $this->runCraftQueue();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function options($actionId): array
+    {
+        $options = parent::options($actionId);
+        $options[] = 'force';
+        $options[] = 'field';
+
+        return $options;
     }
 
     /**

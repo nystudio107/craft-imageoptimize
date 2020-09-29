@@ -44,6 +44,12 @@ class ResaveOptimizedImages extends BaseJob
      */
     public $fieldId;
 
+    /**
+     * @var bool Whether image variants should be forced to recreated, even if they already exist on disk
+     * @since 1.6.18
+     */
+    public $force = false;
+
     // Public Methods
     // =========================================================================
 
@@ -89,7 +95,7 @@ class ResaveOptimizedImages extends BaseJob
                                     . ' from field: ' . $field->name . PHP_EOL;
                             }
                             try {
-                                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element);
+                                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element, $this->force);
                             } catch (Exception $e) {
                                 Craft::error($e->getMessage(), __METHOD__);
                                 if (Craft::$app instanceof ConsoleApplication) {

@@ -60,43 +60,63 @@ There are also warnings indicating that the original image is too small, and is 
 
 Because web-based PHP often has timeouts such as `max_execution_time` that can be exceeded by very large image variant creation, ImageOptimize comes with a command line utility to let you create the responsive image variants via console command.
 
+### Console Commands
+
 From the root directory of your Craft CMS 3 project, you can use the following commands:
 
 ```
-./craft image-optimize/optimize/create
+php craft image-optimize/optimize/create
 ```
 
-If you want to generate only responsive image variants for a specific Asset Volume, you can do that by specifying the `handle` via the console command:
+If you want to generate only responsive image variants for a specific Asset Volume, you can do that by specifying the Volume's `handle` via the console command:
 
 ```
-./craft image-optimize/optimize/create blogImages
+php craft image-optimize/optimize/create myVolumeHandle
+```
+
+If you want to generate only responsive image variants for a specific Optimized Images Field, you can do that by specifying the Field's `handle` via the `--field` option:
+
+```
+php craft image-optimize/optimize/create --field=myFieldHandle
+```
+
+You can combine the two, and narrow things down to a specific volume and a specific field:
+
+```
+php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle
 ```
 
 If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `createAsset`:
 
 ```
-./craft image-optimize/optimize/createAsset 101
+php craft image-optimize/optimize/createAsset 101
 ```
 
-Craft CMS also comes with several [built-in Console Commands](https://nystudio107.com/blog/exploring-the-craft-cms-3-console-command-line-interface-cli) that are useful for Image Transforms:
+### Forcing Image Variant Creation
+
+The way Craft CMS asset transforms work, if a transformed image already exists, it won't bother trying to recreate it.
+
+This can sometimes be problematic when you add additional variants (such as `.webp`) after the fact, and need to generate them.
+
+You can use the `--force` option with any of the above commands to force the recreation of the optimized image variants. This works by deleting the image variant just before recreating it:
 
 ```
-./craft clear-caches/asset-indexing-data
+php craft image-optimize/optimize/create --force
 ```
 
-Clear the Asset transform index cache tables, to force the re-creation of transformed images
+or:
 
 ```
-./craft index-assets/all
+php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle --force
 ```
 
-Re-indexes assets across all volumes.
-
 ```
-./craft index-assets/one
+php craft image-optimize/optimize/createAsset 101 --force
 ```
 
-Re-indexes assets from the given volume handle.
+etc.
+
+### Disabling Automatic Variant Creation
 
 Normally ImageOptimize will regenerate image variants if you change an OptimizedImages field, save the ImageOptimize preferences, or save an Assets Volume that contains an OptimizedImages field, to ensure that all of your image variants are in sync.
 

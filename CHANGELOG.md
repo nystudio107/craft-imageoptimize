@@ -1,8 +1,10 @@
 # ImageOptimize Changelog
 
-## 1.6.18 - 2020.09.16
+## 1.6.18 - 2020.09.28
 ### Changed
-* If an Optimized Images field is edited, only resave the transforms for that specific field
+* If an Optimized Images field is edited, only re-save the transforms for that specific field
+* Allow an optional `--field` to be passed into the `php craft image-optimize/optimize/create` console command to only create image variants associated with a specific Optimized Images field
+* Allow an optional `--force` flag to be passed into the `php craft image-optimize/optimize/create` console command for force image variant creation
 
 ## 1.6.17 - 2020.09.18
 ### Changed
