@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.19 - 2020.10.07
+### Fixed
+* Fixed improperly generated `webp` URL for Imgix
+
 ## 1.6.18 - 2020.09.28
 ### Changed
 * If an Optimized Images field is edited, only re-save the transforms for that specific field
