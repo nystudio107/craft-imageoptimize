@@ -13,7 +13,7 @@ You can choose to have the Optimized Image Variants created only for specific su
 
 Think of each **Optimized Images** field as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images. If you need to use more than one `srcset` then you probably need more than one **Optimized Images** field.
 
-**Transform Method** let you choose to use the built-in Craft transforms or a service like [Imgix](https://www.imgix.com/) for the responsive image variants.
+**Transform Method** let you choose to use the built-in Craft transforms or a service like [imgix](https://www.imgix.com/) for the responsive image variants.
 
 You can then create as many Optimized Image Variants as you like:
 
