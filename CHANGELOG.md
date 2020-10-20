@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.20 - 2020.10.20
+### Changed
+* Lowercase written instances of "Imgix"
+
 ## 1.6.19 - 2020.10.07
 ### Fixed
 * Fixed improperly generated `webp` URL for Imgix
