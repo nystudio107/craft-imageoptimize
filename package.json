@@ -1,7 +1,7 @@
 {
     "name": "image-optimize",
     "version": "1.0.0",
-    "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix, with zero template changes.",
+    "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes.",
     "keywords": [],
     "homepage": "https://nystudio107.com/plugins/imageoptimize",
     "bugs": {

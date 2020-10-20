@@ -1,6 +1,6 @@
 # Configuring ImageOptimize
 
-The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [Imgix](https://imgix.com), [Thumbor](http://thumbor.org/), or [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service). The setting you choose here will apply globally to all of your image transforms.
+The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [imgix](https://imgix.com), [Thumbor](http://thumbor.org/), or [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service). The setting you choose here will apply globally to all of your image transforms.
 
 ## Native Craft Images
 
@@ -31,24 +31,24 @@ The `imageVariantCreators` array specifies the path and options for each of the 
 
 See each image optimization tool's documentation for details on the options they allow you to use.
 
-## Imgix Service Images
+## imgix Service Images
 
-If you're using the [Imgix](https://imgix.com) service, ImageOptimize allows you to use the Craft Control Panel UX/UI to create your image transforms, but have Imgix do all of the heavy lifting for you. This means you can use Imgix with zero template changes.
+If you're using the [imgix](https://imgix.com) service, ImageOptimize allows you to use the Craft Control Panel UX/UI to create your image transforms, but have imgix do all of the heavy lifting for you. This means you can use imgix with zero template changes.
 
-Craft will then use Imgix for all Asset URLs, including the original image, its thumbnails, and any Asset transforms you create (whether in the Control Panel or via Twig templates).
+Craft will then use imgix for all Asset URLs, including the original image, its thumbnails, and any Asset transforms you create (whether in the Control Panel or via Twig templates).
 
-To utilize Imgix, you'll need to enter your **Imgix Source Domain**, and your **Imgix API Key** to allow for auto-purging of changed Assets:
+To utilize imgix, you'll need to enter your **imgix Source Domain**, and your **imgix API Key** to allow for auto-purging of changed Assets:
 
 ![Screenshot](./resources/screenshots/image-optimize-imgix-settings.png)
 
-Then configure your Imgix source via your Imgix.com account. If you're using a Web Folder as a source, make sure it's set to the root of your domain, since you can only have one per site:
+Then configure your imgix source via your imgix.com account. If you're using a Web Folder as a source, make sure it's set to the root of your domain, since you can only have one per site:
 
 ![Screenshot](./resources/screenshots/imgix-web-folder-source.png)
 
 Regardless of how many separate Craft Asset Volumes you've set up, you'll just have one Web Folder source.
 
-For image transforms, and set both **Quality** and **Format** to `Auto` in the Control Panel, it’ll send along `auto=compress,format` to Imgix, which will allow Imgix to compress the image as it sees fit. See the [Automatic Imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
+For image transforms, and set both **Quality** and **Format** to `Auto` in the Control Panel, it’ll send along `auto=compress,format` to imgix, which will allow imgix to compress the image as it sees fit. See the [Automatic imgix Documentation](https://docs.imgix.com/apis/url/auto) for details.
 
-You can also set an optional **Imgix Security Token** if you wish to have [secure, signed image URLs](https://docs.imgix.com/setup/securing-images) from Imgix.
+You can also set an optional **imgix Security Token** if you wish to have [secure, signed image URLs](https://docs.imgix.com/setup/securing-images) from imgix.
 
 Brought to you by [nystudio107](https://nystudio107.com)
