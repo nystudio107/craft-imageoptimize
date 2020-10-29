@@ -422,6 +422,10 @@ class OptimizedImages extends Component
     protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
     {
         Craft::beginProfile('generatePlaceholders', __METHOD__);
+        Craft::info(
+            'generatePlaceholders for: '.print_r($model, true),
+            __METHOD__
+        );
         $settings = ImageOptimize::$plugin->getSettings();
         if ($settings->generatePlaceholders && ImageOptimize::$generatePlaceholders) {
             $placeholder = ImageOptimize::$plugin->placeholder;
