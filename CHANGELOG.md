@@ -3,6 +3,7 @@
 ## 1.6.20 - 2020.10.20
 ### Changed
 * Lowercase written instances of "Imgix"
+* Added additional logging for image placeholder and color extraction
 
 ## 1.6.19 - 2020.10.07
 ### Fixed
