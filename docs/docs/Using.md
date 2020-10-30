@@ -86,10 +86,10 @@ You can combine the two, and narrow things down to a specific volume and a speci
 php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle
 ```
 
-If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `createAsset`:
+If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `create-asset`:
 
 ```
-php craft image-optimize/optimize/createAsset 101
+php craft image-optimize/optimize/create-asset 101
 ```
 
 ### Forcing Image Variant Creation
@@ -111,7 +111,7 @@ php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle --
 ```
 
 ```
-php craft image-optimize/optimize/createAsset 101 --force
+php craft image-optimize/optimize/create-asset 101 --force
 ```
 
 etc.

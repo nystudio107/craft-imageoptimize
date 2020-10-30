@@ -50,7 +50,7 @@
 
 ## 1.6.12 - 2020.03.21
 ### Added
-* Added the `createAsset` console command for regenerating the responsive image variants for a single Asset ID
+* Added the `create-asset` console command for regenerating the responsive image variants for a single Asset ID
 
 ### Changed
 * Generated image URLs that have no file format extension are now properly displayed in the GUI (an issue mostly with serverless Sharp)
