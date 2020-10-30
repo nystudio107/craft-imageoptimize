@@ -48,8 +48,7 @@ class OptimizeController extends Controller
     // =========================================================================
 
     /**
-     * Create all of the OptimizedImages Field variants by creating all of the
-     * responsive image variant transforms
+     * Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
      *
      * @param string|null $volumeHandle
      *
