@@ -1,13 +1,11 @@
 {
   "imageoptimize.js": "js/imageoptimize.js",
+  "imageoptimize.svg": "img/ImageOptimize-icon.svg",
   "imageoptimize.js.map": "js/imageoptimize.js.map",
-  "styles.css": "css/styles.css",
-  "styles.js": "js/styles.js",
-  "styles.js.map": "js/styles.js.map",
-  "vendor.js": "js/vendor.js",
-  "vendor.js.map": "js/vendor.js.map",
   "welcome.js": "js/welcome.js",
   "welcome.js.map": "js/welcome.js.map",
-  "css/styles.css.map": "css/styles.css.map",
+  "runtime.js": "js/runtime.js",
+  "runtime.js.map": "js/runtime.js.map",
+  "styles.css": "css/styles.css",
   "img/ImageOptimize-icon.svg": "img/ImageOptimize-icon.svg"
 }
