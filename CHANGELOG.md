@@ -1,9 +1,10 @@
 # ImageOptimize Changelog
 
-## 1.6.20 - 2020.10.20
+## 1.6.20 - UNRELEASED
 ### Changed
 * Lowercase written instances of "Imgix"
 * Added additional logging for image placeholder and color extraction
+* Moved the CSS/JS buildchain over to webpack 5
 
 ## 1.6.19 - 2020.10.07
 ### Fixed
