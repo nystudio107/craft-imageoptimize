@@ -3,8 +3,7 @@ module.exports = {
   purge: {
     content: [
       '../src/templates/**/*.{twig,html}',
-      '../src/assetbundles/retour/src/vue/**/*.{vue,html}',
-      './node_modules/vuetable-2/src/components/**/*.{vue,html}',
+      '../src/assetbundles/imageoptimize/src/vue/**/*.{vue,html}',
     ],
     layers: [
       'base',
@@ -14,7 +13,7 @@ module.exports = {
     mode: 'layers',
     options: {
       whitelist: [
-        '../src/assetbundles/retour/src/css/components/*.css',
+        '../src/assetbundles/imageoptimize/src/css/components/*.css',
       ],
     }
   },
