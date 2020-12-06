@@ -1,6 +1,8 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
 {% extends 'image-optimize/_layouts/imageoptimize-cp.twig' %}
 
+{% from 'image-optimize/_includes/macros.twig' import registerJsModules %}
+
 {% set title = 'Welcome to ImageOptimize!' %}
 
 {% set linkGetStarted = url('settings/plugins/image-optimize') %}
@@ -36,7 +38,13 @@
             Brought to you by <a href="http://nystudio107.com" target="_blank" rel="noopener">nystudio107</a>
         </p>
     </div>
+{% endblock %}
+
+{% block foot %}
     {# include our JavaScript modules #}
     {{ parent() }}
-    {{ craft.imageOptimize.includeJsModule("welcome.js", false) }}
+    {% set jsModules = [
+        'welcome.js',
+    ] %}
+    {{ registerJsModules(jsModules) }}
 {% endblock %}

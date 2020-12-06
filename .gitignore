@@ -1,16 +1,28 @@
+# Craft .gitignore
+#
+# Example .gitignore file for Craft CMS projects
+#
+# @author    nystudio107
+# @copyright Copyright (c) 2017 nystudio107
+# @link      https://nystudio107.com/
+# @package   craft-scripts
+# @since     1.1.0
+# @license   MIT
+
+# This file should be renamed to '.gitignore' and placed in your
+# Craft CMS project root directory
+
 # CRAFT ENVIRONMENT
-.env.php
-.env.sh
 .env
 
 # COMPOSER
 /vendor
 
 # BUILD FILES
-/bower_components/*
-/node_modules/*
-/build/*
-/yarn-error.log
+bower_components
+node_modules
+yarn-error.log
+npm-error.log
 
 # MISC FILES
 .cache
@@ -30,5 +42,3 @@
 !.vscode/extensions.json
 config.codekit3
 prepros-6.config
-
-# BUILD FILES
