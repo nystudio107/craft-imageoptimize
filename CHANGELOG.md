@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.20 - UNRELEASED
+## 1.6.20 - 2020.12.08
 ### Changed
 * Lowercase written instances of "Imgix"
 * Added additional logging for image placeholder and color extraction
