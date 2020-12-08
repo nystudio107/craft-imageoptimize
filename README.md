@@ -2,7 +2,7 @@
 
 # ImageOptimize plugin for Craft CMS 3.x
 
-Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like Imgix or Thumbor, with zero template changes.
+Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix or Thumbor, with zero template changes.
 
 ![Screenshot](./docs/docs/resources/img/plugin-banner.jpg)
 

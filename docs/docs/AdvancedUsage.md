@@ -252,7 +252,7 @@ You can access all of the primary OptimizedImages field methods:
 
 ## Writing your own Image Transform class
 
-ImageOptimize was written in an extensible way so that you can write your own Image Transform method to work with any service you like. It comes with built-in support for Craft, Imgix, Thumbor, and Sharp JS but you can add your own by writing a class that extends the `ImageTransform` abstract class:
+ImageOptimize was written in an extensible way so that you can write your own Image Transform method to work with any service you like. It comes with built-in support for Craft, imgix, Thumbor, and Sharp JS but you can add your own by writing a class that extends the `ImageTransform` abstract class:
 
 ```php
 <?php

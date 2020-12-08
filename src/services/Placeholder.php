@@ -82,6 +82,10 @@ class Placeholder extends Component
     public function generatePlaceholderImage(string $tempPath, float $aspectRatio, $position): string
     {
         Craft::beginProfile('generatePlaceholderImage', __METHOD__);
+        Craft::info(
+            'Generating placeholder image for asset',
+            __METHOD__
+        );
         $result = '';
         $width = self::PLACEHOLDER_WIDTH;
         $height = (int)($width / $aspectRatio);
@@ -105,6 +109,10 @@ class Placeholder extends Component
     public function generateColorPalette(string $tempPath): array
     {
         Craft::beginProfile('generateColorPalette', __METHOD__);
+        Craft::info(
+            'Generating color palette for: ' . $tempPath,
+            __METHOD__
+        );
         $colorPalette = [];
         if (!empty($tempPath)) {
             // Extract the color palette
@@ -206,6 +214,10 @@ class Placeholder extends Component
     public function createTempPlaceholderImage(Asset $asset, float $aspectRatio, $position): string
     {
         Craft::beginProfile('createTempPlaceholderImage', __METHOD__);
+        Craft::info(
+            'Creating temporary placeholder image for asset',
+            __METHOD__
+        );
         $width = self::TEMP_PLACEHOLDER_WIDTH;
         $height = (int)($width / $aspectRatio);
         $tempPath = $this->createImageFromAsset($asset, $width, $height, self::TEMP_PLACEHOLDER_QUALITY, $position);

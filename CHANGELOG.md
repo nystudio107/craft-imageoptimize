@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.20 - 2020.12.08
+### Changed
+* Lowercase written instances of "Imgix"
+* Added additional logging for image placeholder and color extraction
+* Moved the CSS/JS buildchain over to webpack 5
+* Updated to latest npm deps
+
 ## 1.6.19 - 2020.10.07
 ### Fixed
 * Fixed improperly generated `webp` URL for Imgix
@@ -45,7 +52,7 @@
 
 ## 1.6.12 - 2020.03.21
 ### Added
-* Added the `createAsset` console command for regenerating the responsive image variants for a single Asset ID
+* Added the `create-asset` console command for regenerating the responsive image variants for a single Asset ID
 
 ### Changed
 * Generated image URLs that have no file format extension are now properly displayed in the GUI (an issue mostly with serverless Sharp)

@@ -13,7 +13,7 @@ You can choose to have the Optimized Image Variants created only for specific su
 
 Think of each **Optimized Images** field as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images. If you need to use more than one `srcset` then you probably need more than one **Optimized Images** field.
 
-**Transform Method** let you choose to use the built-in Craft transforms or a service like [Imgix](https://www.imgix.com/) for the responsive image variants.
+**Transform Method** let you choose to use the built-in Craft transforms or a service like [imgix](https://www.imgix.com/) for the responsive image variants.
 
 You can then create as many Optimized Image Variants as you like:
 
@@ -86,10 +86,10 @@ You can combine the two, and narrow things down to a specific volume and a speci
 php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle
 ```
 
-If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `createAsset`:
+If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `create-asset`:
 
 ```
-php craft image-optimize/optimize/createAsset 101
+php craft image-optimize/optimize/create-asset 101
 ```
 
 ### Forcing Image Variant Creation
@@ -111,7 +111,7 @@ php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle --
 ```
 
 ```
-php craft image-optimize/optimize/createAsset 101 --force
+php craft image-optimize/optimize/create-asset 101 --force
 ```
 
 etc.
