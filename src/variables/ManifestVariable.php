@@ -66,7 +66,7 @@ class ManifestVariable
     public function includeCssModule(string $moduleName, bool $async = false, $config = null): \Twig\Markup
     {
         return Template::raw(
-            ManifestHelper::getCssModuleTags(self::$config, $moduleName, $async)
+            ManifestHelper::getCssModuleTags(self::$config, $moduleName, $async) ?? ''
         );
     }
 
@@ -80,7 +80,7 @@ class ManifestVariable
     public function includeInlineCssTags(string $path): \Twig\Markup
     {
         return Template::raw(
-            ManifestHelper::getCssInlineTags($path)
+            ManifestHelper::getCssInlineTags($path) ?? ''
         );
     }
 
@@ -93,7 +93,7 @@ class ManifestVariable
     public static function includeCssRelPreloadPolyfill(): \Twig\Markup
     {
         return Template::raw(
-            ManifestHelper::getCssRelPreloadPolyfill()
+            ManifestHelper::getCssRelPreloadPolyfill() ?? ''
         );
     }
 
@@ -108,7 +108,7 @@ class ManifestVariable
     public function includeJsModule(string $moduleName, bool $async = false, $config = null)
     {
         return Template::raw(
-            ManifestHelper::getJsModuleTags(self::$config, $moduleName, $async)
+            ManifestHelper::getJsModuleTags(self::$config, $moduleName, $async) ?? ''
         );
     }
 
@@ -125,7 +125,7 @@ class ManifestVariable
     public function getModuleUri(string $moduleName, string $type = 'modern', $config = null)
     {
         return Template::raw(
-            ManifestHelper::getModule(self::$config, $moduleName, $type)
+            ManifestHelper::getModule(self::$config, $moduleName, $type) ?? ''
         );
     }
 
@@ -137,7 +137,7 @@ class ManifestVariable
     public function includeSafariNomoduleFix(): \Twig\Markup
     {
         return Template::raw(
-            ManifestHelper::getSafariNomoduleFix()
+            ManifestHelper::getSafariNomoduleFix() ?? ''
         );
     }
 
@@ -151,7 +151,7 @@ class ManifestVariable
     public function includeFile(string $path): \Twig\Markup
     {
         return Template::raw(
-            ManifestHelper::getFile($path)
+            ManifestHelper::getFile($path) ?? ''
         );
     }
 
@@ -167,7 +167,7 @@ class ManifestVariable
     public function includeFileFromManifest(string $fileName, string $type = 'legacy', $config = null): \Twig\Markup
     {
         return Template::raw(
-            ManifestHelper::getFileFromManifest($config, $fileName, $type)
+            ManifestHelper::getFileFromManifest($config, $fileName, $type) ?? ''
         );
     }
 }
