@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.21 - UNRELEASED
+### Changed
+* Split out vendors & commons chunks
+
 ## 1.6.20 - 2020.12.08
 ### Changed
 * Lowercase written instances of "Imgix"
