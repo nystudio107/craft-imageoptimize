@@ -46,7 +46,14 @@ module.exports = (type = 'modern', settings) => {
                         name: 'runtime'
                     },
                     splitChunks: {
+                        chunks: 'all',
+                        name: 'commons',
                         cacheGroups: {
+                            vendors: {
+                                test: /[\\/]node_modules[\\/]/,
+                                name: 'vendors',
+                                chunks: 'all'
+                            },
                             styles: {
                                 chunks: 'all',
                                 enforce: true,
