@@ -37,6 +37,7 @@
     "core-js": "^3.0.0",
     "regenerator-runtime": "^0.13.2",
     "tailwindcss": "^1.0.4",
+    "vue": "^2.6.0",
     "vue-confetti": "^0.4.2"
   },
   "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes.",
