@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.6.21 - UNRELEASED
+### Added
+* Added a try/catch block to Imagine calls to handle errors more gracefully
+
 ### Changed
 * Split out vendors & commons chunks
 
