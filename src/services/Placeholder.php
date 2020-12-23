@@ -267,10 +267,19 @@ class Placeholder extends Component
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
         /** @var Image $image */
-        if (StringHelper::toLowerCase($pathParts['extension']) === 'svg') {
-            $image = $images->loadImage($filePath, true, $width);
-        } else {
-            $image = $images->loadImage($filePath);
+        try {
+            if (StringHelper::toLowerCase($pathParts['extension']) === 'svg') {
+                $image = $images->loadImage($filePath, true, $width);
+            } else {
+                $image = $images->loadImage($filePath);
+            }
+        } catch (\Throwable $e) {
+            Craft::error(
+                'Error creating temporary image: '.$e->getMessage(),
+                __METHOD__
+            );
+
+            return '';
         }
 
         if ($image instanceof Raster) {
