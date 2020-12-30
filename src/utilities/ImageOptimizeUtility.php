@@ -33,7 +33,7 @@ class ImageOptimizeUtility extends Utility
      */
     public static function displayName(): string
     {
-        return Craft::t('image-optimize', 'ImageOptimizeUtility');
+        return Craft::t('image-optimize', 'ImageOptimize Info');
     }
 
     /**
