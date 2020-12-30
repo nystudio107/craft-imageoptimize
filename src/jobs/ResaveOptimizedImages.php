@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\jobs;
 
+use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 
 use Craft;
@@ -21,7 +22,7 @@ use craft\elements\db\ElementQuery;
 use craft\helpers\App;
 use craft\queue\BaseJob;
 
-use nystudio107\imageoptimize\ImageOptimize;
+use yii\data\ActiveDataProvider;
 use yii\base\Exception;
 
 /**
@@ -31,6 +32,14 @@ use yii\base\Exception;
  */
 class ResaveOptimizedImages extends BaseJob
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @const The number of assets to return in a single paginated query
+     */
+    const ASSET_QUERY_PAGE_SIZE = 100;
+
     // Properties
     // =========================================================================
 
@@ -67,52 +76,69 @@ class ResaveOptimizedImages extends BaseJob
         if (!empty($this->criteria)) {
             Craft::configure($query, $this->criteria);
         }
-        $query
-            ->offset(null)
-            ->limit(null)
-            ->orderBy(null);
-
         if (Craft::$app instanceof ConsoleApplication) {
             echo $this->description.PHP_EOL;
         }
 
-        $totalElements = $query->count();
+        // Use ActiveDataProvider to paginate the results so we don't exceed any memory limits
+        // See batch() and each() discussion here: https://github.com/yiisoft/yii2/issues/8420
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => self::ASSET_QUERY_PAGE_SIZE,
+            ],
+        ]);
         $currentElement = 0;
-
-        /** @var ElementInterface $element */
-        foreach ($query->each() as $element) {
-            // Find each OptimizedImages field and process it
-            $layout = $element->getFieldLayout();
-            if ($layout !== null) {
-                $fields = $layout->getFields();
-                /** @var  $field Field */
-                foreach ($fields as $field) {
-                    if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
-                        if ($this->fieldId === null || $field->id == $this->fieldId) {
-                            if (Craft::$app instanceof ConsoleApplication) {
-                                echo $currentElement . '/' . $totalElements
-                                    . ' - processing asset: ' . $element->title
-                                    . ' from field: ' . $field->name . PHP_EOL;
-                            }
-                            try {
-                                ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element, $this->force);
-                            } catch (Exception $e) {
-                                Craft::error($e->getMessage(), __METHOD__);
+        $provider->prepare();
+        $totalElements = $provider->getPagination()->totalCount;
+        // Iterate through the paginated results
+        while ($currentElement < $totalElements) {
+            $provider->prepare(true);
+            $elements = $provider->getModels();
+            if (Craft::$app instanceof ConsoleApplication) {
+                $pageNum = $provider->getPagination()->getPage() + 1;
+                echo 'Query ' . $pageNum . '/' . $provider->getPagination()->getPageCount()
+                    . ' - assets: ' . $provider->count
+                    . PHP_EOL;
+            }
+            /** @var ElementInterface $element */
+            foreach ($elements as $element) {
+                $currentElement++;
+                // Find each OptimizedImages field and process it
+                $layout = $element->getFieldLayout();
+                if ($layout !== null) {
+                    $fields = $layout->getFields();
+                    /** @var  $field Field */
+                    foreach ($fields as $field) {
+                        if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
+                            if ($this->fieldId === null || $field->id == $this->fieldId) {
                                 if (Craft::$app instanceof ConsoleApplication) {
-                                    echo '[error]: '
-                                        . $e->getMessage()
-                                        . ' while processing '
-                                        . $currentElement . '/' . $totalElements
+                                    echo $currentElement . '/' . $totalElements
                                         . ' - processing asset: ' . $element->title
                                         . ' from field: ' . $field->name . PHP_EOL;
+                                }
+                                try {
+                                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($field, $element, $this->force);
+                                } catch (Exception $e) {
+                                    Craft::error($e->getMessage(), __METHOD__);
+                                    if (Craft::$app instanceof ConsoleApplication) {
+                                        echo '[error]: '
+                                            . $e->getMessage()
+                                            . ' while processing '
+                                            . $currentElement . '/' . $totalElements
+                                            . ' - processing asset: ' . $element->title
+                                            . ' from field: ' . $field->name . PHP_EOL;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                $this->setProgress($queue, $currentElement / $totalElements);
             }
-            $this->setProgress($queue, $currentElement++ / $totalElements);
+            $provider->getPagination()->page++;
         }
+
     }
 
     // Protected Methods
