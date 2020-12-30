@@ -6,6 +6,7 @@
 
 ### Changed
 * Split out vendors & commons chunks
+* Switch from using `->each()` to using `ActiveDataProvider` to paginate asset query results, to address out of memory issues on massive queries
 
 ## 1.6.20 - 2020.12.08
 ### Changed
