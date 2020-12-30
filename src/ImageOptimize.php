@@ -17,6 +17,7 @@ use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
+use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 
 use Craft;
@@ -44,6 +45,7 @@ use craft\services\AssetTransforms;
 use craft\services\Elements;
 use craft\services\Fields;
 use craft\services\Plugins;
+use craft\services\Utilities;
 use craft\services\Volumes;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
@@ -250,6 +252,16 @@ class ImageOptimize extends Plugin
                 $event->types[] = OptimizedImages::class;
             }
         );
+
+        // Register our Utility
+        Event::on(
+            Utilities::class,
+            Utilities::EVENT_REGISTER_UTILITY_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = ImageOptimizeUtility::class;
+            }
+        );
+
     }
 
     /**

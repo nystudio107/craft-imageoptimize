@@ -1,0 +1,24 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * ImageOptimize plugin for Craft CMS
+ *
+ * ImageOptimizeUtility Utility Content
+ *
+ * @author    nystudio107
+ * @copyright Copyright (c) 2020 nystudio107
+ * @link      https://nystudio107.com
+ * @package   ImageOptimize
+ * @since     1.0.0
+ */
+#}
+
+<h1>ImageOptimizeUtility</h1>
+
+{% set iconUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimizeutility/dist', true) ~ '/img/ImageOptimizeUtility-icon.svg' %}
+
+<img src="{{ iconUrl }}" height="64" width="64" />
+
+<p>Your Utility content goes here</p>
+
+<p>{{ someVar }}</p>
