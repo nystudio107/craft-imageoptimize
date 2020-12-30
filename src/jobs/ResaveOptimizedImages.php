@@ -17,12 +17,12 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\console\Application as ConsoleApplication;
+use craft\db\Paginator;
 use craft\elements\Asset;
 use craft\elements\db\ElementQuery;
 use craft\helpers\App;
 use craft\queue\BaseJob;
 
-use yii\data\ActiveDataProvider;
 use yii\base\Exception;
 
 /**
@@ -79,26 +79,20 @@ class ResaveOptimizedImages extends BaseJob
         if (Craft::$app instanceof ConsoleApplication) {
             echo $this->description.PHP_EOL;
         }
-
-        // Use ActiveDataProvider to paginate the results so we don't exceed any memory limits
+        // Use craft\db\Paginator to paginate the results so we don't exceed any memory limits
         // See batch() and each() discussion here: https://github.com/yiisoft/yii2/issues/8420
-        $provider = new ActiveDataProvider([
-            'query' => $query,
-            'pagination' => [
-                'pageSize' => self::ASSET_QUERY_PAGE_SIZE,
-            ],
+        // and here: https://github.com/craftcms/cms/issues/7338
+        $paginator = new Paginator($query, [
+            'pageSize' => self::ASSET_QUERY_PAGE_SIZE,
         ]);
         $currentElement = 0;
-        $provider->prepare();
-        $totalElements = $provider->getPagination()->totalCount;
+        $totalElements = $paginator->getTotalResults();
         // Iterate through the paginated results
         while ($currentElement < $totalElements) {
-            $provider->prepare(true);
-            $elements = $provider->getModels();
+            $elements = $paginator->getPageResults();
             if (Craft::$app instanceof ConsoleApplication) {
-                $pageNum = $provider->getPagination()->getPage() + 1;
-                echo 'Query ' . $pageNum . '/' . $provider->getPagination()->getPageCount()
-                    . ' - assets: ' . $provider->count
+                echo 'Query ' . $paginator->getCurrentPage() . '/' . $paginator->getTotalPages()
+                    . ' - assets: ' . $paginator->getTotalResults()
                     . PHP_EOL;
             }
             /** @var ElementInterface $element */
@@ -136,7 +130,7 @@ class ResaveOptimizedImages extends BaseJob
                 }
                 $this->setProgress($queue, $currentElement / $totalElements);
             }
-            $provider->getPagination()->page++;
+            $paginator->currentPage++;
         }
 
     }
