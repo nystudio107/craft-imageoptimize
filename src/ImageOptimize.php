@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize;
 
 use nystudio107\imageoptimize\fields\OptimizedImages;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\listeners\GetCraftQLSchema;
 use nystudio107\imageoptimize\models\Settings;
@@ -253,15 +254,16 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Register our Utility
-        Event::on(
-            Utilities::class,
-            Utilities::EVENT_REGISTER_UTILITY_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = ImageOptimizeUtility::class;
-            }
-        );
-
+        // Register our Utility only if they are using the CraftImageTransform method
+        if (ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
+            Event::on(
+                Utilities::class,
+                Utilities::EVENT_REGISTER_UTILITY_TYPES,
+                function (RegisterComponentTypesEvent $event) {
+                    $event->types[] = ImageOptimizeUtility::class;
+                }
+            );
+        }
     }
 
     /**
