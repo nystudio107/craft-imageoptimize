@@ -11,8 +11,6 @@
 namespace nystudio107\imageoptimize\helpers;
 
 /**
- * ImageOptimize Settings model
- *
  * @author    nystudio107
  * @package   ImageOptimize
  * @since     1.5.7
