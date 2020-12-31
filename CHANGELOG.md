@@ -1,7 +1,8 @@
 # ImageOptimize Changelog
 
-## 1.6.21 - UNRELEASED
+## 1.6.21 - 2020.12.31
 ### Added
+* Added a **ImageOptimize Info** Utility that allows you to see the ImageOptimize settings even in environments where `allowAdminChanges` is `false`
 * Added a try/catch block to Imagine calls to handle errors more gracefully
 
 ### Changed
