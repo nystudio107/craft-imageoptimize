@@ -1,5 +1,15 @@
 # ImageOptimize Changelog
 
+## 1.6.21 - 2020.12.31
+### Added
+* Added a **ImageOptimize Info** Utility that allows you to see the ImageOptimize settings even in environments where `allowAdminChanges` is `false`
+* Added a try/catch block to Imagine calls to handle errors more gracefully
+
+### Changed
+* Split out vendors & commons chunks
+* Switch from using `->each()` to using `craft\db\Paginator` to paginate asset query results, to address out of memory issues on massive queries
+* ImageOptimize now requires Craft CMS 3.1.19 or later
+
 ## 1.6.20 - 2020.12.08
 ### Changed
 * Lowercase written instances of "Imgix"

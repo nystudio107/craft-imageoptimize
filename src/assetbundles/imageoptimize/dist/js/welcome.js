@@ -2,7 +2,7 @@
  * @project        imageoptimize
  * @name           welcome.js
  * @author         Andrew Welch
- * @build          Tue Dec 08 2020 20:26:26 GMT+0000 (Coordinated Universal Time)
+ * @build          Wed Dec 09 2020 05:21:12 GMT+0000 (Coordinated Universal Time)
  * @copyright      Copyright (c) 2020 ©2020 nystudio107.com
  *
  */

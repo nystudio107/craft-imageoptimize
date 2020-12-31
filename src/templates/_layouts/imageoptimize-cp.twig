@@ -4,6 +4,7 @@
 
 {% block head %}
     {{ parent() }}
+    {{ craft.imageOptimize.includeCssModule("vendors.css", false) }}
     {{ craft.imageOptimize.includeCssModule("styles.css", false) }}
 {% endblock %}
 
@@ -11,6 +12,8 @@
     {{ parent() }}
     {% set jsModules = [
         'runtime.js',
+        'vendors.js',
+        'commons.js',
         'imageoptimize.js',
     ] %}
     {{ registerJsModules(jsModules) }}

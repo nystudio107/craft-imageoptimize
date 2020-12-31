@@ -34,6 +34,13 @@ class Manifest
 
     const DEVMODE_CACHE_DURATION = 1;
 
+    const SUPPRESS_ERRORS_FOR_MODULES = [
+        'styles.js',
+        'commons.js',
+        'vendors.js',
+        'vendors.css',
+    ];
+
     // Protected Static Properties
     // =========================================================================
 
@@ -226,11 +233,14 @@ EOT;
         if ($manifest !== null) {
             // Make sure it exists in the manifest
             if (empty($manifest[$moduleName])) {
-                self::reportError(Craft::t(
-                    'image-optimize',
-                    'Module does not exist in the manifest: {moduleName}',
-                    ['moduleName' => $moduleName]
-                ), $soft);
+                // Don't report errors for any files in SUPPRESS_ERRORS_FOR_MODULES
+                if (!in_array($moduleName, self::SUPPRESS_ERRORS_FOR_MODULES)) {
+                    self::reportError(Craft::t(
+                        'image-optimize',
+                        'Module does not exist in the manifest: {moduleName}',
+                        ['moduleName' => $moduleName]
+                    ), $soft);
+                }
 
                 return null;
             }
