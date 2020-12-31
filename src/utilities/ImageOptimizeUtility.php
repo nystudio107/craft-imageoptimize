@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\utilities;
 
+use nystudio107\imageoptimize\helpers\Settings as SettingsHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\assetbundles\imageoptimizeutility\ImageOptimizeUtilityAsset;
 
@@ -67,11 +68,14 @@ class ImageOptimizeUtility extends Utility
     {
         Craft::$app->getView()->registerAssetBundle(ImageOptimizeUtilityAsset::class);
 
-        $someVar = 'Have a nice day!';
+        $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+
         return Craft::$app->getView()->renderTemplate(
             'image-optimize/_components/utilities/ImageOptimizeUtility_content',
             [
-                'someVar' => $someVar
+                'imageProcessors' => $imageProcessors,
+                'variantCreators' => $variantCreators,
             ]
         );
     }
