@@ -119,6 +119,7 @@ class OptimizedImage extends Model
             ['colorPalette', ArrayValidator::class],
             ['placeholderWidth', 'integer'],
             ['placeholderHeight', 'integer'],
+            ['stickyErrors', ArrayValidator::class],
         ];
     }
 
