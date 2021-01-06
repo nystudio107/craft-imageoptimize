@@ -203,6 +203,14 @@
             {% else %}
                 <p>N/A</p>
             {% endif %}
+            {% if value.stickyErrors is defined and value.stickyErrors | length %}
+                <label>Error Messages:</label>
+                <ul>
+                {% for stickyError in value.stickyErrors %}
+                    <li>{{ stickyError }}</li>
+                {% endfor %}
+                </ul>
+            {% endif %}
         </div>
     </div>
 {% endif %}

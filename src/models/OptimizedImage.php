@@ -93,6 +93,11 @@ class OptimizedImage extends Model
      */
     public $placeholderHeight;
 
+    /**
+     * @var string[] An array of errors logged when generating the image transforms
+     */
+    public $stickyErrors = [];
+
     // Public Methods
     // =========================================================================
 

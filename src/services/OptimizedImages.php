@@ -87,6 +87,7 @@ class OptimizedImages extends Component
         $model->variantSourceWidths = [];
         $model->placeholderWidth = 0;
         $model->placeholderHeight = 0;
+        $model->stickyErrors = [];
 
         foreach ($variants as $variant) {
             $retinaSizes = ['1'];
@@ -121,6 +122,8 @@ class OptimizedImages extends Component
                             if (Craft::$app instanceof ConsoleApplication) {
                                 echo $msg . PHP_EOL;
                             }
+                            // Add the error message to the stickyErrors for the model
+                            $model->stickyErrors[] = $msg;
                         }
                     }
                     // Only create the image variant if it is not upscaled, or they are okay with it being up-scaled
@@ -142,6 +145,8 @@ class OptimizedImages extends Component
                     if (Craft::$app instanceof ConsoleApplication) {
                         echo $msg . PHP_EOL;
                     }
+                    // Add the error message to the stickyErrors for the model
+                    $model->stickyErrors[] = $msg;
                 }
             }
         }
@@ -163,13 +168,17 @@ class OptimizedImages extends Component
                 list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, 1);
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
             } else {
-                Craft::error(
-                    'Could not create transform for: '.$asset->title
+                $msg = 'Could not create transform for: '.$asset->title
                     .' - Final format: '.$finalFormat
                     .' - Element extension: '.$asset->getExtension()
-                    .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension()),
+                    .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension())
+                    ;
+                Craft::error(
+                    $msg,
                     __METHOD__
                 );
+                // Add the error message to the stickyErrors for the model
+                $model->stickyErrors[] = $msg;
             }
         }
         Craft::endProfile('populateOptimizedImageModel', __METHOD__);
