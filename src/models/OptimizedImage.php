@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\models;
 
+use craft\helpers\Html;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
@@ -374,6 +375,32 @@ class OptimizedImage extends Model
         }
 
         return $colors;
+    }
+
+    /**
+     * Generate a complete <img /> tag for this OptimizedImages model
+     *
+     * @param array $options
+     * @param false $lazyLoad
+     * @return \Twig\Markup
+     */
+    public function imgTag($options = [], $lazyLoad = false)
+    {
+        $attrs = array_merge([
+                'class' => '',
+                'src' => $this->src(),
+                'srcset' => $this->srcset(),
+                'sizes' => '100vw',
+            ],
+            $options
+        );
+        if ($lazyLoad) {
+            $attrs['class'] += ' lazy';
+            $attrs['lazyload'] = true;
+        }
+        $tag = Html::tag('img', $attrs);
+
+        return Template::raw($tag);
     }
 
     /**
