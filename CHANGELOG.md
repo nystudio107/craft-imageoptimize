@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.7.0 - UNRELEASED
+### Added
+* Added a `stickyErrors` property to the OptimizedImages model, so we can post-facto display if something went wrong during image generation on the frontend to users
+
 ## 1.6.21 - 2020.12.31
 ### Added
 * Added a **ImageOptimize Info** Utility that allows you to see the ImageOptimize settings even in environments where `allowAdminChanges` is `false`
