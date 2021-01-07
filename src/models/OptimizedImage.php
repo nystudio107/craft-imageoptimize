@@ -384,20 +384,20 @@ class OptimizedImage extends Model
      * @param array $options
      * @return \Twig\Markup
      */
-    public function imgTag($lazyLoad = false, $options = [], )
+    public function imgTag($lazyLoad = false, $options = [])
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
                 'class' => '',
-                'src' => $this->src(),
-                'srcset' => $this->srcset(),
+                'src' => reset($this->optimizedImageUrls),
+                'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
                 'sizes' => '100vw',
             ],
             $options
         );
         // Handle lazy loading
         if ($lazyLoad) {
-            $attrs['class'] += ' lazyload';
+            $attrs['class'] .= ' lazyload';
             $attrs['loading'] = 'lazy';
             $attrs['data-src'] = $attrs['src'];
             $attrs['data-srcset'] = $attrs['srcset'];
