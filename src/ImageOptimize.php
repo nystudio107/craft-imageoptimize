@@ -68,10 +68,10 @@ use yii\base\InvalidConfigException;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService         optimize
- * @property PlaceholderService      placeholder
- * @property OptimizedImagesService  optimizedImages
- * @property ImageTransformInterface transformMethod
+ * @property OptimizeService         $optimize
+ * @property PlaceholderService      $placeholder
+ * @property OptimizedImagesService  $optimizedImages
+ * @property ImageTransformInterface $transformMethod
  * @property Settings                $settings
  * @method   Settings                getSettings()
  */
