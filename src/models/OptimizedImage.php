@@ -378,14 +378,15 @@ class OptimizedImage extends Model
     }
 
     /**
-     * Generate a complete <img /> tag for this OptimizedImages model
+     * Generate a complete <img> tag for this OptimizedImages model
      *
+     * @param false|string $lazyLoad
      * @param array $options
-     * @param false $lazyLoad
      * @return \Twig\Markup
      */
-    public function imgTag($options = [], $lazyLoad = false)
+    public function imgTag($lazyLoad = false, $options = [], )
     {
+        // Merge the passed in options with the tag attributes
         $attrs = array_merge([
                 'class' => '',
                 'src' => $this->src(),
@@ -394,11 +395,35 @@ class OptimizedImage extends Model
             ],
             $options
         );
+        // Handle lazy loading
         if ($lazyLoad) {
-            $attrs['class'] += ' lazy';
-            $attrs['lazyload'] = true;
+            $attrs['class'] += ' lazyload';
+            $attrs['loading'] = 'lazy';
+            $attrs['data-src'] = $attrs['src'];
+            $attrs['data-srcset'] = $attrs['srcset'];
+            $attrs['srcset'] = '';
+            if (is_string($lazyLoad)) {
+                $lazyLoad = strtolower($lazyLoad);
+            }
+            switch ($lazyLoad) {
+                case 'image':
+                    $attrs['src'] = $this->getPlaceholderImage();
+                break;
+                case 'silhouette':
+                    $attrs['src'] = $this->getPlaceholderSilhouette();
+                    break;
+                case 'color':
+                    $attrs['src'] = $this->getPlaceholderBox($this->colorPalette[0] ?? null);
+                    break;
+                default:
+                    $attrs['src'] = $this->getPlaceholderBox();
+                break;
+            }
         }
-        $tag = Html::tag('img', $attrs);
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $tag = Html::tag('img', '', $attrs);
 
         return Template::raw($tag);
     }
