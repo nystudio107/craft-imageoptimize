@@ -66,15 +66,7 @@ class ImageOptimizeVariable extends ManifestVariable
      */
     public function serverSupportsWebP(): bool
     {
-        $result = false;
-        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
-        foreach ($variantCreators as $variantCreator) {
-            if ($variantCreator['creator'] === 'cwebp' && $variantCreator['installed']) {
-                $result = true;
-            }
-        }
-
-        return $result;
+        return ImageOptimize::$plugin->optimize->serverSupportsWebP();
     }
 
     /**

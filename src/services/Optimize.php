@@ -210,7 +210,7 @@ class Optimize extends Component
             if (ImageHelper::canManipulateAsImage($asset->getExtension())) {
                 $transform = new AssetTransform([
                     'width' => $event->width,
-		    'height' => $event->height,
+                    'height' => $event->height,
                     'interlace' => 'line',
                 ]);
                 /** @var ImageTransform $transformMethod */
@@ -522,6 +522,23 @@ class Optimize extends Component
         return $result;
     }
 
+    /**
+     * Returns whether `.webp` is a format supported by the server
+     *
+     * @return bool
+     */
+    public function serverSupportsWebP(): bool
+    {
+        $variantCreators = $this->getActiveVariantCreators();
+        foreach ($variantCreators as $variantCreator) {
+            if ($variantCreator['creator'] === 'cwebp' && $variantCreator['installed']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -530,7 +547,6 @@ class Optimize extends Component
      * @param Asset          $asset
      * @param Image          $image
      */
-
     protected function applyFiltersToImage(AssetTransform $transform, Asset $asset, Image $image)
     {
         $settings = ImageOptimize::$plugin->getSettings();
