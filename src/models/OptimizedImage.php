@@ -381,10 +381,10 @@ class OptimizedImage extends Model
      * Generate a complete <img> tag for this OptimizedImages model
      *
      * @param false|string $lazyLoad
-     * @param array $options
+     * @param array $imgAttrs
      * @return \Twig\Markup
      */
-    public function imgTag($lazyLoad = false, $options = [])
+    public function imgTag($lazyLoad = false, $imgAttrs = [])
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
@@ -392,33 +392,13 @@ class OptimizedImage extends Model
                 'src' => reset($this->optimizedImageUrls),
                 'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
                 'sizes' => '100vw',
+                'loading' => $lazyLoad,
             ],
-            $options
+            $imgAttrs
         );
         // Handle lazy loading
         if ($lazyLoad) {
-            $attrs['class'] .= ' lazyload';
-            $attrs['loading'] = 'lazy';
-            $attrs['data-src'] = $attrs['src'];
-            $attrs['data-srcset'] = $attrs['srcset'];
-            $attrs['srcset'] = '';
-            if (is_string($lazyLoad)) {
-                $lazyLoad = strtolower($lazyLoad);
-            }
-            switch ($lazyLoad) {
-                case 'image':
-                    $attrs['src'] = $this->getPlaceholderImage();
-                break;
-                case 'silhouette':
-                    $attrs['src'] = $this->getPlaceholderSilhouette();
-                    break;
-                case 'color':
-                    $attrs['src'] = $this->getPlaceholderBox($this->colorPalette[0] ?? null);
-                    break;
-                default:
-                    $attrs['src'] = $this->getPlaceholderBox();
-                break;
-            }
+            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
@@ -671,5 +651,66 @@ class OptimizedImage extends Model
         $color = '#CCC';
 
         return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
+    }
+
+    /**
+     * Swap the tag attributes to work with lazy loading
+     *
+     * @param array $attrs
+     * @param string $lazyLoad
+     * @return array
+     */
+    protected function swapLazyLoadAttrs(string $lazyLoad, array $attrs): array
+    {
+        if (!empty($attrs['class'])) {
+            $attrs['class'] .= ' lazyload';
+        }
+        if (!empty($attrs['loading'])) {
+            $attrs['loading'] = 'lazy';
+        }
+        if (!empty($attrs['srcset'])) {
+            $attrs['data-srcset'] = $attrs['srcset'];
+            $attrs['srcset'] = '';
+        }
+        if (!empty($attrs['src'])) {
+            $attrs['data-src'] = $attrs['src'];
+        }
+        $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
+        $attrs['height'] = $this->placeholderHeight;
+        $attrs['width'] = $this->placeholderWidth;
+
+        return $attrs;
+    }
+
+    /**
+     * Return a lazy loading placeholder image based on the passed in $lazyload setting
+     *
+     * @param string $lazyLoad
+     * @param array $attrs
+     *
+     * @return array
+     */
+    protected function getLazyLoadSrc(string $lazyLoad): string
+    {
+        $result = '';
+        if (is_string($lazyLoad)) {
+            $lazyLoad = strtolower($lazyLoad);
+        }
+        switch ($lazyLoad) {
+            case 'image':
+                $result = $this->getPlaceholderImage();
+                break;
+            case 'silhouette':
+                $result = $this->getPlaceholderSilhouette();
+                break;
+            case 'color':
+                $result = $this->getPlaceholderBox($this->colorPalette[0] ?? null);
+                break;
+            default:
+                $result = $this->getPlaceholderBox();
+                break;
+        }
+
+        return $result;
     }
 }
