@@ -78,7 +78,7 @@ class PluginTemplate
 
         // Render the template with our vars passed in
         try {
-            $htmlText = Craft::$app->view->renderTemplate(, $params);
+            $htmlText = Craft::$app->view->renderTemplate($template, $params);
             if ($minifier) {
                 // If Minify is installed, use it to minify the template
                 $minify = Craft::$app->getPlugins()->getPlugin(self::MINIFY_PLUGIN_HANDLE);
