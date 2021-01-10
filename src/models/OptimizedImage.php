@@ -662,7 +662,7 @@ class OptimizedImage extends Model
      */
     protected function swapLazyLoadAttrs(string $lazyLoad, array $attrs): array
     {
-        if (!empty($attrs['class'])) {
+        if (isset($attrs['class'])) {
             $attrs['class'] .= ' lazyload';
         }
         if (!empty($attrs['loading'])) {

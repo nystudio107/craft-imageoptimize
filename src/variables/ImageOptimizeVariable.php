@@ -28,6 +28,18 @@ class ImageOptimizeVariable extends ManifestVariable
     // =========================================================================
 
     /**
+     * Render the lazy load JavaScript shim
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazyLoadJs($scriptAttrs = [], $variables = [])
+    {
+        return Template::raw(ImageOptimize::$plugin->optimize->renderLazyLoadJs($scriptAttrs, $variables));
+    }
+
+    /**
      * Return an SVG box as a placeholder image
      *
      * @param             $width

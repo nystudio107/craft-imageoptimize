@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\helpers\PluginTemplate as PluginTemplateHelper;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
@@ -29,9 +30,10 @@ use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\Component as ComponentHelper;
 use craft\helpers\FileHelper;
-use craft\helpers\Assets as AssetsHelper;
+use craft\helpers\Html;
 use craft\helpers\Image as ImageHelper;
 use craft\image\Raster;
 use craft\models\AssetTransform;
@@ -234,6 +236,41 @@ class Optimize extends Component
         Craft::endProfile('handleGetAssetThumbUrlEvent', __METHOD__);
 
         return $url;
+    }
+
+    /**
+     * Render the lazy load JavaScript shim
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazyLoadJs($scriptAttrs = [], $variables = [])
+    {
+        $minifier = 'minify';
+        if ($scriptAttrs === null) {
+            $minifier = 'jsMin';
+        }
+        $vars = array_merge([
+            'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
+            ],
+            $variables,
+        );
+        $content = PluginTemplateHelper::renderPluginTemplate(
+            'frontend/lazyload-image-shim',
+            $vars,
+            $minifier
+        );
+        $content = (string)$content;
+        if ($scriptAttrs !== null) {
+            $attrs = array_merge([
+                ],
+                $scriptAttrs,
+            );
+            $content = Html::tag('script', $content, $scriptAttrs);
+        }
+
+        return $content;
     }
 
     /**

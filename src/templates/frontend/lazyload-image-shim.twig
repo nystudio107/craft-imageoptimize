@@ -4,16 +4,15 @@
         const images = document.querySelectorAll('img[loading="lazy"]');
         images.forEach(img => {
             img.src = img.dataset.src;
-        });
+       });
         // Replace the source.srcset with what is in the data-srcset property
         const sources = document.querySelectorAll('source[data-srcset]')
         sources.forEach(source => {
             source.srcset = source.dataset.srcset;
         });
     } else {
-        // Dynamically import the LazySizes library
+    // Dynamically import the LazySizes library
         const script = document.createElement('script');
-        script.src =
-            '{{ scriptUrl }}';
+        script.src = '{{ scriptSrc }}';
         document.body.appendChild(script);
     }
