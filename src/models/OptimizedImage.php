@@ -382,6 +382,7 @@ class OptimizedImage extends Model
      *
      * @param false|string $lazyLoad
      * @param array $imgAttrs
+     *
      * @return \Twig\Markup
      */
     public function imgTag($lazyLoad = false, $imgAttrs = [])
@@ -389,6 +390,8 @@ class OptimizedImage extends Model
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
                 'class' => '',
+                'width' => $this->placeholderWidth,
+                'height' => $this->placeholderHeight,
                 'src' => reset($this->optimizedImageUrls),
                 'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
                 'sizes' => '100vw',
@@ -404,6 +407,92 @@ class OptimizedImage extends Model
         $attrs = array_filter($attrs);
         // Render the tag
         $tag = Html::tag('img', '', $attrs);
+
+        return Template::raw($tag);
+    }
+
+    /**
+     * Generate a complete <picture> tag for this OptimizedImages model
+     *
+     * @param false $lazyLoad
+     * @param array $pictureAttrs
+     * @param array $srcsetAttrs
+     * @param array $imgAttrs
+     *
+     * @return \Twig\Markup
+     */
+    public function pictureTag($lazyLoad = false, $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [])
+    {
+        $content = '';
+        // Handle the webp srcset
+        if (!empty($this->optimizedWebPImageUrls)) {
+            // Merge the passed in options with the tag attributes
+            $attrs = array_merge([
+                    'data-srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
+                    'type' => 'image/webp',
+                    'sizes' => '100vw',
+                ],
+                $srcsetAttrs
+            );
+            // Handle lazy loading
+            if ($lazyLoad) {
+                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+            }
+            // Remove any empty attributes
+            $attrs = array_filter($attrs);
+            // Render the tag
+            $content .= Html::tag('source', '', $attrs);
+        }
+        // Handle the regular srcset
+        if (!empty($this->optimizedImageUrls)) {
+            // Merge the passed in options with the tag attributes
+            $attrs = array_merge([
+                    'data-srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
+                    'sizes' => '100vw',
+                ],
+                $srcsetAttrs
+            );
+            // Handle lazy loading
+            if ($lazyLoad) {
+                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+            }
+            // Remove any empty attributes
+            $attrs = array_filter($attrs);
+            // Render the tag
+            $content .= Html::tag('source', '', $attrs);
+        }
+        // Handle the img tag
+        /** @noinspection SuspiciousAssignmentsInspection */
+        $attrs = array_merge([
+                'class' => '',
+                'width' => $this->placeholderWidth,
+                'height' => $this->placeholderHeight,
+                'src' => reset($this->optimizedImageUrls),
+                'loading' => $lazyLoad,
+            ],
+            $imgAttrs
+        );
+        // Handle lazy loading
+        if ($lazyLoad) {
+            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+        }
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $content .= Html::tag('img', '', $attrs);
+        // Merge the passed in options with the tag attributes
+        $attrs = array_merge([
+            ],
+            $pictureAttrs
+        );
+        // Handle lazy loading
+        if ($lazyLoad) {
+            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+        }
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $tag = Html::tag('picture', $content, $attrs);
 
         return Template::raw($tag);
     }
@@ -674,10 +763,8 @@ class OptimizedImage extends Model
         }
         if (!empty($attrs['src'])) {
             $attrs['data-src'] = $attrs['src'];
+            $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
         }
-        $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
-        $attrs['height'] = $this->placeholderHeight;
-        $attrs['width'] = $this->placeholderWidth;
 
         return $attrs;
     }
