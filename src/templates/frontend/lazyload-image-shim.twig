@@ -3,12 +3,22 @@
         // Replace the img.src with what is in the data-src property
         const images = document.querySelectorAll('img[loading="lazy"]');
         images.forEach(img => {
-            img.src = img.dataset.src;
-       });
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+            if (img.dataset.srcset) {
+                img.srcset = img.dataset.srcset;
+                img.removeAttribute('data-srcset');
+            }
+        });
         // Replace the source.srcset with what is in the data-srcset property
         const sources = document.querySelectorAll('source[data-srcset]')
         sources.forEach(source => {
-            source.srcset = source.dataset.srcset;
+            if (source.dataset.srcset) {
+                source.srcset = source.dataset.srcset;
+                source.removeAttribute('data-srcset');
+            }
         });
     } else {
     // Dynamically import the LazySizes library
