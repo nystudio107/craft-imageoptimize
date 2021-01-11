@@ -390,6 +390,7 @@ class OptimizedImage extends Model
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
                 'class' => '',
+                'style' => '',
                 'width' => $this->placeholderWidth,
                 'height' => $this->placeholderHeight,
                 'src' => reset($this->optimizedImageUrls),
@@ -465,6 +466,7 @@ class OptimizedImage extends Model
         /** @noinspection SuspiciousAssignmentsInspection */
         $attrs = array_merge([
                 'class' => '',
+                'style' => '',
                 'width' => $this->placeholderWidth,
                 'height' => $this->placeholderHeight,
                 'src' => reset($this->optimizedImageUrls),
@@ -485,10 +487,6 @@ class OptimizedImage extends Model
             ],
             $pictureAttrs
         );
-        // Handle lazy loading
-        if ($lazyLoad) {
-            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
-        }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
         // Render the tag
@@ -764,6 +762,12 @@ class OptimizedImage extends Model
         if (!empty($attrs['src'])) {
             $attrs['data-src'] = $attrs['src'];
             $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
+            if (isset($attrs['style'])) {
+                $attrs['style'] = trim(
+                    $attrs['style'] .
+                    'background-image:url(' . $this->getLazyLoadSrc($lazyLoad) . '); background-size: cover;'
+                );
+            }
         }
 
         return $attrs;
