@@ -239,6 +239,24 @@ class Optimize extends Component
     }
 
     /**
+     * Returns whether `.webp` is a format supported by the server
+     *
+     * @return bool
+     */
+    public function serverSupportsWebP(): bool
+    {
+        $result = false;
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        foreach ($variantCreators as $variantCreator) {
+            if ($variantCreator['creator'] === 'cwebp' && $variantCreator['installed']) {
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Render the lazy load JavaScript shim
      *
      * @param array $scriptAttrs
