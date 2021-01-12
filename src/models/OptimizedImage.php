@@ -414,10 +414,11 @@ class OptimizedImage extends Model
      *
      * @param false|string $lazyLoad
      * @param array $imgAttrs
+     * @param bool $lazySizesFallback
      *
      * @return \Twig\Markup
      */
-    public function imgTag($lazyLoad = false, $imgAttrs = [])
+    public function imgTag($lazyLoad = false, $imgAttrs = [], $lazySizesFallback = false)
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
@@ -434,7 +435,7 @@ class OptimizedImage extends Model
         );
         // Handle lazy loading
         if ($lazyLoad) {
-            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
@@ -451,17 +452,18 @@ class OptimizedImage extends Model
      * @param array $pictureAttrs
      * @param array $srcsetAttrs
      * @param array $imgAttrs
+     * @param bool $lazySizesFallback
      *
      * @return \Twig\Markup
      */
-    public function pictureTag($lazyLoad = false, $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [])
+    public function pictureTag($lazyLoad = false, $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [], $lazySizesFallback = false)
     {
         $content = '';
         // Handle the webp srcset
         if (!empty($this->optimizedWebPImageUrls)) {
             // Merge the passed in options with the tag attributes
             $attrs = array_merge([
-                    'data-srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
+                    'srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
                     'type' => 'image/webp',
                     'sizes' => '100vw',
                 ],
@@ -469,7 +471,7 @@ class OptimizedImage extends Model
             );
             // Handle lazy loading
             if ($lazyLoad) {
-                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
             }
             // Remove any empty attributes
             $attrs = array_filter($attrs);
@@ -480,14 +482,14 @@ class OptimizedImage extends Model
         if (!empty($this->optimizedImageUrls)) {
             // Merge the passed in options with the tag attributes
             $attrs = array_merge([
-                    'data-srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
+                    'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
                     'sizes' => '100vw',
                 ],
                 $srcsetAttrs
             );
             // Handle lazy loading
             if ($lazyLoad) {
-                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
             }
             // Remove any empty attributes
             $attrs = array_filter($attrs);
@@ -508,7 +510,7 @@ class OptimizedImage extends Model
         );
         // Handle lazy loading
         if ($lazyLoad) {
-            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs);
+            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
@@ -775,30 +777,37 @@ class OptimizedImage extends Model
     /**
      * Swap the tag attributes to work with lazy loading
      *
-     * @param array $attrs
      * @param string $lazyLoad
+     * @param array $attrs
+     * @param bool $lazySizesFallback
+     *
      * @return array
      */
-    protected function swapLazyLoadAttrs(string $lazyLoad, array $attrs): array
+    protected function swapLazyLoadAttrs(string $lazyLoad, array $attrs, $lazySizesFallback = false): array
     {
+        // Set the class and loading attributes
         if (isset($attrs['class'])) {
             $attrs['class'] = trim($attrs['class'] . ' lazyload');
         }
         if (!empty($attrs['loading'])) {
             $attrs['loading'] = 'lazy';
         }
-        if (!empty($attrs['srcset'])) {
-            $attrs['data-srcset'] = $attrs['srcset'];
-            $attrs['srcset'] = '';
+        // Set the style on this element to be the placeholder image as the background-image
+        if (isset($attrs['style']) && !empty($attrs['src'])) {
+            $attrs['style'] = trim(
+                $attrs['style'] .
+                'background-image:url(' . $this->getLazyLoadSrc($lazyLoad) . '); background-size: cover;'
+            );
         }
-        if (!empty($attrs['src'])) {
-            $attrs['data-src'] = $attrs['src'];
-            $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
-            if (isset($attrs['style'])) {
-                $attrs['style'] = trim(
-                    $attrs['style'] .
-                    'background-image:url(' . $this->getLazyLoadSrc($lazyLoad) . '); background-size: cover;'
-                );
+        // Only swap to data- attributes if they want the LazySizes fallback
+        if ($lazySizesFallback) {
+            if (!empty($attrs['srcset'])) {
+                $attrs['data-srcset'] = $attrs['srcset'];
+                $attrs['srcset'] = '';
+            }
+            if (!empty($attrs['src'])) {
+                $attrs['data-src'] = $attrs['src'];
+                $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
             }
         }
 
