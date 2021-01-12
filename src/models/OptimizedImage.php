@@ -378,6 +378,38 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Generate a complete <link rel="preload"> tag for this OptimizedImages model
+     *
+     * @param array $linkAttrs
+     *
+     * @return \Twig\Markup
+     */
+    public function linkPreloadTag($linkAttrs = [])
+    {
+        // Any web browser that supports link rel="preload" as="image" also supports webp, so prefer that
+        $srcset = $this->optimizedImageUrls;
+        if (!empty($this->optimizedWebPImageUrls)) {
+            $srcset = $this->optimizedWebPImageUrls;
+        }
+        // Merge the passed in options with the tag attributes
+        $attrs = array_merge([
+            'rel' => 'preload',
+            'as' => 'image',
+            'href' => reset($srcset),
+            'imagesrcset' => $this->getSrcsetFromArray($srcset),
+            'imagesizes' => '100vw',
+        ],
+            $linkAttrs
+        );
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $tag = Html::tag('link', '', $attrs);
+
+        return Template::raw($tag);
+    }
+
+    /**
      * Generate a complete <img> tag for this OptimizedImages model
      *
      * @param false|string $lazyLoad
