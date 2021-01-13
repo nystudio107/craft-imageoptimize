@@ -68,7 +68,11 @@ class ResaveOptimizedImages extends BaseJob
     public function execute($queue)
     {
         // Let's save ourselves some trouble and just clear all the caches for this element class
-        Craft::$app->getTemplateCaches()->deleteCachesByElementType(Asset::class);
+        if (ImageOptimize::$craft35) {
+            Craft::$app->getElements()->invalidateCachesForElementType(Asset::class);
+        } else {
+            Craft::$app->getTemplateCaches()->deleteCachesByElementType(Asset::class);
+        }
 
         // Now find the affected element IDs
         /** @var ElementQuery $query */

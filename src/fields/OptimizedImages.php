@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\fields;
 
+use craft\helpers\Html;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
 use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
@@ -288,6 +289,12 @@ class OptimizedImages extends Field
             Craft::error($e->getMessage(), __METHOD__);
             $thisId = 0;
         }
+        // Get our id and namespace
+        if (ImageOptimize::$craft35) {
+            $id = Html::id($thisId);
+        } else {
+            $id = Craft::$app->getView()->formatInputId($thisId);
+        }
         $id = Craft::$app->getView()->formatInputId($thisId);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
@@ -349,7 +356,11 @@ class OptimizedImages extends Field
             }
 
             // Get our id and namespace
-            $id = Craft::$app->getView()->formatInputId($this->handle);
+            if (ImageOptimize::$craft35) {
+                $id = Html::id($this->handle);
+            } else {
+                $id = Craft::$app->getView()->formatInputId($this->handle);
+            }
             $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
 
             // Variables to pass down to our field JavaScript to let it namespace properly
