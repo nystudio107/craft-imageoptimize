@@ -379,6 +379,7 @@ class OptimizedImage extends Model
 
     /**
      * Generate a complete <link rel="preload"> tag for this OptimizedImages model
+     * ref: https://web.dev/preload-responsive-images/#imagesrcset-and-imagesizes
      *
      * @param array $linkAttrs
      *
@@ -776,6 +777,7 @@ class OptimizedImage extends Model
 
     /**
      * Swap the tag attributes to work with lazy loading
+     * ref: https://web.dev/native-lazy-loading/#how-do-i-handle-browsers-that-don't-yet-support-native-lazy-loading
      *
      * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
      * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
@@ -836,9 +838,8 @@ class OptimizedImage extends Model
      * Return a lazy loading placeholder image based on the passed in $lazyload setting
      *
      * @param string $lazyLoad
-     * @param array $attrs
      *
-     * @return array
+     * @return string
      */
     protected function getLazyLoadSrc(string $lazyLoad): string
     {
@@ -857,7 +858,7 @@ class OptimizedImage extends Model
                 $result = $this->getPlaceholderBox($this->colorPalette[0] ?? null);
                 break;
             default:
-                $result = $this->getPlaceholderBox();
+                $result = $this->getPlaceholderBox('#CCC');
                 break;
         }
 
