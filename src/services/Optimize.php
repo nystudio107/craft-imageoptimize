@@ -257,13 +257,13 @@ class Optimize extends Component
     }
 
     /**
-     * Render the lazy load JavaScript shim
+     * Render the LazySizes fallback JS
      *
      * @param array $scriptAttrs
      * @param array $variables
      * @return string
      */
-    public function renderLazyLoadJs($scriptAttrs = [], $variables = [])
+    public function renderLazySizesFallbackJs($scriptAttrs = [], $variables = [])
     {
         $minifier = 'minify';
         if ($scriptAttrs === null) {
@@ -275,7 +275,7 @@ class Optimize extends Component
             $variables,
         );
         $content = PluginTemplateHelper::renderPluginTemplate(
-            'frontend/lazyload-image-shim',
+            'frontend/lazysizes-fallback-js',
             $vars,
             $minifier
         );
@@ -283,6 +283,41 @@ class Optimize extends Component
         if ($scriptAttrs !== null) {
             $attrs = array_merge([
                 ],
+                $scriptAttrs,
+            );
+            $content = Html::tag('script', $content, $scriptAttrs);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Render the LazySizes fallback JS
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazySizesJs($scriptAttrs = [], $variables = [])
+    {
+        $minifier = 'minify';
+        if ($scriptAttrs === null) {
+            $minifier = 'jsMin';
+        }
+        $vars = array_merge([
+            'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
+        ],
+            $variables,
+        );
+        $content = PluginTemplateHelper::renderPluginTemplate(
+            'frontend/lazysizes-js',
+            $vars,
+            $minifier
+        );
+        $content = (string)$content;
+        if ($scriptAttrs !== null) {
+            $attrs = array_merge([
+            ],
                 $scriptAttrs,
             );
             $content = Html::tag('script', $content, $scriptAttrs);

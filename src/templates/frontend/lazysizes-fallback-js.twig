@@ -19,6 +19,10 @@
                 source.srcset = source.dataset.srcset;
                 source.removeAttribute('data-srcset');
             }
+            if (source.dataset.sizes) {
+                source.sizes = source.dataset.sizes;
+                source.removeAttribute('data-sizes');
+            }
         });
     } else {
     // Dynamically import the LazySizes library

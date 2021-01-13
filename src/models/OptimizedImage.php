@@ -412,13 +412,13 @@ class OptimizedImage extends Model
     /**
      * Generate a complete <img> tag for this OptimizedImages model
      *
-     * @param false|string $lazyLoad
+     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
+     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
      * @param array $imgAttrs
-     * @param bool $lazySizesFallback
      *
      * @return \Twig\Markup
      */
-    public function imgTag($lazyLoad = false, $imgAttrs = [], $lazySizesFallback = false)
+    public function imgTag($loading = 'eager', $placeHolder = 'box', $imgAttrs = [])
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
@@ -429,13 +429,13 @@ class OptimizedImage extends Model
                 'src' => reset($this->optimizedImageUrls),
                 'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
                 'sizes' => '100vw',
-                'loading' => $lazyLoad,
+                'loading' => '',
             ],
             $imgAttrs
         );
         // Handle lazy loading
-        if ($lazyLoad) {
-            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
+        if ($loading !== 'eager') {
+            $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
@@ -448,15 +448,15 @@ class OptimizedImage extends Model
     /**
      * Generate a complete <picture> tag for this OptimizedImages model
      *
-     * @param false $lazyLoad
+     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
+     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
      * @param array $pictureAttrs
      * @param array $srcsetAttrs
      * @param array $imgAttrs
-     * @param bool $lazySizesFallback
      *
      * @return \Twig\Markup
      */
-    public function pictureTag($lazyLoad = false, $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [], $lazySizesFallback = false)
+    public function pictureTag($loading = 'eager', $placeHolder = 'box', $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [])
     {
         $content = '';
         // Handle the webp srcset
@@ -470,8 +470,8 @@ class OptimizedImage extends Model
                 $srcsetAttrs
             );
             // Handle lazy loading
-            if ($lazyLoad) {
-                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
+            if ($loading !== 'eager') {
+                $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
             }
             // Remove any empty attributes
             $attrs = array_filter($attrs);
@@ -488,8 +488,8 @@ class OptimizedImage extends Model
                 $srcsetAttrs
             );
             // Handle lazy loading
-            if ($lazyLoad) {
-                $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
+            if ($loading !== 'eager') {
+                $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
             }
             // Remove any empty attributes
             $attrs = array_filter($attrs);
@@ -504,13 +504,13 @@ class OptimizedImage extends Model
                 'width' => $this->placeholderWidth,
                 'height' => $this->placeholderHeight,
                 'src' => reset($this->optimizedImageUrls),
-                'loading' => $lazyLoad,
+                'loading' => '',
             ],
             $imgAttrs
         );
         // Handle lazy loading
-        if ($lazyLoad) {
-            $attrs = $this->swapLazyLoadAttrs($lazyLoad, $attrs, $lazySizesFallback);
+        if ($loading !== 'eager') {
+            $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
@@ -777,38 +777,56 @@ class OptimizedImage extends Model
     /**
      * Swap the tag attributes to work with lazy loading
      *
-     * @param string $lazyLoad
+     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
+     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
      * @param array $attrs
-     * @param bool $lazySizesFallback
      *
      * @return array
      */
-    protected function swapLazyLoadAttrs(string $lazyLoad, array $attrs, $lazySizesFallback = false): array
+    protected function swapLazyLoadAttrs(string $loading, string $placeHolder, array $attrs): array
     {
         // Set the class and loading attributes
         if (isset($attrs['class'])) {
             $attrs['class'] = trim($attrs['class'] . ' lazyload');
         }
-        if (!empty($attrs['loading'])) {
-            $attrs['loading'] = 'lazy';
-        }
         // Set the style on this element to be the placeholder image as the background-image
         if (isset($attrs['style']) && !empty($attrs['src'])) {
             $attrs['style'] = trim(
                 $attrs['style'] .
-                'background-image:url(' . $this->getLazyLoadSrc($lazyLoad) . '); background-size: cover;'
+                'background-image:url(' . $this->getLazyLoadSrc($placeHolder) . '); background-size: cover;'
             );
         }
-        // Only swap to data- attributes if they want the LazySizes fallback
-        if ($lazySizesFallback) {
-            if (!empty($attrs['srcset'])) {
-                $attrs['data-srcset'] = $attrs['srcset'];
-                $attrs['srcset'] = '';
-            }
-            if (!empty($attrs['src'])) {
-                $attrs['data-src'] = $attrs['src'];
-                $attrs['src'] = $this->getLazyLoadSrc($lazyLoad);
-            }
+        // Handle attributes that lazy  and lazySizesFallback have in common
+        switch ($loading) {
+            case 'lazy':
+            case 'lazySizesFallback':
+            if (isset($attrs['loading'])) {
+                    $attrs['loading'] = 'lazy';
+                }
+                break;
+            default:
+                break;
+        }
+        // Handle attributes that lazySizes and lazySizesFallback have in common
+        switch ($loading) {
+            case 'lazySizes':
+            case 'lazySizesFallback':
+                // Only swap to data- attributes if they want the LazySizes fallback
+                if (!empty($attrs['sizes'])) {
+                    $attrs['data-sizes'] = $attrs['sizes'];
+                    $attrs['sizes'] = '';
+                }
+                if (!empty($attrs['srcset'])) {
+                    $attrs['data-srcset'] = $attrs['srcset'];
+                    $attrs['srcset'] = '';
+                }
+                if (!empty($attrs['src'])) {
+                    $attrs['data-src'] = $attrs['src'];
+                    $attrs['src'] = $this->getLazyLoadSrc($placeHolder);
+                }
+            break;
+            default:
+                break;
         }
 
         return $attrs;

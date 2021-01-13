@@ -28,15 +28,27 @@ class ImageOptimizeVariable extends ManifestVariable
     // =========================================================================
 
     /**
-     * Render the lazy load JavaScript shim
+     * Render the LazySizes fallback JS
      *
      * @param array $scriptAttrs
      * @param array $variables
      * @return string
      */
-    public function renderLazyLoadJs($scriptAttrs = [], $variables = [])
+    public function renderLazySizesFallbackJs($scriptAttrs = [], $variables = [])
     {
-        return Template::raw(ImageOptimize::$plugin->optimize->renderLazyLoadJs($scriptAttrs, $variables));
+        return Template::raw(ImageOptimize::$plugin->optimize->renderLazySizesFallbackJs($scriptAttrs, $variables));
+    }
+
+    /**
+     * Render the LazySizes JS
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazySizesJs($scriptAttrs = [], $variables = [])
+    {
+        return Template::raw(ImageOptimize::$plugin->optimize->renderLazySizesJs($scriptAttrs, $variables));
     }
 
     /**
