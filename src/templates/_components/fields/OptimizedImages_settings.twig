@@ -14,13 +14,17 @@
 #}
 
 {% import "_includes/forms" as forms %}
-{% from 'image-optimize/_includes/macros' import checkboxGroupField %}
+{% from 'image-optimize/_includes/macros.twig' import checkboxGroupField %}
 {% from 'image-optimize/_includes/macros.twig' import registerJsModules %}
+{% from 'image-optimize/_includes/macros.twig' import registerCssModules %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
-{{ craft.imageOptimize.includeCssModule("vendors.css", false) }}
-{{ craft.imageOptimize.includeCssModule("styles.css", false) }}
+{% set cssModules = [
+    'vendors.css',
+    'styles.css',
+] %}
+{{ registerCssModules(cssModules) }}
 
 {% set jsModules = [
     'runtime.js',
