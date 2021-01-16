@@ -295,7 +295,6 @@ class OptimizedImages extends Field
         } else {
             $id = Craft::$app->getView()->formatInputId($thisId);
         }
-        $id = Craft::$app->getView()->formatInputId($thisId);
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
         Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
