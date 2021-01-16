@@ -10,6 +10,8 @@
  * @since     1.2.0
  */
 
+import ArrowLine from '../vue/ArrowLine.vue';
+
  ;(function ( $, window, document, undefined ) {
 
     var pluginName = "ImageOptimizeOptimizedImages",
@@ -54,6 +56,22 @@
 
 })( jQuery, window, document );
 
+function initSizesVueComponent(sizesWrapperId){
+     console.log(sizesWrapperId);
+     const vm = new Vue({
+         el: '#' + sizesWrapperId,
+         components: {
+             'arrow-line': ArrowLine,
+         },
+         data: {
+         },
+         methods: {
+         },
+         mounted() {
+         }
+     });
+}
+
 Craft.OptimizedImagesInput = Garnish.Base.extend(
     {
         id: null,
@@ -69,7 +87,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         blockSort: null,
         blockSelect: null,
 
-        init: function(id, inputNamePrefix) {
+        init: function(id, inputNamePrefix, sizesWrapperId) {
+
+            initSizesVueComponent(sizesWrapperId);
             this.id = id;
             this.inputNamePrefix = inputNamePrefix;
             this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);
