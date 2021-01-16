@@ -13,7 +13,7 @@ namespace nystudio107\imageoptimize\fields;
 use craft\helpers\Html;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
-use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
+use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
@@ -349,7 +349,7 @@ class OptimizedImages extends Field
             /** @var Asset $element */
             // Register our asset bundle
             try {
-                Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+                Craft::$app->getView()->registerAssetBundle(ImageOptimizeAsset::class);
             } catch (InvalidConfigException $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             }

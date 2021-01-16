@@ -13,8 +13,22 @@
  */
 #}
 
-{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
-{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/optimizedimagesfield/dist', true) %}
+{% from 'image-optimize/_includes/macros.twig' import registerJsModules %}
+
+{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
+
+{{ craft.imageOptimize.includeCssModule("vendors.css", false) }}
+{{ craft.imageOptimize.includeCssModule("styles.css", false) }}
+
+{% set jsModules = [
+    'runtime.js',
+    'vendors.js',
+    'commons.js',
+    'imageoptimize.js',
+    'field.js',
+] %}
+{{ registerJsModules(jsModules) }}
 
 {% import "_includes/forms" as forms %}
 

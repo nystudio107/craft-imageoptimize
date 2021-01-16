@@ -10,6 +10,7 @@ module.exports = {
     copyright: '©2020 nystudio107.com',
     entry: {
         'imageoptimize': '../src/assetbundles/imageoptimize/src/js/ImageOptimize.js',
+        'field': '../src/assetbundles/imageoptimize/src/js/OptimizedImagesField.js',
         'welcome': '../src/assetbundles/imageoptimize/src/js/Welcome.js',
     },
     extensions: ['.ts', '.js', '.vue', '.json'],
