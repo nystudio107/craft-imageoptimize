@@ -10,7 +10,6 @@
 
 namespace nystudio107\imageoptimize\utilities;
 
-use nystudio107\imageoptimize\helpers\Settings as SettingsHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\assetbundles\imageoptimizeutility\ImageOptimizeUtilityAsset;
 
@@ -50,7 +49,7 @@ class ImageOptimizeUtility extends Utility
      */
     public static function iconPath()
     {
-        return Craft::getAlias("@nystudio107/imageoptimize/assetbundles/imageoptimizeutility/dist/img/ImageOptimizeUtility-icon.svg");
+        return Craft::getAlias("@nystudio107/imageoptimize/icon-mask.svg");
     }
 
     /**
@@ -66,8 +65,6 @@ class ImageOptimizeUtility extends Utility
      */
     public static function contentHtml(): string
     {
-        Craft::$app->getView()->registerAssetBundle(ImageOptimizeUtilityAsset::class);
-
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
 
