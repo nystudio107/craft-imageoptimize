@@ -10,11 +10,12 @@
 
 namespace nystudio107\imageoptimize\fields;
 
-use craft\helpers\Html;
+use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
-use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\helpers\Manifest as ManifestHelper;
+use nystudio107\imageoptimize\variables\ManifestVariable;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
 use Craft;
@@ -23,6 +24,7 @@ use craft\base\Field;
 use craft\base\Volume;
 use craft\elements\Asset;
 use craft\fields\Matrix;
+use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\models\FieldLayout;
 use craft\validators\ArrayValidator;
@@ -297,9 +299,11 @@ class OptimizedImages extends Field
         }
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
+        $sizesWrapperId = Craft::$app->getView()->namespaceInputId('sizes-wrapper');
         Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
             '"'.$namespacedId.'", '.
-            '"'.$namespacePrefix.'"'.
+            '"'.$namespacePrefix.'",'.
+            '"'.$sizesWrapperId.'"'.
             ');');
 
         // Prep our aspect ratios
@@ -316,6 +320,18 @@ class OptimizedImages extends Field
         $aspectRatios[] = $aspectRatio;
         // Get only the user-editable settings
         $settings = ImageOptimize::$plugin->getSettings();
+
+        // Register our CSS
+        $cssModules = [
+            'vendors.css',
+            'styles.css',
+        ];
+        foreach($cssModules as $cssModule) {
+            $css = ManifestHelper::getModule(ManifestVariable::$config, $cssModule, 'legacy', true);
+            if ($css) {
+                Craft::$app->getView()->registerCssFile($css);
+            }
+        }
 
         // Render the settings template
         try {
@@ -375,6 +391,19 @@ class OptimizedImages extends Field
 
             $settings = ImageOptimize::$plugin->getSettings();
             $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
+
+            // Register our CSS
+            $cssModules = [
+                'vendors.css',
+                'styles.css',
+            ];
+            foreach($cssModules as $cssModule) {
+                $css = ManifestHelper::getModule(ManifestVariable::$config, $cssModule, 'legacy', true);
+                if ($css) {
+                    Craft::$app->getView()->registerCssFile($css);
+                }
+            }
+
             // Render the input template
             try {
                 return Craft::$app->getView()->renderTemplate(

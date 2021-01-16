@@ -13,7 +13,7 @@ class ManifestVariable
     // Protected Static Properties
     // =========================================================================
 
-    protected static $config = [
+    public static $config = [
         // If `devMode` is on, use webpack-dev-server to all for HMR (hot module reloading)
         'useDevServer' => false,
         // Manifest names

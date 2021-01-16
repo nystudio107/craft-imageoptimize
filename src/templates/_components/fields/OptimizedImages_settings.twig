@@ -16,15 +16,8 @@
 {% import "_includes/forms" as forms %}
 {% from 'image-optimize/_includes/macros.twig' import checkboxGroupField %}
 {% from 'image-optimize/_includes/macros.twig' import registerJsModules %}
-{% from 'image-optimize/_includes/macros.twig' import registerCssModules %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
-
-{% set cssModules = [
-    'vendors.css',
-    'styles.css',
-] %}
-{{ registerCssModules(cssModules) }}
 
 {% set jsModules = [
     'runtime.js',
@@ -90,6 +83,10 @@
         'name': 'displayLazyLoadPlaceholderImages',
         'on': field.displayLazyLoadPlaceholderImages,
     }) }}
+    <div id="sizes-wrapper">
+        Hello
+        <confetti></confetti>
+    </div>
     <!-- variants -->
     <div class="field">
     </div>
