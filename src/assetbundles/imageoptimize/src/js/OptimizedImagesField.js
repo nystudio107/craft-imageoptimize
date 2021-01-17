@@ -10,7 +10,7 @@
  * @since     1.2.0
  */
 
-import ArrowLine from '../vue/ArrowLine.vue';
+import SizesContainer from '../vue/SizesContainer.vue';
 
  ;(function ( $, window, document, undefined ) {
 
@@ -61,7 +61,7 @@ function initSizesVueComponent(sizesWrapperId){
      const vm = new Vue({
          el: '#' + sizesWrapperId,
          components: {
-             'arrow-line': ArrowLine,
+             'sizes-container': SizesContainer,
          },
          data: {
          },
