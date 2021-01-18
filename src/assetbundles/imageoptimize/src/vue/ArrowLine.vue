@@ -1,5 +1,5 @@
 <template>
-  <svg width="100%" height="20px">
+  <svg width="100%" height="20px" xmlns="http://www.w3.org/2000/svg">
     <marker :id="`${ id }startarrow`" :markerWidth="markerWidth" :markerHeight="markerHeight"
             :refX="markerWidth" :refY="markerHeight / 2" orient="auto">
       <polygon :points="`${ markerWidth } 0, ${ markerWidth } ${ markerHeight }, 0 ${ markerHeight / 2 }`" :fill="strokeColor" />
@@ -20,10 +20,6 @@
           id: {
             type: String,
             default: '',
-          },
-          width: {
-            type: Number,
-            default: 200,
           },
           label: {
             type: String,
