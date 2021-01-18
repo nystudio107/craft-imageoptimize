@@ -24,7 +24,7 @@ export default {
       type: Array,
       default: [
         {
-          breakpointValue: 1200,
+          breakpointValue: 1000,
           breakpointUnits: 'px',
         },
         {

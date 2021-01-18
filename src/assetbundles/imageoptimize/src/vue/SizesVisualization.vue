@@ -9,19 +9,27 @@
       :id="id"
       :label="breakpointValue + breakpointUnits"
     ></arrow-line>
-    <rect x="1" y="20" :width="breakpointValue - 2" height="98" fill="#DDD" stroke="#AAA" stroke-width="2" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
+
+    <rect x="1" y="20" :width="breakpointValue - 2" height="198" fill="#DDD" stroke="#AAA" stroke-width="2" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
     </rect>
-    <rect x="1" y="20" :width="breakpointValue - 2" height="80" fill="#DDD" stroke="#AAA"  stroke-width="2">
+
+    <rect x="1" y="20" :width="breakpointValue - 2" height="180" fill="#DDD" stroke="#AAA"  stroke-width="2">
     </rect>
 
     <defs>
-      <pattern id="svg-triangle-pattern" width="20" height="10" patternUnits="userSpaceOnUse">
-        <path class="svg-triangle" d="M0,0 L10,10 20,0" fill="#DDD"></path>
+      <pattern id="svg-triangle-pattern" width="16" height="10" patternUnits="userSpaceOnUse">
+        <path class="svg-triangle" d="M0,0 L8,8 16,0" fill="rgb(221, 231, 242)" stroke="rgb(163, 193, 226)" stroke-linecap="square" ></path>
       </pattern>'
     </defs>
 
-    <rect x="0" y="100" :width="breakpointValue" height="8" fill="url(#svg-triangle-pattern)">
-    </rect>
+    <svg v-for="n in numUp">
+      <rect :x="xForRect(n)" y="40" :width="breakpointValue / numUp" height="130" fill="rgb(221, 231, 242)" stroke-width="2">
+      </rect>
+      <polyline :points="pointsForRect(n)" stroke="rgb(163, 193, 226)" stroke-width="2" fill="none"></polyline>
+      <rect x="0" y="170" :width="breakpointValue" height="8" fill="url(#svg-triangle-pattern)">
+      </rect>
+
+    </svg>
 
     <text x="50%" y="50%" text-anchor="middle" alignment-baseline="central" font-size="40">
       hi
@@ -81,11 +89,10 @@ export default {
     },
   },
   computed: {
-    breakpointWidth() {
+    breakpointWidth():String {
       let percent:Number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
 
       return percent + '%';
-      //return normalizeUnitsToPx(this.breakpointValue, this.breakpointUnits);
     }
   },
   data() {
@@ -93,6 +100,15 @@ export default {
     }
   },
   methods: {
+    xForRect(n:Number):Number {
+      return (n - 1) * (this.breakpointValue / this.numUp);
+    },
+    pointsForRect(n:Number):String {
+      const x:Number = this.xForRect(n) + 1;
+      const w:Number = (this.breakpointValue / this.numUp);
+
+      return `${x},170 ${x},40 ${x + w},40 ${x + w},170`;
+    }
   }
 }
 </script>
