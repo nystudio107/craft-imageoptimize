@@ -15,20 +15,9 @@
 
     <rect x="1" y="20" :width="breakpointValue - 2" height="180" fill="#DDD" stroke="#AAA"  stroke-width="2">
     </rect>
-
-    <defs>
-      <pattern id="svg-triangle-pattern" width="16" height="10" patternUnits="userSpaceOnUse">
-        <path class="svg-triangle" d="M0,0 L8,8 16,0" fill="rgb(221, 231, 242)" stroke="rgb(163, 193, 226)" stroke-linecap="square" ></path>
-      </pattern>'
-    </defs>
-
+    
     <svg v-for="n in numUp">
-      <rect :x="xForRect(n)" y="40" :width="breakpointValue / numUp" height="130" fill="rgb(221, 231, 242)" stroke-width="2">
-      </rect>
-      <polyline :points="pointsForRect(n)" stroke="rgb(163, 193, 226)" stroke-width="2" fill="none"></polyline>
-      <rect x="0" y="170" :width="breakpointValue" height="8" fill="url(#svg-triangle-pattern)">
-      </rect>
-
+      <polyline :points="pointsForImagePoly(n)" stroke="rgb(163, 193, 226)" stroke-width="2" fill="rgb(221, 231, 242)"></polyline>
     </svg>
 
     <text x="50%" y="50%" text-anchor="middle" alignment-baseline="central" font-size="40">
@@ -42,7 +31,7 @@
 import ArrowLine from '../vue/ArrowLine.vue';
 const remPx:number = 16;
 const emPx:number = 16;
-const maxNormalizedWidth = 1000;
+const maxNormalizedWidth:number = 1000;
 
 const normalizeUnitsToPx = (value: number, units: string) => {
   let result:number;
@@ -89,7 +78,7 @@ export default {
     },
   },
   computed: {
-    breakpointWidth():String {
+    breakpointWidth():string {
       let percent:Number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
 
       return percent + '%';
@@ -100,14 +89,27 @@ export default {
     }
   },
   methods: {
-    xForRect(n:Number):Number {
+    xForRect(n:number):number {
       return (n - 1) * (this.breakpointValue / this.numUp);
     },
-    pointsForRect(n:Number):String {
-      const x:Number = this.xForRect(n) + 1;
-      const w:Number = (this.breakpointValue / this.numUp);
+    pointsForImagePoly(n:number):string {
+      const x:number = this.xForRect(n) + 1;
+      let x2:number = (this.breakpointValue / this.numUp) + x;
+      const y:number = 40;
+      let y2:number = 170;
+      let polyPoints:string = `${x},${y2} ${x},${y} ${x2},${y} ${x2},${y2}`;
+      let yStep:number = 10;
+      let xStep:number = 10;
+      // Loop through to add the "saw" look
+      while (x2 > x) {
+        polyPoints += ` ${x2},${y2}`;
+        x2 -= xStep;
+        y2 -= yStep;
+        yStep *= -1;
+      }
+      polyPoints += ` ${x2},${y2}`;
 
-      return `${x},170 ${x},40 ${x + w},40 ${x + w},170`;
+      return polyPoints;
     }
   }
 }

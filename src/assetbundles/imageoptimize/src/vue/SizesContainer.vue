@@ -35,9 +35,9 @@ export default {
     },
   },
   computed: {
-    widthMultiplier() {
-      let multiplier = 1;
-      const largest = Math.max(...this.sizesDataList.map((sizesData:Object) => sizesData.breakpointValue));
+    widthMultiplier():number {
+      let multiplier:number = 1;
+      const largest:number = Math.max(...this.sizesDataList.map((sizesData:Object) => sizesData.breakpointValue));
 
       return largest > maxNormalizedWidth ? maxNormalizedWidth / largest : 1;
     }
@@ -47,7 +47,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.widthMultiplier);
   },
   methods: {
   }
