@@ -1,22 +1,14 @@
 <template>
   <div class="matrix" style="position: relative;">
     <div class="variant-blocks">
-      <div class="matrixblock" v-for="sizesData in sizesDataList">
-        <div class="titlebar">
-          <div class="blocktype"></div>
-          <div class="preview"></div>
-        </div>
-        <div class="actions">
-        </div>
-        <div class="fields">
-          <sizes-visualization
-            :id="id"
-            v-bind="sizesData"
-            :key="sizesData.breakpointValue"
-            :widthMultiplier="widthMultiplier"
-          >
-          </sizes-visualization>
-        </div>
+      <div v-for="sizesData in sizesDataList">
+        <sizes-visualization
+          :id="id"
+          v-bind="sizesData"
+          :key="sizesData.breakpointValue"
+          :widthMultiplier="widthMultiplier"
+        >
+        </sizes-visualization>
       </div>
     </div>
   </div>
@@ -68,6 +60,7 @@ export default {
   },
   data() {
     return {
+      title: '',
     }
   },
   mounted() {
