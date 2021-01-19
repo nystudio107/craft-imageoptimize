@@ -1,7 +1,24 @@
 <template>
-  <div class="w-full overflow-hidden">
-    <sizes-visualization :id="id" v-for="sizesData in sizesDataList" v-bind="sizesData" :key="sizesData.breakpointValue" :widthMultiplier="widthMultiplier">
-    </sizes-visualization>
+  <div class="matrix" style="position: relative;">
+    <div class="variant-blocks">
+      <div class="matrixblock" v-for="sizesData in sizesDataList">
+        <div class="titlebar">
+          <div class="blocktype"></div>
+          <div class="preview"></div>
+        </div>
+        <div class="actions">
+        </div>
+        <div class="fields">
+          <sizes-visualization
+            :id="id"
+            v-bind="sizesData"
+            :key="sizesData.breakpointValue"
+            :widthMultiplier="widthMultiplier"
+          >
+          </sizes-visualization>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -9,7 +26,7 @@
 
 import SizesVisualization from '../vue/SizesVisualization.vue';
 
-const maxNormalizedWidth = 1000;
+const maxNormalizedWidth:number = 1000;
 
 export default {
   components: {
@@ -24,11 +41,18 @@ export default {
       type: Array,
       default: [
         {
-          breakpointValue: 1000,
+          numUp: 4,
+          breakpointValue: 1280,
           breakpointUnits: 'px',
         },
         {
-          breakpointValue: 900,
+          numUp: 2,
+          breakpointValue: 1024,
+          breakpointUnits: 'px',
+        },
+        {
+          numUp: 1,
+          breakpointValue: 768,
           breakpointUnits: 'px',
         },
       ]

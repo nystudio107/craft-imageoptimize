@@ -124,8 +124,8 @@ export default {
   },
   computed: {
     breakpointWidth():string {
-      let percent:Number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
-
+      let percent:number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
+console.log(this.widthMultiplier);
       return percent + '%';
     },
     placeholderWidth():number {
