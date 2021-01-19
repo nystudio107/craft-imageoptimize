@@ -28,7 +28,7 @@ export default {
           breakpointUnits: 'px',
         },
         {
-          breakpointValue: 800,
+          breakpointValue: 900,
           breakpointUnits: 'px',
         },
       ]

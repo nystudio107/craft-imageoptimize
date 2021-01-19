@@ -1,7 +1,7 @@
 <template>
   <svg
     :width="breakpointWidth"
-    :viewBox="'0 0 ' + breakpointValue + ' 200'"
+    :viewBox="'0 0 ' + breakpointValue + ' 220'"
     preserveAspectRatio="none"
     xmlns="http://www.w3.org/2000/svg"
   >
@@ -10,20 +10,44 @@
       :label="breakpointValue + breakpointUnits"
     ></arrow-line>
 
-    <rect x="1" y="20" :width="breakpointValue - 2" height="198" fill="#DDD" stroke="#AAA" stroke-width="2" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
+    <pattern id="imageDiagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
+      <path d="M-1,1 l2,-2
+           M0,4 l4,-4
+           M3,5 l2,-2"
+            style="stroke:rgb(163, 193, 226); stroke-width:1" />
+    </pattern>
+
+    <pattern id="paddingDiagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
+      <path d="M-1,1 l2,-2
+           M0,4 l4,-4
+           M3,5 l2,-2"
+            style="stroke:#AAA; stroke-width:1" />
+    </pattern>
+
+    <rect x="1" y="20" :width="breakpointValue - 2" height="200" fill="#DDD" stroke="#AAA" stroke-width="2">
     </rect>
 
-    <rect x="1" y="20" :width="breakpointValue - 2" height="180" fill="#DDD" stroke="#AAA"  stroke-width="2">
-    </rect>
-    
+    <rect :x="0" y="20" :width="rowPaddingValue" height="200" stroke="#AAA" stroke-width="2" fill="url(#paddingDiagonalHatch)"></rect>
+
+    <rect :x="breakpointValue - rowPaddingValue" y="20" :width="rowPaddingValue" height="200" stroke="#AAA" stroke-width="2" fill="url(#paddingDiagonalHatch)"></rect>
+
     <svg v-for="n in numUp">
-      <polyline :points="pointsForImagePoly(n)" stroke="rgb(163, 193, 226)" stroke-width="2" fill="rgb(221, 231, 242)"></polyline>
-    </svg>
+      <arrow-line
+        :id="id"
+        :label="breakpointValue + breakpointUnits"
+      ></arrow-line>
 
-    <text x="50%" y="50%" text-anchor="middle" alignment-baseline="central" font-size="40">
-      hi
-    </text>
+      <rect :x="cellX(n)" y="40" :width="cellWidth" height="160" stroke="rgb(163, 193, 226)" stroke-width="2" fill="url(#imageDiagonalHatch)"></rect>
+
+      <polyline :points="pointsForImagePoly(n)" stroke="rgb(163, 193, 226)" stroke-width="2" fill="rgb(221, 231, 242)">
+      </polyline>
+
+      <svg :x="placeholderX(n)" y="5" :width="placeholderWidth" viewBox="0 0 185 170" xmlns="http://www.w3.org/2000/svg">
+        <path fill="rgb(163, 193, 226)" d="M15 130.896V16.994c0-1.097.898-1.994 2.007-1.994h150.986A2 2 0 0 1 170 16.994v69.147L133.015 51 87.26 120.377l-35.863-17.758L15 130.896zM2 0C.895 0 0 .887 0 2v166c0 1.105.887 2 2 2h181c1.105 0 2-.887 2-2V2c0-1.105-.887-2-2-2H2zm49 72c11.046 0 20-9.178 20-20.5S62.046 31 51 31s-20 9.178-20 20.5S39.954 72 51 72z" fill-rule="evenodd"/>
+      </svg>
+    </svg>
   </svg>
+
 </template>
 
 <script lang="ts">
@@ -62,7 +86,7 @@ export default {
     },
     numUp: {
       type: Number,
-      default: 2,
+      default: 4,
     },
     widthMultiplier: {
       type: Number,
@@ -76,28 +100,67 @@ export default {
       type: String,
       default: '',
     },
+    rowPaddingValue: {
+      type: Number,
+      default: 100,
+    },
+    rowPaddingUnits: {
+      type: String,
+      default: '',
+    },
+    cellPaddingValue: {
+      type: Number,
+      default: 20,
+    },
+    cellPaddingUnits: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     breakpointWidth():string {
       let percent:Number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
 
       return percent + '%';
-    }
+    },
+    placeholderWidth():number {
+      let calc:number = 200 / this.numUp;
+      return Math.min(calc, 50);
+    },
+    rowWidth():number {
+      return this.breakpointValue - (this.rowPaddingValue * 2);
+    },
+    cellWidth():number {
+      return this.rowWidth / this.numUp;
+    },
+    imageWidth():number {
+      return this.cellWidth - (this.cellPaddingValue * 2);
+    },
   },
   data() {
     return {
     }
   },
   methods: {
+    placeholderX(n:number):number {
+      return this.imageX(n) + ((this.imageWidth / 2) - (this.placeholderWidth / 2));
+    },
+    cellX(n:number):number {
+      return this.rowPaddingValue + ((n - 1) * (this.rowWidth / this.numUp));
+    },
+    imageX(n:number):number {
+      return this.cellPaddingValue + this.cellX(n);
+    },
     xForRect(n:number):number {
       return (n - 1) * (this.breakpointValue / this.numUp);
     },
     pointsForImagePoly(n:number):string {
-      const x:number = this.xForRect(n) + 1;
-      let x2:number = (this.breakpointValue / this.numUp) + x;
-      const y:number = 40;
-      let y2:number = 170;
-      let polyPoints:string = `${x},${y2} ${x},${y} ${x2},${y} ${x2},${y2}`;
+      const x:number = this.imageX(n) + 1;
+      let x2:number = x + this.imageWidth;
+      const y:number = 60;
+      let y2:number = 185;
+      const lastSawToothAdjust = this.imageWidth % 20;
+      let polyPoints:string = `${x},${y2 - lastSawToothAdjust} ${x},${y} ${x2},${y} ${x2},${y2}`;
       let yStep:number = 10;
       let xStep:number = 10;
       // Loop through to add the "saw" look
@@ -107,7 +170,8 @@ export default {
         y2 -= yStep;
         yStep *= -1;
       }
-      polyPoints += ` ${x2},${y2}`;
+      polyPoints += ` ${x},${y2 + x2 - x}`;
+      polyPoints += ` ${x},160`;
 
       return polyPoints;
     }
