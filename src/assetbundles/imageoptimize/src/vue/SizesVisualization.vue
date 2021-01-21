@@ -123,7 +123,7 @@ export default {
     },
     rowPaddingUnits: {
       type: String,
-      default: '',
+      default: 'px',
     },
     cellPaddingValue: {
       type: Number,
@@ -131,7 +131,7 @@ export default {
     },
     cellPaddingUnits: {
       type: String,
-      default: '',
+      default: 'px',
     },
   },
   computed: {
@@ -153,7 +153,13 @@ export default {
       return Math.round(this.cellWidth - (this.cellPaddingValue * 2));
     },
     title():string {
-      const title: string = '(min-width:' + this.breakpointValue + 'px) ' + this.imageWidth + 'px';
+      let vw:number = Math.round(100 / this.numUp);
+      const displayBreakpoint: string = this.breakpointValue + this.breakpointUnits;
+      const displayVw: string = Math.round(100 / this.numUp) + 'vw';
+      const displayPadding: string = ((this.rowPaddingValue * 2) / this.numUp) + this.rowPaddingUnits;
+      const displayCellPadding: string = (this.cellPaddingValue * 2) + this.cellPaddingUnits;
+      const title: string =
+        `(min-width: ${displayBreakpoint}) calc((${displayVw} - ${displayPadding}) - ${displayCellPadding})`;
 
       return title;
     }
@@ -163,8 +169,6 @@ export default {
     }
   },
   mounted() {
-    // Force a computation
-    this.title;
   },
   methods: {
     placeholderX(n:number):number {
