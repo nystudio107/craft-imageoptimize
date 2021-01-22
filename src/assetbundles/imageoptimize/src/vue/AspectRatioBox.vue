@@ -8,11 +8,10 @@
 
     <svg :width="width - 10" :x="x + 5" y="60">
       <arrow-line
-        :id="id"
         :label="width + 'w'"
         :stroke-color="'rgb(163, 193, 226)'"
         :fill-color="'rgb(221, 231, 242)'"
-      ></arrow-line>
+      />
     </svg>
 
     <svg :x="placeholderX()" y="10" :width="40" viewBox="0 0 185 170" xmlns="http://www.w3.org/2000/svg">
@@ -32,7 +31,6 @@ export default {
     'arrow-line': ArrowLine,
   },
   props: {
-    numUp: Number,
     x: Number,
     y: Number,
     width: Number,
@@ -85,7 +83,7 @@ export default {
       return this.x + ((this.width / 2) - (this.placeholderWidth() / 2));
     },
     placeholderWidth():number {
-      let calc:number = 200 / this.numUp;
+      let calc:number = this.width / 5;
       return Math.min(calc, 50);
     },
   }

@@ -15,7 +15,6 @@
 </template>
 
 <script lang="ts">
-
 import SizesVisualization from '../vue/SizesVisualization.vue';
 
 const maxNormalizedWidth:number = 1000;

@@ -17,10 +17,6 @@
 <script lang="ts">
     export default {
         props: {
-          id: {
-            type: String,
-            default: '',
-          },
           label: {
             type: String,
             default: 'label',
@@ -36,12 +32,16 @@
         },
         data() {
           return {
+            id: null,
             markerWidth: 4,
             markerHeight: 4,
             lineY: 12,
           }
         },
-        methods: {
+      mounted () {
+        this.id = this._uid
+      },
+      methods: {
         }
     }
 </script>

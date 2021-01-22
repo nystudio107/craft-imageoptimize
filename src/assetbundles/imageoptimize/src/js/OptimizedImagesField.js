@@ -57,7 +57,6 @@ import SizesContainer from '../vue/SizesContainer.vue';
 })( jQuery, window, document );
 
 function initSizesVueComponent(sizesWrapperId){
-     console.log(sizesWrapperId);
      const vm = new Vue({
          el: '#' + sizesWrapperId,
          components: {
