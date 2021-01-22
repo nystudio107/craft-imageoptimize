@@ -9,57 +9,57 @@
     <div class="actions">
     </div>
 
-  <div class="fields">
-    <svg
-      :width="breakpointWidth"
-      :viewBox="'0 0 ' + breakpointValue + ' 220'"
-      preserveAspectRatio="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <arrow-line
-        :label="breakpointValue + breakpointUnits"
-      />
-      <rect x="1"
-            y="20"
-            :width="breakpointValue - 2"
-            height="200"
-            fill="#DDD"
-            stroke="#AAA"
-            stroke-width="2"
-      />
-      <hatch-box x="0"
-                 y="20"
-                 :width="rowPaddingValue"
-                 :height="200"
-                 stroke-color="#AAA"
-                 :stroke-width="2"
-                 hatch-color="#AAA"
-      />
-      <hatch-box :x="breakpointValue - rowPaddingValue"
-                 :y="20"
-                 :width="rowPaddingValue"
-                 :height="200"
-                 stroke-color="#AAA"
-                 :stroke-width="2"
-                 hatch-color="#AAA"
-      />
-      <svg v-for="n in numUp">
-        <hatch-box :x="cellX(n)"
-                   :y="40"
-                   :width="cellWidth"
-                   :height="160"
-                   stroke-color="rgb(163, 193, 226)"
+    <div class="fields">
+      <svg
+        :width="breakpointWidth"
+        :viewBox="'0 0 ' + breakpointValue + ' 220'"
+        preserveAspectRatio="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <arrow-line
+          :label="breakpointValue + breakpointUnits"
+        />
+        <rect x="1"
+              y="20"
+              :width="breakpointValue - 2"
+              height="200"
+              fill="#DDD"
+              stroke="#AAA"
+              stroke-width="2"
+        />
+        <hatch-box x="0"
+                   y="20"
+                   :width="rowPaddingValue"
+                   :height="200"
+                   stroke-color="#AAA"
                    :stroke-width="2"
-                   hatch-color="rgb(163, 193, 226)"
+                   hatch-color="#AAA"
         />
-        <aspect-ratio-box :x="imageX(n)"
-                          :y="60"
-                          :width="imageWidth"
-                          :height="130"
+        <hatch-box :x="breakpointValue - rowPaddingValue"
+                   :y="20"
+                   :width="rowPaddingValue"
+                   :height="200"
+                   stroke-color="#AAA"
+                   :stroke-width="2"
+                   hatch-color="#AAA"
         />
+        <svg v-for="n in numUp">
+          <hatch-box :x="cellX(n)"
+                     :y="40"
+                     :width="cellWidth"
+                     :height="160"
+                     stroke-color="rgb(163, 193, 226)"
+                     :stroke-width="2"
+                     hatch-color="rgb(163, 193, 226)"
+          />
+          <aspect-ratio-box :x="imageX(n)"
+                            :y="60"
+                            :width="imageWidth"
+                            :height="130"
+          />
+        </svg>
       </svg>
-    </svg>
-  </div>
+    </div>
   </div>
 </template>
 
