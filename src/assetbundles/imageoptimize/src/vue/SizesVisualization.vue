@@ -20,10 +20,14 @@
         :id="id"
         :label="breakpointValue + breakpointUnits"
       />
-
-      <rect x="1" y="20" :width="breakpointValue - 2" height="200" fill="#DDD" stroke="#AAA" stroke-width="2">
-      </rect>
-
+      <rect x="1"
+            y="20"
+            :width="breakpointValue - 2"
+            height="200"
+            fill="#DDD"
+            stroke="#AAA"
+            stroke-width="2"
+      />
       <hatch-box x="0"
                  y="20"
                  :width="rowPaddingValue"
@@ -40,7 +44,6 @@
                  stroke-width="2"
                  hatch-color="#AAA"
       />
-
       <svg v-for="n in numUp">
         <hatch-box :x="cellX(n)"
                    :y="40"
