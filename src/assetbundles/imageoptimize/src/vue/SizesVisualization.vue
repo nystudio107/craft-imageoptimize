@@ -52,7 +52,7 @@
                      :stroke-width="2"
                      hatch-color="rgb(163, 193, 226)"
           />
-          <aspect-ratio-box :x="imageX(n)"
+          <image-preview-box :x="imageX(n)"
                             :y="60"
                             :width="imageWidth"
                             :height="calcHeight(imageWidth)"
@@ -66,7 +66,7 @@
 <script lang="ts">
 import ArrowLine from './ArrowLine.vue';
 import HatchBox from './HatchBox.vue';
-import AspectRatioBox from "./AspectRatioBox.vue";
+import ImagePreviewBox from "./ImagePreviewBox.vue";
 
 const remPx:number = 16;
 const emPx:number = 16;
@@ -92,7 +92,7 @@ const normalizeUnitsToPx = (value: number, units: string) => {
 
 export default {
   components: {
-    AspectRatioBox,
+    'image-preview-box': ImagePreviewBox,
     'arrow-line': ArrowLine,
     'hatch-box': HatchBox,
   },
@@ -186,9 +186,6 @@ export default {
     },
     calcHeight(w:number):number {
       const calcHeight:number = w * (this.ratioY / this.ratioX);
-
-      console.log(w);
-      console.log(calcHeight);
 
       return calcHeight;
     },
