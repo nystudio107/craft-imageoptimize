@@ -200,6 +200,15 @@ class OptimizedImages extends Field
 
     /**
      * @inheritdoc
+     * @since 2.0.0
+     */
+    public function useFieldset(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function afterElementSave(ElementInterface $asset, bool $isNew)
     {
