@@ -3,6 +3,7 @@
 ## 1.7.0 - UNRELEASED
 ### Added
 * Added a `stickyErrors` property to the OptimizedImages model, so we can post-facto display if something went wrong during image generation on the frontend to users
+* Implemented `useFieldset` for Craft 3.6
 
 ### Fixed
 * Fixed deprecation errors in Craft CMS 3.5 or later
