@@ -200,7 +200,7 @@ class OptimizedImages extends Field
 
     /**
      * @inheritdoc
-     * @since 2.0.0
+     * @since 1.7.0
      */
     public function useFieldset(): bool
     {
