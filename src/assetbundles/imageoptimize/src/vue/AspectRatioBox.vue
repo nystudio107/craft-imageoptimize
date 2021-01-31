@@ -114,7 +114,6 @@ export default {
         h = (this.containerSize / 2) / this.aspectRatio;
       }
 
-      console.log(h);
       return h;
     }
   },

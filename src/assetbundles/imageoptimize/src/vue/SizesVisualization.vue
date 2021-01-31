@@ -10,6 +10,16 @@
     </div>
 
     <div class="fields">
+      <div>
+        <label>Breakpoint:</label>
+        <input v-model.number="breakpointValue" type="number" min="1" step="1" />
+        <label>Num up:</label>
+        <input v-model.number="numUp" type="number" min="1" max="8" step="1" />
+        <label>Row padding:</label>
+        <input v-model.number="rowPaddingValue" type="number" min="0" step="1" />
+        <label>Call padding:</label>
+        <input v-model.number="cellPaddingValue" type="number" min="0" step="1" />
+      </div>
       <svg
         :width="breakpointWidth"
         :viewBox="'0 0 ' + breakpointValue + ' ' + (calcHeight(imageWidth) + 100)"
@@ -43,7 +53,7 @@
                    :stroke-width="2"
                    hatch-color="#AAA"
         />
-        <svg v-for="n in numUp">
+        <svg v-for="(n,i) in numUp" :key="'svg' + i">
           <hatch-box :x="cellX(n)"
                      :y="40"
                      :width="cellWidth"
@@ -51,12 +61,14 @@
                      stroke-color="rgb(163, 193, 226)"
                      :stroke-width="2"
                      hatch-color="rgb(163, 193, 226)"
+                     :key="'hatch' + i"
           />
           <image-preview-box :x="imageX(n)"
                              :y="60"
                              :width="imageWidth"
                              :height="calcHeight(imageWidth)"
                              :sawtooth="!useAspectRatio"
+                             :key="'image' + i"
           />
         </svg>
       </svg>
@@ -102,6 +114,7 @@ export default {
       type: String,
       default: '',
     },
+    index: Number,
     numUp: {
       type: Number,
       default: 3,
@@ -146,6 +159,36 @@ export default {
       type: String,
       default: 'px',
     },
+  },
+  watch: {
+    numUp(newVal, oldVal) {
+      this.$emit('update:sizesprop', {
+        index: this.index,
+        prop: 'numUp',
+        val: newVal,
+      });
+    },
+    breakpointValue(newVal, oldVal) {
+      this.$emit('update:sizesprop', {
+        index: this.index,
+        prop: 'breakpointValue',
+        val: newVal,
+      });
+    },
+    rowPaddingValue(newVal, oldVal) {
+      this.$emit('update:sizesprop', {
+        index: this.index,
+        prop: 'rowPaddingValue',
+        val: newVal,
+      });
+    },
+    cellPaddingValue(newVal, oldVal) {
+      this.$emit('update:sizesprop', {
+        index: this.index,
+        prop: 'cellPaddingValue',
+        val: newVal,
+      });
+    }
   },
   computed: {
     breakpointWidth():string {

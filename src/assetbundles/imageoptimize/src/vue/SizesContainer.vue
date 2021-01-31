@@ -9,12 +9,13 @@
         <div v-for="sizesData in sizesDataList">
           <sizes-visualization
             :id="id"
-            v-bind="sizesData"
-            :key="sizesData.breakpointValue"
+            v-bind.sync="sizesData"
+            :key="sizesData.index"
             :widthMultiplier="widthMultiplier"
             :ratio-x="ratioX"
             :ratio-y="ratioY"
             :use-aspect-ratio="useAspectRatio"
+            @update:sizesprop="onUpdateSizesProp($event)"
           >
           </sizes-visualization>
         </div>
@@ -55,16 +56,19 @@ export default {
       type: Array,
       default: [
         {
+          index: 0,
           numUp: 4,
           breakpointValue: 1280,
           breakpointUnits: 'px',
         },
         {
+          index: 1,
           numUp: 2,
           breakpointValue: 1024,
           breakpointUnits: 'px',
         },
         {
+          index: 2,
           numUp: 1,
           breakpointValue: 768,
           breakpointUnits: 'px',
@@ -75,7 +79,8 @@ export default {
   computed: {
     widthMultiplier():number {
       let multiplier:number = 1;
-      const largest:number = Math.max(...this.sizesDataList.map((sizesData:Object) => sizesData.breakpointValue));
+      let largest:number = 0;
+      largest = Math.max(...this.sizesDataList.map((sizesData:Object) => parseInt(sizesData.breakpointValue)));
 
       return largest > maxNormalizedWidth ? maxNormalizedWidth / largest : 1;
     }
@@ -88,6 +93,13 @@ export default {
   mounted() {
   },
   methods: {
+    onUpdateSizesProp(val) {
+      this.sizesDataList.forEach((sizesData, index) => {
+        if (sizesData.index === val.index) {
+          this.$set(this.sizesDataList[index], val.prop, val.value);
+        }
+      });
+    },
     onAspectRatioSelected(val) {
       this.ratioX = val.ratioX;
       this.ratioY = val.ratioY;
