@@ -9,7 +9,7 @@
         <div v-for="sizesData in sizesDataList">
           <sizes-visualization
             :id="id"
-            v-bind.sync="sizesData"
+            v-bind="sizesData"
             :key="sizesData.index"
             :widthMultiplier="widthMultiplier"
             :ratio-x="ratioX"
@@ -96,7 +96,7 @@ export default {
     onUpdateSizesProp(val) {
       this.sizesDataList.forEach((sizesData, index) => {
         if (sizesData.index === val.index) {
-          this.$set(this.sizesDataList[index], val.prop, val.value);
+          sizesData[val.prop] = val.value;
         }
       });
     },

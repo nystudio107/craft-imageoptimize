@@ -165,28 +165,28 @@ export default {
       this.$emit('update:sizesprop', {
         index: this.index,
         prop: 'numUp',
-        val: newVal,
+        value: newVal,
       });
     },
     breakpointValue(newVal, oldVal) {
       this.$emit('update:sizesprop', {
         index: this.index,
         prop: 'breakpointValue',
-        val: newVal,
+        value: newVal,
       });
     },
     rowPaddingValue(newVal, oldVal) {
       this.$emit('update:sizesprop', {
         index: this.index,
         prop: 'rowPaddingValue',
-        val: newVal,
+        value: newVal,
       });
     },
     cellPaddingValue(newVal, oldVal) {
       this.$emit('update:sizesprop', {
         index: this.index,
         prop: 'cellPaddingValue',
-        val: newVal,
+        value: newVal,
       });
     }
   },
