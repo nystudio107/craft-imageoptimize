@@ -14,6 +14,7 @@
             :widthMultiplier="widthMultiplier"
             :ratio-x="ratioX"
             :ratio-y="ratioY"
+            :use-aspect-ratio="useAspectRatio"
           >
           </sizes-visualization>
         </div>
@@ -41,6 +42,10 @@ export default {
     ratioY: {
       default: 9,
       type: Number
+    },
+    useAspectRatio: {
+      type: Boolean,
+      default: true,
     },
     id: {
       type: String,
@@ -86,6 +91,7 @@ export default {
     onAspectRatioSelected(val) {
       this.ratioX = val.ratioX;
       this.ratioY = val.ratioY;
+      this.useAspectRatio = val.useAspectRatio;
     }
   }
 }

@@ -18,6 +18,7 @@
                       :selected="(ratioX === aspectRatio.ratioX) && (ratioY === aspectRatio.ratioY)"
                       :ratio-x="aspectRatio.ratioX"
                       :ratio-y="aspectRatio.ratioY"
+                      :use-aspect-ratio="aspectRatio.useAspectRatio"
                       :containerSize="80"
                       :key="aspectRatio.ratioX + ':' + aspectRatio.ratioY"
                       v-on="$listeners"
@@ -39,40 +40,54 @@ export default {
       type: Array,
       default: [
         {
+          ratioX: 4.5,
+          ratioY: 3,
+          useAspectRatio: false,
+        },
+        {
           ratioX: 16,
           ratioY: 9,
+          useAspectRatio: true,
         },
         {
           ratioX: 8,
           ratioY: 5,
+          useAspectRatio: true,
         },
         {
           ratioX: 4,
           ratioY: 3,
+          useAspectRatio: true,
         },
         {
           ratioX: 5,
           ratioY: 4,
+          useAspectRatio: true,
         },
         {
           ratioX: 1,
           ratioY: 1,
+          useAspectRatio: true,
         },
         {
           ratioX: 4,
           ratioY: 5,
+          useAspectRatio: true,
         },
         {
           ratioX: 3,
           ratioY: 4,
+          useAspectRatio: true,
         },
         {
           ratioX: 5,
           ratioY: 8,
+          useAspectRatio: true,
         },
         {
           ratioX: 9,
           ratioY: 16,
+          useAspectRatio: true,
         },
       ]
     },

@@ -53,9 +53,10 @@
                      hatch-color="rgb(163, 193, 226)"
           />
           <image-preview-box :x="imageX(n)"
-                            :y="60"
-                            :width="imageWidth"
-                            :height="calcHeight(imageWidth)"
+                             :y="60"
+                             :width="imageWidth"
+                             :height="calcHeight(imageWidth)"
+                             :sawtooth="!useAspectRatio"
           />
         </svg>
       </svg>
@@ -112,6 +113,10 @@ export default {
     ratioY: {
       type: Number,
       default: 9,
+    },
+    useAspectRatio: {
+      type: Boolean,
+      default: true,
     },
     widthMultiplier: {
       type: Number,

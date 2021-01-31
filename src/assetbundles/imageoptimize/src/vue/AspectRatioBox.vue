@@ -20,21 +20,26 @@
             stroke-dasharray="5, 5"
       />
 
-      <rect x="1"
-            y="1"
-            :width="width"
-            :height="height"
-            :stroke="strokeColor"
-            :stroke-width="2"
-            :fill="fillColor"
+      <image-preview-box :x="0"
+                         :y="1"
+                         :width="width"
+                         :height="height"
+                         :stroke-width="2"
+                         :sawtooth="!useAspectRatio"
+                         :sawToothSize="5"
+                         :showArrow="false"
+                         :showImage="false"
+                         :stroke-color="strokeColor"
+                         :fill-color="fillColor"
       />
+
       <text :x="width / 2"
             :y="height / 2"
             :fill="strokeColor"
             text-anchor="middle"
             alignment-baseline="central"
             :font-size="containerSize / 5">
-        {{ ratioX }}:{{ ratioY }}
+        {{ displayText }}
       </text>
 
     </svg>
@@ -42,7 +47,12 @@
 </template>
 
 <script lang="ts">
+import ImagePreviewBox from "./ImagePreviewBox.vue";
+
 export default {
+  components: {
+    'image-preview-box': ImagePreviewBox,
+  },
   props: {
     selected: {
       type: Boolean,
@@ -50,12 +60,23 @@ export default {
     },
     ratioX: Number,
     ratioY: Number,
+    useAspectRatio: {
+      type: Boolean,
+      default: true,
+    },
     containerSize: {
       type: Number,
       default: 100,
     },
   },
   computed: {
+    displayText():string {
+      if (this.useAspectRatio) {
+        return `${this.ratioX}:${this.ratioY}`;
+      } else {
+        return `none`;
+      }
+    },
     strokeColor() {
       if (this.selected) {
         return 'rgb(163, 193, 226)';
@@ -74,6 +95,9 @@ export default {
       return this.ratioX / this.ratioY;
     },
     width() {
+      if (!this.useAspectRatio) {
+        return this.containerSize - 2;
+      }
       let w:number = this.containerSize / 2;
       if (this.aspectRatio > 1.0) {
         w = (this.containerSize / 2) * this.aspectRatio;
@@ -82,6 +106,9 @@ export default {
       return w;
     },
     height() {
+      if (!this.useAspectRatio) {
+        return this.containerSize / 1.5;
+      }
       let h:number = this.containerSize / 2;
       if (this.aspectRatio < 1.0) {
         h = (this.containerSize / 2) / this.aspectRatio;
@@ -97,11 +124,11 @@ export default {
     }
   },
   mounted () {
-    this.id = this._uid
+    this.id = this._uid;
   },
   methods: {
     handleClick() {
-      this.$emit('aspectRatioSelected', { ratioX: this.ratioX, ratioY: this.ratioY } );
+      this.$emit('aspectRatioSelected', { ratioX: this.ratioX, ratioY: this.ratioY, useAspectRatio: this.useAspectRatio } );
     }
   }
 }
