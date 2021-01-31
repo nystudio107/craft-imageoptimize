@@ -9,13 +9,12 @@
         <div v-for="sizesData in sizesDataList">
           <sizes-visualization
             :id="id"
-            v-bind="sizesData"
+            v-bind.sync="sizesData"
             :key="sizesData.index"
             :widthMultiplier="widthMultiplier"
             :ratio-x="ratioX"
             :ratio-y="ratioY"
             :use-aspect-ratio="useAspectRatio"
-            @update:sizesprop="onUpdateSizesProp($event)"
           >
           </sizes-visualization>
         </div>

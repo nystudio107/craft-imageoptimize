@@ -12,13 +12,34 @@
     <div class="fields">
       <div>
         <label>Breakpoint:</label>
-        <input v-model.number="breakpointValue" type="number" min="1" step="1" />
+        <input v-model.number="breakpointValue"
+               @input="$emit('update:breakpointValue', parseInt($event.target.value))"
+               type="number"
+               min="1"
+               step="1"
+        />
         <label>Num up:</label>
-        <input v-model.number="numUp" type="number" min="1" max="8" step="1" />
+        <input v-model.number="numUp"
+               @input="$emit('update:numUp', parseInt($event.target.value))"
+               type="number"
+               min="1"
+               max="8"
+               step="1"
+        />
         <label>Row padding:</label>
-        <input v-model.number="rowPaddingValue" type="number" min="0" step="1" />
+        <input v-model.number="rowPaddingValue"
+               @input="$emit('update:rowPaddingValue', parseInt($event.target.value))"
+               type="number"
+               min="0"
+               step="1"
+        />
         <label>Call padding:</label>
-        <input v-model.number="cellPaddingValue" type="number" min="0" step="1" />
+        <input v-model.number="cellPaddingValue"
+               @input="$emit('update:cellPaddingValue', parseInt($event.target.value))"
+               type="number"
+               min="0"
+               step="1"
+        />
       </div>
       <svg
         :width="breakpointWidth"
@@ -161,34 +182,6 @@ export default {
     },
   },
   watch: {
-    numUp(newVal, oldVal) {
-      this.$emit('update:sizesprop', {
-        index: this.index,
-        prop: 'numUp',
-        value: newVal,
-      });
-    },
-    breakpointValue(newVal, oldVal) {
-      this.$emit('update:sizesprop', {
-        index: this.index,
-        prop: 'breakpointValue',
-        value: newVal,
-      });
-    },
-    rowPaddingValue(newVal, oldVal) {
-      this.$emit('update:sizesprop', {
-        index: this.index,
-        prop: 'rowPaddingValue',
-        value: newVal,
-      });
-    },
-    cellPaddingValue(newVal, oldVal) {
-      this.$emit('update:sizesprop', {
-        index: this.index,
-        prop: 'cellPaddingValue',
-        value: newVal,
-      });
-    }
   },
   computed: {
     breakpointWidth():string {
