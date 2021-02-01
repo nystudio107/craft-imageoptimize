@@ -10,7 +10,7 @@
           <sizes-visualization
             :id="id"
             v-bind.sync="sizesData"
-            :key="sizesData.index"
+            :key="sizesData.breakpointValue"
             :widthMultiplier="widthMultiplier"
             :ratio-x="ratioX"
             :ratio-y="ratioY"
@@ -55,22 +55,31 @@ export default {
       type: Array,
       default: [
         {
-          index: 0,
           numUp: 4,
           breakpointValue: 1280,
           breakpointUnits: 'px',
+          rowPaddingValue: 100,
+          rowPaddingUnits: 'px',
+          cellPaddingValue: 20,
+          cellPaddingUnits: 'px',
         },
         {
-          index: 1,
           numUp: 2,
           breakpointValue: 1024,
           breakpointUnits: 'px',
+          rowPaddingValue: 100,
+          rowPaddingUnits: 'px',
+          cellPaddingValue: 20,
+          cellPaddingUnits: 'px',
         },
         {
-          index: 2,
           numUp: 1,
           breakpointValue: 768,
           breakpointUnits: 'px',
+          rowPaddingValue: 100,
+          rowPaddingUnits: 'px',
+          cellPaddingValue: 20,
+          cellPaddingUnits: 'px',
         },
       ]
     },
