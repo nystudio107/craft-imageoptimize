@@ -1,8 +1,14 @@
 <template>
   <div>
+    <craft-field-title label="Aspect Ratio"
+                       instructions="Choose the aspect ratio that the images in this srcset should be displayed in"
+    />
     <aspect-ratio-chooser :ratio-x="ratioX"
                           :ratio-y="ratioY"
                           @aspectRatioSelected="onAspectRatioSelected"
+    />
+    <craft-field-title label="Image srcset"
+                       instructions="Describe how the images will be laid out on the page for each CSS breakpoint"
     />
     <div class="matrix" style="position: relative;">
       <div class="variant-blocks">
@@ -26,6 +32,7 @@
 <script lang="ts">
 import SizesVisualization from './SizesVisualization.vue';
 import AspectRatioChooser from './AspectRatioChooser.vue';
+import CraftFieldTitle from './CraftFieldTitle.vue';
 
 const maxNormalizedWidth:number = 1000;
 
@@ -33,6 +40,7 @@ export default {
   components: {
     'aspect-ratio-chooser': AspectRatioChooser,
     'sizes-visualization': SizesVisualization,
+    'craft-field-title': CraftFieldTitle,
   },
   props: {
     ratioX: {
