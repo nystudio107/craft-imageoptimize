@@ -19,7 +19,7 @@
     <svg v-if="showImage"
          :x="placeholderX()"
          y="10"
-         :width="40"
+         :width="placeholderWidth()"
          viewBox="0 0 185 170"
          xmlns="http://www.w3.org/2000/svg"
     >
@@ -113,7 +113,7 @@ export default {
     },
     placeholderWidth():number {
       let calc:number = this.width / 5;
-      return Math.min(calc, 50);
+      return Math.max(calc, 50);
     },
   }
 }

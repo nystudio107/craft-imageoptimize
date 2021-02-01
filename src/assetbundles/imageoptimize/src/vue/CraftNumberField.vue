@@ -1,8 +1,8 @@
 <template>
-  <div :id="id + '-field'" class="field" :aria-describedby="id + '-field-instructions'">
+  <div :id="id + '-field'" class="field width-25" :aria-describedby="id + '-field-instructions'">
     <div class="heading">
       <label :id="id + '-field-label'" :for="id">{{ label }}</label>                        </div>
-    <div :id="id + '-field-instructions'" class="instructions">
+    <div :id="id + '-field-instructions'" class="instructions" v-if="instructions">
       <p>{{ instructions }}</p>
     </div>
     <div class="input ltr">

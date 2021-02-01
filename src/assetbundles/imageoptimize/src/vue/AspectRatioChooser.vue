@@ -26,8 +26,8 @@ export default {
       type: Array,
       default: [
         {
-          ratioX: 4.01,
-          ratioY: 3,
+          ratioX: 16.01,
+          ratioY: 9,
           useAspectRatio: false,
         },
         {

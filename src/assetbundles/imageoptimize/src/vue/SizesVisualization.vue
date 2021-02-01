@@ -2,6 +2,7 @@
   <div class="matrixblock">
     <div class="titlebar">
       <div class="blocktype">
+        <code><span class="text-gray-500">image width="</span>{{ imageWidth }}w<span class="text-gray-500">"</span></code>
         <code><span class="text-gray-500">sizes="</span>{{ title }}<span class="text-gray-500">"</span></code>
       </div>
       <div class="preview"></div>
@@ -10,11 +11,11 @@
     </div>
 
     <div class="fields">
-      <div>
+      <div class="flex-fields">
         <craft-number-field field="breakpointValue"
                             name="types[breakpointValue]"
-                            label="Breakpoint Value"
-                            instructions="Woofer"
+                            label="CSS breakpoint"
+                            instructions=""
                             v-model.number="breakpointValue"
                             v-on="$listeners"
                             :size="10"
@@ -24,8 +25,8 @@
 
         <craft-number-field field="numUp"
                             name="types[numUp]"
-                            label="Num Up"
-                            instructions="hello there"
+                            label="Images per row"
+                            instructions=""
                             v-model.number="numUp"
                             v-on="$listeners"
                             :size="5"
@@ -35,8 +36,8 @@
 
         <craft-number-field field="rowPaddingValue"
                             name="types[rowPaddingValue]"
-                            label="Row Padding Value"
-                            instructions="Slapper"
+                            label="Row Padding"
+                            instructions=""
                             v-model.number="rowPaddingValue"
                             v-on="$listeners"
                             :size="10"
@@ -46,8 +47,8 @@
 
         <craft-number-field field="cellPaddingValue"
                             name="types[cellPaddingValue]"
-                            label="Cell Padding Value"
-                            instructions="Rockstar"
+                            label="Cell Padding"
+                            instructions=""
                             v-model.number="cellPaddingValue"
                             v-on="$listeners"
                             :size="10"
@@ -55,197 +56,197 @@
                             :max="1000"
         />
       </div>
-              <svg
-                :width="breakpointWidth"
-                :viewBox="'0 0 ' + breakpointValue + ' ' + (calcHeight(imageWidth) + 100)"
-                preserveAspectRatio="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <arrow-line
-                  :label="breakpointValue + breakpointUnits"
-                />
-                <rect x="1"
-                      y="20"
-                      :width="breakpointValue - 2"
-                      :height="calcHeight(imageWidth) + 90"
-                      fill="#DDD"
-                      stroke="#AAA"
-                      stroke-width="2"
-                />
-                <hatch-box x="0"
-                           y="20"
-                           :width="rowPaddingValue"
-                           :height="calcHeight(imageWidth) + 90"
-                           stroke-color="#AAA"
-                           :stroke-width="2"
-                           hatch-color="#AAA"
-                />
-                <hatch-box :x="breakpointValue - rowPaddingValue"
-                           :y="20"
-                           :width="rowPaddingValue"
-                           :height="calcHeight(imageWidth) + 90"
-                           stroke-color="#AAA"
-                           :stroke-width="2"
-                           hatch-color="#AAA"
-                />
-                <svg v-for="(n,i) in numUp" :key="'svg' + i">
-                  <hatch-box :x="cellX(n)"
-                             :y="40"
-                             :width="cellWidth"
-                             :height="calcHeight(imageWidth) + 40"
-                             stroke-color="rgb(163, 193, 226)"
-                             :stroke-width="2"
-                             hatch-color="rgb(163, 193, 226)"
-                             :key="'hatch' + i"
-                  />
-                  <image-preview-box :x="imageX(n)"
-                                     :y="60"
-                                     :width="imageWidth"
-                                     :height="calcHeight(imageWidth)"
-                                     :sawtooth="!useAspectRatio"
-                                     :key="'image' + i"
-                  />
-                </svg>
-              </svg>
-            </div>
-          </div>
-        </template>
+      <div class="field">
+        <svg
+          :width="breakpointWidth"
+          :viewBox="'0 0 ' + breakpointValue + ' ' + (calcHeight(imageWidth) + 100)"
+          preserveAspectRatio="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <arrow-line
+            :label="breakpointValue + breakpointUnits"
+          />
+          <rect x="1"
+                y="20"
+                :width="breakpointValue - 2"
+                :height="calcHeight(imageWidth) + 80"
+                fill="#DDD"
+                stroke="#AAA"
+                stroke-width="2"
+          />
+          <hatch-box x="0"
+                     y="20"
+                     :width="rowPaddingValue"
+                     :height="calcHeight(imageWidth) + 80"
+                     stroke-color="#AAA"
+                     :stroke-width="2"
+                     hatch-color="#AAA"
+          />
+          <hatch-box :x="breakpointValue - rowPaddingValue"
+                     :y="20"
+                     :width="rowPaddingValue"
+                     :height="calcHeight(imageWidth) + 80"
+                     stroke-color="#AAA"
+                     :stroke-width="2"
+                     hatch-color="#AAA"
+          />
+          <svg v-for="(n,i) in numUp" :key="'svg' + i">
+            <hatch-box :x="cellX(n)"
+                       :y="40"
+                       :width="cellWidth"
+                       :height="calcHeight(imageWidth) + 40"
+                       stroke-color="rgb(163, 193, 226)"
+                       :stroke-width="2"
+                       hatch-color="rgb(163, 193, 226)"
+                       :key="'hatch' + i"
+            />
+            <image-preview-box :x="imageX(n)"
+                               :y="60"
+                               :width="imageWidth"
+                               :height="calcHeight(imageWidth)"
+                               :sawtooth="!useAspectRatio"
+                               :key="'image' + i"
+            />
+          </svg>
+        </svg>
+      </div>
+    </div>
+  </div>
+</template>
 
-        <script lang="ts">
-        import ArrowLine from './ArrowLine.vue';
-        import HatchBox from './HatchBox.vue';
-        import ImagePreviewBox from "./ImagePreviewBox.vue";
-        import CraftNumberField from "./CraftNumberField.vue";
+<script lang="ts">
+import ArrowLine from './ArrowLine.vue';
+import HatchBox from './HatchBox.vue';
+import ImagePreviewBox from "./ImagePreviewBox.vue";
+import CraftNumberField from "./CraftNumberField.vue";
 
-        const remPx:number = 16;
-        const emPx:number = 16;
-        const maxNormalizedWidth:number = 1000;
+const remPx: number = 16;
+const emPx: number = 16;
+const maxNormalizedWidth: number = 1000;
 
-        const normalizeUnitsToPx = (value: number, units: string) => {
-          let result:number;
-          switch (units) {
-            case 'rem':
-              result = value * remPx;
-              break;
-            case 'em':
-              result = value * remPx;
-              break;
-            default:
-            case 'px':
-              result = value;
-              break;
-          }
+const normalizeUnitsToPx = (value: number, units: string) => {
+  let result: number;
+  switch (units) {
+    case 'rem':
+      result = value * remPx;
+      break;
+    case 'em':
+      result = value * remPx;
+      break;
+    default:
+    case 'px':
+      result = value;
+      break;
+  }
 
-          return result;
-        }
+  return result;
+}
 
-        export default {
-          components: {
-            'image-preview-box': ImagePreviewBox,
-            'craft-number-field': CraftNumberField,
-            'arrow-line': ArrowLine,
-            'hatch-box': HatchBox,
-          },
-          props: {
-            id: {
-              type: String,
-              default: '',
-            },
-            index: Number,
-            numUp: {
-              type: Number,
-              default: 3,
-            },
-            ratioX: {
-              type: Number,
-              default: 16,
-            },
-            ratioY: {
-              type: Number,
-              default: 9,
-            },
-            useAspectRatio: {
-              type: Boolean,
-              default: true,
-            },
-            widthMultiplier: {
-              type: Number,
-              default: 1,
-            },
-            breakpointValue: {
-              type: Number,
-              default: 1000,
-            },
-            breakpointUnits: {
-              type: String,
-              default: '',
-            },
-            rowPaddingValue: {
-              type: Number,
-              default: 100,
-            },
-            rowPaddingUnits: {
-              type: String,
-              default: 'px',
-            },
-            cellPaddingValue: {
-              type: Number,
-              default: 20,
-            },
-            cellPaddingUnits: {
-              type: String,
-              default: 'px',
-            },
-          },
-          watch: {
-          },
-          computed: {
-            breakpointWidth():string {
-              let percent:number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
-              return percent + '%';
-            },
-            rowWidth():number {
-              return this.breakpointValue - (this.rowPaddingValue * 2);
-            },
-            cellWidth():number {
-              return this.rowWidth / this.numUp;
-            },
-            imageWidth():number {
-              return Math.round(this.cellWidth - (this.cellPaddingValue * 2));
-            },
-            title():string {
-              let vw:number = Math.round(100 / this.numUp);
-              const displayBreakpoint: string = this.breakpointValue + this.breakpointUnits;
-              const displayVw: string = vw + 'vw';
-              const displayPadding: string = (Math.round((this.rowPaddingValue * 2) / this.numUp)) + this.rowPaddingUnits;
-              const displayCellPadding: string = (this.cellPaddingValue * 2) + this.cellPaddingUnits;
-              const title: string =
-                `(min-width: ${displayBreakpoint}) calc((${displayVw} - ${displayPadding}) - ${displayCellPadding})`;
+export default {
+  components: {
+    'image-preview-box': ImagePreviewBox,
+    'craft-number-field': CraftNumberField,
+    'arrow-line': ArrowLine,
+    'hatch-box': HatchBox,
+  },
+  props: {
+    id: {
+      type: String,
+      default: '',
+    },
+    index: Number,
+    numUp: {
+      type: Number,
+      default: 3,
+    },
+    ratioX: {
+      type: Number,
+      default: 16,
+    },
+    ratioY: {
+      type: Number,
+      default: 9,
+    },
+    useAspectRatio: {
+      type: Boolean,
+      default: true,
+    },
+    widthMultiplier: {
+      type: Number,
+      default: 1,
+    },
+    breakpointValue: {
+      type: Number,
+      default: 1000,
+    },
+    breakpointUnits: {
+      type: String,
+      default: '',
+    },
+    rowPaddingValue: {
+      type: Number,
+      default: 100,
+    },
+    rowPaddingUnits: {
+      type: String,
+      default: 'px',
+    },
+    cellPaddingValue: {
+      type: Number,
+      default: 20,
+    },
+    cellPaddingUnits: {
+      type: String,
+      default: 'px',
+    },
+  },
+  watch: {},
+  computed: {
+    breakpointWidth(): string {
+      let percent: number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
+      return percent + '%';
+    },
+    rowWidth(): number {
+      return this.breakpointValue - (this.rowPaddingValue * 2);
+    },
+    cellWidth(): number {
+      return this.rowWidth / this.numUp;
+    },
+    imageWidth(): number {
+      return Math.round(this.cellWidth - (this.cellPaddingValue * 2));
+    },
+    title(): string {
+      let vw: number = Math.round(100 / this.numUp);
+      const displayBreakpoint: string = this.breakpointValue + this.breakpointUnits;
+      const displayVw: string = vw + 'vw';
+      const displayPadding: string = (Math.round((this.rowPaddingValue * 2) / this.numUp)) + this.rowPaddingUnits;
+      const displayCellPadding: string = (this.cellPaddingValue * 2) + this.cellPaddingUnits;
+      const title: string =
+        `(min-width: ${displayBreakpoint}) calc((${displayVw} - ${displayPadding}) - ${displayCellPadding})`;
 
-              return title;
-            }
-          },
-          data() {
-            return {
-            }
-          },
-          mounted() {
-          },
-          methods: {
-            cellX(n:number):number {
-              return this.rowPaddingValue + ((n - 1) * (this.rowWidth / this.numUp));
-            },
-            imageX(n:number):number {
-              return this.cellPaddingValue + this.cellX(n);
-            },
-            xForRect(n:number):number {
-              return (n - 1) * (this.breakpointValue / this.numUp);
-            },
-            calcHeight(w:number):number {
-              const calcHeight:number = w * (this.ratioY / this.ratioX);
+      return title;
+    }
+  },
+  data() {
+    return {}
+  },
+  mounted() {
+  },
+  methods: {
+    cellX(n: number): number {
+      return this.rowPaddingValue + ((n - 1) * (this.rowWidth / this.numUp));
+    },
+    imageX(n: number): number {
+      return this.cellPaddingValue + this.cellX(n);
+    },
+    xForRect(n: number): number {
+      return (n - 1) * (this.breakpointValue / this.numUp);
+    },
+    calcHeight(w: number): number {
+      const calcHeight: number = w * (this.ratioY / this.ratioX);
 
-              return calcHeight;
-            },
-          }
-        }
-        </script>
+      return calcHeight;
+    },
+  }
+}
+</script>
