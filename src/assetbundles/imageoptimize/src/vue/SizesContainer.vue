@@ -1,38 +1,40 @@
 <template>
   <div>
-    <craft-field-title label="Aspect Ratio"
+    <craft-field-wrapper label="Aspect Ratio"
                        instructions="Choose the aspect ratio that the images in this srcset should be displayed in"
-    />
-    <aspect-ratio-chooser :ratio-x="ratioX"
-                          :ratio-y="ratioY"
-                          @aspectRatioSelected="onAspectRatioSelected"
-    />
-    <craft-field-title label="Image srcset"
+    >
+      <aspect-ratio-chooser :ratio-x="ratioX"
+                            :ratio-y="ratioY"
+                            @aspectRatioSelected="onAspectRatioSelected"
+      />
+    </craft-field-wrapper>
+    <craft-field-wrapper label="Image srcset"
                        instructions="Describe how the images will be laid out on the page for each CSS breakpoint"
-    />
-    <div class="matrix" style="position: relative;">
-      <div class="variant-blocks">
-        <div v-for="sizesData in sizesDataList">
-          <sizes-visualization
-            :id="id"
-            v-bind.sync="sizesData"
-            :key="sizesData.breakpointValue"
-            :widthMultiplier="widthMultiplier"
-            :ratio-x="ratioX"
-            :ratio-y="ratioY"
-            :use-aspect-ratio="useAspectRatio"
-          >
-          </sizes-visualization>
+    >
+      <div class="matrix" style="position: relative;">
+        <div class="variant-blocks">
+          <div v-for="sizesData in sizesDataList">
+            <sizes-visualization
+              :id="id"
+              v-bind.sync="sizesData"
+              :key="sizesData.breakpointValue"
+              :widthMultiplier="widthMultiplier"
+              :ratio-x="ratioX"
+              :ratio-y="ratioY"
+              :use-aspect-ratio="useAspectRatio"
+            >
+            </sizes-visualization>
+          </div>
         </div>
       </div>
-    </div>
+    </craft-field-wrapper>
   </div>
 </template>
 
 <script lang="ts">
 import SizesVisualization from './SizesVisualization.vue';
 import AspectRatioChooser from './AspectRatioChooser.vue';
-import CraftFieldTitle from './CraftFieldTitle.vue';
+import CraftFieldWrapper from './CraftFieldWrapper.vue';
 
 const maxNormalizedWidth:number = 1000;
 
@@ -40,7 +42,7 @@ export default {
   components: {
     'aspect-ratio-chooser': AspectRatioChooser,
     'sizes-visualization': SizesVisualization,
-    'craft-field-title': CraftFieldTitle,
+    'craft-field-wrapper': CraftFieldWrapper,
   },
   props: {
     ratioX: {
