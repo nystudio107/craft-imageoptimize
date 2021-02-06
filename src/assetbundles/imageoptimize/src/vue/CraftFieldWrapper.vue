@@ -1,5 +1,5 @@
 <template>
-  <div :id="id + '-field'" class="field" :aria-describedby="id + '-field-instructions'">
+  <div :id="id + '-field'" class="field" :class="classes" :aria-describedby="id + '-field-instructions'">
     <div class="heading">
       <label :id="id + '-field-label'" :for="id">{{ label }}</label>                        </div>
     <div :id="id + '-field-instructions'" class="instructions" v-if="instructions">
@@ -22,6 +22,10 @@ export default {
       type: String,
       default: 'Instructions',
     },
+    classes: {
+      type: Array,
+      default: [],
+    }
   },
   data() {
     return {

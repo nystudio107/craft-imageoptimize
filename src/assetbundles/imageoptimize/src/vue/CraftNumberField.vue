@@ -1,29 +1,30 @@
 <template>
-  <div :id="id + '-field'" class="field width-25" :aria-describedby="id + '-field-instructions'">
-    <div class="heading">
-      <label :id="id + '-field-label'" :for="id">{{ label }}</label>                        </div>
-    <div :id="id + '-field-instructions'" class="instructions" v-if="instructions">
-      <p>{{ instructions }}</p>
-    </div>
-    <div class="input ltr">
-      <input :name="name"
-             :id="id"
-             @input="$emit('update:' + field, parseInt($event.target.value))"
-             :value="value"
-             :size="size"
-             :min="min"
-             :max="max"
-             type="number"
-             class="text"
-             autocomplete="off"
-             step="1"
-      />
-    </div>
-  </div>
+  <craft-field-wrapper :label="label"
+                       :instructions="instructions"
+                       :classes="['width-25']"
+  >
+    <input :name="name"
+               :id="id"
+               @input="$emit('update:' + field, parseInt($event.target.value))"
+               :value="value"
+               :size="size"
+               :min="min"
+               :max="max"
+               type="number"
+               class="text"
+               autocomplete="off"
+               step="1"
+        />
+  </craft-field-wrapper>
 </template>
 
 <script lang="ts">
+import CraftFieldWrapper from './CraftFieldWrapper.vue';
+
 export default {
+  components: {
+    'craft-field-wrapper': CraftFieldWrapper,
+  },
   props: {
     value: {
       type: Number,
