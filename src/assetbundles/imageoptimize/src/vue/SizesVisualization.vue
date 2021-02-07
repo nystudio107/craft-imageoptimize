@@ -12,48 +12,52 @@
 
     <div class="fields">
       <div class="flex-fields">
-        <craft-number-field field="breakpointValue"
-                            name="types[breakpointValue]"
-                            label="CSS breakpoint"
-                            instructions=""
-                            v-model.number="breakpointValue"
-                            v-on="$listeners"
-                            :size="10"
-                            :min="300"
-                            :max="2560"
+        <craft-number-field
+          v-model.number="breakpointValue"
+          :size="10"
+          :min="300"
+          :max="2560"
+          field="breakpointValue"
+          name="types[breakpointValue]"
+          label="CSS breakpoint"
+          instructions=""
+          v-on="$listeners"
         />
 
-        <craft-number-field field="numUp"
-                            name="types[numUp]"
-                            label="Images per row"
-                            instructions=""
-                            v-model.number="numUp"
-                            v-on="$listeners"
-                            :size="5"
-                            :min="1"
-                            :max="8"
+        <craft-number-field
+          v-model.number="numUp"
+          :size="5"
+          :min="1"
+          :max="8"
+          field="numUp"
+          name="types[numUp]"
+          label="Images per row"
+          instructions=""
+          v-on="$listeners"
         />
 
-        <craft-number-field field="rowPaddingValue"
-                            name="types[rowPaddingValue]"
-                            label="Row Padding"
-                            instructions=""
-                            v-model.number="rowPaddingValue"
-                            v-on="$listeners"
-                            :size="10"
-                            :min="0"
-                            :max="1000"
+        <craft-number-field
+          v-model.number="rowPaddingValue"
+          :size="10"
+          :min="0"
+          :max="1000"
+          field="rowPaddingValue"
+          name="types[rowPaddingValue]"
+          label="Row Padding"
+          instructions=""
+          v-on="$listeners"
         />
 
-        <craft-number-field field="cellPaddingValue"
-                            name="types[cellPaddingValue]"
-                            label="Cell Padding"
-                            instructions=""
-                            v-model.number="cellPaddingValue"
-                            v-on="$listeners"
-                            :size="10"
-                            :min="0"
-                            :max="1000"
+        <craft-number-field
+          v-model.number="cellPaddingValue"
+          :size="10"
+          :min="0"
+          :max="1000"
+          field="cellPaddingValue"
+          name="types[cellPaddingValue]"
+          label="Cell Padding"
+          instructions=""
+          v-on="$listeners"
         />
       </div>
       <div class="field">
@@ -66,46 +70,52 @@
           <arrow-line
             :label="breakpointValue + breakpointUnits"
           />
-          <rect x="1"
-                y="20"
-                :width="breakpointValue - 2"
-                :height="calcHeight(imageWidth) + 80"
-                fill="#DDD"
-                stroke="#AAA"
-                stroke-width="2"
+          <rect
+            x="1"
+            y="20"
+            :width="breakpointValue - 2"
+            :height="calcHeight(imageWidth) + 80"
+            fill="#DDD"
+            stroke="#AAA"
+            stroke-width="2"
           />
-          <hatch-box x="0"
-                     y="20"
-                     :width="rowPaddingValue"
-                     :height="calcHeight(imageWidth) + 80"
-                     stroke-color="#AAA"
-                     :stroke-width="2"
-                     hatch-color="#AAA"
+          <hatch-box
+            x="0"
+            y="20"
+            :width="rowPaddingValue"
+            :height="calcHeight(imageWidth) + 80"
+            stroke-color="#AAA"
+            :stroke-width="2"
+            hatch-color="#AAA"
           />
-          <hatch-box :x="breakpointValue - rowPaddingValue"
-                     :y="20"
-                     :width="rowPaddingValue"
-                     :height="calcHeight(imageWidth) + 80"
-                     stroke-color="#AAA"
-                     :stroke-width="2"
-                     hatch-color="#AAA"
+          <hatch-box
+            :x="breakpointValue - rowPaddingValue"
+            :y="20"
+            :width="rowPaddingValue"
+            :height="calcHeight(imageWidth) + 80"
+            stroke-color="#AAA"
+            :stroke-width="2"
+            hatch-color="#AAA"
           />
-          <svg v-for="(n,i) in numUp" :key="'svg' + i">
-            <hatch-box :x="cellX(n)"
-                       :y="40"
-                       :width="cellWidth"
-                       :height="calcHeight(imageWidth) + 40"
-                       stroke-color="rgb(163, 193, 226)"
-                       :stroke-width="2"
-                       hatch-color="rgb(163, 193, 226)"
-                       :key="'hatch' + i"
+          <svg
+            v-for="(n,i) in numUp"
+            :key="'svg' + i"
+          >
+            <hatch-box
+              :x="cellX(n)"
+              :y="40"
+              :width="cellWidth"
+              :height="calcHeight(imageWidth) + 40"
+              stroke-color="rgb(163, 193, 226)"
+              :stroke-width="2"
+              hatch-color="rgb(163, 193, 226)"
             />
-            <image-preview-box :x="imageX(n)"
-                               :y="60"
-                               :width="imageWidth"
-                               :height="calcHeight(imageWidth)"
-                               :sawtooth="!useAspectRatio"
-                               :key="'image' + i"
+            <image-preview-box
+              :x="imageX(n)"
+              :y="60"
+              :width="imageWidth"
+              :height="calcHeight(imageWidth)"
+              :sawtooth="!useAspectRatio"
             />
           </svg>
         </svg>
@@ -115,14 +125,15 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import ArrowLine from './ArrowLine.vue';
 import HatchBox from './HatchBox.vue';
 import ImagePreviewBox from "./ImagePreviewBox.vue";
 import CraftNumberField from "./CraftNumberField.vue";
 
-const remPx: number = 16;
-const emPx: number = 16;
-const maxNormalizedWidth: number = 1000;
+const remPx = 16;
+const emPx = 16;
+const maxNormalizedWidth = 1000;
 
 const normalizeUnitsToPx = (value: number, units: string) => {
   let result: number;
@@ -142,7 +153,7 @@ const normalizeUnitsToPx = (value: number, units: string) => {
   return result;
 }
 
-export default {
+export default Vue.extend({
   components: {
     'image-preview-box': ImagePreviewBox,
     'craft-number-field': CraftNumberField,
@@ -154,7 +165,6 @@ export default {
       type: String,
       default: '',
     },
-    index: Number,
     numUp: {
       type: Number,
       default: 3,
@@ -200,7 +210,10 @@ export default {
       default: 'px',
     },
   },
-  watch: {},
+  data(): Record<string, unknown> {
+    return {
+    }
+  },
   computed: {
     breakpointWidth(): string {
       let percent: number = (((this.breakpointValue * this.widthMultiplier) / maxNormalizedWidth) * 100);
@@ -221,16 +234,9 @@ export default {
       const displayVw: string = vw + 'vw';
       const displayPadding: string = (Math.round((this.rowPaddingValue * 2) / this.numUp)) + this.rowPaddingUnits;
       const displayCellPadding: string = (this.cellPaddingValue * 2) + this.cellPaddingUnits;
-      const title: string =
-        `(min-width: ${displayBreakpoint}) calc((${displayVw} - ${displayPadding}) - ${displayCellPadding})`;
 
-      return title;
+      return `(min-width: ${displayBreakpoint}) calc((${displayVw} - ${displayPadding}) - ${displayCellPadding})`;
     }
-  },
-  data() {
-    return {}
-  },
-  mounted() {
   },
   methods: {
     cellX(n: number): number {
@@ -243,10 +249,8 @@ export default {
       return (n - 1) * (this.breakpointValue / this.numUp);
     },
     calcHeight(w: number): number {
-      const calcHeight: number = w * (this.ratioY / this.ratioX);
-
-      return calcHeight;
+      return w * (this.ratioY / this.ratioX);
     },
   }
-}
+});
 </script>

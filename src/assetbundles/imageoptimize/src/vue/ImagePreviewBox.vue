@@ -1,13 +1,18 @@
 <template>
   <g>
-    <polyline :points="pointsForImagePoly()"
-              :stroke="strokeColor"
-              :stroke-width="strokeWidth"
-              :fill="fillColor"
-              style="transition: point 2s ease;"
+    <polyline
+      :points="pointsForImagePoly()"
+      :stroke="strokeColor"
+      :stroke-width="strokeWidth"
+      :fill="fillColor"
+      style="transition: point 2s ease;"
     />
 
-    <svg :width="width - 10" :x="x + 5" y="60">
+    <svg
+      :width="width - 10"
+      :x="x + 5"
+      y="60"
+    >
       <arrow-line
         v-if="showArrow"
         :label="width + 'w'"
@@ -16,33 +21,48 @@
       />
     </svg>
 
-    <svg v-if="showImage"
-         :x="placeholderX()"
-         y="10"
-         :width="placeholderWidth()"
-         viewBox="0 0 185 170"
-         xmlns="http://www.w3.org/2000/svg"
+    <svg
+      v-if="showImage"
+      :x="placeholderX()"
+      y="10"
+      :width="placeholderWidth()"
+      viewBox="0 0 185 170"
+      xmlns="http://www.w3.org/2000/svg"
     >
-      <path :fill="strokeColor"
-            d="M15 130.896V16.994c0-1.097.898-1.994 2.007-1.994h150.986A2 2 0 0 1 170 16.994v69.147L133.015 51 87.26 120.377l-35.863-17.758L15 130.896zM2 0C.895 0 0 .887 0 2v166c0 1.105.887 2 2 2h181c1.105 0 2-.887 2-2V2c0-1.105-.887-2-2-2H2zm49 72c11.046 0 20-9.178 20-20.5S62.046 31 51 31s-20 9.178-20 20.5S39.954 72 51 72z"
-            fill-rule="evenodd"
+      <path
+        :fill="strokeColor"
+        d="M15 130.896V16.994c0-1.097.898-1.994 2.007-1.994h150.986A2 2 0 0 1 170 16.994v69.147L133.015 51 87.26 120.377l-35.863-17.758L15 130.896zM2 0C.895 0 0 .887 0 2v166c0 1.105.887 2 2 2h181c1.105 0 2-.887 2-2V2c0-1.105-.887-2-2-2H2zm49 72c11.046 0 20-9.178 20-20.5S62.046 31 51 31s-20 9.178-20 20.5S39.954 72 51 72z"
+        fill-rule="evenodd"
       />
     </svg>
   </g>
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import ArrowLine from '../vue/ArrowLine.vue';
 
-export default {
+export default Vue.extend({
   components: {
     'arrow-line': ArrowLine,
   },
   props: {
-    x: Number,
-    y: Number,
-    width: Number,
-    height: Number,
+    x: {
+      type: Number,
+      default: 1,
+    },
+    y: {
+      type: Number,
+      default: 1,
+    },
+    width: {
+      type: Number,
+      default: 1,
+    },
+    height: {
+      type: Number,
+      default: 1,
+    },
     strokeColor: {
       type: String,
       default: 'rgb(163, 193, 226)',
@@ -76,19 +96,19 @@ export default {
       default: true,
     }
   },
-  data() {
+  data(): Record<string, unknown> {
     return {
       id: null,
     }
   },
   methods: {
-    pointsForImagePoly(n:number):string {
-      const x:number = this.x + 1;
-      let x2:number = x + this.width;
-      const y:number = this.y;
-      let y2:number = this.y + this.height;
+    pointsForImagePoly(): string {
+      const x = this.x + 1;
+      let x2 = x + this.width;
+      const y = this.y;
+      let y2 = this.y + this.height;
       const lastSawToothAdjust = this.width % (this.sawToothSize * 2);
-      let polyPoints:string = `${x},${y2 - lastSawToothAdjust} ${x},${y} ${x2},${y} ${x2},${y2}`;
+      let polyPoints = `${x},${y2 - lastSawToothAdjust} ${x},${y} ${x2},${y} ${x2},${y2}`;
       if (this.sawtooth) {
         let yStep: number = this.sawToothSize;
         let xStep: number = this.sawToothSize;
@@ -108,13 +128,13 @@ export default {
 
       return polyPoints;
     },
-    placeholderX():number {
+    placeholderX(): number {
       return this.x + ((this.width / 2) - (this.placeholderWidth() / 2));
     },
-    placeholderWidth():number {
-      let calc:number = this.width / 5;
+    placeholderWidth(): number {
+      let calc: number = this.width / 5;
       return Math.max(calc, 50);
     },
   }
-}
+});
 </script>

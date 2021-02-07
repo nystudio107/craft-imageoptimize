@@ -1,6 +1,7 @@
 <template>
-  <div class="inline-block p-2 cursor-pointer"
-       @click="handleClick"
+  <div
+    class="inline-block p-2 cursor-pointer"
+    @click="handleClick"
   >
     <svg
       :width="containerSize"
@@ -8,37 +9,41 @@
       preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <rect x="0"
-            y="0"
-            :width="containerSize"
-            :height="containerSize"
-            :stroke="strokeColor"
-            stroke-width="4"
-            :fill="fillColor"
-            stroke-opacity="0.5"
-            fill-opacity="0.0"
-            stroke-dasharray="5, 5"
+      <rect
+        x="0"
+        y="0"
+        :width="containerSize"
+        :height="containerSize"
+        :stroke="strokeColor"
+        stroke-width="4"
+        :fill="fillColor"
+        stroke-opacity="0.5"
+        fill-opacity="0.0"
+        stroke-dasharray="5, 5"
       />
 
-      <image-preview-box :x="0"
-                         :y="1"
-                         :width="width"
-                         :height="height"
-                         :stroke-width="2"
-                         :sawtooth="!useAspectRatio"
-                         :sawToothSize="5"
-                         :showArrow="false"
-                         :showImage="false"
-                         :stroke-color="strokeColor"
-                         :fill-color="fillColor"
+      <image-preview-box
+        :x="0"
+        :y="1"
+        :width="width"
+        :height="height"
+        :stroke-width="2"
+        :sawtooth="!useAspectRatio"
+        :saw-tooth-size="5"
+        :show-arrow="false"
+        :show-image="false"
+        :stroke-color="strokeColor"
+        :fill-color="fillColor"
       />
 
-      <text :x="width / 2"
-            :y="height / 2"
-            :fill="strokeColor"
-            text-anchor="middle"
-            alignment-baseline="central"
-            :font-size="containerSize / 5">
+      <text
+        :x="width / 2"
+        :y="height / 2"
+        :fill="strokeColor"
+        text-anchor="middle"
+        alignment-baseline="central"
+        :font-size="containerSize / 5"
+      >
         {{ displayText }}
       </text>
 
@@ -47,9 +52,10 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import ImagePreviewBox from "./ImagePreviewBox.vue";
 
-export default {
+export default Vue.extend({
   components: {
     'image-preview-box': ImagePreviewBox,
   },
@@ -58,8 +64,14 @@ export default {
       type: Boolean,
       default: false,
     },
-    ratioX: Number,
-    ratioY: Number,
+    ratioX: {
+      type: Number,
+      default: 1,
+    },
+    ratioY: {
+      type: Number,
+      default: 1,
+    },
     useAspectRatio: {
       type: Boolean,
       default: true,
@@ -68,6 +80,11 @@ export default {
       type: Number,
       default: 100,
     },
+  },
+  data(): Record<string, unknown> {
+    return {
+      id: null,
+    }
   },
   computed: {
     displayText():string {
@@ -117,18 +134,17 @@ export default {
       return h;
     }
   },
-  data() {
-    return {
-      id: null,
-    }
-  },
   mounted () {
     this.id = this._uid;
   },
   methods: {
     handleClick() {
-      this.$emit('aspectRatioSelected', { ratioX: this.ratioX, ratioY: this.ratioY, useAspectRatio: this.useAspectRatio } );
+      this.$emit('aspectRatioSelected', <AspectRatioObj>{
+        ratioX: this.ratioX,
+        ratioY: this.ratioY,
+        useAspectRatio: this.useAspectRatio,
+      });
     }
   }
-}
+});
 </script>

@@ -1,27 +1,30 @@
 <template>
-  <craft-field-wrapper :label="label"
-                       :instructions="instructions"
-                       :classes="['width-25']"
+  <craft-field-wrapper
+    :label="label"
+    :instructions="instructions"
+    :classes="['width-25']"
   >
-    <input :name="name"
-               :id="id"
-               @input="$emit('update:' + field, parseInt($event.target.value))"
-               :value="value"
-               :size="size"
-               :min="min"
-               :max="max"
-               type="number"
-               class="text"
-               autocomplete="off"
-               step="1"
-        />
+    <input
+      :id="id"
+      :name="name"
+      :value="value"
+      :size="size"
+      :min="min"
+      :max="max"
+      type="number"
+      class="text"
+      autocomplete="off"
+      step="1"
+      @input="$emit('update:' + field, parseInt($event.target.value))"
+    />
   </craft-field-wrapper>
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
 import CraftFieldWrapper from './CraftFieldWrapper.vue';
 
-export default {
+export default Vue.extend({
   components: {
     'craft-field-wrapper': CraftFieldWrapper,
   },
@@ -60,15 +63,14 @@ export default {
     },
 
   },
-  data() {
+  data(): Record<string, unknown> {
     return {
       id: null,
     }
   },
-  mounted() {
+  mounted(): void {
     this.id = this._uid;
   },
-  methods: {
-  }
-}
+  methods: {}
+});
 </script>

@@ -1,36 +1,53 @@
 <template>
   <g>
-    <pattern :id="`diagonalHatch${id}`"
-             patternUnits="userSpaceOnUse"
-             width="4"
-             height="4"
+    <pattern
+      :id="`diagonalHatch${id}`"
+      patternUnits="userSpaceOnUse"
+      width="4"
+      height="4"
     >
-      <path d="M-1,1 l2,-2
-             M0,4 l4,-4
-             M3,5 l2,-2"
-            :stroke="hatchColor"
-            :stroke-width="hatchWidth"
+      <path
+        d="M-1,1 l2,-2
+           M0,4 l4,-4
+           M3,5 l2,-2"
+        :stroke="hatchColor"
+        :stroke-width="hatchWidth"
       />
     </pattern>
 
-    <rect :x="x"
-          :y="y"
-          :width="width"
-          :height="height"
-          :stroke="strokeColor"
-          :stroke-width="strokeWidth"
-          :fill="`url(#diagonalHatch${id})`"
+    <rect
+      :x="x"
+      :y="y"
+      :width="width"
+      :height="height"
+      :stroke="strokeColor"
+      :stroke-width="strokeWidth"
+      :fill="`url(#diagonalHatch${id})`"
     />
   </g>
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue';
+
+export default Vue.extend({
   props: {
-    x: Number,
-    y: Number,
-    width: Number,
-    height: Number,
+    x: {
+      type: Number,
+      default: 1,
+    },
+    y: {
+      type: Number,
+      default: 1,
+    },
+    width: {
+      type: Number,
+      default: 1,
+    },
+    height: {
+      type: Number,
+      default: 1,
+    },
     strokeColor: {
       type: String,
       default: '#AAA',
@@ -48,15 +65,14 @@ export default {
       default: 1,
     }
   },
-  data() {
+  data(): Record<string, unknown> {
     return {
       id: null,
     }
   },
-  mounted () {
+  mounted(): void {
     this.id = this._uid
   },
-  methods: {
-  }
-}
+  methods: {}
+});
 </script>

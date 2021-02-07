@@ -1,29 +1,36 @@
 <template>
   <div>
-    <craft-field-wrapper label="Aspect Ratio"
-                       instructions="Choose the aspect ratio that the images in this srcset should be displayed in"
+    <craft-field-wrapper
+      label="Aspect Ratio"
+      instructions="Choose the aspect ratio that the images in this srcset should be displayed in"
     >
-      <aspect-ratio-chooser :ratio-x="ratioX"
-                            :ratio-y="ratioY"
-                            @aspectRatioSelected="onAspectRatioSelected"
+      <aspect-ratio-chooser
+        :ratio-x="ratioX"
+        :ratio-y="ratioY"
+        @aspectRatioSelected="onAspectRatioSelected"
       />
     </craft-field-wrapper>
-    <craft-field-wrapper label="Image srcset"
-                       instructions="Describe how the images will be laid out on the page for each CSS breakpoint"
+    <craft-field-wrapper
+      label="Image srcset"
+      instructions="Describe how the images will be laid out on the page for each CSS breakpoint"
     >
-      <div class="matrix" style="position: relative;">
+      <div
+        class="matrix"
+        style="position: relative;"
+      >
         <div class="variant-blocks">
-          <div v-for="sizesData in sizesDataList">
+          <div
+            v-for="sizesData in sizesDataList"
+            :key="sizesData.breakpointValue"
+          >
             <sizes-visualization
               :id="id"
               v-bind.sync="sizesData"
-              :key="sizesData.breakpointValue"
-              :widthMultiplier="widthMultiplier"
+              :width-multiplier="widthMultiplier"
               :ratio-x="ratioX"
               :ratio-y="ratioY"
               :use-aspect-ratio="useAspectRatio"
-            >
-            </sizes-visualization>
+            />
           </div>
         </div>
       </div>
@@ -32,13 +39,14 @@
 </template>
 
 <script lang="ts">
+import Vue, { PropType } from 'vue';
 import SizesVisualization from './SizesVisualization.vue';
 import AspectRatioChooser from './AspectRatioChooser.vue';
 import CraftFieldWrapper from './CraftFieldWrapper.vue';
 
-const maxNormalizedWidth:number = 1000;
+const maxNormalizedWidth = 1000;
 
-export default {
+export default Vue.extend({
   components: {
     'aspect-ratio-chooser': AspectRatioChooser,
     'sizes-visualization': SizesVisualization,
@@ -62,8 +70,8 @@ export default {
       default: '',
     },
     sizesDataList: {
-      type: Array,
-      default: [
+      type: Array as PropType<SizesData[]>,
+      default: <SizesData[]>[
         {
           numUp: 4,
           breakpointValue: 1280,
@@ -91,38 +99,28 @@ export default {
           cellPaddingValue: 20,
           cellPaddingUnits: 'px',
         },
-      ]
+      ],
     },
   },
-  computed: {
-    widthMultiplier():number {
-      let multiplier:number = 1;
-      let largest:number = 0;
-      largest = Math.max(...this.sizesDataList.map((sizesData:Object) => parseInt(sizesData.breakpointValue)));
-
-      return largest > maxNormalizedWidth ? maxNormalizedWidth / largest : 1;
-    }
-  },
-  data() {
+  data(): Record<string, unknown> {
     return {
       title: '',
     }
   },
-  mounted() {
+  computed: {
+    widthMultiplier():number {
+      let largest = 0;
+      largest = Math.max(...this.sizesDataList.map((sizesData:SizesData) => parseInt(sizesData.breakpointValue)));
+
+      return largest > maxNormalizedWidth ? maxNormalizedWidth / largest : 1;
+    }
   },
   methods: {
-    onUpdateSizesProp(val) {
-      this.sizesDataList.forEach((sizesData, index) => {
-        if (sizesData.index === val.index) {
-          sizesData[val.prop] = val.value;
-        }
-      });
-    },
-    onAspectRatioSelected(val) {
+    onAspectRatioSelected(val: AspectRatioObj) {
       this.ratioX = val.ratioX;
       this.ratioY = val.ratioY;
       this.useAspectRatio = val.useAspectRatio;
     }
   }
-}
+})
 </script>

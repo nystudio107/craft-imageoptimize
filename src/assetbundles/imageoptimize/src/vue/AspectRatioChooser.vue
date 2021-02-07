@@ -1,30 +1,38 @@
 <template>
   <div>
-    <aspect-ratio-box v-for="aspectRatio in aspectRatios"
-                      :selected="(ratioX === aspectRatio.ratioX) && (ratioY === aspectRatio.ratioY)"
-                      :ratio-x="aspectRatio.ratioX"
-                      :ratio-y="aspectRatio.ratioY"
-                      :use-aspect-ratio="aspectRatio.useAspectRatio"
-                      :containerSize="80"
-                      :key="aspectRatio.ratioX + ':' + aspectRatio.ratioY"
-                      v-on="$listeners"
+    <aspect-ratio-box
+      v-for="aspectRatio in aspectRatios"
+      :key="aspectRatio.ratioX + ':' + aspectRatio.ratioY"
+      :selected="(ratioX === aspectRatio.ratioX) && (ratioY === aspectRatio.ratioY)"
+      :ratio-x="aspectRatio.ratioX"
+      :ratio-y="aspectRatio.ratioY"
+      :use-aspect-ratio="aspectRatio.useAspectRatio"
+      :container-size="80"
+      v-on="$listeners"
     />
   </div>
 </template>
 
 <script lang="ts">
+import Vue, {PropType} from 'vue';
 import AspectRatioBox from './AspectRatioBox.vue';
 
-export default {
+export default Vue.extend({
   components: {
     'aspect-ratio-box': AspectRatioBox,
   },
   props: {
-    ratioX: Number,
-    ratioY: Number,
+    ratioX: {
+      type: Number,
+      default: 1,
+    },
+    ratioY: {
+      type: Number,
+      default: 1,
+    },
     aspectRatios: {
-      type: Array,
-      default: [
+      type: Array as PropType<AspectRatioObj[]>,
+      default: <AspectRatioObj[]>[
         {
           ratioX: 16.01,
           ratioY: 9,
@@ -78,11 +86,9 @@ export default {
       ]
     },
   },
-  data () {
-    return {
-    }
+  data(): Record<string, unknown> {
+    return {}
   },
-  methods: {
-  }
-}
+  methods: {}
+});
 </script>
