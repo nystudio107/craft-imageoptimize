@@ -139,11 +139,9 @@ export default Vue.extend({
   },
   methods: {
     handleClick() {
-      this.$emit('aspectRatioSelected', <AspectRatioObj>{
-        ratioX: this.ratioX,
-        ratioY: this.ratioY,
-        useAspectRatio: this.useAspectRatio,
-      });
+      this.$emit('update:ratio-x', this.ratioX);
+      this.$emit('update:ratio-y', this.ratioY);
+      this.$emit('update:use-aspect-ratio', this.useAspectRatio);
     }
   }
 });
