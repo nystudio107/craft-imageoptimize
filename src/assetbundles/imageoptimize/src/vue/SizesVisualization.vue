@@ -13,7 +13,7 @@
     <div class="fields">
       <div class="flex-fields">
         <craft-number-field
-          v-model.number="breakpointValue"
+          :value="breakpointValue"
           :size="10"
           :min="300"
           :max="2560"
@@ -25,7 +25,7 @@
         />
 
         <craft-number-field
-          v-model.number="numUp"
+          :value="numUp"
           :size="5"
           :min="1"
           :max="8"
@@ -37,7 +37,7 @@
         />
 
         <craft-number-field
-          v-model.number="rowPaddingValue"
+          :value="rowPaddingValue"
           :size="10"
           :min="0"
           :max="1000"
@@ -49,7 +49,7 @@
         />
 
         <craft-number-field
-          v-model.number="cellPaddingValue"
+          :value="cellPaddingValue"
           :size="10"
           :min="0"
           :max="1000"
