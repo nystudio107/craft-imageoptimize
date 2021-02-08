@@ -9,9 +9,3 @@ interface SizesData {
 }
 
 type SizesDataList = SizesData[];
-
-interface AspectRatioObj {
-    ratioX: number,
-    ratioY: number,
-    useAspectRatio: boolean,
-}
