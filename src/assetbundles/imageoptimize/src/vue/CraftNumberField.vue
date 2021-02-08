@@ -11,17 +11,29 @@
       :size="size"
       :min="min"
       :max="max"
-      type="number"
+      :class="inputClasses"
       class="text"
+      type="number"
       autocomplete="off"
       step="1"
-      @input="$emit('update:' + field, parseInt($event.target.value))"
-    />
+      @input="validateInput($event)"
+    >
+    <ul
+      v-if="inputErrors.length"
+      class="errors"
+    >
+      <li
+        v-for="(error, index) in inputErrors"
+        :key="'error' + index"
+      >
+        {{ error }}
+      </li>
+    </ul>
   </craft-field-wrapper>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, {PropType} from 'vue';
 import CraftFieldWrapper from './CraftFieldWrapper.vue';
 
 export default Vue.extend({
@@ -61,16 +73,42 @@ export default Vue.extend({
       type: Number,
       default: 10000,
     },
-
+    errors: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    }
   },
   data(): Record<string, unknown> {
     return {
       id: null,
+      inputErrors: this.errors,
+    }
+  },
+  computed: {
+    inputClasses(): array {
+      let result = [];
+      if (this.inputErrors.length) {
+        result.push('error');
+      }
+
+      return result;
     }
   },
   mounted(): void {
     this.id = this._uid;
   },
-  methods: {}
+  methods: {
+    validateInput(e:Event): void {
+      let val = e.target.value;
+      this.inputErrors = [];
+      if (val < this.min) {
+        this.inputErrors.push('Too small');
+      }
+      if (val > this.max) {
+        this.inputErrors.push('Too big');
+      }
+      this.$emit('update:' + this.field, parseInt(val));
+    }
+  }
 });
 </script>

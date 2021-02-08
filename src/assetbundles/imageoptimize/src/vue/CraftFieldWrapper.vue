@@ -23,7 +23,7 @@
       </p>
     </div>
     <div class="input ltr">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
@@ -43,7 +43,7 @@ export default Vue.extend({
     },
     classes: {
       type: Array,
-      default: [],
+      default: () => [],
     }
   },
   data(): Record<string, unknown> {
