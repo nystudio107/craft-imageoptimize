@@ -39,6 +39,7 @@ class Manifest
         'commons.js',
         'vendors.js',
         'vendors.css',
+        'styles.css',
     ];
 
     // Protected Static Properties
