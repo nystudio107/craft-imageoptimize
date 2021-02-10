@@ -491,9 +491,9 @@ class OptimizedImages extends Component
         }
         $useAspectRatio = $variant['useAspectRatio'] ?? false;
         if ($useAspectRatio) {
-            $aspectRatio = (int)$variant['aspectRatioX'] / (int)$variant['aspectRatioY'];
+            $aspectRatio = (float)$variant['aspectRatioX'] / (float)$variant['aspectRatioY'];
         } else {
-            $aspectRatio = (int)$asset->width / (int)$asset->height;
+            $aspectRatio = (float)$asset->width / (float)$asset->height;
         }
         $width = (int)$variant['width'] * (int)$retinaSize;
         $transform->width = $width;
