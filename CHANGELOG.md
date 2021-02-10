@@ -1,5 +1,14 @@
 # ImageOptimize Changelog
 
+## 1.6.22 - 2020.02.10
+### Added
+* Added a `stickyErrors` property to the OptimizedImages model, so we can post-facto display if something went wrong during image generation on the frontend to users
+* Implemented `useFieldset` for Craft 3.6
+
+### Fixed
+* Fixed deprecation errors in Craft CMS 3.5 or later
+* Fixed an issue where aspect ratios could be improperly rounded, causing a division by zero error
+
 ## 1.6.21 - 2020.12.31
 ### Added
 * Added a **ImageOptimize Info** Utility that allows you to see the ImageOptimize settings even in environments where `allowAdminChanges` is `false`

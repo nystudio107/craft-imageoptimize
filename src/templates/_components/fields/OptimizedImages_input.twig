@@ -13,8 +13,26 @@
  */
 #}
 
-{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\optimizedimagesfield\\OptimizedImagesFieldAsset") %}
-{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/optimizedimagesfield/dist', true) %}
+{% from 'image-optimize/_includes/macros.twig' import registerJsModules %}
+{% from 'image-optimize/_includes/macros.twig' import registerCssModules %}
+
+{% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
+
+{% set cssModules = [
+    'vendors.css',
+    'styles.css',
+] %}
+{{ registerCssModules(cssModules) }}
+
+{% set jsModules = [
+    'runtime.js',
+    'vendors.js',
+    'commons.js',
+    'imageoptimize.js',
+    'field.js',
+] %}
+{{ registerJsModules(jsModules) }}
 
 {% import "_includes/forms" as forms %}
 
@@ -202,6 +220,14 @@
                 </p>
             {% else %}
                 <p>N/A</p>
+            {% endif %}
+            {% if value.stickyErrors is defined and value.stickyErrors | length %}
+                <label>Error Messages:</label>
+                <ul>
+                {% for stickyError in value.stickyErrors %}
+                    <li>{{ stickyError }}</li>
+                {% endfor %}
+                </ul>
             {% endif %}
         </div>
     </div>

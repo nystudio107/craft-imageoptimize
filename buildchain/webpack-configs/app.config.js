@@ -12,6 +12,9 @@ module.exports = (type = 'modern', settings) => {
     // common config
     const common = () => ({
         entry: settings.entry,
+        externals: {
+            vue: 'Vue',
+        },
         name: pkg.name,
         output: {
             path: path.resolve(__dirname, settings.paths.dist),

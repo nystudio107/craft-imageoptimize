@@ -19,6 +19,18 @@
     {% endfor %}
 {%- endmacro %}
 
+{% macro registerCssModules(cssModules) -%}
+    {% set includeCssModules = [] %}
+    {% for cssModule in cssModules %}
+        {% set includeCssModules = includeCssModules | merge([craft.imageOptimize.getModuleUri(cssModule) ?? '']) %}
+    {% endfor %}
+    {% for cssModule in includeCssModules if cssModule %}
+        {% do view.registerCssFile(cssModule, {
+            'depends': 'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
+        }) %}
+    {% endfor %}
+{%- endmacro %}
+
 {% macro checkboxGroupField(config) %}
     {% import "_includes/forms" as forms %}
     {% import _self as macros %}

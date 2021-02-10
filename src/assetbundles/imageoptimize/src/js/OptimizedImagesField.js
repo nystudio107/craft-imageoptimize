@@ -69,7 +69,8 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         blockSort: null,
         blockSelect: null,
 
-        init: function(id, inputNamePrefix) {
+        init: function(id, inputNamePrefix, sizesWrapperId) {
+
             this.id = id;
             this.inputNamePrefix = inputNamePrefix;
             this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);

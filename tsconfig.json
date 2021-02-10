@@ -14,7 +14,7 @@
     "outDir": "./src/assetbundles/imageoptimize/dist/",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./src/assetbundles/imageoptimize/src/*"
       ]
     },
     "resolveJsonModule": true,
@@ -30,8 +30,8 @@
     ]
   },
   "include": [
-    "./src/**/*.ts",
-    "./src/**/*.vue"
+    "./src/assetbundles/imageoptimize/src/**/*.ts",
+    "./src/assetbundles/imageoptimize/src/**/*.vue"
   ],
   "exclude": [
     "./node_modules"

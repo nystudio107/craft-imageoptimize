@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\services;
 
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\helpers\PluginTemplate as PluginTemplateHelper;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
@@ -29,9 +30,10 @@ use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
 use craft\events\GenerateTransformEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\Component as ComponentHelper;
 use craft\helpers\FileHelper;
-use craft\helpers\Assets as AssetsHelper;
+use craft\helpers\Html;
 use craft\helpers\Image as ImageHelper;
 use craft\image\Raster;
 use craft\models\AssetTransform;
@@ -234,6 +236,94 @@ class Optimize extends Component
         Craft::endProfile('handleGetAssetThumbUrlEvent', __METHOD__);
 
         return $url;
+    }
+
+    /**
+     * Returns whether `.webp` is a format supported by the server
+     *
+     * @return bool
+     */
+    public function serverSupportsWebP(): bool
+    {
+        $result = false;
+        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
+        foreach ($variantCreators as $variantCreator) {
+            if ($variantCreator['creator'] === 'cwebp' && $variantCreator['installed']) {
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Render the LazySizes fallback JS
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazySizesFallbackJs($scriptAttrs = [], $variables = [])
+    {
+        $minifier = 'minify';
+        if ($scriptAttrs === null) {
+            $minifier = 'jsMin';
+        }
+        $vars = array_merge([
+            'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
+            ],
+            $variables,
+        );
+        $content = PluginTemplateHelper::renderPluginTemplate(
+            'frontend/lazysizes-fallback-js',
+            $vars,
+            $minifier
+        );
+        $content = (string)$content;
+        if ($scriptAttrs !== null) {
+            $attrs = array_merge([
+                ],
+                $scriptAttrs,
+            );
+            $content = Html::tag('script', $content, $scriptAttrs);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Render the LazySizes fallback JS
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazySizesJs($scriptAttrs = [], $variables = [])
+    {
+        $minifier = 'minify';
+        if ($scriptAttrs === null) {
+            $minifier = 'jsMin';
+        }
+        $vars = array_merge([
+            'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
+        ],
+            $variables,
+        );
+        $content = PluginTemplateHelper::renderPluginTemplate(
+            'frontend/lazysizes-js',
+            $vars,
+            $minifier
+        );
+        $content = (string)$content;
+        if ($scriptAttrs !== null) {
+            $attrs = array_merge([
+            ],
+                $scriptAttrs,
+            );
+            $content = Html::tag('script', $content, $scriptAttrs);
+        }
+
+        return $content;
     }
 
     /**

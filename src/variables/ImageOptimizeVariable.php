@@ -28,6 +28,30 @@ class ImageOptimizeVariable extends ManifestVariable
     // =========================================================================
 
     /**
+     * Render the LazySizes fallback JS
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazySizesFallbackJs($scriptAttrs = [], $variables = [])
+    {
+        return Template::raw(ImageOptimize::$plugin->optimize->renderLazySizesFallbackJs($scriptAttrs, $variables));
+    }
+
+    /**
+     * Render the LazySizes JS
+     *
+     * @param array $scriptAttrs
+     * @param array $variables
+     * @return string
+     */
+    public function renderLazySizesJs($scriptAttrs = [], $variables = [])
+    {
+        return Template::raw(ImageOptimize::$plugin->optimize->renderLazySizesJs($scriptAttrs, $variables));
+    }
+
+    /**
      * Return an SVG box as a placeholder image
      *
      * @param             $width
@@ -66,15 +90,7 @@ class ImageOptimizeVariable extends ManifestVariable
      */
     public function serverSupportsWebP(): bool
     {
-        $result = false;
-        $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
-        foreach ($variantCreators as $variantCreator) {
-            if ($variantCreator['creator'] === 'cwebp' && $variantCreator['installed']) {
-                $result = true;
-            }
-        }
-
-        return $result;
+        return ImageOptimize::$plugin->optimize->serverSupportsWebP();
     }
 
     /**

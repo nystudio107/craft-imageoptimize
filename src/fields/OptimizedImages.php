@@ -10,10 +10,12 @@
 
 namespace nystudio107\imageoptimize\fields;
 
+use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
-use nystudio107\imageoptimize\assetbundles\optimizedimagesfield\OptimizedImagesFieldAsset;
-use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
+use nystudio107\imageoptimize\helpers\Manifest as ManifestHelper;
+use nystudio107\imageoptimize\variables\ManifestVariable;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
 use Craft;
@@ -22,6 +24,7 @@ use craft\base\Field;
 use craft\base\Volume;
 use craft\elements\Asset;
 use craft\fields\Matrix;
+use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\models\FieldLayout;
 use craft\validators\ArrayValidator;
@@ -197,6 +200,15 @@ class OptimizedImages extends Field
 
     /**
      * @inheritdoc
+     * @since 1.7.0
+     */
+    public function useFieldset(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
      */
     public function afterElementSave(ElementInterface $asset, bool $isNew)
     {
@@ -280,6 +292,12 @@ class OptimizedImages extends Field
                 Craft::error($e->getMessage(), __METHOD__);
             }
         }
+        // Register our asset bundle
+        try {
+            Craft::$app->getView()->registerAssetBundle(ImageOptimizeAsset::class);
+        } catch (InvalidConfigException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
 
         try {
             $reflect = new \ReflectionClass($this);
@@ -288,12 +306,19 @@ class OptimizedImages extends Field
             Craft::error($e->getMessage(), __METHOD__);
             $thisId = 0;
         }
-        $id = Craft::$app->getView()->formatInputId($thisId);
+        // Get our id and namespace
+        if (ImageOptimize::$craft35) {
+            $id = Html::id($thisId);
+        } else {
+            $id = Craft::$app->getView()->formatInputId($thisId);
+        }
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
+        $sizesWrapperId = Craft::$app->getView()->namespaceInputId('sizes-wrapper');
         Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
             '"'.$namespacedId.'", '.
-            '"'.$namespacePrefix.'"'.
+            '"'.$namespacePrefix.'",'.
+            '"'.$sizesWrapperId.'"'.
             ');');
 
         // Prep our aspect ratios
@@ -343,13 +368,17 @@ class OptimizedImages extends Field
             /** @var Asset $element */
             // Register our asset bundle
             try {
-                Craft::$app->getView()->registerAssetBundle(OptimizedImagesFieldAsset::class);
+                Craft::$app->getView()->registerAssetBundle(ImageOptimizeAsset::class);
             } catch (InvalidConfigException $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             }
 
             // Get our id and namespace
-            $id = Craft::$app->getView()->formatInputId($this->handle);
+            if (ImageOptimize::$craft35) {
+                $id = Html::id($this->handle);
+            } else {
+                $id = Craft::$app->getView()->formatInputId($this->handle);
+            }
             $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
 
             // Variables to pass down to our field JavaScript to let it namespace properly
@@ -365,6 +394,7 @@ class OptimizedImages extends Field
 
             $settings = ImageOptimize::$plugin->getSettings();
             $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
+
             // Render the input template
             try {
                 return Craft::$app->getView()->renderTemplate(

@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\models;
 
+use craft\helpers\Html;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
@@ -93,6 +94,11 @@ class OptimizedImage extends Model
      */
     public $placeholderHeight;
 
+    /**
+     * @var string[] An array of errors logged when generating the image transforms
+     */
+    public $stickyErrors = [];
+
     // Public Methods
     // =========================================================================
 
@@ -114,6 +120,7 @@ class OptimizedImage extends Model
             ['colorPalette', ArrayValidator::class],
             ['placeholderWidth', 'integer'],
             ['placeholderHeight', 'integer'],
+            ['stickyErrors', ArrayValidator::class],
         ];
     }
 
@@ -371,6 +378,159 @@ class OptimizedImage extends Model
     }
 
     /**
+     * Generate a complete <link rel="preload"> tag for this OptimizedImages model
+     * ref: https://web.dev/preload-responsive-images/#imagesrcset-and-imagesizes
+     *
+     * @param array $linkAttrs
+     *
+     * @return \Twig\Markup
+     */
+    public function linkPreloadTag($linkAttrs = [])
+    {
+        // Any web browser that supports link rel="preload" as="image" also supports webp, so prefer that
+        $srcset = $this->optimizedImageUrls;
+        if (!empty($this->optimizedWebPImageUrls)) {
+            $srcset = $this->optimizedWebPImageUrls;
+        }
+        // Merge the passed in options with the tag attributes
+        $attrs = array_merge([
+            'rel' => 'preload',
+            'as' => 'image',
+            'href' => reset($srcset),
+            'imagesrcset' => $this->getSrcsetFromArray($srcset),
+            'imagesizes' => '100vw',
+        ],
+            $linkAttrs
+        );
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $tag = Html::tag('link', '', $attrs);
+
+        return Template::raw($tag);
+    }
+
+    /**
+     * Generate a complete <img> tag for this OptimizedImages model
+     *
+     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
+     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
+     * @param array $imgAttrs
+     *
+     * @return \Twig\Markup
+     */
+    public function imgTag($loading = 'eager', $placeHolder = 'box', $imgAttrs = [])
+    {
+        // Merge the passed in options with the tag attributes
+        $attrs = array_merge([
+                'class' => '',
+                'style' => '',
+                'width' => $this->placeholderWidth,
+                'height' => $this->placeholderHeight,
+                'src' => reset($this->optimizedImageUrls),
+                'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
+                'sizes' => '100vw',
+                'loading' => '',
+            ],
+            $imgAttrs
+        );
+        // Handle lazy loading
+        if ($loading !== 'eager') {
+            $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
+        }
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $tag = Html::tag('img', '', $attrs);
+
+        return Template::raw($tag);
+    }
+
+    /**
+     * Generate a complete <picture> tag for this OptimizedImages model
+     *
+     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
+     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
+     * @param array $pictureAttrs
+     * @param array $srcsetAttrs
+     * @param array $imgAttrs
+     *
+     * @return \Twig\Markup
+     */
+    public function pictureTag($loading = 'eager', $placeHolder = 'box', $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [])
+    {
+        $content = '';
+        // Handle the webp srcset
+        if (!empty($this->optimizedWebPImageUrls)) {
+            // Merge the passed in options with the tag attributes
+            $attrs = array_merge([
+                    'srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
+                    'type' => 'image/webp',
+                    'sizes' => '100vw',
+                ],
+                $srcsetAttrs
+            );
+            // Handle lazy loading
+            if ($loading !== 'eager') {
+                $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
+            }
+            // Remove any empty attributes
+            $attrs = array_filter($attrs);
+            // Render the tag
+            $content .= Html::tag('source', '', $attrs);
+        }
+        // Handle the regular srcset
+        if (!empty($this->optimizedImageUrls)) {
+            // Merge the passed in options with the tag attributes
+            $attrs = array_merge([
+                    'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
+                    'sizes' => '100vw',
+                ],
+                $srcsetAttrs
+            );
+            // Handle lazy loading
+            if ($loading !== 'eager') {
+                $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
+            }
+            // Remove any empty attributes
+            $attrs = array_filter($attrs);
+            // Render the tag
+            $content .= Html::tag('source', '', $attrs);
+        }
+        // Handle the img tag
+        /** @noinspection SuspiciousAssignmentsInspection */
+        $attrs = array_merge([
+                'class' => '',
+                'style' => '',
+                'width' => $this->placeholderWidth,
+                'height' => $this->placeholderHeight,
+                'src' => reset($this->optimizedImageUrls),
+                'loading' => '',
+            ],
+            $imgAttrs
+        );
+        // Handle lazy loading
+        if ($loading !== 'eager') {
+            $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
+        }
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $content .= Html::tag('img', '', $attrs);
+        // Merge the passed in options with the tag attributes
+        $attrs = array_merge([
+            ],
+            $pictureAttrs
+        );
+        // Remove any empty attributes
+        $attrs = array_filter($attrs);
+        // Render the tag
+        $tag = Html::tag('picture', $content, $attrs);
+
+        return Template::raw($tag);
+    }
+
+    /**
      * Return a base64-encoded placeholder image
      *
      * @return \Twig\Markup|null
@@ -613,5 +773,95 @@ class OptimizedImage extends Model
         $color = '#CCC';
 
         return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
+    }
+
+    /**
+     * Swap the tag attributes to work with lazy loading
+     * ref: https://web.dev/native-lazy-loading/#how-do-i-handle-browsers-that-don't-yet-support-native-lazy-loading
+     *
+     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
+     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
+     * @param array $attrs
+     *
+     * @return array
+     */
+    protected function swapLazyLoadAttrs(string $loading, string $placeHolder, array $attrs): array
+    {
+        // Set the class and loading attributes
+        if (isset($attrs['class'])) {
+            $attrs['class'] = trim($attrs['class'] . ' lazyload');
+        }
+        // Set the style on this element to be the placeholder image as the background-image
+        if (isset($attrs['style']) && !empty($attrs['src'])) {
+            $attrs['style'] = trim(
+                $attrs['style'] .
+                'background-image:url(' . $this->getLazyLoadSrc($placeHolder) . '); background-size: cover;'
+            );
+        }
+        // Handle attributes that lazy  and lazySizesFallback have in common
+        switch ($loading) {
+            case 'lazy':
+            case 'lazySizesFallback':
+            if (isset($attrs['loading'])) {
+                    $attrs['loading'] = 'lazy';
+                }
+                break;
+            default:
+                break;
+        }
+        // Handle attributes that lazySizes and lazySizesFallback have in common
+        switch ($loading) {
+            case 'lazySizes':
+            case 'lazySizesFallback':
+                // Only swap to data- attributes if they want the LazySizes fallback
+                if (!empty($attrs['sizes'])) {
+                    $attrs['data-sizes'] = $attrs['sizes'];
+                    $attrs['sizes'] = '';
+                }
+                if (!empty($attrs['srcset'])) {
+                    $attrs['data-srcset'] = $attrs['srcset'];
+                    $attrs['srcset'] = '';
+                }
+                if (!empty($attrs['src'])) {
+                    $attrs['data-src'] = $attrs['src'];
+                    $attrs['src'] = $this->getLazyLoadSrc($placeHolder);
+                }
+            break;
+            default:
+                break;
+        }
+
+        return $attrs;
+    }
+
+    /**
+     * Return a lazy loading placeholder image based on the passed in $lazyload setting
+     *
+     * @param string $lazyLoad
+     *
+     * @return string
+     */
+    protected function getLazyLoadSrc(string $lazyLoad): string
+    {
+        $result = '';
+        if (is_string($lazyLoad)) {
+            $lazyLoad = strtolower($lazyLoad);
+        }
+        switch ($lazyLoad) {
+            case 'image':
+                $result = $this->getPlaceholderImage();
+                break;
+            case 'silhouette':
+                $result = $this->getPlaceholderSilhouette();
+                break;
+            case 'color':
+                $result = $this->getPlaceholderBox($this->colorPalette[0] ?? null);
+                break;
+            default:
+                $result = $this->getPlaceholderBox('#CCC');
+                break;
+        }
+
+        return $result;
     }
 }
