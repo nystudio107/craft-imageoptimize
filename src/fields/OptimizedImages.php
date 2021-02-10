@@ -292,6 +292,12 @@ class OptimizedImages extends Field
                 Craft::error($e->getMessage(), __METHOD__);
             }
         }
+        // Register our asset bundle
+        try {
+            Craft::$app->getView()->registerAssetBundle(ImageOptimizeAsset::class);
+        } catch (InvalidConfigException $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
 
         try {
             $reflect = new \ReflectionClass($this);
@@ -329,18 +335,6 @@ class OptimizedImages extends Field
         $aspectRatios[] = $aspectRatio;
         // Get only the user-editable settings
         $settings = ImageOptimize::$plugin->getSettings();
-
-        // Register our CSS
-        $cssModules = [
-            'vendors.css',
-            'styles.css',
-        ];
-        foreach($cssModules as $cssModule) {
-            $css = ManifestHelper::getModule(ManifestVariable::$config, $cssModule, 'legacy', true);
-            if ($css) {
-                Craft::$app->getView()->registerCssFile($css);
-            }
-        }
 
         // Render the settings template
         try {
@@ -400,18 +394,6 @@ class OptimizedImages extends Field
 
             $settings = ImageOptimize::$plugin->getSettings();
             $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
-
-            // Register our CSS
-            $cssModules = [
-                'vendors.css',
-                'styles.css',
-            ];
-            foreach($cssModules as $cssModule) {
-                $css = ManifestHelper::getModule(ManifestVariable::$config, $cssModule, 'legacy', true);
-                if ($css) {
-                    Craft::$app->getView()->registerCssFile($css);
-                }
-            }
 
             // Render the input template
             try {
