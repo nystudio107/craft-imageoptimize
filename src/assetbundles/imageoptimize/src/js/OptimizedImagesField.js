@@ -10,8 +10,6 @@
  * @since     1.2.0
  */
 
-import SizesContainer from '../vue/SizesContainer.vue';
-
  ;(function ( $, window, document, undefined ) {
 
     var pluginName = "ImageOptimizeOptimizedImages",
@@ -56,21 +54,6 @@ import SizesContainer from '../vue/SizesContainer.vue';
 
 })( jQuery, window, document );
 
-function initSizesVueComponent(sizesWrapperId){
-     const vm = new Vue({
-         el: '#' + sizesWrapperId,
-         components: {
-             'sizes-container': SizesContainer,
-         },
-         data: {
-         },
-         methods: {
-         },
-         mounted() {
-         }
-     });
-}
-
 Craft.OptimizedImagesInput = Garnish.Base.extend(
     {
         id: null,
@@ -88,7 +71,6 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
         init: function(id, inputNamePrefix, sizesWrapperId) {
 
-            initSizesVueComponent(sizesWrapperId);
             this.id = id;
             this.inputNamePrefix = inputNamePrefix;
             this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);
