@@ -1,6 +1,8 @@
 # ImageOptimize Changelog
 
-## 1.7.0 - UNRELEASED
+## 1.6.23 - 2020.02.13
+### Fixed
+* Fixed parse errors with PHP < 7.3
 
 ## 1.6.22 - 2020.02.10
 ### Added
