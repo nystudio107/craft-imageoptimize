@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.23 - 2020.02.13
+### Fixed
+* Fixed parse errors with PHP < 7.3
+
 ## 1.6.22 - 2020.02.10
 ### Added
 * Added a `stickyErrors` property to the OptimizedImages model, so we can post-facto display if something went wrong during image generation on the frontend to users

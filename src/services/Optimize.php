@@ -272,7 +272,7 @@ class Optimize extends Component
         $vars = array_merge([
             'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
             ],
-            $variables,
+            $variables
         );
         $content = PluginTemplateHelper::renderPluginTemplate(
             'frontend/lazysizes-fallback-js',
@@ -283,7 +283,7 @@ class Optimize extends Component
         if ($scriptAttrs !== null) {
             $attrs = array_merge([
                 ],
-                $scriptAttrs,
+                $scriptAttrs
             );
             $content = Html::tag('script', $content, $scriptAttrs);
         }
@@ -307,7 +307,7 @@ class Optimize extends Component
         $vars = array_merge([
             'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
         ],
-            $variables,
+            $variables
         );
         $content = PluginTemplateHelper::renderPluginTemplate(
             'frontend/lazysizes-js',
@@ -318,7 +318,7 @@ class Optimize extends Component
         if ($scriptAttrs !== null) {
             $attrs = array_merge([
             ],
-                $scriptAttrs,
+                $scriptAttrs
             );
             $content = Html::tag('script', $content, $scriptAttrs);
         }
