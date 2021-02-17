@@ -10,7 +10,7 @@
  * @since     1.2.0
  */
 
-import SizesContainer from '../vue/SizesContainer.vue';
+import SizesContainer from '@vue/SizesContainer.vue';
 
  ;(function ( $, window, document, undefined ) {
 
