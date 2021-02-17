@@ -1,20 +1,19 @@
 {% extends "_layouts/cp" %}
 
-{% from 'image-optimize/_includes/macros.twig' import registerJsModules %}
-
 {% block head %}
     {{ parent() }}
-    {{ craft.imageOptimize.includeCssModule("vendors.css", false) }}
-    {{ craft.imageOptimize.includeCssModule("styles.css", false) }}
+    {{ craft.imageOptimize.registerCssModules([
+        'vendors.css',
+        'styles.css'
+    ]) }}
 {% endblock %}
 
 {% block foot %}
     {{ parent() }}
-    {% set jsModules = [
+    {{ craft.imageOptimize.registerJsModules([
         'runtime.js',
         'vendors.js',
         'commons.js',
         'imageoptimize.js',
-    ] %}
-    {{ registerJsModules(jsModules) }}
+    ]) }}
 {% endblock %}
