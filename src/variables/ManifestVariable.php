@@ -43,7 +43,6 @@ class ManifestVariable
      *
      * @param string     $moduleName
      * @param bool       $async
-     * @param null|array $config
      *
      * @return null|Markup
      * @throws NotFoundHttpException
@@ -60,7 +59,6 @@ class ManifestVariable
      *
      * @param string     $moduleName
      * @param bool       $async
-     * @param null|array $config
      *
      * @return Markup
      * @throws NotFoundHttpException
