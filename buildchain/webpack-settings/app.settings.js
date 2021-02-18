@@ -21,7 +21,7 @@ module.exports = {
     extensions: ['.ts', '.js', '.vue', '.json'],
     name: 'imageoptimize',
     paths: {
-        dist: path.resolve('../../src/assetbundles/imageoptimize/dist/'),
+        dist: path.resolve('../src/assetbundles/imageoptimize/dist/'),
     },
     urls: {
         publicPath: () => process.env.PUBLIC_PATH || '',
