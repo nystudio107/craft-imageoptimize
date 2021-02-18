@@ -270,7 +270,7 @@ class Manifest
                 // Don't report errors for any files in SUPPRESS_ERRORS_FOR_MODULES
                 if (!in_array($moduleName, self::SUPPRESS_ERRORS_FOR_MODULES)) {
                     self::reportError(Craft::t(
-                        'instant-analytics',
+                        'image-optimize',
                         'Module does not exist in the manifest: {moduleName}',
                         ['moduleName' => $moduleName]
                     ), $soft);
@@ -311,7 +311,7 @@ class Manifest
             if ($manifest === null) {
                 // We couldn't find a manifest; throw an error
                 self::reportError(Craft::t(
-                    'instant-analytics',
+                    'image-optimize',
                     'Manifest file not found at: {manifestPath}',
                     ['manifestPath' => $manifestPath]
                 ), true);
