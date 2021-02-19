@@ -133,7 +133,7 @@
                                 {% if useAspectRatio != true %}
                                     {% set aspectRatioText = 'N/A' %}
                                 {% endif %}
-                                {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
+                                {% if imageSource |length and thisUrl |length %}
                                     {% set imageClass = "io-normal-image" %}
                                     {% if imageSource == value.optimizedWebPImageUrls %}
                                         {% set imageClass = "io-webp-image" %}
@@ -164,7 +164,7 @@
                                             &middot;
                                             {{ thisFormat }}
                                             &middot;
-                                            {{ thisFileSize }}
+                                            {% if thisFileSize != -1 %}{{ thisFileSize }}{% else %}???{% endif %}
                                         </span>
                                         {% if value.originalImageWidth < retinaWidth or value.originalImageHeight < (retinaWidth / aspectRatio) %}
                                             <br />
