@@ -10,13 +10,14 @@
 
 namespace nystudio107\imageoptimize\models;
 
-use craft\helpers\Html;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 
-use craft\helpers\Template;
+use Craft;
 use craft\base\Model;
+use craft\helpers\Html;
+use craft\helpers\Template;
 use craft\validators\ArrayValidator;
 
 /**
@@ -680,9 +681,11 @@ class OptimizedImage extends Model
         curl_exec($ch);
         // content-length of download (in bytes), read from Content-Length: field
         $contentLength = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
+        $error = curl_error($ch);
         curl_close($ch);
         // cannot retrieve file size, return "-1"
         if (!$contentLength) {
+            Craft::error($error, __METHOD__);
             return -1;
         }
         // return size in bytes
