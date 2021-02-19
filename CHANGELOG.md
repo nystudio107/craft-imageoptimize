@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.6.24 - UNRELEASED
+### Added
+* Added error logging for `curl` errors
+
 ### Changed
 * Attempt to display optimized image variants even if the image curl fails
 
