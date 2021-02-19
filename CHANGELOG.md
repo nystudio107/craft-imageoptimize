@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.24 - UNRELEASED
+### Changed
+* Attempt to display optimized image variants even if the image curl fails
+
 ## 1.6.23 - 2020.02.13
 ### Fixed
 * Fixed parse errors with PHP < 7.3
