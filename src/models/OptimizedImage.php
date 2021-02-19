@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\models;
 
+use Composer\Installer\PackageEvent;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
@@ -682,10 +683,12 @@ class OptimizedImage extends Model
         // content-length of download (in bytes), read from Content-Length: field
         $contentLength = curl_getinfo($ch, CURLINFO_CONTENT_LENGTH_DOWNLOAD);
         $error = curl_error($ch);
+        if (!empty($error)) {
+            Craft::error($error, __METHOD__);
+        }
         curl_close($ch);
         // cannot retrieve file size, return "-1"
         if (!$contentLength) {
-            Craft::error($error, __METHOD__);
             return -1;
         }
         // return size in bytes
