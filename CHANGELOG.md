@@ -1,11 +1,12 @@
 # ImageOptimize Changelog
 
-## 1.6.24 - UNRELEASED
+## 1.6.24 - 2020.02.13
 ### Added
 * Added error logging for `curl` errors
 
 ### Changed
 * Attempt to display optimized image variants even if the image curl fails
+* Remove the use of `curl` to obtain the remote image sizes, replacing it with frontend JS
 
 ## 1.6.23 - 2020.02.13
 ### Fixed
