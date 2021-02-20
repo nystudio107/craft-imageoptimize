@@ -32,20 +32,6 @@ function humanFileSize(bytes, si=false, dp=1) {
     return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-const images = document.querySelectorAll("img.io-prevew-image");
-for (const image of images) {
-    const url = image.src || image.href;
-    if (url && url.length > 0) {
-        const iTime = performance.getEntriesByName(url)[0];
-        if (iTime !== undefined) {
-            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
-            if (elem) {
-                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
-            }
-        }
-    }
-}
-
 ;(function ( $, window, document, undefined ) {
 
     var pluginName = "ImageOptimizeOptimizedImages",
@@ -73,6 +59,19 @@ for (const image of images) {
 
 /* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
 
+                const images = document.querySelectorAll("img.io-prevew-image");
+                for (const image of images) {
+                    const url = image.src || image.href;
+                    if (url && url.length > 0) {
+                        const iTime = performance.getEntriesByName(url)[0];
+                        if (iTime !== undefined) {
+                            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
+                            if (elem) {
+                                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
+                            }
+                        }
+                    }
+                }
             });
         }
     };
