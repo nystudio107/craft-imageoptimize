@@ -10,7 +10,29 @@
  * @since     1.2.0
  */
 
- ;(function ( $, window, document, undefined ) {
+function humanFileSize(bytes, si=false, dp=1) {
+    const thresh = si ? 1000 : 1024;
+
+    if (Math.abs(bytes) < thresh) {
+        return bytes + ' B';
+    }
+
+    const units = si
+        ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+        : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+    let u = -1;
+    const r = 10**dp;
+
+    do {
+        bytes /= thresh;
+        ++u;
+    } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
+
+
+    return bytes.toFixed(dp) + ' ' + units[u];
+}
+
+;(function ( $, window, document, undefined ) {
 
     var pluginName = "ImageOptimizeOptimizedImages",
         defaults = {
@@ -37,6 +59,19 @@
 
 /* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
 
+                const images = document.querySelectorAll("img.io-preview-image");
+                for (const image of images) {
+                    const url = image.src || image.href;
+                    if (url && url.length > 0) {
+                        const iTime = performance.getEntriesByName(url)[0];
+                        if (iTime !== undefined) {
+                            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
+                            if (elem) {
+                                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
+                            }
+                        }
+                    }
+                }
             });
         }
     };
