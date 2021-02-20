@@ -59,7 +59,7 @@ function humanFileSize(bytes, si=false, dp=1) {
 
 /* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
 
-                const images = document.querySelectorAll("img.io-prevew-image");
+                const images = document.querySelectorAll("img.io-preview-image");
                 for (const image of images) {
                     const url = image.src || image.href;
                     if (url && url.length > 0) {
