@@ -231,6 +231,18 @@
         </div>
     </div>
 {% endif %}
+{% if value.stickyErrors is defined and value.stickyErrors | length %}
+    <div class="field">
+        <div class="heading" style="display: block;">
+                <label>Error Messages:</label>
+                <ul>
+                    {% for stickyError in value.stickyErrors %}
+                        <li>{{ stickyError }}</li>
+                    {% endfor %}
+                </ul>
+        </div>
+    </div>
+{% endif %}
 {% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
     {% if field.displayDominantColorPalette %}
         <div class="field">
