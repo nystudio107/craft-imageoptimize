@@ -1,6 +1,20 @@
 # ImageOptimize Changelog
 
-## 1.7.0 - UNRELEASED
+## 1.6.25 - UNRELEASED
+### Fixed
+* Always display sticky errors
+
+## 1.6.24 - 2020.02.13
+### Added
+* Added error logging for `curl` errors
+
+### Changed
+* Attempt to display optimized image variants even if the image curl fails
+* Remove the use of `curl` to obtain the remote image sizes, replacing it with frontend JS
+
+## 1.6.23 - 2020.02.13
+### Fixed
+* Fixed parse errors with PHP < 7.3
 
 ## 1.6.22 - 2020.02.10
 ### Added

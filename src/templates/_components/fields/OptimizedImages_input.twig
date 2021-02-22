@@ -92,7 +92,6 @@
                                         {% set errorMessage = " image would be upscaled" %}
                                     {% endif %}
                                 {% endif %}
-                                {% set thisFileSize = value.getRemoteFileSize(thisUrl) %}
                                 {% set aspectRatio = variant.aspectRatioX / variant.aspectRatioY %}
                                 {% set useAspectRatio = variant.useAspectRatio ?? true %}
                                 {% if useAspectRatio != true %}
@@ -128,7 +127,7 @@
                                 {% if useAspectRatio != true %}
                                     {% set aspectRatioText = 'N/A' %}
                                 {% endif %}
-                                {% if imageSource |length and thisFileSize != -1 and thisUrl |length %}
+                                {% if imageSource |length and thisUrl |length %}
                                     {% set imageClass = "io-normal-image" %}
                                     {% if imageSource == value.optimizedWebPImageUrls %}
                                         {% set imageClass = "io-webp-image" %}
@@ -136,7 +135,7 @@
                                     <div style="width: 200px; vertical-align: top;">
                                         <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
                                             <div style="position: relative;">
-                                                <img class="io-soft-shadow-img {{ imageClass }}" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
+                                                <img class="io-soft-shadow-img io-preview-image {{ imageClass }}" src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}" width="{{ thisWidth }}" />
                                                 {% if (retinaSizes |length) > 1 %}
                                                     <h4 class="io-retina-size-badge">
                                                         {{ retinaSize }}x
@@ -159,7 +158,7 @@
                                             &middot;
                                             {{ thisFormat }}
                                             &middot;
-                                            {{ thisFileSize }}
+                                            <span class="io-file-size">???</span>
                                         </span>
                                         {% if value.originalImageWidth < retinaWidth or value.originalImageHeight < (retinaWidth / aspectRatio) %}
                                             <br />
@@ -224,6 +223,18 @@
                 {% endfor %}
                 </ul>
             {% endif %}
+        </div>
+    </div>
+{% endif %}
+{% if value.stickyErrors is defined and value.stickyErrors | length %}
+    <div class="field">
+        <div class="heading" style="display: block;">
+                <label>Error Messages:</label>
+                <ul>
+                    {% for stickyError in value.stickyErrors %}
+                        <li>{{ stickyError }}</li>
+                    {% endfor %}
+                </ul>
         </div>
     </div>
 {% endif %}
