@@ -126,10 +126,10 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ArrowLine from '@vue/ArrowLine.vue';
-import HatchBox from '@vue/HatchBox.vue';
-import ImagePreviewBox from "@vue/ImagePreviewBox.vue";
-import CraftNumberField from "@vue/CraftNumberField.vue";
+import ArrowLine from '@/vue/ArrowLine.vue';
+import HatchBox from '@/vue/HatchBox.vue';
+import ImagePreviewBox from "@/vue/ImagePreviewBox.vue";
+import CraftNumberField from "@/vue/CraftNumberField.vue";
 
 const remPx = 16;
 const emPx = 16;

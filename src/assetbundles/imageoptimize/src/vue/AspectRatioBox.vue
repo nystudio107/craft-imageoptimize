@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ImagePreviewBox from "@vue/ImagePreviewBox.vue";
+import ImagePreviewBox from "@/vue/ImagePreviewBox.vue";
 
 export default Vue.extend({
   components: {

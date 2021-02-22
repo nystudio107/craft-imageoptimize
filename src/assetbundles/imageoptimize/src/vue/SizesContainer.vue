@@ -40,9 +40,9 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue';
-import SizesVisualization from '@vue/SizesVisualization.vue';
-import AspectRatioChooser from '@vue/AspectRatioChooser.vue';
-import CraftFieldWrapper from '@vue/CraftFieldWrapper.vue';
+import SizesVisualization from '@/vue/SizesVisualization.vue';
+import AspectRatioChooser from '@/vue/AspectRatioChooser.vue';
+import CraftFieldWrapper from '@/vue/CraftFieldWrapper.vue';
 
 const maxNormalizedWidth = 1000;
 

@@ -10,7 +10,7 @@
  * @since     1.2.0
  */
 
-import SizesContainer from '@vue/SizesContainer.vue';
+import SizesContainer from '@/vue/SizesContainer.vue';
 
 function humanFileSize(bytes, si = false, dp = 1) {
     const thresh = si ? 1000 : 1024;

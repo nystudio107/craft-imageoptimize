@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import ArrowLine from '@vue/ArrowLine.vue';
+import ArrowLine from '@/vue/ArrowLine.vue';
 
 export default Vue.extend({
   components: {
