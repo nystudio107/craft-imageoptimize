@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.25 - 2021.02.23
+### Changed
+* Updated to use `craft-imageoptimize-imgix` version `^1.2.0`
+
+### Fixed
+* Always display sticky errors
+
 ## 1.6.24 - 2020.02.13
 ### Added
 * Added error logging for `curl` errors
