@@ -10,6 +10,14 @@
  * @since     1.2.0
  */
 
+/**
+ * Convert the passed in bytes into a human readable format
+ *
+ * @param bytes
+ * @param si
+ * @param dp
+ * @returns {string}
+ */
 function humanFileSize(bytes, si=false, dp=1) {
     const thresh = si ? 1000 : 1024;
 
@@ -30,6 +38,24 @@ function humanFileSize(bytes, si=false, dp=1) {
 
 
     return bytes.toFixed(dp) + ' ' + units[u];
+}
+
+/**
+ * After an image has loaded, query the performance API for the decodedBodySize
+ *
+ * @param image
+ */
+function imageLoaded(image) {
+    const url = image.src || image.href;
+    if (url && url.length > 0) {
+        const iTime = performance.getEntriesByName(url)[0];
+        if (iTime !== undefined) {
+            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
+            if (elem) {
+                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
+            }
+        }
+    }
 }
 
 ;(function ( $, window, document, undefined ) {
@@ -61,15 +87,12 @@ function humanFileSize(bytes, si=false, dp=1) {
 
                 const images = document.querySelectorAll("img.io-preview-image");
                 for (const image of images) {
-                    const url = image.src || image.href;
-                    if (url && url.length > 0) {
-                        const iTime = performance.getEntriesByName(url)[0];
-                        if (iTime !== undefined) {
-                            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
-                            if (elem) {
-                                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
-                            }
-                        }
+                    if (image.complete) {
+                        imageLoaded(image);
+                    } else {
+                        image.addEventListener('load', (event) => {
+                            imageLoaded(event.target);
+                        });
                     }
                 }
             });
