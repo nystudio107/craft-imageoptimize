@@ -65,8 +65,8 @@ class Manifest
         ],
         // webpack-dev-server config
         'devServer' => [
-            'manifestPath' => 'http://127.0.0.1:8080',
-            'publicPath' => '/',
+            'manifestPath' => 'http://imageoptimize-buildchain:8080/',
+            'publicPath' => 'http://imageoptimize-buildchain:8080/',
         ],
     ];
 
