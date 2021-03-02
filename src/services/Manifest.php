@@ -6,17 +6,17 @@
  * webpack-dev-server HMR support
  *
  * @link      https://nystudio107.com/
- * @copyright Copyright (c) 2018 nystudio107
+ * @copyright Copyright (c) 2021 nystudio107
  */
 
-namespace nystudio107\imageoptimize\helpers;
-
-use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
+namespace nystudio107\imageoptimize\services;
 
 use Craft;
+use craft\base\Component;
 use craft\helpers\Json as JsonHelper;
 use craft\helpers\UrlHelper;
 
+use craft\web\AssetBundle;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\caching\TagDependency;
@@ -27,15 +27,13 @@ use yii\web\NotFoundHttpException;
  * @package   Twigpack
  * @since     1.0.0
  */
-class Manifest
+class Manifest extends Component
 {
     // Constants
     // =========================================================================
 
-    const ASSET_CLASS = ImageOptimizeAsset::class;
-
-    const CACHE_KEY = 'twigpack-' . self::ASSET_CLASS;
-    const CACHE_TAG = 'twigpack-' . self::ASSET_CLASS;
+    const CACHE_KEY = 'twigpack-';
+    const CACHE_TAG = 'twigpack-';
 
     const DEVMODE_CACHE_DURATION = 1;
 
@@ -47,62 +45,81 @@ class Manifest
         'styles.css',
     ];
 
-    // Protected Static Properties
+    // Public Properties
     // =========================================================================
 
-    protected static $config = [
-        // If `devMode` is on, use webpack-dev-server to all for HMR (hot module reloading)
-        'useDevServer' => false,
-        // Manifest names
-        'manifest' => [
-            'legacy' => 'manifest.json',
-            'modern' => 'manifest.json',
-        ],
-        // Public server config
-        'server' => [
-            'manifestPath' => '/',
-            'publicPath' => '/',
-        ],
-        // webpack-dev-server config
-        'devServer' => [
-            'manifestPath' => 'http://imageoptimize-buildchain:8080/',
-            'publicPath' => 'http://imageoptimize-buildchain:8080/',
-        ],
-    ];
+    /**
+     * @var AssetBundle Asset bundle to get the published URLs from
+     */
+    public $assetClass;
+
+    /**
+     * @var bool Whether the devServer should be used, set based on `NYS_PLUGIN_DEVSERVER` env var
+     */
+    public $useDevServer = false;
+
+    /**
+     * @var string Name of the legacy manifest file
+     */
+    public $manifestLegacy = 'manifest.json';
+
+    /**
+     * @var string Name of the modern manifest file
+     */
+    public $manifestModern = 'manifest.json';
+
+    /**
+     * @var string The normal server manifest path
+     */
+    public $serverManifestPath = '/';
+
+    /**
+     * @var string The normal server public path
+     */
+    public $serverPublicPath = '/';
+
+    /**
+     * @var string The dev server manifest path
+     */
+    public $devServerManifestPath = '';
+
+    /**
+     * @var string The dev server public path
+     */
+    public $devServerPublicPath = '';
+
+    // Protected Properties
+    // =========================================================================
 
     /**
      * @var array
      */
-    protected static $files;
+    protected $files;
 
     /**
      * @var bool
      */
-    protected static $isHot = false;
+    protected $isHot = false;
 
-    // Public Static Methods
+    // Public Methods
     // =========================================================================
 
     /**
-     * Simulate a static constructor
-     *
-     * ManifestVariable constructor.
-     * @noinspection MagicMethodsValidityInspection
+     * @inheritDoc
      */
-    public static function __constructStatic()
+    public function init()
     {
-        self::invalidateCaches();
-        $assetClass = self::ASSET_CLASS;
-        $bundle = new $assetClass;
+        $this->invalidateCaches();
+        $bundle = new $this->assetClass;
         $baseAssetsUrl = Craft::$app->assetManager->getPublishedUrl(
             $bundle->sourcePath,
             true
         );
-        self::$config['server']['manifestPath'] = Craft::getAlias($bundle->sourcePath);
-        self::$config['server']['publicPath'] = $baseAssetsUrl;
+        $this->serverManifestPath = Craft::getAlias($bundle->sourcePath);
+        $this->serverPublicPath = $baseAssetsUrl;
         $useDevServer = getenv('NYS_PLUGIN_DEVSERVER');
         if ($useDevServer !== false) {
-            self::$config['useDevServer'] = (bool)$useDevServer;
+            $this->useDevServer = (bool)$useDevServer;
         }
     }
 
@@ -113,14 +130,14 @@ class Manifest
      * @throws NotFoundHttpException
      * @throws InvalidConfigException
      */
-    public static function registerJsModules(array $modules)
+    public function registerJsModules(array $modules)
     {
         $view = Craft::$app->getView();
         foreach($modules as $module) {
-            $jsModule = self::getModule(self::$config, $module, 'modern');
+            $jsModule = $this->getModule($module, 'modern');
             if ($jsModule) {
                 $view->registerJsFile($jsModule, [
-                    'depends' => self::ASSET_CLASS
+                    'depends' => $this->assetClass,
                 ]);
             }
         }
@@ -133,14 +150,14 @@ class Manifest
      * @throws NotFoundHttpException
      * @throws InvalidConfigException
      */
-    public static function registerCssModules(array $modules)
+    public function registerCssModules(array $modules)
     {
         $view = Craft::$app->getView();
         foreach($modules as $module) {
-            $cssModule = self::getModule(self::$config, $module, 'legacy');
+            $cssModule = $this->getModule($module, 'legacy');
             if ($cssModule) {
                 $view->registerCssFile($cssModule, [
-                    'depends' => self::ASSET_CLASS
+                    'depends' => $this->assetClass,
                 ]);
             }
         }
@@ -155,14 +172,14 @@ class Manifest
      * @return null|string
      * @throws NotFoundHttpException
      */
-    public static function includeJsModule(string $moduleName, bool $async)
+    public function includeJsModule(string $moduleName, bool $async)
     {
-        $legacyModule = self::getModule(self::$config, $moduleName, 'legacy');
+        $legacyModule = $this->getModule($moduleName, 'legacy');
         if ($legacyModule === null) {
             return '';
         }
         if ($async) {
-            $modernModule = self::getModule(self::$config, $moduleName, 'modern');
+            $modernModule = $this->getModule($moduleName, 'modern');
             if ($modernModule === null) {
                 return '';
             }
@@ -187,9 +204,9 @@ class Manifest
      * @return string
      * @throws NotFoundHttpException
      */
-    public static function includeCssModule(string $moduleName, bool $async): string
+    public function includeCssModule(string $moduleName, bool $async): string
     {
-        $legacyModule = self::getModule(self::$config, $moduleName, 'legacy', true);
+        $legacyModule = $this->getModule($moduleName, 'legacy', true);
         if ($legacyModule === null) {
             return '';
         }
@@ -210,7 +227,6 @@ class Manifest
     /**
      * Return the URI to a module
      *
-     * @param array  $config
      * @param string $moduleName
      * @param string $type
      * @param bool   $soft
@@ -218,17 +234,17 @@ class Manifest
      * @return null|string
      * @throws NotFoundHttpException
      */
-    protected static function getModule(array $config, string $moduleName, string $type = 'modern', bool $soft = false)
+    protected function getModule(string $moduleName, string $type = 'modern', bool $soft = false)
     {
         // Get the module entry
-        $module = self::getModuleEntry($config, $moduleName, $type, $soft);
+        $module = $this->getModuleEntry($moduleName, $type, $soft);
         if ($module !== null) {
-            $prefix = self::$isHot
-                ? $config['devServer']['publicPath']
-                : $config['server']['publicPath'];
+            $prefix = $this->isHot
+                ? $this->devServerPublicPath
+                : $this->serverPublicPath;
             // If the module isn't a full URL, prefix it
             if (!UrlHelper::isAbsoluteUrl($module)) {
-                $module = self::combinePaths($prefix, $module);
+                $module = $this->combinePaths($prefix, $module);
             }
             // Resolve any aliases
             $alias = Craft::getAlias($module, false);
@@ -251,7 +267,6 @@ class Manifest
     /**
      * Return a module's raw entry from the manifest
      *
-     * @param array  $config
      * @param string $moduleName
      * @param string $type
      * @param bool   $soft
@@ -259,17 +274,17 @@ class Manifest
      * @return null|string
      * @throws NotFoundHttpException
      */
-    protected static function getModuleEntry(array $config, string $moduleName, string $type = 'modern', bool $soft = false)
+    protected function getModuleEntry(string $moduleName, string $type = 'modern', bool $soft = false)
     {
         $module = null;
         // Get the manifest file
-        $manifest = self::getManifestFile($config, $type);
+        $manifest = $this->getManifestFile($type);
         if ($manifest !== null) {
             // Make sure it exists in the manifest
             if (empty($manifest[$moduleName])) {
                 // Don't report errors for any files in SUPPRESS_ERRORS_FOR_MODULES
                 if (!in_array($moduleName, self::SUPPRESS_ERRORS_FOR_MODULES)) {
-                    self::reportError(Craft::t(
+                    $this->reportError(Craft::t(
                         'image-optimize',
                         'Module does not exist in the manifest: {moduleName}',
                         ['moduleName' => $moduleName]
@@ -287,37 +302,37 @@ class Manifest
     /**
      * Return a JSON-decoded manifest file
      *
-     * @param array  $config
      * @param string $type
      *
      * @return null|array
      * @throws NotFoundHttpException
      */
-    protected static function getManifestFile(array $config, string $type = 'modern')
+    protected function getManifestFile(string $type = 'modern')
     {
         $manifest = null;
         // Determine whether we should use the devServer for HMR or not
         $devMode = Craft::$app->getConfig()->getGeneral()->devMode;
-        self::$isHot = ($devMode && $config['useDevServer']);
+        $this->isHot = ($devMode && $this->useDevServer);
         // Try to get the manifest
         while ($manifest === null) {
-            $manifestPath = self::$isHot
-                ? $config['devServer']['manifestPath']
-                : $config['server']['manifestPath'];
+            $manifestPath = $this->isHot
+                ? $this->devServerManifestPath
+                : $this->serverManifestPath;
             // Normalize the path
-            $path = self::combinePaths($manifestPath, $config['manifest'][$type]);
-            $manifest = self::getJsonFile($path);
+            $manifestType = 'manifest' . ucfirst($type);
+            $path = $this->combinePaths($manifestPath, $this->$manifestType);
+            $manifest = $this->getJsonFile($path);
             // If the manifest isn't found, and it was hot, fall back on non-hot
             if ($manifest === null) {
                 // We couldn't find a manifest; throw an error
-                self::reportError(Craft::t(
+                $this->reportError(Craft::t(
                     'image-optimize',
                     'Manifest file not found at: {manifestPath}',
                     ['manifestPath' => $manifestPath]
                 ), true);
-                if (self::$isHot) {
+                if ($this->isHot) {
                     // Try again, but not with home module replacement
-                    self::$isHot = false;
+                    $this->isHot = false;
                 } else {
                     // Give up and return null
                     return null;
@@ -335,18 +350,18 @@ class Manifest
      *
      * @return null|array
      */
-    protected static function getJsonFile(string $path)
+    protected function getJsonFile(string $path)
     {
-        return self::getFileFromUri($path, [JsonHelper::class, 'decodeIfJson']);
+        return $this->getFileFromUri($path, [JsonHelper::class, 'decodeIfJson']);
     }
 
     /**
      * Invalidate all of the manifest caches
      */
-    public static function invalidateCaches()
+    public function invalidateCaches()
     {
         $cache = Craft::$app->getCache();
-        TagDependency::invalidate($cache, self::CACHE_TAG);
+        TagDependency::invalidate($cache, self::CACHE_TAG . $this->assetClass);
         Craft::info('All manifest caches cleared', __METHOD__);
     }
 
@@ -358,7 +373,7 @@ class Manifest
      *
      * @return null|mixed
      */
-    protected static function getFileFromUri(string $path, callable $callback = null)
+    protected function getFileFromUri(string $path, callable $callback = null)
     {
         // Resolve any aliases
         $alias = Craft::getAlias($path, false);
@@ -374,7 +389,7 @@ class Manifest
             }
         }
 
-        return self::getFileContents($path, $callback);
+        return $this->getFileContents($path, $callback);
     }
 
     /**
@@ -385,17 +400,17 @@ class Manifest
      *
      * @return null|mixed
      */
-    protected static function getFileContents(string $path, callable $callback = null)
+    protected function getFileContents(string $path, callable $callback = null)
     {
         // Return the memoized manifest if it exists
-        if (!empty(self::$files[$path])) {
-            return self::$files[$path];
+        if (!empty($this->files[$path])) {
+            return $this->files[$path];
         }
         // Create the dependency tags
         $dependency = new TagDependency([
             'tags' => [
-                self::CACHE_TAG,
-                self::CACHE_TAG.$path,
+                self::CACHE_TAG . $this->assetClass,
+                self::CACHE_TAG . $this->assetClass . $path,
             ],
         ]);
         // Set the cache duration based on devMode
@@ -405,7 +420,7 @@ class Manifest
         // Get the result from the cache, or parse the file
         $cache = Craft::$app->getCache();
         $file = $cache->getOrSet(
-            self::CACHE_KEY.$path,
+            self::CACHE_KEY . $this->assetClass . $path,
             function () use ($path, $callback) {
                 $result = null;
                 $contents = @file_get_contents($path);
@@ -421,7 +436,7 @@ class Manifest
             $cacheDuration,
             $dependency
         );
-        self::$files[$path] = $file;
+        $this->files[$path] = $file;
 
         return $file;
     }
@@ -433,15 +448,15 @@ class Manifest
      *
      * @return string
      */
-    protected static function combinePaths(string ...$paths): string
+    protected function combinePaths(string ...$paths): string
     {
-        $last_key = count($paths) - 1;
-        array_walk($paths, function (&$val, $key) use ($last_key) {
+        $lastKey = count($paths) - 1;
+        array_walk($paths, static function (&$val, $key) use ($lastKey) {
             switch ($key) {
                 case 0:
                     $val = rtrim($val, '/ ');
                     break;
-                case $last_key:
+                case $lastKey:
                     $val = ltrim($val, '/ ');
                     break;
                 default:
@@ -465,7 +480,7 @@ class Manifest
      *
      * @throws NotFoundHttpException
      */
-    protected static function reportError(string $error, $soft = false)
+    protected function reportError(string $error, $soft = false)
     {
         $devMode = Craft::$app->getConfig()->getGeneral()->devMode;
         if ($devMode && !$soft) {
@@ -474,6 +489,3 @@ class Manifest
         Craft::error($error, __METHOD__);
     }
 }
-
-// Simulate a static constructor
-Manifest::__constructStatic();

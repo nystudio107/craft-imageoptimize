@@ -2,7 +2,7 @@
 
 namespace nystudio107\imageoptimize\variables;
 
-use nystudio107\imageoptimize\helpers\Manifest as ManifestHelper;
+use nystudio107\imageoptimize\ImageOptimize;
 
 use craft\helpers\Template;
 
@@ -17,24 +17,26 @@ class ManifestVariable
      * Get the passed in JS modules from the manifest, and register them in the current Craft view
      *
      * @param array $modules
+     *
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
     public function registerJsModules(array $modules)
     {
-        ManifestHelper::registerJsModules($modules);
+        ImageOptimize::$plugin->manifest->registerJsModules($modules);
     }
 
     /**
      * Get the passed in CS modules from the manifest, and register them in the current Craft view
      *
      * @param array $modules
+     *
      * @throws InvalidConfigException
      * @throws NotFoundHttpException
      */
     public function registerCssModules(array $modules)
     {
-        ManifestHelper::registerCssModules($modules);
+        ImageOptimize::$plugin->manifest->registerCssModules($modules);
     }
 
 
@@ -50,7 +52,7 @@ class ManifestVariable
     public function includeJsModule(string $moduleName, bool $async = false)
     {
         return Template::raw(
-            ManifestHelper::includeJsModule($moduleName, $async) ?? ''
+            ImageOptimize::$plugin->manifest->includeJsModule($moduleName, $async) ?? ''
         );
     }
 
@@ -66,7 +68,7 @@ class ManifestVariable
     public function includeCssModule(string $moduleName, bool $async = false): Markup
     {
         return Template::raw(
-            ManifestHelper::includeCssModule($moduleName, $async) ?? ''
+            ImageOptimize::$plugin->manifest->includeCssModule($moduleName, $async) ?? ''
         );
     }
 }

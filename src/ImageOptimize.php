@@ -10,11 +10,13 @@
 
 namespace nystudio107\imageoptimize;
 
+use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\listeners\GetCraftQLSchema;
 use nystudio107\imageoptimize\models\Settings;
+use nystudio107\imageoptimize\services\Manifest as ManifestService;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
@@ -72,6 +74,7 @@ use yii\base\InvalidConfigException;
  * @property PlaceholderService      $placeholder
  * @property OptimizedImagesService  $optimizedImages
  * @property ImageTransformInterface $transformMethod
+ * @property ManifestService         $manifest
  * @property Settings                $settings
  * @method   Settings                getSettings()
  */
@@ -236,6 +239,14 @@ class ImageOptimize extends Plugin
      */
     protected function addComponents()
     {
+        // Register the manifest service
+        $this->set('manifest', [
+            'class' => ManifestService::class,
+            'assetClass' => ImageOptimizeAsset::class,
+            'devServerManifestPath' => 'http://imageoptimize-buildchain:8080/',
+            'devServerPublicPath' => 'http://imageoptimize-buildchain:8080/',
+        ]);
+
         // Register our variables
         Event::on(
             CraftVariable::class,
