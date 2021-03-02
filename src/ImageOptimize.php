@@ -254,7 +254,10 @@ class ImageOptimize extends Plugin
             function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
-                $variable->set('imageOptimize', ImageOptimizeVariable::class);
+                $variable->set('imageOptimize', [
+                    'class' => ImageOptimizeVariable::class,
+                    'manifestService' => $this->manifest,
+                ]);
             }
         );
 
