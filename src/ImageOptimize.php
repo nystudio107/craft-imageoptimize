@@ -16,12 +16,13 @@ use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\listeners\GetCraftQLSchema;
 use nystudio107\imageoptimize\models\Settings;
-use nystudio107\imageoptimize\services\Manifest as ManifestService;
 use nystudio107\imageoptimize\services\Optimize as OptimizeService;
 use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
+
+use nystudio107\pluginmanifest\services\ManifestService;
 
 use Craft;
 use craft\base\Field;
