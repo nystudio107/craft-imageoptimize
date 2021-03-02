@@ -2,8 +2,9 @@
 
 namespace nystudio107\imageoptimize\variables;
 
-use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\services\Manifest as ManifestService;
 
+use craft\base\Component;
 use craft\helpers\Template;
 
 use yii\base\InvalidConfigException;
@@ -11,8 +12,20 @@ use yii\web\NotFoundHttpException;
 
 use Twig\Markup;
 
-class ManifestVariable
+class ManifestVariable extends Component
 {
+
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var ManifestService the manifest service
+     */
+    public $manifestService;
+
+    // Public Methods
+    // =========================================================================
+
     /**
      * Get the passed in JS modules from the manifest, and register them in the current Craft view
      *
@@ -23,7 +36,7 @@ class ManifestVariable
      */
     public function registerJsModules(array $modules)
     {
-        ImageOptimize::$plugin->manifest->registerJsModules($modules);
+        $this->manifestService->registerJsModules($modules);
     }
 
     /**
@@ -36,7 +49,7 @@ class ManifestVariable
      */
     public function registerCssModules(array $modules)
     {
-        ImageOptimize::$plugin->manifest->registerCssModules($modules);
+        $this->manifestService->registerCssModules($modules);
     }
 
 
@@ -52,7 +65,7 @@ class ManifestVariable
     public function includeJsModule(string $moduleName, bool $async = false)
     {
         return Template::raw(
-            ImageOptimize::$plugin->manifest->includeJsModule($moduleName, $async) ?? ''
+            $this->manifestService->includeJsModule($moduleName, $async) ?? ''
         );
     }
 
@@ -68,7 +81,7 @@ class ManifestVariable
     public function includeCssModule(string $moduleName, bool $async = false): Markup
     {
         return Template::raw(
-            ImageOptimize::$plugin->manifest->includeCssModule($moduleName, $async) ?? ''
+            $this->manifestService->includeCssModule($moduleName, $async) ?? ''
         );
     }
 }
