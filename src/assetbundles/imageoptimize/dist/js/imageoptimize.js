@@ -2,7 +2,7 @@
  * @project        imageoptimize
  * @name           imageoptimize.js
  * @author         Andrew Welch
- * @build          Tue Mar 02 2021 04:10:00 GMT+0000 (Coordinated Universal Time)
+ * @build          Wed Mar 03 2021 14:08:50 GMT+0000 (Coordinated Universal Time)
  * @copyright      Copyright (c) 2021 ©2020 nystudio107.com
  *
  */
