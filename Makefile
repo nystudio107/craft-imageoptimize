@@ -2,7 +2,7 @@ TAG?=12-alpine
 CONTAINER?=imageoptimize-buildchain
 DEST?=../../sites/nystudio107/web/docs/image-optimize
 
-.PHONY: dist docker docs npm
+.PHONY: dist docker docs install npm
 
 dist: docker docs install
 	docker container run \
