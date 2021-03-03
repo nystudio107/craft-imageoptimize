@@ -129,6 +129,7 @@
     "check-types": "tsc",
     "debug": "nodemon -L",
     "dev": "nodemon -L",
+    "docs": "cd ../docs && rm -f package-lock.json && npm install && npm run docs:build",
     "lint": "tsc --noEmit && eslint '../../src/**/*.{js,ts,vue}' --fix"
   },
   "version": "1.0.0"
