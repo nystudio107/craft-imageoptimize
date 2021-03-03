@@ -4,7 +4,7 @@ DEST?=../../sites/nystudio107/web/docs/image-optimize
 
 .PHONY: dist docker docs npm
 
-dist: docker docs
+dist: docker docs install
 	docker container run \
 		--name ${CONTAINER} \
 		--rm \
@@ -28,6 +28,14 @@ docs:
 		run docs
 	rm -rf ${DEST}
 	mv ./docs/docs/.vuepress/dist ${DEST}
+install:
+	docker container run \
+		--name ${CONTAINER} \
+		--rm \
+		-t \
+		-v `pwd`:/app \
+		nystudio107/${CONTAINER}:${TAG} \
+		install
 npm:
 	docker container run \
 		--name ${CONTAINER} \
