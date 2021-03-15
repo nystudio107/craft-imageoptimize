@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.26 - 2021.02.26
+### Fixed
+* Fixed a regression that caused the image sizes to show up as `???` in the Asset Detail view
+
 ## 1.6.25 - 2021.02.23
 ### Changed
 * Updated to use `craft-imageoptimize-imgix` version `^1.2.0`
