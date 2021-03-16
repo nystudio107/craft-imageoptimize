@@ -1,4 +1,4 @@
-TAG?=12-alpine
+TAG?=14-alpine
 CONTAINER?=imageoptimize-buildchain
 DEST?=../../sites/nystudio107/web/docs/image-optimize
 
