@@ -1,7 +1,6 @@
 TAG?=14-alpine
 CONTAINER?=$(shell basename $(CURDIR))-buildchain
 DOCSDEST?=../../sites/nystudio107/web/docs/image-optimize
-
 DOCKERRUN=docker container run \
 	--name ${CONTAINER} \
 	--rm \
