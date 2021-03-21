@@ -9,7 +9,7 @@ DOCKERRUN=docker container run \
 	--network plugindev_default \
 	-p 8080:8080 \
 	-v `pwd`:/app \
-	nystudio107/${CONTAINER}:${TAG}
+	${CONTAINER}:${TAG}
 
 .PHONY: dist docker docs install npm
 
@@ -22,7 +22,7 @@ dev: docker install
 docker:
 	docker build \
 		. \
-		-t nystudio107/${CONTAINER}:${TAG} \
+		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
 docs:
