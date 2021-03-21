@@ -1,17 +1,24 @@
 TAG?=14-alpine
-CONTAINER?=imageoptimize-buildchain
-DEST?=../../sites/nystudio107/web/docs/image-optimize
+CONTAINER?=$(shell basename $(CURDIR))-buildchain
+DOCSDEST?=../../sites/nystudio107/web/docs/image-optimize
+
+DOCKERRUN=docker container run \
+	--name ${CONTAINER} \
+	--rm \
+	-t \
+	--network plugindev_default \
+	-p 8080:8080 \
+	-v `pwd`:/app \
+	nystudio107/${CONTAINER}:${TAG}
 
 .PHONY: dist docker docs install npm
 
-dist: docker docs install
-	docker container run \
-		--name ${CONTAINER} \
-		--rm \
-		-t \
-		-v `pwd`:/app \
-		nystudio107/${CONTAINER}:${TAG} \
+build: docker install
+	${DOCKERRUN} \
 		run build
+dev: docker install
+	${DOCKERRUN} \
+		run dev
 docker:
 	docker build \
 		. \
@@ -19,32 +26,15 @@ docker:
 		--build-arg TAG=${TAG} \
 		--no-cache
 docs:
-	docker container run \
-		--name ${CONTAINER} \
-		--rm \
-		-t \
-		-v `pwd`:/app \
-		nystudio107/${CONTAINER}:${TAG} \
+	${DOCKERRUN} \
 		run docs
-	rm -rf ${DEST}
-	mv ./docs/docs/.vuepress/dist ${DEST}
-install:
-	docker container run \
-		--name ${CONTAINER} \
-		--rm \
-		-t \
-		-v `pwd`:/app \
-		nystudio107/${CONTAINER}:${TAG} \
+	rm -rf ${DOCSDEST}
+	mv ./docs/docs/.vuepress/dist ${DOCSDEST}
+install: docker
+	${DOCKERRUN} \
 		install
 npm:
-	docker container run \
-		--name ${CONTAINER} \
-		--network plugindev_default \
-		--rm \
-		-t \
-		-p 8080:8080 \
-		-v `pwd`:/app \
-		nystudio107/${CONTAINER}:${TAG} \
+	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
 %:
 	@:
