@@ -25,7 +25,7 @@ docker:
 		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
-docs:
+docs: docker
 	${DOCKERRUN} \
 		run docs
 	rm -rf ${DOCSDEST}
@@ -33,7 +33,7 @@ docs:
 install: docker
 	${DOCKERRUN} \
 		install
-npm:
+npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
 %:
