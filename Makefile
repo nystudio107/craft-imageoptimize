@@ -11,7 +11,7 @@ DOCKERRUN=docker container run \
 	-v `pwd`:/app \
 	${CONTAINER}:${TAG}
 
-.PHONY: dist docker docs install npm
+.PHONY: build dev docker docs install npm
 
 build: docker install
 	${DOCKERRUN} \
