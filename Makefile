@@ -1,6 +1,5 @@
 TAG?=14-alpine
 CONTAINER?=$(shell basename $(CURDIR))-buildchain
-DOCSDEST?=../../sites/nystudio107/web/docs/image-optimize
 DOCKERRUN=docker container run \
 	--name ${CONTAINER} \
 	--rm \
@@ -9,6 +8,7 @@ DOCKERRUN=docker container run \
 	-p 8080:8080 \
 	-v `pwd`:/app \
 	${CONTAINER}:${TAG}
+DOCSDEST?=../../sites/nystudio107/web/docs/image-optimize
 
 .PHONY: build dev docker docs install npm
 
