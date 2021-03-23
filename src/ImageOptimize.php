@@ -244,8 +244,8 @@ class ImageOptimize extends Plugin
         $this->set('manifest', [
             'class' => ManifestService::class,
             'assetClass' => ImageOptimizeAsset::class,
-            'devServerManifestPath' => 'http://imageoptimize-buildchain:8080/',
-            'devServerPublicPath' => 'http://imageoptimize-buildchain:8080/',
+            'devServerManifestPath' => 'http://craft-imageoptimize-buildchain:8080/',
+            'devServerPublicPath' => 'http://craft-imageoptimize-buildchain:8080/',
         ]);
 
         // Register our variables
