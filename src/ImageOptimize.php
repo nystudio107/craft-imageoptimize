@@ -110,6 +110,41 @@ class ImageOptimize extends Plugin
      */
     public static $craft35 = false;
 
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct($id, $parent = null, array $config = [])
+    {
+        $config['components'] = [
+            'optimize' => OptimizeService::class,
+            'optimizedImages' => OptimizedImagesService::class,
+            'placeholder' => PlaceholderService::class,
+        ];
+
+        parent::__construct($id, $parent, $config);
+    }
+
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var string
+     */
+    public $schemaVersion = '1.0.0';
+
+    /**
+     * @var bool
+     */
+    public $hasCpSection = false;
+
+    /**
+     * @var bool
+     */
+    public $hasCpSettings = true;
+
     // Public Methods
     // =========================================================================
 
