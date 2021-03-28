@@ -122,6 +122,13 @@ class ImageOptimize extends Plugin
             'optimize' => OptimizeService::class,
             'optimizedImages' => OptimizedImagesService::class,
             'placeholder' => PlaceholderService::class,
+            // Register the manifest service
+            'manifest' => [
+                'class' => ManifestService::class,
+                'assetClass' => ImageOptimizeAsset::class,
+                'devServerManifestPath' => 'http://craft-imageoptimize-buildchain:8080/',
+                'devServerPublicPath' => 'http://craft-imageoptimize-buildchain:8080/',
+            ],
         ];
 
         parent::__construct($id, $parent, $config);
@@ -275,14 +282,6 @@ class ImageOptimize extends Plugin
      */
     protected function addComponents()
     {
-        // Register the manifest service
-        $this->set('manifest', [
-            'class' => ManifestService::class,
-            'assetClass' => ImageOptimizeAsset::class,
-            'devServerManifestPath' => 'http://craft-imageoptimize-buildchain:8080/',
-            'devServerPublicPath' => 'http://craft-imageoptimize-buildchain:8080/',
-        ]);
-
         // Register our variables
         Event::on(
             CraftVariable::class,
