@@ -43,15 +43,7 @@
     "extra": {
         "name": "ImageOptimize",
         "handle": "image-optimize",
-        "schemaVersion": "1.0.0",
-        "hasCpSettings": true,
-        "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-imageoptimize/v1/CHANGELOG.md",
-        "components": {
-            "optimize": "nystudio107\\imageoptimize\\services\\Optimize",
-            "optimizedImages": "nystudio107\\imageoptimize\\services\\OptimizedImages",
-            "placeholder": "nystudio107\\imageoptimize\\services\\Placeholder"
-        },
         "class": "nystudio107\\imageoptimize\\ImageOptimize"
     }
 }
