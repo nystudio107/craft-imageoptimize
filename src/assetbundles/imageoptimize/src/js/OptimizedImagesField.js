@@ -10,9 +10,15 @@
  * @since     1.2.0
  */
 
-import SizesContainer from '@/vue/SizesContainer.vue';
-
-function humanFileSize(bytes, si = false, dp = 1) {
+/**
+ * Convert the passed in bytes into a human readable format
+ *
+ * @param bytes
+ * @param si
+ * @param dp
+ * @returns {string}
+ */
+function humanFileSize(bytes, si=false, dp=1) {
     const thresh = si ? 1000 : 1024;
 
     if (Math.abs(bytes) < thresh) {
@@ -23,7 +29,7 @@ function humanFileSize(bytes, si = false, dp = 1) {
         ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
         : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
     let u = -1;
-    const r = 10 ** dp;
+    const r = 10**dp;
 
     do {
         bytes /= thresh;
@@ -34,16 +40,35 @@ function humanFileSize(bytes, si = false, dp = 1) {
     return bytes.toFixed(dp) + ' ' + units[u];
 }
 
-;(function ($, window, document, undefined) {
+/**
+ * After an image has loaded, query the performance API for the decodedBodySize
+ *
+ * @param image
+ */
+function imageLoaded(image) {
+    const url = image.src || image.href;
+    if (url && url.length > 0) {
+        const iTime = performance.getEntriesByName(url)[0];
+        if (iTime !== undefined) {
+            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
+            if (elem) {
+                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
+            }
+        }
+    }
+}
+
+;(function ( $, window, document, undefined ) {
 
     var pluginName = "ImageOptimizeOptimizedImages",
-        defaults = {};
+        defaults = {
+        };
 
     // Plugin constructor
-    function Plugin(element, options) {
+    function Plugin( element, options ) {
         this.element = element;
 
-        this.options = $.extend({}, defaults, options);
+        this.options = $.extend( {}, defaults, options) ;
 
         this._defaults = defaults;
         this._name = pluginName;
@@ -53,7 +78,7 @@ function humanFileSize(bytes, si = false, dp = 1) {
 
     Plugin.prototype = {
 
-        init: function (id) {
+        init: function(id) {
             var _this = this;
 
             $(function () {
@@ -62,15 +87,12 @@ function humanFileSize(bytes, si = false, dp = 1) {
 
                 const images = document.querySelectorAll("img.io-preview-image");
                 for (const image of images) {
-                    const url = image.src || image.href;
-                    if (url && url.length > 0) {
-                        const iTime = performance.getEntriesByName(url)[0];
-                        if (iTime !== undefined) {
-                            const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
-                            if (elem) {
-                                elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
-                            }
-                        }
+                    if (image.complete) {
+                        imageLoaded(image);
+                    } else {
+                        image.addEventListener('load', (event) => {
+                            imageLoaded(event.target);
+                        });
                     }
                 }
             });
@@ -79,29 +101,16 @@ function humanFileSize(bytes, si = false, dp = 1) {
 
     // A really lightweight plugin wrapper around the constructor,
     // preventing against multiple instantiations
-    $.fn[pluginName] = function (options) {
+    $.fn[pluginName] = function ( options ) {
         return this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
                 $.data(this, "plugin_" + pluginName,
-                    new Plugin(this, options));
+                    new Plugin( this, options ));
             }
         });
     };
 
-})(jQuery, window, document);
-
-function initSizesVueComponent(sizesWrapperId) {
-    const vm = new Vue({
-        el: '#' + sizesWrapperId,
-        components: {
-            'sizes-container': SizesContainer,
-        },
-        data: {},
-        methods: {},
-        mounted() {
-        }
-    });
-}
+})( jQuery, window, document );
 
 Craft.OptimizedImagesInput = Garnish.Base.extend(
     {
@@ -118,9 +127,8 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         blockSort: null,
         blockSelect: null,
 
-        init: function (id, inputNamePrefix, sizesWrapperId) {
+        init: function(id, inputNamePrefix, sizesWrapperId) {
 
-            initSizesVueComponent(sizesWrapperId);
             this.id = id;
             this.inputNamePrefix = inputNamePrefix;
             this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);
@@ -141,7 +149,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 } else {
                     menuBtn = new Garnish.MenuBtn(value);
                 }
-                menuBtn.menu.settings.onOptionSelect = $.proxy(function (option) {
+                menuBtn.menu.settings.onOptionSelect = $.proxy(function(option) {
                     this.onMenuOptionSelect(option, menuBtn);
                 }, _this);
             });
@@ -155,12 +163,12 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 magnetStrength: 4,
                 helperLagBase: 1.5,
                 helperOpacity: 0.9,
-                onSortChange: $.proxy(function () {
+                onSortChange: $.proxy(function() {
                     this.resetVariantBlockOrder();
                 }, this)
             });
 
-            this.addListener(this.$addBlockBtnGroupBtns, 'click', function (ev) {
+            this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
                 var type = $(ev.target).data('type');
                 this.addVariantBlock(null);
             });
@@ -169,7 +177,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             this.reIndexVariants();
         },
 
-        onMenuOptionSelect: function (option, menuBtn) {
+        onMenuOptionSelect: function(option, menuBtn) {
             var $option = $(option);
             var container = menuBtn.$btn.closest('.matrixblock');
 
@@ -187,7 +195,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             }
         },
 
-        getHiddenBlockCss: function ($block) {
+        getHiddenBlockCss: function($block) {
             return {
                 opacity: 0,
                 marginBottom: -($block.outerHeight())
@@ -195,7 +203,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         // Re-index all of the variant blocks
-        reIndexVariants: function () {
+        reIndexVariants: function() {
             this.$blockContainer = this.$container.children('.variant-blocks');
             var $blocks = this.$blockContainer.children();
             $blocks.each(function (index, value) {
@@ -208,19 +216,19 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                     // id attributes
                     var str = $(value).attr('id');
                     if (str) {
-                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex + "-");
+                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex +"-");
                         $(value).attr('id', str);
                     }
                     // for attributes
                     str = $(value).attr('for');
                     if (str) {
-                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex + "-");
+                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex +"-");
                         $(value).attr('for', str);
                     }
                     // Name attributes
                     str = $(value).attr('name');
                     if (str) {
-                        str = str.replace(/\[([0-9]+)\]/g, "[" + variantIndex + "]");
+                        str = str.replace(/\[([0-9]+)\]/g, "[" + variantIndex +"]");
                         $(value).attr('name', str);
                     }
                 });
@@ -247,12 +255,12 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         addAspectRatioHandlers: function () {
-            this.addListener($('.lightswitch'), 'click', function (ev) {
+            this.addListener($('.lightswitch'), 'click', function(ev) {
                 var $target = $(ev.target);
                 var $block = $target.closest('.matrixblock');
                 $block.find('.io-aspect-ratio-wrapper').slideToggle();
             });
-            this.addListener($('.io-select-ar-box'), 'click', function (ev) {
+            this.addListener($('.io-select-ar-box'), 'click', function(ev) {
                 var $target = $(ev.target);
                 var x = $(ev.target).data('x'),
                     y = $(ev.target).data('y'),
@@ -278,7 +286,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             });
         },
 
-        addVariantBlock: function (container) {
+        addVariantBlock: function(container) {
             var _this = this;
             $block = $(this.$blockContainer.children()[0]).clone();
             // Reset to default values
@@ -305,7 +313,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             $block.css(this.getHiddenBlockCss($block)).velocity({
                 opacity: 1,
                 'margin-bottom': 10
-            }, 'fast', $.proxy(function () {
+            }, 'fast', $.proxy(function() {
 
                 // Insert the block in the right place
                 if (container) {
@@ -325,7 +333,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                     $(menu).insertAfter($value);
                     menuBtn = new Garnish.MenuBtn(value);
 
-                    menuBtn.menu.settings.onOptionSelect = $.proxy(function (option) {
+                    menuBtn.menu.settings.onOptionSelect = $.proxy(function(option) {
                         _this.onMenuOptionSelect(option, menuBtn);
                     }, this);
                 });
@@ -333,15 +341,15 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             }, this));
         },
 
-        deleteVariantBlock: function (container) {
+        deleteVariantBlock: function(container) {
             var _this = this;
-            container.velocity(this.getHiddenBlockCss(container), 'fast', $.proxy(function () {
+            container.velocity(this.getHiddenBlockCss(container), 'fast', $.proxy(function() {
                 container.remove();
                 _this.reIndexVariants();
             }, this));
         },
 
-        resetVariantBlockOrder: function () {
+        resetVariantBlockOrder: function() {
             this.reIndexVariants();
         }
 
