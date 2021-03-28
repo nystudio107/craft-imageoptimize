@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.6.27 - UNRELEASED
+### Changed
+* Move settings from the `composer.json` “extra” to the plugin main class
+
 ### Fixed
 * Return `null` if no transform needs to be done, so other plugins can hook in
 
