@@ -2,7 +2,7 @@
  * @project        imageoptimize
  * @name           vendors.js
  * @author         Andrew Welch
- * @build          Wed Mar 03 2021 14:08:50 GMT+0000 (Coordinated Universal Time)
+ * @build          Sun Mar 28 2021 19:32:09 GMT+0000 (Coordinated Universal Time)
  * @copyright      Copyright (c) 2021 ©2020 nystudio107.com
  *
  */
