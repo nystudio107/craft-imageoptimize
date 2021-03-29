@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.28 - 2021.03.28
+### Changed
+* Updated to latest docs dependencies
+
+### Fixed
+* Fixed missing Composer dependency `nystudio107/craft-plugin-manifest`
+
 ## 1.6.27 - 2021.03.28
 ### Changed
 * Move settings from the `composer.json` “extra” to the plugin main class
