@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize;
 
+use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
@@ -20,6 +21,8 @@ use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
+
+use nystudio107\pluginmanifest\services\ManifestService;
 
 use Craft;
 use craft\base\Field;
@@ -72,6 +75,7 @@ use yii\base\InvalidConfigException;
  * @property PlaceholderService      $placeholder
  * @property OptimizedImagesService  $optimizedImages
  * @property ImageTransformInterface $transformMethod
+ * @property ManifestService         $manifest
  * @property Settings                $settings
  * @method   Settings                getSettings()
  */
@@ -105,6 +109,48 @@ class ImageOptimize extends Plugin
      * @var bool
      */
     public static $craft35 = false;
+
+    // Static Methods
+    // =========================================================================
+
+    /**
+     * @inheritdoc
+     */
+    public function __construct($id, $parent = null, array $config = [])
+    {
+        $config['components'] = [
+            'optimize' => OptimizeService::class,
+            'optimizedImages' => OptimizedImagesService::class,
+            'placeholder' => PlaceholderService::class,
+            // Register the manifest service
+            'manifest' => [
+                'class' => ManifestService::class,
+                'assetClass' => ImageOptimizeAsset::class,
+                'devServerManifestPath' => 'http://craft-imageoptimize-buildchain:8080/',
+                'devServerPublicPath' => 'http://craft-imageoptimize-buildchain:8080/',
+            ],
+        ];
+
+        parent::__construct($id, $parent, $config);
+    }
+
+    // Public Properties
+    // =========================================================================
+
+    /**
+     * @var string
+     */
+    public $schemaVersion = '1.0.0';
+
+    /**
+     * @var bool
+     */
+    public $hasCpSection = false;
+
+    /**
+     * @var bool
+     */
+    public $hasCpSettings = true;
 
     // Public Methods
     // =========================================================================
@@ -243,7 +289,10 @@ class ImageOptimize extends Plugin
             function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
-                $variable->set('imageOptimize', ImageOptimizeVariable::class);
+                $variable->set('imageOptimize', [
+                    'class' => ImageOptimizeVariable::class,
+                    'manifestService' => $this->manifest,
+                ]);
             }
         );
 

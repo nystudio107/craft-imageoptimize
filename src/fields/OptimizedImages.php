@@ -14,8 +14,6 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
-use nystudio107\imageoptimize\helpers\Manifest as ManifestHelper;
-use nystudio107\imageoptimize\variables\ManifestVariable;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
 use Craft;

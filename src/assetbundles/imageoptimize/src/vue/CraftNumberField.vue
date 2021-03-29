@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import Vue, {PropType} from 'vue';
-import CraftFieldWrapper from './CraftFieldWrapper.vue';
+import CraftFieldWrapper from '@/vue/CraftFieldWrapper.vue';
 
 export default Vue.extend({
   components: {

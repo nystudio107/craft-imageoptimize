@@ -83,7 +83,7 @@ function imageLoaded(image) {
 
             $(function () {
 
-/* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
+                /* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
 
                 const images = document.querySelectorAll("img.io-preview-image");
                 for (const image of images) {
@@ -105,7 +105,7 @@ function imageLoaded(image) {
         return this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
                 $.data(this, "plugin_" + pluginName,
-                new Plugin( this, options ));
+                    new Plugin( this, options ));
             }
         });
     };

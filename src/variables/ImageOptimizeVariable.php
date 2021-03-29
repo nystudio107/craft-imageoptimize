@@ -14,6 +14,8 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
+use nystudio107\pluginmanifest\variables\ManifestVariable;
+
 use craft\elements\Asset;
 use craft\helpers\Template;
 

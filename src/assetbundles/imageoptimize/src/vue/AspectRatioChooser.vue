@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Vue, {PropType} from 'vue';
-import AspectRatioBox from './AspectRatioBox.vue';
+import AspectRatioBox from '@/vue/AspectRatioBox.vue';
 
 export default Vue.extend({
   components: {
