@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.27 - UNRELEASED
+## 1.6.27 - 2021.03.28
 ### Changed
 * Move settings from the `composer.json` “extra” to the plugin main class
 * Move the manifest service registration to the constructor
