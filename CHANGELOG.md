@@ -2,7 +2,7 @@
 
 ## 1.6.29 - 2021.03.31
 ### Fixed
-* Fixed a regression that caused the field settings to not work properly for adding/removing variant blocks
+* Fixed a regression that caused the field settings to not work properly for adding/removing variant blocks (https://github.com/nystudio107/craft-imageoptimize/issues/268)
 
 ## 1.6.28 - 2021.03.28
 ### Changed
