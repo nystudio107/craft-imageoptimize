@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
-## 1.6.30 - 2021.04.02
+## 1.6.30 - 2021.04.03
+### Added
+* Added some additional CLI command logging that shows the savings from optimization
+
 ### Changed
 * Don't record or display errors that are a result of assets that are not images
 * Don't display image transform errors twice
