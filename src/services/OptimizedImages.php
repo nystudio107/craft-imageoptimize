@@ -133,10 +133,11 @@ class OptimizedImages extends Component
                         $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
                     }
                 } else {
+                    $canManipulate = Image::canManipulateAsImage($asset->getExtension());
                     $msg = 'Could not create transform for: '.$asset->title
                         .' - Final format: '.$finalFormat
                         .' - Element extension: '.$asset->getExtension()
-                        .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension())
+                        .' - canManipulateAsImage: '.$canManipulate
                         ;
                     Craft::error(
                         $msg,
@@ -145,8 +146,10 @@ class OptimizedImages extends Component
                     if (Craft::$app instanceof ConsoleApplication) {
                         echo $msg . PHP_EOL;
                     }
-                    // Add the error message to the stickyErrors for the model
-                    $model->stickyErrors[] = $msg;
+                    if ($canManipulate) {
+                        // Add the error message to the stickyErrors for the model
+                        $model->stickyErrors[] = $msg;
+                    }
                 }
             }
         }
@@ -168,17 +171,20 @@ class OptimizedImages extends Component
                 list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, 1);
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
             } else {
+                $canManipulate = Image::canManipulateAsImage($asset->getExtension());
                 $msg = 'Could not create transform for: '.$asset->title
                     .' - Final format: '.$finalFormat
                     .' - Element extension: '.$asset->getExtension()
-                    .' - canManipulateAsImage: '.Image::canManipulateAsImage($asset->getExtension())
+                    .' - canManipulateAsImage: '.$canManipulate
                     ;
                 Craft::error(
                     $msg,
                     __METHOD__
                 );
-                // Add the error message to the stickyErrors for the model
-                $model->stickyErrors[] = $msg;
+                if ($canManipulate) {
+                    // Add the error message to the stickyErrors for the model
+                    $model->stickyErrors[] = $msg;
+                }
             }
         }
         Craft::endProfile('populateOptimizedImageModel', __METHOD__);

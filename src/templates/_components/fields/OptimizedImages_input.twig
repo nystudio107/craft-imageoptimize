@@ -215,18 +215,18 @@
             {% else %}
                 <p>N/A</p>
             {% endif %}
-            {% if value.stickyErrors is defined and value.stickyErrors | length %}
-                <label>Error Messages:</label>
-                <ul>
-                {% for stickyError in value.stickyErrors %}
-                    <li>{{ stickyError }}</li>
-                {% endfor %}
-                </ul>
-            {% endif %}
         </div>
     </div>
 {% endif %}
 {% if value.stickyErrors is defined and value.stickyErrors | length %}
+    {% set numStickyErrors = 0 %}
+    {% for stickyError in value.stickyErrors %}
+        {% if not (stickyError ends with 'canManipulateAsImage: ') %}
+            {% set numStickyErrors = numStickyErrors + 1 %}
+        {% endif %}
+    {% endfor %}
+    {% if numStickyErrors %}
+        {{ numStickyErrors }}
     <div class="field">
         <div class="heading" style="display: block;">
                 <label>Error Messages:</label>
@@ -237,6 +237,7 @@
                 </ul>
         </div>
     </div>
+    {% endif %}
 {% endif %}
 {% if value.optimizedImageUrls is defined and value.optimizedImageUrls |length %}
     {% if field.displayDominantColorPalette %}

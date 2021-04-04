@@ -22,6 +22,7 @@ use nystudio107\imageoptimizesharp\imagetransforms\SharpImageTransform;
 use Craft;
 use craft\base\Component;
 use craft\base\Image;
+use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\VolumeException;
@@ -356,7 +357,7 @@ class Optimize extends Component
             // Log the results of the image optimization
             $optimizedFileSize = @filesize($tempPath);
             $index = $event->transformIndex;
-            Craft::info(
+            $message =
                 pathinfo($index->filename, PATHINFO_FILENAME)
                 .'.'
                 .$index->detectedFormat
@@ -372,9 +373,11 @@ class Optimize extends Component
                 .Craft::t('image-optimize', 'Savings')
                 .': '
                 .number_format(abs(100 - (($optimizedFileSize * 100) / $originalFileSize)), 1)
-                .'%',
-                __METHOD__
-            );
+                .'%';
+            Craft::info($message, __METHOD__);
+            if (Craft::$app instanceof ConsoleApplication) {
+                echo $message . PHP_EOL;
+            }
             // Create any image variants
             $this->createImageVariants(
                 $event->transformIndex,
@@ -501,13 +504,11 @@ class Optimize extends Component
                         $tempPath,
                         $quality
                     );
-
                     if ($outputPath !== null) {
                         // Get info on the original and the created variant
                         $originalFileSize = @filesize($tempPath);
                         $variantFileSize = @filesize($outputPath);
-
-                        Craft::info(
+                        $message =
                             pathinfo($tempPath, PATHINFO_FILENAME)
                             .'.'
                             .pathinfo($tempPath, PATHINFO_EXTENSION)
@@ -527,10 +528,11 @@ class Optimize extends Component
                             .Craft::t('image-optimize', 'Savings')
                             .': '
                             .number_format(abs(100 - (($variantFileSize * 100) / $originalFileSize)), 1)
-                            .'%',
-                            __METHOD__
-                        );
-
+                            .'%';
+                        Craft::info($message, __METHOD__);
+                        if (Craft::$app instanceof ConsoleApplication) {
+                            echo $message . PHP_EOL;
+                        }
                         // Copy the image variant into place
                         $this->copyImageVariantToVolume(
                             $imageVariantCreators[$variantCreator],
