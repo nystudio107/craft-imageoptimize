@@ -32,6 +32,18 @@ docs: docker
 install: docker
 	${DOCKERRUN} \
 		install
+update: docker
+	rm -f buildchain/package-lock.json
+	${DOCKERRUN} \
+		install
+update-clean: docker
+	rm -f buildchain/package-lock.json
+	rm -rf buildchain/node_modules/
+	${DOCKERRUN} \
+		install
+install: docker
+	${DOCKERRUN} \
+		install
 npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
