@@ -36,7 +36,7 @@
   "dependencies": {
     "core-js": "^3.0.0",
     "regenerator-runtime": "^0.13.2",
-    "tailwindcss": "^2.0.0",
+    "tailwindcss": "^2.1.0",
     "vue": "^2.6.0",
     "vue-confetti": "^0.4.2"
   },
@@ -54,7 +54,6 @@
     "@babel/register": "^7.12.1",
     "@babel/runtime": "^7.12.1",
     "@gfx/zopfli": "^1.0.15",
-    "@tailwindcss/jit": "latest",
     "@types/node": "^14.11.10",
     "@types/webpack-env": "^1.15.3",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
