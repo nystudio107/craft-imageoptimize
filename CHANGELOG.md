@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.31 - UNRELEASED
+### Fixed
+* Fixed broken link to lower quality retina images article
+
 ## 1.6.30 - 2021.04.03
 ### Added
 * Added some additional CLI command logging that shows the savings from optimization
