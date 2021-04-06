@@ -1,15 +1,14 @@
 {
   "imageoptimize.js": "js/imageoptimize.js",
-  "imageoptimize.svg": "img/ImageOptimize-icon.svg",
-  "imageoptimize.js.map": "js/imageoptimize.js.map",
   "field.js": "js/field.js",
-  "field.js.map": "js/field.js.map",
   "welcome.js": "js/welcome.js",
-  "welcome.js.map": "js/welcome.js.map",
   "runtime.js": "js/runtime.js",
-  "runtime.js.map": "js/runtime.js.map",
   "vendors.js": "js/vendors.js",
-  "vendors.js.map": "js/vendors.js.map",
   "styles.css": "css/styles.css",
-  "img/ImageOptimize-icon.svg": "img/ImageOptimize-icon.svg"
+  "img/ImageOptimize-icon.svg": "img/ImageOptimize-icon.svg",
+  "imageoptimize.js.map": "js/imageoptimize.js.map",
+  "field.js.map": "js/field.js.map",
+  "welcome.js.map": "js/welcome.js.map",
+  "runtime.js.map": "js/runtime.js.map",
+  "vendors.js.map": "js/vendors.js.map"
 }

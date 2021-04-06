@@ -1,5 +1,16 @@
 # ImageOptimize Changelog
 
+## 1.6.31 - 2021.04.06
+### Added
+* Added `make update` to update NPM packages
+* Added `make update-clean` to completely remove `node_modules/`, then update NPM packages
+
+### Changed
+* Use Tailwind CSS `^2.1.0` with JIT
+
+### Fixed
+* Fixed broken link to lower quality retina images article
+
 ## 1.6.30 - 2021.04.03
 ### Added
 * Added some additional CLI command logging that shows the savings from optimization
