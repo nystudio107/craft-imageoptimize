@@ -41,9 +41,6 @@ update-clean: docker
 	rm -rf buildchain/node_modules/
 	${DOCKERRUN} \
 		install
-install: docker
-	${DOCKERRUN} \
-		install
 npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
