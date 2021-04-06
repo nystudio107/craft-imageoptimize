@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.31 - UNRELEASED
+## 1.6.31 - 2021.04.06
 ### Added
 * Added `make update` to update NPM packages
 * Added `make update-clean` to completely remove `node_modules/`, then update NPM packages
