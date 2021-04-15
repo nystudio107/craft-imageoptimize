@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.32 - 2021.04.15
+### Fixed
+* If there are too many sub-folders in an Asset volume, don't display them, return an empty array (https://github.com/nystudio107/craft-imageoptimize/issues/203)
+
 ## 1.6.31 - 2021.04.06
 ### Added
 * Added `make update` to update NPM packages
