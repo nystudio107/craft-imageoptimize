@@ -60,6 +60,8 @@ class OptimizedImages extends Field
         ],
     ];
 
+    const MAX_VOLUME_SUBFOLDERS = 30;
+
     // Public Properties
     // =========================================================================
 
@@ -463,6 +465,10 @@ class OptimizedImages extends Field
                     }
                 }
             }
+        }
+        // If there are too many sub-folders in an Asset volume, don't display them, return an empty array
+        if (count($result) > self::MAX_VOLUME_SUBFOLDERS) {
+            $result = [];
         }
 
         return $result;
