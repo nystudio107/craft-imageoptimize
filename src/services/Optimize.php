@@ -632,7 +632,7 @@ class Optimize extends Component
                     // See if the image has been scaled >= 50%
                     $widthScale = (int)(($image->getWidth() / $asset->getWidth()) * 100);
                     $heightScale =  (int)(($image->getHeight() / $asset->getHeight()) * 100);
-                    if (($widthScale >= $settings->sharpenScaledImagePercentage) || ($heightScale >= $settings->sharpenScaledImagePercentage)) {
+                    if (($widthScale >= (int)$settings->sharpenScaledImagePercentage) || ($heightScale >= (int)$settings->sharpenScaledImagePercentage)) {
                         $imagineImage->effects()
                             ->sharpen();
                         Craft::debug(
