@@ -630,9 +630,9 @@ class Optimize extends Component
                 // Handle auto-sharpening scaled down images
                 if ($settings->autoSharpenScaledImages) {
                     // See if the image has been scaled >= 50%
-                    $widthScale = $asset->getWidth() / $image->getWidth();
-                    $heightScale = $asset->getHeight() / $image->getHeight();
-                    if (($widthScale >= 2.0) || ($heightScale >= 2.0)) {
+                    $widthScale = (int)(($image->getWidth() / $asset->getWidth()) * 100);
+                    $heightScale =  (int)(($image->getHeight() / $asset->getHeight()) * 100);
+                    if (($widthScale >= $settings->sharpenScaledImagePercentage) || ($heightScale >= $settings->sharpenScaledImagePercentage)) {
                         $imagineImage->effects()
                             ->sharpen();
                         Craft::debug(

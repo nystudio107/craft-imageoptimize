@@ -111,6 +111,12 @@ class Settings extends Model
     public $autoSharpenScaledImages = true;
 
     /**
+     * @var int The amount an image needs to be scaled down for automatic sharpening
+     *      to be applied
+     */
+    public $sharpenScaledImagePercentage = 50;
+
+    /**
      * @var bool Whether to allow limiting the creation of Optimized Image Variants
      *      for images by sub-folders
      */
@@ -330,6 +336,7 @@ class Settings extends Model
                 ],
                 'boolean',
             ],
+            ['sharpenScaledImagePercentage', 'integer', 'min' => 0, 'max' => 100],
             [
                 [
                     'defaultVariants',
@@ -369,6 +376,7 @@ class Settings extends Model
             'lowerQualityRetinaImageVariants',
             'allowUpScaledImageVariants',
             'autoSharpenScaledImages',
+            'sharpenScaledImagePercentage',
             'assetVolumeSubFolders',
         ];
 

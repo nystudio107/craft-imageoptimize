@@ -77,6 +77,9 @@ return [
     // Controls whether images scaled down >= 50% should be automatically sharpened
     'autoSharpenScaledImages' => true,
 
+    // The amount an image needs to be scaled down for automatic sharpening to be applied
+    'sharpenScaledImagePercentage' => 50,
+
     // Whether to allow limiting the creation of Optimized Image Variants for images by sub-folders
     'assetVolumeSubFolders' => true,
 
