@@ -74,6 +74,15 @@
         'on': settings.createPlaceholderSilhouettes,
         'warning': configWarning('createPlaceholderSilhouettes', 'image-optimize')
     }) }}
+    <!-- capSilhouetteSvgSize -->
+    {{ forms.lightswitchField({
+        label: "Cap Placeholder Silhouette Size"|t('image-optimize'),
+        instructions: "This option caps the placeholder silhouette SVG size to 32Kb. If it's larger than that, a default SVG box is returned."|t('image-optimize'),
+        'id': 'capSilhouetteSvgSize',
+        'name': 'capSilhouetteSvgSize',
+        'on': settings.capSilhouetteSvgSize,
+        'warning': configWarning('capSilhouetteSvgSize', 'image-optimize')
+    }) }}
     <!-- lowerQualityRetinaImageVariants -->
     {{ forms.lightswitchField({
         label: "Lower Quality Retina Image Variants"|t('image-optimize'),

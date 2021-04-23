@@ -58,6 +58,9 @@ return [
     // Set to false to disable all placeholder generation
     'generatePlaceholders' => true,
 
+    // Whether the placeholder silhouette SVGs should be capped at 32Kb in size
+    'capSilhouetteSvgSize' => true,
+
     // Controls whether a dominant color palette should be created for image variants
     // It takes a bit of time, so if you never plan to use it, you can turn it off
     'createColorPalette' => true,

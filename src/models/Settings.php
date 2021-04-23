@@ -92,6 +92,11 @@ class Settings extends Model
     public $createPlaceholderSilhouettes = false;
 
     /**
+     * @var bool Whether the placeholder silhouette SVGs should be capped at 32Kb in size
+     */
+    public $capSilhouetteSvgSize = true;
+
+    /**
      * @var bool Controls whether retina images are automatically created with
      *      reduced quality as per
      *      https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
@@ -329,6 +334,7 @@ class Settings extends Model
                     'generateTransformsBeforePageLoad',
                     'createColorPalette',
                     'createPlaceholderSilhouettes',
+                    'capSilhouetteSvgSize',
                     'lowerQualityRetinaImageVariants',
                     'allowUpScaledImageVariants',
                     'autoSharpenScaledImages',
@@ -373,6 +379,7 @@ class Settings extends Model
             'imageTransformTypeSettings',
             'createColorPalette',
             'createPlaceholderSilhouettes',
+            'capSilhouetteSvgSize',
             'lowerQualityRetinaImageVariants',
             'allowUpScaledImageVariants',
             'autoSharpenScaledImages',
