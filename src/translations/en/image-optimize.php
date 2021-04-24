@@ -96,5 +96,14 @@ return [
     'The API key to use for the Imgix transforms (needed for auto-purging changed assets).' => 'The API key to use for the Imgix transforms (needed for auto-purging changed assets).',
     'The optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix.' => 'The optional [security token](https://docs.imgix.com/setup/securing-images) used to sign image URLs from Imgix.',
     'ImageOptimize Info' => 'ImageOptimize Info',
-    'Limit by Sub-Folder' => 'Limit by Sub-Folder'
+    'Limit by Sub-Folder' => 'Limit by Sub-Folder',
+    'Cap Placeholder Silhouette Size' => 'Cap Placeholder Silhouette Size',
+    'The amount of sharpening that should be applied if an image is scaled down more than 50% via the [USM parameter](https://docs.imgix.com/apis/rendering/adjustment/usm).' => 'The amount of sharpening that should be applied if an image is scaled down more than 50% via the [USM parameter](https://docs.imgix.com/apis/rendering/adjustment/usm).',
+    'Error rendering template string -> {error}' => 'Error rendering template string -> {error}',
+    'The amount an image needs to be scaled down for automatic sharpening to be applied.' => 'The amount an image needs to be scaled down for automatic sharpening to be applied.',
+    'Error rendering `{template}` -> {error}' => 'Error rendering `{template}` -> {error}',
+    'This option caps the placeholder silhouette SVG size to 32Kb. If it\'s larger than that, a default SVG box is returned.' => 'This option caps the placeholder silhouette SVG size to 32Kb. If it\'s larger than that, a default SVG box is returned.',
+    'This option caps the placeholder silhouette SVG size to 32kB. If it\'s larger than that, a default SVG box is returned.' => 'This option caps the placeholder silhouette SVG size to 32kB. If it\'s larger than that, a default SVG box is returned.',
+    'Controls whether retina images are automatically created with reduced quality. <a href=\'https://www.netvlies.nl/blogs/retina-revolutie-follow\' target=\'_blank\'>Learn more</a>.' => 'Controls whether retina images are automatically created with reduced quality. <a href=\'https://www.netvlies.nl/blogs/retina-revolutie-follow\' target=\'_blank\'>Learn more</a>.',
+    'Sharpen Image Percentage' => 'Sharpen Image Percentage'
 ];
