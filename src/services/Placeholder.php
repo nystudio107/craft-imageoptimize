@@ -184,11 +184,12 @@ class Placeholder extends Component
                     $result = ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($result);
                 }
             }
+            $settings = ImageOptimize::$plugin->getSettings();
             /**
              * If Potracio failed or gd isn't installed, or this is larger
              * than MAX_SILHOUETTE_SIZE bytes, just return a box
              */
-            if (empty($result) || (\strlen($result) > self::MAX_SILHOUETTE_SIZE)) {
+            if (empty($result) || ((\strlen($result) > self::MAX_SILHOUETTE_SIZE) && $settings->capSilhouetteSvgSize)) {
                 $size = getimagesize($tempPath);
                 if ($size !== false) {
                     list($width, $height) = $size;

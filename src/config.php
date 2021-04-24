@@ -58,6 +58,9 @@ return [
     // Set to false to disable all placeholder generation
     'generatePlaceholders' => true,
 
+    // Whether the placeholder silhouette SVGs should be capped at 32Kb in size
+    'capSilhouetteSvgSize' => true,
+
     // Controls whether a dominant color palette should be created for image variants
     // It takes a bit of time, so if you never plan to use it, you can turn it off
     'createColorPalette' => true,
@@ -76,6 +79,9 @@ return [
 
     // Controls whether images scaled down >= 50% should be automatically sharpened
     'autoSharpenScaledImages' => true,
+
+    // The amount an image needs to be scaled down for automatic sharpening to be applied
+    'sharpenScaledImagePercentage' => 50,
 
     // Whether to allow limiting the creation of Optimized Image Variants for images by sub-folders
     'assetVolumeSubFolders' => true,

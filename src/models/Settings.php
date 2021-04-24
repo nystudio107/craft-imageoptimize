@@ -92,6 +92,11 @@ class Settings extends Model
     public $createPlaceholderSilhouettes = false;
 
     /**
+     * @var bool Whether the placeholder silhouette SVGs should be capped at 32Kb in size
+     */
+    public $capSilhouetteSvgSize = true;
+
+    /**
      * @var bool Controls whether retina images are automatically created with
      *      reduced quality as per
      *      https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
@@ -109,6 +114,12 @@ class Settings extends Model
      *      automatically sharpened
      */
     public $autoSharpenScaledImages = true;
+
+    /**
+     * @var int The amount an image needs to be scaled down for automatic sharpening
+     *      to be applied
+     */
+    public $sharpenScaledImagePercentage = 50;
 
     /**
      * @var bool Whether to allow limiting the creation of Optimized Image Variants
@@ -323,6 +334,7 @@ class Settings extends Model
                     'generateTransformsBeforePageLoad',
                     'createColorPalette',
                     'createPlaceholderSilhouettes',
+                    'capSilhouetteSvgSize',
                     'lowerQualityRetinaImageVariants',
                     'allowUpScaledImageVariants',
                     'autoSharpenScaledImages',
@@ -330,6 +342,7 @@ class Settings extends Model
                 ],
                 'boolean',
             ],
+            ['sharpenScaledImagePercentage', 'integer', 'min' => 0, 'max' => 100],
             [
                 [
                     'defaultVariants',
@@ -366,9 +379,11 @@ class Settings extends Model
             'imageTransformTypeSettings',
             'createColorPalette',
             'createPlaceholderSilhouettes',
+            'capSilhouetteSvgSize',
             'lowerQualityRetinaImageVariants',
             'allowUpScaledImageVariants',
             'autoSharpenScaledImages',
+            'sharpenScaledImagePercentage',
             'assetVolumeSubFolders',
         ];
 

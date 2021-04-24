@@ -74,6 +74,15 @@
         'on': settings.createPlaceholderSilhouettes,
         'warning': configWarning('createPlaceholderSilhouettes', 'image-optimize')
     }) }}
+    <!-- capSilhouetteSvgSize -->
+    {{ forms.lightswitchField({
+        label: "Cap Placeholder Silhouette Size"|t('image-optimize'),
+        instructions: "This option caps the placeholder silhouette SVG size to 32kB. If it's larger than that, a default SVG box is returned."|t('image-optimize'),
+        'id': 'capSilhouetteSvgSize',
+        'name': 'capSilhouetteSvgSize',
+        'on': settings.capSilhouetteSvgSize,
+        'warning': configWarning('capSilhouetteSvgSize', 'image-optimize')
+    }) }}
     <!-- lowerQualityRetinaImageVariants -->
     {{ forms.lightswitchField({
         label: "Lower Quality Retina Image Variants"|t('image-optimize'),
@@ -100,6 +109,18 @@
         'name': 'autoSharpenScaledImages',
         'on': settings.autoSharpenScaledImages,
         'warning': configWarning('autoSharpenScaledImages', 'image-optimize')
+    }) }}
+    <!-- sharpenScaledImagePercentage -->
+    {{ forms.textField({
+        label: "Sharpen Image Percentage"|t("image-optimize"),
+        instructions: "The amount an image needs to be scaled down for automatic sharpening to be applied."|t("image-optimize"),
+        id: "sharpenScaledImagePercentage",
+        name: "sharpenScaledImagePercentage",
+        size: 5,
+        maxlength: 5,
+        value: settings.sharpenScaledImagePercentage,
+        warning: configWarning("sharpenScaledImagePercentage", "image-optimize"),
+        errors: settings.getErrors("sharpenScaledImagePercentage"),
     }) }}
     <!-- assetVolumeSubFolders -->
     {{ forms.lightswitchField({
