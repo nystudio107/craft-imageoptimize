@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.33 - UNRELEASED
+## 1.6.33 - 2021.04.23
 ### Added
 * Added a setting to control the amount an image needs to be scaled down for automatic sharpening to be applied (https://github.com/nystudio107/craft-imageoptimize/issues/263)
 * Added an option to cap the placeholder silhouette SVG size to 32Kb (https://github.com/nystudio107/craft-imageoptimize/issues/270)
