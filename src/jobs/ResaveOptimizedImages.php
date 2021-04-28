@@ -24,13 +24,15 @@ use craft\helpers\App;
 use craft\queue\BaseJob;
 
 use yii\base\Exception;
+use yii\queue\JobInterface;
+
 
 /**
  * @author    nystudio107
  * @package   ImageOptimize
  * @since     1.4.8
  */
-class ResaveOptimizedImages extends BaseJob
+class ResaveOptimizedImages extends BaseJob implements JobInterface
 {
     // Constants
     // =========================================================================
