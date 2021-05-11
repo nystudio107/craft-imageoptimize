@@ -10,6 +10,8 @@
  * @since     1.2.0
  */
 
+import SizesContainer from '../vue/SizesContainer.vue';
+
 /**
  * Convert the passed in bytes into a human readable format
  *
@@ -112,6 +114,21 @@ function imageLoaded(image) {
 
 })( jQuery, window, document );
 
+function initSizesVueComponent(sizesWrapperId){
+    const vm = new Vue({
+        el: '#' + sizesWrapperId,
+        components: {
+            'sizes-container': SizesContainer,
+        },
+        data: {
+        },
+        methods: {
+        },
+        mounted() {
+        }
+    });
+}
+
 Craft.OptimizedImagesInput = Garnish.Base.extend(
     {
         id: null,
@@ -129,6 +146,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
         init: function(id, inputNamePrefix, sizesWrapperId) {
 
+            initSizesVueComponent(sizesWrapperId);
             this.id = id;
             this.inputNamePrefix = inputNamePrefix;
             this.inputIdPrefix = Craft.formatInputId(this.inputNamePrefix);
