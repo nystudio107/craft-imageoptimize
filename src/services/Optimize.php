@@ -438,7 +438,8 @@ class Optimize extends Component
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
-        $fileFormat = $index->detectedFormat;
+        $fileFormat = $index->detectedFormat ?? $index->format;
+        $fileFormat = strtolower($fileFormat);
         // Special-case for 'jpeg'
         if ($fileFormat === 'jpeg') {
             $fileFormat = 'jpg';
@@ -487,6 +488,7 @@ class Optimize extends Component
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
         $fileFormat = $index->detectedFormat ?? $index->format;
+        $fileFormat = strtolower($fileFormat);
         // Special-case for 'jpeg'
         if ($fileFormat === 'jpeg') {
             $fileFormat = 'jpg';
