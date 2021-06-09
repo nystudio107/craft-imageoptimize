@@ -214,7 +214,7 @@ class OptimizedImages extends Component
                             foreach ($subfolders as $subfolder) {
                                 $folder = $asset->getFolder();
                                 while ($folder !== null && !$createVariants) {
-                                    if ($folder->uid === $subfolder) {
+                                    if ($folder->uid === $subfolder || $folder->name === $subfolder) {
                                         Craft::info('Matched subfolder uid: ' . print_r($subfolder, true), __METHOD__);
                                         $createVariants = true;
                                     } else {

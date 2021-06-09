@@ -517,7 +517,7 @@ class OptimizedImages extends Field
         foreach ($folders as $folder) {
             $children = $folder->getChildren();
             foreach ($children as $child) {
-                $sources[$child->uid] = $child->name;
+                $sources[$child->name] = $child->name;
             }
         }
 
