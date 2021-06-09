@@ -230,7 +230,12 @@ class OptimizedImages extends Component
         // See if we should ignore this type of file
         $sourceType = $asset->getMimeType();
         if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
-            if (\in_array($sourceType, array_values($field->ignoreFilesOfType), false)) {
+            $ignoreTypes = array_values($field->ignoreFilesOfType);
+            // If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
+            if (\in_array('image/svg', $ignoreTypes, false)) {
+                $ignoreTypes[] = 'image/svg+xml';
+            }
+            if (\in_array($sourceType, $ignoreTypes, false)) {
                 $createVariants = false;
             }
         }
