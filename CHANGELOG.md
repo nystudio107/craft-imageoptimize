@@ -3,6 +3,7 @@
 ## 1.6.34 - UNRELEASED
 ### Fixed
 * Fixed an issue where uppercase file suffixes would cause webp image variants to not be created (https://github.com/nystudio107/craft-imageoptimize/issues/277)
+* If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
 
 ## 1.6.33 - 2021.04.23
 ### Added
