@@ -1,40 +1,42 @@
 TAG?=14-alpine
-CONTAINER?=$(shell basename $(CURDIR))-buildchain
+CONTAINER?=$(shell basename $(dir $(CURDIR)))-docs
 DOCKERRUN=docker container run \
 	--name ${CONTAINER} \
 	--rm \
+	-p 3002:3002 \
 	-t \
-	--network plugindev_default \
-	-p 8080:8080 \
 	-v `pwd`:/app \
 	${CONTAINER}:${TAG}
+DOCSDEST?=../../../sites/nystudio107/web/docs/image-optimize
 
-.PHONY: build dev docker install update update-clean npm
+.PHONY: docker build dev fix install lint update npm
 
-build: docker install
-	${DOCKERRUN} \
-		run build
-dev: docker install
-	${DOCKERRUN} \
-		run dev
 docker:
 	docker build \
 		. \
 		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
+build: docker install update
+	${DOCKERRUN} \
+		run docs:build
+	rm -rf ${DOCSDEST}
+	mv ./docs/.vitepress/dist ${DOCSDEST}
+dev: docker install
+	${DOCKERRUN} \
+		run docs:dev
+fix: docker install
+	${DOCKERRUN} \
+		run docs:fix
 install: docker
 	${DOCKERRUN} \
 		install
+lint: docker install
+	${DOCKERRUN} \
+		run docs:lint
 update: docker
-	rm -f buildchain/package-lock.json
 	${DOCKERRUN} \
-		install
-update-clean: docker
-	rm -f buildchain/package-lock.json
-	rm -rf buildchain/node_modules/
-	${DOCKERRUN} \
-		install
+		update
 npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))

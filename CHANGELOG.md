@@ -1,5 +1,15 @@
 # ImageOptimize Changelog
 
+## 1.6.34 - 2021.06.10
+### Changed
+* Switched documentation system to VitePress
+* When an asset is replaced, force the recreation of the variants (https://github.com/nystudio107/craft-imageoptimize/issues/283)
+
+### Fixed
+* Fixed an issue where uppercase file suffixes would cause webp image variants to not be created (https://github.com/nystudio107/craft-imageoptimize/issues/277)
+* If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
+* Now store the image sub-folders by name, since the UID can be different per environment (https://github.com/nystudio107/craft-imageoptimize/issues/282)
+
 ## 1.6.33 - 2021.04.23
 ### Added
 * Added a setting to control the amount an image needs to be scaled down for automatic sharpening to be applied (https://github.com/nystudio107/craft-imageoptimize/issues/263)

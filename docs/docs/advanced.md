@@ -120,13 +120,13 @@ Normally ImageOptimize will regenerate image variants if you change an Optimized
 
 Re-saving many images at a time can be intensive, and on certain setups may require tweaking the `php.ini` setting `max_execution_time`. An alternative for better handling of any lengthy Craft CMS task is the [Async Queue plugin](https://github.com/ostark/craft-async-queue).
 
-All you need to do is install the plugin, and any queue jobs in Craft CMS 3 will now run entirely in the background via the CLI php, which isn't subject to the same restrictions that the web php is.
+All you need to do is install the plugin, and any queue jobs in Craft CMS 3 will now run entirely in the background via the CLI php, which isn’t subject to the same restrictions that the web php is.
 
 Also read the article [Robust queue job handling in CraftCMS](https://nystudio107.com/blog/robust-queue-job-handling-in-craft-cms) for other possible solutions.
 
 ## GraphQL via Craft CMS 3.3
 
-ImageOptimize has built-in support for accessing the OptimizedImages field via GraphQL using [Craft CMS 3.3's GraphQL](https://docs.craftcms.com/v3/graphql.html) support.
+ImageOptimize has built-in support for accessing the OptimizedImages field via GraphQL using [Craft CMS 3.3’s GraphQL](https://docs.craftcms.com/v3/graphql.html) support.
 
 You can access all of the primary OptimizedImages field methods:
 
@@ -287,7 +287,7 @@ use vendor\package\MyImageTransform;
 
 No module or plugin bootstrapping code needed to get it working. For an example of how this works, check out [craft-imageoptimize-imgix](https://github.com/nystudio107/craft-imageoptimize-imgix) & [craft-imageoptimize-thumbor](https://github.com/nystudio107/craft-imageoptimize-thumbor) & [craft-imageoptimize-sharp](https://github.com/nystudio107/craft-imageoptimize-sharp).
 
-If you want to wrap your `ImageTransform` into a plugin or module,
+To wrap your `ImageTransform` into a plugin or module,
 simply listen for the `EVENT_REGISTER_IMAGE_TRANSFORM_TYPES` event to add your `ImageTransform` to the types that ImageOptimize knows about.
 
 ```php

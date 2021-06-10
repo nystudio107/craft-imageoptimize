@@ -11,7 +11,7 @@ You can choose to have the Optimized Image Variants created only for specific su
 ![Screenshot](./resources/screenshots/image-optimize-field-volumes.png)
 
 
-Think of each **Optimized Images** field as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images. If you need to use more than one `srcset` then you probably need more than one **Optimized Images** field.
+Think of each **Optimized Images** field as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images. To use more than one `srcset` then you probably need more than one **Optimized Images** field.
 
 **Transform Method** let you choose to use the built-in Craft transforms or a service like [imgix](https://www.imgix.com/) for the responsive image variants.
 
@@ -28,19 +28,19 @@ For each Optimized Image Variant, set:
  * **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
  * **Retina Sizes**: Check any additional retina sizes to create for this variant. For instance, a `100x60` image with with a `2x` retina size would _also_ create a `200x120` image.
  * **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
- * **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image's file format. It's recommended that you set this to `jpg` for most images, for client-proofing purposes.
+ * **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image’s file format. It’s recommended that you set this to `jpg` for most images, for client-proofing purposes.
  
- Once you have set up your field, add it to your asset Volume's layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
+ Once you have set up your field, add it to your asset Volume’s layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
 
 By default, ImageOptimize automatically will decrease the `quality` setting of retina images, as discussed in the [Retina revolution](https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/) article. This allows for increasing the visual quality of the retina images while keeping the file size modest. You can disable this via the `lowerQualityRetinaImageVariants` setting in `config.php`.
 
-Whenever you add an OptimizedImages field to an asset Volume's layout, or make changes to an existing OptimizedImages field's settings, it will automatically generate your responsive image variants for you.
+Whenever you add an OptimizedImages field to an asset Volume’s layout, or make changes to an existing OptimizedImages field’s settings, it will automatically generate your responsive image variants for you.
 
 If you double-click on an asset (or click on an asset, and choose **Edit Asset** from the gear menu), you will now see all of your responsive image variants for that image:
 
 ![Screenshot](./resources/screenshots/image-variant-field.png)
 
-You'll see the responsive width of each image variant above each thumbnail, with the aspect ratio, file format, and file size below it. If you have `.webp` image variants configured, you will see them here as well.
+You’ll see the responsive width of each image variant above each thumbnail, with the aspect ratio, file format, and file size below it. If you have `.webp` image variants configured, you will see them here as well.
 
 By default, ImageOptimize will not create Optimized Image Variants that would be up-scaled from the original source image. You can control this behavior via the `allowUpScaledImageVariants` setting in `config.php`.
 
@@ -50,15 +50,15 @@ The OptimizedImages field also helps content editors by pointing out potential p
 
 ![Screenshot](./resources/screenshots/image-variant-warnings.png)
 
-In this example, no **Focal Point** has been set via Craft 3's built-in image editor. The **Focal Point** lets content editors choose what portion of the image is most important, and should be kept in the center of any transformed images:
+In this example, no **Focal Point** has been set via Craft 3’s built-in image editor. The **Focal Point** lets content editors choose what portion of the image is most important, and should be kept in the center of any transformed images:
 
 ![Screenshot](./resources/screenshots/image-editor-focal-point.png)
 
-There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn't been configured, so there are no `.webp` variants created.
+There are also warnings indicating that the original image is too small, and is being upscaled for one of the responsive variants, and that `WEBP` hasn’t been configured, so there are no `.webp` variants created.
 
-## Command line Optimized Image Variant creation
+## Command-line Optimized Image Variant creation
 
-Because web-based PHP often has timeouts such as `max_execution_time` that can be exceeded by very large image variant creation, ImageOptimize comes with a command line utility to let you create the responsive image variants via console command.
+Because web-based PHP often has timeouts such as `max_execution_time` that can be exceeded by very large image variant creation, ImageOptimize comes with a command-line utility to let you create the responsive image variants via console command.
 
 ### Console Commands
 
@@ -68,13 +68,13 @@ From the root directory of your Craft CMS 3 project, you can use the following c
 php craft image-optimize/optimize/create
 ```
 
-If you want to generate only responsive image variants for a specific Asset Volume, you can do that by specifying the Volume's `handle` via the console command:
+To generate only responsive image variants for a specific Asset Volume, you can do that by specifying the Volume’s `handle` via the console command:
 
 ```
 php craft image-optimize/optimize/create myVolumeHandle
 ```
 
-If you want to generate only responsive image variants for a specific Optimized Images Field, you can do that by specifying the Field's `handle` via the `--field` option:
+To generate only responsive image variants for a specific Optimized Images Field, you can do that by specifying the Field’s `handle` via the `--field` option:
 
 ```
 php craft image-optimize/optimize/create --field=myFieldHandle
@@ -86,7 +86,7 @@ You can combine the two, and narrow things down to a specific volume and a speci
 php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle
 ```
 
-If you want to generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `create-asset`:
+To generate only responsive image variants for a specific Asset, you can do that by specifying the Asset ID via the console command `create-asset`:
 
 ```
 php craft image-optimize/optimize/create-asset 101
@@ -94,7 +94,7 @@ php craft image-optimize/optimize/create-asset 101
 
 ### Forcing Image Variant Creation
 
-The way Craft CMS asset transforms work, if a transformed image already exists, it won't bother trying to recreate it.
+The way Craft CMS asset transforms work, if a transformed image already exists, it won’t bother trying to recreate it.
 
 This can sometimes be problematic when you add additional variants (such as `.webp`) after the fact, and need to generate them.
 
@@ -104,7 +104,7 @@ You can use the `--force` option with any of the above commands to force the rec
 php craft image-optimize/optimize/create --force
 ```
 
-or:
+Or:
 
 ```
 php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle --force
@@ -114,7 +114,7 @@ php craft image-optimize/optimize/create myVolumeHandle --field=myFieldHandle --
 php craft image-optimize/optimize/create-asset 101 --force
 ```
 
-etc.
+Etc.
 
 ### Disabling Automatic Variant Creation
 
@@ -124,9 +124,9 @@ If you plan to do this manually via the above console commands, you can disable 
 
 ## Dynamically creating Optimized Image Variants
 
-If you wish to dynamically create Optimized Image Variants in your templates without having to use the Field.
+To dynamically create Optimized Image Variants in your templates without having to use the Field.
 
-**N.B.:** We recommend _against_ using Image Optimize via Twig if you can avoid it. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you'll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+**N.B.:** We recommend _against_ using Image Optimize via Twig if you can avoid it. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you’ll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
 
 To create Optimized Image Variants dynamically in your templates, you can do:
 
@@ -148,7 +148,7 @@ To create Optimized Image Variants dynamically in your templates, you can do:
 
 ```
 
-All of these fields are required, and they are analogous to the settings provided by the Field. The `retinaSizes` is an array of multipliers for the retina variants. For instance, if we wanted both normal resolution and 2x variants of the above image, we'd do:
+All of these fields are required, and they are analogous to the settings provided by the Field. The `retinaSizes` is an array of multipliers for the retina variants. For instance, if we wanted both normal resolution and 2x variants of the above image, we’d do:
 
 ```twig
 {% set optimizedImages = craft.imageOptimize.createOptimizedImages(
@@ -246,7 +246,7 @@ To use `<img srcset="">` elements in your templates, you can just do:
                  sizes="100vw" />
 ```
 
-The `.src()` method simply displays the first responsive image variant, and is typically just used as a fallback for browsers that don't support srcset. You can also pass in an optional `width` parameter to have it return a variant of that width:
+The `.src()` method simply displays the first responsive image variant, and is typically just used as a fallback for browsers that don’t support srcset. You can also pass in an optional `width` parameter to have it return a variant of that width:
 
 ```twig
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
@@ -259,9 +259,9 @@ There is also a corresponding `.srcWebp()` method, should you need it.
 
 The `.srcset()` method displays all of the responsive image variants, with their associated source widths.
 
-The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `srcset` works, check out the excellent [Responsive Images 101, Part 5: Sizes](https://cloudfour.com/thinks/responsive-images-101-part-5-sizes/) article.
+The `sizes` attribute here is a simple one that just matches the browser’s width, but you can use any media query you like (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `srcset` works, check out the excellent [Responsive Images 101, Part 5: Sizes](https://cloudfour.com/thinks/responsive-images-101-part-5-sizes/) article.
 
-If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
+If you’re using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
 ```twig
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
@@ -271,7 +271,7 @@ If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript
          sizes="100vw" />
 ```
 
-If you want to check to see if `.webp` is supported on the server so you can conditionally include `.webp` images, you can do:
+To check to see if `.webp` is supported on the server so you can conditionally include `.webp` images, you can do:
 
 ```twig
 {% if craft.imageOptimize.serverSupportsWebP() %}
@@ -313,11 +313,11 @@ To use `<picture>` in your templates, you can just do:
     </picture>
 ```
 
-This assumes you have `WEBP` image variants configured. This lets the browser choose what to display, if it can handle `.webp`, it'll pick that (because `.webp` images are far more efficient than `.jpg` images), otherwise it'll just use the regular image.
+This assumes you have `WEBP` image variants configured. This lets the browser choose what to display, if it can handle `.webp`, it’ll pick that (because `.webp` images are far more efficient than `.jpg` images), otherwise it’ll just use the regular image.
 
-The `sizes` attribute here is a simple one that just matches the browser's width, but you can use any media query you like  (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `<picture>` works, check out the excellent [Responsive Images 101, Part 6: Picture Element](https://cloudfour.com/thinks/responsive-images-101-part-6-picture-element/) article.
+The `sizes` attribute here is a simple one that just matches the browser’s width, but you can use any media query you like  (and typically would have it match your CSS media query breakpoints or container sizes). For information on how `<picture>` works, check out the excellent [Responsive Images 101, Part 6: Picture Element](https://cloudfour.com/thinks/responsive-images-101-part-6-picture-element/) article.
 
-If you're using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
+If you’re using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScript for lazy image loading, your template code would look like this:
 
 ```twig
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
@@ -342,7 +342,7 @@ If you need separate `srcset`s to match your media queries, you can use:
 ```
 ...to output all variants that exactly match the passed in width (which could be more than one, if you have set up `2x` or `3x` retina variants).
 
-If you want to use the mostly deprecated `1x`, `2x` DPR srcset syntax, you can do that by passing in `true`:
+To use the mostly deprecated `1x`, `2x` DPR srcset syntax, you can do that by passing in `true`:
 
 ```twig
     {% set optimizedImages = entry.myAssetField.one().optimizedImagesField %}
@@ -410,9 +410,9 @@ For extra visual lusciousness, you could also apply a [CSS blur filter](https://
 
 ## Using Optimized Image Transforms
 
-Once ImageOptimize is set up and configured, there's nothing left to do for optimizing your image transforms. It just works.
+Once ImageOptimize is set up and configured, there’s nothing left to do for optimizing your image transforms. It just works.
 
-If you have `devMode` on, ImageOptimize will log stats for images that it optimizes, e.g.:
+If you have `devMode` on, ImageOptimize will log stats for images that it optimizes, for example:
 
 ```
 2017-03-12 07:49:27 [192.168.10.1][1][-][info][nystudio107\ImageOptimize\services\Optimize::handleGenerateTransformEvent] zappa.png -> Original: 129.5K, Optimized: 100.8K -> Savings: 28.4%
@@ -428,9 +428,9 @@ Normal scaled image on the left, auto-sharpened scaled image on the right.
 
 ImageOptimize can also automatically create image variants for transformed images. Whenever an image transform is created, ImageTransform can create the same image in multiple file formats.
 
-This is especially useful when implementing [webp images](https://developers.google.com/speed/webp/), so that you can make `.webp` images available to browsers that support them, while falling back on traditional `.png` and `.jpg` images for browsers that don't.
+This is especially useful when implementing [webp images](https://developers.google.com/speed/webp/), so that you can make `.webp` images available to browsers that support them, while falling back on traditional `.png` and `.jpg` images for browsers that don’t.
 
-Here's an example of what it looks like for images with the transform `Some Transform` applied to them:
+Here’s an example of what it looks like for images with the transform `Some Transform` applied to them:
 
 ![Screenshot](./resources/screenshots/image-variants.png)
 
@@ -444,7 +444,7 @@ For `.webp` image variants, the suffix `.webp` is simply added to the name of th
 
 To serve up `.webp` variant images, you can either use the HTML5 [&lt;picture&gt; element](https://www.html5rocks.com/en/tutorials/responsive/picture-element/#toc-file-type) to let browser choose what to display, or you can have your web server [serve them up automatically](https://github.com/uhop/grunt-tight-sprite/wiki/Recipe:-serve-WebP-with-nginx-conditionally). Some CDNs even support [serving up .webp images automatically](https://www.maxcdn.com/blog//how-to-reduce-image-size-with-webp-automagically/).
 
-If you have `devMode` on, ImageOptimize will log stats for images that it creates variants for, e.g.:
+If you have `devMode` on, ImageOptimize will log stats for images that it creates variants for, for example:
 
 ```
 2017-09-10 07:28:23 [192.168.10.1][1][-][info][nystudio107\imageoptimize\services\Optimize::createImageVariants] painted-face_170903_02341359b54c06c953b6.23303620.jpg -> painted-face_170903_02341359b54c06c953b6.23303620.jpg.webp -> Original: 36.9K, Variant: 12.8K -> Savings: 65.3%
