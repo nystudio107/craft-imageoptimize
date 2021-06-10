@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.34 - UNRELEASED
+## 1.6.34 - 2021.06.10
 ### Changed
 * Switched documentation system to VitePress
 * When an asset is replaced, force the recreation of the variants (https://github.com/nystudio107/craft-imageoptimize/issues/283)
