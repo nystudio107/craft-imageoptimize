@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 1.6.34 - UNRELEASED
+### Changed
+* Switched documentation system to VitePress
+
 ### Fixed
 * Fixed an issue where uppercase file suffixes would cause webp image variants to not be created (https://github.com/nystudio107/craft-imageoptimize/issues/277)
 * If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
