@@ -1,9 +1,21 @@
 {
   "scripts": {
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs"
+    "docs:build": "npm run docs:fix && npm run docs:lint && vitepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:fix": "textlint --fix ./docs/**/*.md",
+    "docs:lint": "textlint ./docs/**/*.md"
   },
   "devDependencies": {
-    "vuepress": "^1.8.2"
+    "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.8",
+    "textlint": "^11.3.1",
+    "textlint-filter-rule-comments": "^1.2.2",
+    "textlint-rule-apostrophe": "^1.0.0",
+    "textlint-rule-common-misspellings": "^1.0.1",
+    "textlint-rule-diacritics": "^1.0.0",
+    "textlint-rule-en-capitalization": "^2.0.2",
+    "textlint-rule-stop-words": "^2.0.8",
+    "textlint-rule-terminology": "^2.1.4",
+    "textlint-rule-write-good": "^1.6.2",
+    "vitepress": "^0.13.2"
   }
 }
