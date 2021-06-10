@@ -30,6 +30,6 @@ You can also install ImageOptimize via the **Plugin Store** in the Craft Control
 
 ImageOptimize works on Craft 3.x.
 
-If you want to use ImageOptimize with Cloudinary, install the [Cloudinary](https://github.com/timkelty/craft3-cloudinary) plugin that will make Cloudinary available as a file system for Craft CMS 3.
+To use ImageOptimize with Cloudinary, install the [Cloudinary](https://github.com/timkelty/craft3-cloudinary) plugin that will make Cloudinary available as a file system for Craft CMS 3.
 
 Brought to you by [nystudio107](https://nystudio107.com)
