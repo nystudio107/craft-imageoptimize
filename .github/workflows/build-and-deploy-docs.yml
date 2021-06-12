@@ -1,0 +1,44 @@
+name: Build and Deploy Docs
+env:
+  DOCS_DEST_DIR: /image-optimize/
+on:
+  push:
+    branches:
+      - v1
+    paths:
+      - 'docs/**'
+  pull_request:
+    branches:
+      - v1
+    paths:
+      - 'docs/**'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./docs
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run docs:build
+      - run: cp -vr docs/.vitepress/dist $GITHUB_WORKSPACE
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@4.1
+        with:
+          switches: -avzr --delete
+          path: ./dist/
+          remote_path: ${{ secrets.NYS_DOCS_ROOT }}${{ env.DOCS_DEST_DIR }}
+          remote_host: ${{ secrets.NYS_DEPLOY_REMOTE_HOST }}
+          remote_port: ${{ secrets.NYS_DEPLOY_REMOTE_PORT }}
+          remote_user: ${{ secrets.NYS_DEPLOY_REMOTE_USER }}
+          remote_key: ${{ secrets.NYS_DEPLOY_PRIVATE_KEY }}
