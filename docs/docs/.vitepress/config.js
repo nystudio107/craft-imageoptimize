@@ -8,7 +8,7 @@ module.exports = {
         docsDir: 'docs/docs',
         docsBranch: 'v1',
         algolia: {
-            apiKey: '',
+            apiKey: '77fb94de306ac61504c501db4bb13a4e',
             indexName: 'image-optimize'
         },
         editLinks: true,
