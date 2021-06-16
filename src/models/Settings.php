@@ -99,7 +99,7 @@ class Settings extends Model
     /**
      * @var bool Controls whether retina images are automatically created with
      *      reduced quality as per
-     *      https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
+     *      https://www.netvlies.nl/blogs/retina-revolutie-follow
      */
     public $lowerQualityRetinaImageVariants = true;
 

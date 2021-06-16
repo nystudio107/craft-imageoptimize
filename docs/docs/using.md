@@ -32,7 +32,7 @@ For each Optimized Image Variant, set:
  
  Once you have set up your field, add it to your asset Volume’s layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
 
-By default, ImageOptimize automatically will decrease the `quality` setting of retina images, as discussed in the [Retina revolution](https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/) article. This allows for increasing the visual quality of the retina images while keeping the file size modest. You can disable this via the `lowerQualityRetinaImageVariants` setting in `config.php`.
+By default, ImageOptimize automatically will decrease the `quality` setting of retina images, as discussed in the [Retina revolution](https://www.netvlies.nl/blogs/retina-revolutie-follow) article. This allows for increasing the visual quality of the retina images while keeping the file size modest. You can disable this via the `lowerQualityRetinaImageVariants` setting in `config.php`.
 
 Whenever you add an OptimizedImages field to an asset Volume’s layout, or make changes to an existing OptimizedImages field’s settings, it will automatically generate your responsive image variants for you.
 
