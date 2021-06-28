@@ -21,10 +21,10 @@ module.exports = {
         lastUpdated: 'Last Updated',
         sidebar: [
             { text: 'ImageOptimize Plugin', link: '/' },
-            { text: 'ImageOptimize Overview', link: '/overview' },
-            { text: 'Configuring ImageOptimize', link: '/configuring' },
-            { text: 'Using ImageOptimize', link: '/using' },
-            { text: 'Advanced Usage', link: '/advanced' },
+            { text: 'ImageOptimize Overview', link: '/overview.html' },
+            { text: 'Configuring ImageOptimize', link: '/configuring.html' },
+            { text: 'Using ImageOptimize', link: '/using.html' },
+            { text: 'Advanced Usage', link: '/advanced.html' },
         ],
     },
 };
