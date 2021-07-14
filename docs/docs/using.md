@@ -1,3 +1,7 @@
+---
+title: Using ImageOptimize
+description: Using ImageOptimize documentation for the ImageOptimize plugin. The Transcoder plugin automatically creates & optimizes responsive image transforms, using either native Craft transforms or a service like imgix or Thumbor, with zero template changes
+---
 # Using ImageOptimize
 
 ## Using the Optimized Images Field

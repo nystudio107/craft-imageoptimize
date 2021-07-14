@@ -1,3 +1,7 @@
+---
+title: Configuring ImageOptimize
+description: Configuring ImageOptimize documentation for the ImageOptimize plugin. The Transcoder plugin automatically creates & optimizes responsive image transforms, using either native Craft transforms or a service like imgix or Thumbor, with zero template changes
+---
 # Configuring ImageOptimize
 
 The plugin Settings for ImageOptimize allows you to choose whether to use native Craft image transforms, or an image transform service such as [imgix](https://imgix.com), [Thumbor](http://thumbor.org/), or [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service). The setting you choose here will apply globally to all of your image transforms.

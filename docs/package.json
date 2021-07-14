@@ -6,6 +6,7 @@
     "docs:lint": "textlint ./docs/**/*.md"
   },
   "devDependencies": {
+    "rollup-plugin-sitemap": "^1.0.3",
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.8",
     "textlint": "^11.3.1",
     "textlint-filter-rule-comments": "^1.2.2",
