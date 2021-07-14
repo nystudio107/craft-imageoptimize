@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.35 - 2021.07.14
+### Fixed
+* Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name (https://github.com/craftcms/cms/issues/6922) (https://github.com/nystudio107/craft-imageoptimize/issues/289)
+
 ## 1.6.34 - 2021.06.10
 ### Changed
 * Switched documentation system to VitePress
