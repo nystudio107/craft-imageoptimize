@@ -110,6 +110,11 @@ class ImageOptimize extends Plugin
      */
     public static $craft35 = false;
 
+    /**
+     * @var bool
+     */
+    public static $craft37 = false;
+
     // Static Methods
     // =========================================================================
 
@@ -164,6 +169,7 @@ class ImageOptimize extends Plugin
         self::$plugin = $this;
         self::$craft31 = version_compare(Craft::$app->getVersion(), '3.1', '>=');
         self::$craft35 = version_compare(Craft::$app->getVersion(), '3.5', '>=');
+        self::$craft37 = version_compare(Craft::$app->getVersion(), '3.7', '>=');
         // Handle any console commands
         $request = Craft::$app->getRequest();
         if ($request->getIsConsoleRequest()) {

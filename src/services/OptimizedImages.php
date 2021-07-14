@@ -25,6 +25,7 @@ use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\SiteNotFoundException;
+use craft\helpers\ElementHelper;
 use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\models\AssetTransform;
@@ -276,6 +277,11 @@ class OptimizedImages extends Component
                 $asset->setFieldValue($field->handle, $field->serializeValue($model));
                 $table = $asset->getContentTable();
                 $column = $asset->getFieldColumnPrefix().$field->handle;
+                // Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name
+                // ref: https://github.com/craftcms/cms/issues/6922
+                if (ImageOptimize::$craft37) {
+                    $column = ElementHelper::fieldColumnFromField($field);
+                }
                 $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
                 Craft::$app->db->createCommand()
                     ->update($table, [
