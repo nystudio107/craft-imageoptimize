@@ -9,7 +9,7 @@ DOCKERRUN=docker container run \
 	${CONTAINER}:${TAG}
 DOCSDEST?=../../../sites/nystudio107/web/docs/image-optimize
 
-.PHONY: docker build dev fix install lint update npm
+.PHONY: docker build dev fix install lint clean npm
 
 docker:
 	docker build \
@@ -17,7 +17,7 @@ docker:
 		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
-build: docker install update
+build: clean docker install
 	${DOCKERRUN} \
 		run docs:build
 	rm -rf ${DOCSDEST}
@@ -34,9 +34,9 @@ install: docker
 lint: docker install
 	${DOCKERRUN} \
 		run docs:lint
-update: docker
-	${DOCKERRUN} \
-		update
+clean: docker
+	rm -rf node_modules/
+	rm -f package-lock.json
 npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
