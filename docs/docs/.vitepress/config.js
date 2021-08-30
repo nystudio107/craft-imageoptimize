@@ -5,7 +5,8 @@ module.exports = {
     lang: 'en-US',
     head: [
         ['meta', { content: 'https://github.com/nystudio107', property: 'og:see_also', }],
-        ['meta', { content: 'https://www.youtube.com/channel/UCOZTZHQdC-unTERO7LRS6FA', property: 'og:see_also', }],
+        ['meta', { content: 'https://twitter.com/nystudio107', property: 'og:see_also', }],
+        ['meta', { content: 'https://youtube.com/nystudio107', property: 'og:see_also', }],
         ['meta', { content: 'https://www.facebook.com/newyorkstudio107', property: 'og:see_also', }],
     ],
     themeConfig: {
