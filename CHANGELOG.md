@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.36 - 2021.09.07
+### Fixed
+* Fixed an issue where the wrong Imgix API was being used for purging images ([#273](https://github.com/nystudio107/craft-imageoptimize/issues/273))
+
 ## 1.6.35 - 2021.07.14
 ### Fixed
 * Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name (https://github.com/craftcms/cms/issues/6922) (https://github.com/nystudio107/craft-imageoptimize/issues/289)
