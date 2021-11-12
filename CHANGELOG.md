@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.37 - UNRELEASED
+### Fixed
+* Fixed an issue where image placeholders would create images in incorrectly large sizes if certain EXIF data was present, and `preserveExifData` was set to `true` in `config/general.php`, resulting in a db error when trying to save the encoded image in the field data ([#296](https://github.com/nystudio107/craft-imageoptimize/issues/296))
+
 ## 1.6.36 - 2021.09.07
 ### Fixed
 * Fixed an issue where the wrong Imgix API was being used for purging images ([#273](https://github.com/nystudio107/craft-imageoptimize/issues/273))
