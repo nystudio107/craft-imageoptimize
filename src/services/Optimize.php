@@ -677,6 +677,10 @@ class Optimize extends Component
                     .escapeshellarg($tempPath)
                     .' ';
             }
+            // If both $commandOptions & $outputFileFlag are empty, pad it with a space
+            if (empty($commandOptions) && empty($outputFileFlag)) {
+                $commandOptions = ' ';
+            }
             // Build the command to execute
             $cmd =
                 $thisProcessor['commandPath']
