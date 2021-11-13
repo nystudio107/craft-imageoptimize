@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.6.38 - UNRELEASED
+### Fixed
+* Fix the SVGO optimizer by ensuring that image processors without `commandOptions` have the resulting command properly padded with a space ([#300](https://github.com/nystudio107/craft-imageoptimize/issues/300))
+* Fixed an issue with the Sharp transform method where transforms could fail if the file extension was not lowercase ([#4](https://github.com/nystudio107/craft-imageoptimize-sharp/issues/4))
+
 ## 1.6.37 - 2021.11.11
 ### Fixed
 * Fixed an issue where image placeholders would create images in incorrectly large sizes if certain EXIF data was present, and `preserveExifData` was set to `true` in `config/general.php`, resulting in a db error when trying to save the encoded image in the field data ([#296](https://github.com/nystudio107/craft-imageoptimize/issues/296))
