@@ -2,7 +2,8 @@
 
 ## 1.6.38 - UNRELEASED
 ### Fixed
-* Fix the SVGO optimizer by ensuring that image processors without `commandOptions` have the resulting command properly padded with a space ([#300](https://github.com/nystudio107/craft-imageoptimize/issues/300))
+* Fixed the display of WebP images in FireFox, Safari, and other browsers that support WebP, but not from Canvas by improving the WebP support detection method ([#301](https://github.com/nystudio107/craft-imageoptimize/issues/301))
+* Fixed the SVGO optimizer by ensuring that image processors without `commandOptions` have the resulting command properly padded with a space ([#300](https://github.com/nystudio107/craft-imageoptimize/issues/300))
 * Fixed an issue with the Sharp transform method where transforms could fail if the file extension was not lowercase ([#4](https://github.com/nystudio107/craft-imageoptimize-sharp/issues/4))
 
 ## 1.6.37 - 2021.11.11
