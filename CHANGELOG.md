@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.39 - UNRELEASED
+### Changed
+* Updated the buildchain to use Node 16
+
 ## 1.6.38 - 2021.11.18
 ### Fixed
 * Fixed the display of WebP images in FireFox, Safari, and other browsers that support WebP, but not from Canvas by improving the WebP support detection method ([#301](https://github.com/nystudio107/craft-imageoptimize/issues/301))
