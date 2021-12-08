@@ -1,4 +1,4 @@
-TAG?=14-alpine
+TAG?=16-alpine
 CONTAINER?=$(shell basename $(CURDIR))-buildchain
 DOCKERRUN=docker container run \
 	--name ${CONTAINER} \
@@ -6,6 +6,7 @@ DOCKERRUN=docker container run \
 	-t \
 	--network plugindev_default \
 	-p 8080:8080 \
+	-e CPPFLAGS="-DPNG_ARM_NEON_OPT=0" \
 	-v `pwd`:/app \
 	${CONTAINER}:${TAG}
 
