@@ -217,9 +217,16 @@ class OptimizedImages extends Field
         if ($asset !== null && $asset instanceof Asset && $asset->id !== null) {
             // If this element is propagating, we don't need to redo the image saving for each site
             if (!$asset->propagating) {
-                // If the scenario is Asset::SCENARIO_FILEOPS treat it as a new asset
+                // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_MOVE (if using Craft > v3.7.1) treat it as a new asset
                 $scenario = $asset->getScenario();
-                if ($isNew || $scenario === Asset::SCENARIO_FILEOPS ) {
+
+				$supportsMoveScenario = version_compare(
+						Craft::$app->getVersion(),
+						'3.7.1',
+						'>='
+					) === true;
+
+                if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE) ) {
                     /**
                      * If this is a newly uploaded/created Asset, we can save the variants
                      * via a queue job to prevent it from blocking
