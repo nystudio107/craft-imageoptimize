@@ -220,11 +220,11 @@ class OptimizedImages extends Field
                 // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_MOVE (if using Craft > v3.7.1) treat it as a new asset
                 $scenario = $asset->getScenario();
 
-				$supportsMoveScenario = version_compare(
-						Craft::$app->getVersion(),
-						'3.7.1',
-						'>='
-					) === true;
+		$supportsMoveScenario = version_compare(
+			Craft::$app->getVersion(),
+			'3.7.1',
+			'>='
+		) === true;
 
                 if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE) ) {
                     /**
