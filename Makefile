@@ -7,7 +7,7 @@ DOCKERRUN=docker container run \
 	--network plugindev_default \
 	-p 8080:8080 \
 	-e CPPFLAGS="-DPNG_ARM_NEON_OPT=0" \
-	-v `pwd`:/app \
+	-v "${CURDIR}":/app \
 	${CONTAINER}:${TAG}
 
 .PHONY: build dev docker install update update-clean npm
