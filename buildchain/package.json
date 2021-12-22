@@ -36,7 +36,6 @@
   "dependencies": {
     "core-js": "^3.0.0",
     "regenerator-runtime": "^0.13.2",
-    "tailwindcss": "^2.1.0",
     "vue": "^2.6.0",
     "vue-confetti": "^0.4.2"
   },
@@ -95,6 +94,7 @@
     "stylelint": "^13.7.0",
     "stylelint-config-recommended": "^3.0.0",
     "symlink-webpack-plugin": "^0.0.4",
+    "tailwindcss": "^3.0.0",
     "terser-webpack-plugin": "^5.0.0",
     "ts-loader": "^8.0.5",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
