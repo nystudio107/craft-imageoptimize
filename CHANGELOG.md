@@ -1,5 +1,38 @@
 # ImageOptimize Changelog
 
+## 1.6.39 - UNRELEASED
+### Changed
+* Updated the buildchain to use Node 16
+* Create variants via queue when an asset is moved in Craft >=3.7.1
+
+## 1.6.38 - 2021.11.18
+### Fixed
+* Fixed the display of WebP images in FireFox, Safari, and other browsers that support WebP, but not from Canvas by improving the WebP support detection method ([#301](https://github.com/nystudio107/craft-imageoptimize/issues/301))
+* Fixed the SVGO optimizer by ensuring that image processors without `commandOptions` have the resulting command properly padded with a space ([#300](https://github.com/nystudio107/craft-imageoptimize/issues/300))
+* Fixed an issue with the Sharp transform method where transforms could fail if the file extension was not lowercase ([#4](https://github.com/nystudio107/craft-imageoptimize-sharp/issues/4))
+
+## 1.6.37 - 2021.11.11
+### Fixed
+* Fixed an issue where image placeholders would create images in incorrectly large sizes if certain EXIF data was present, and `preserveExifData` was set to `true` in `config/general.php`, resulting in a db error when trying to save the encoded image in the field data ([#296](https://github.com/nystudio107/craft-imageoptimize/issues/296))
+
+## 1.6.36 - 2021.09.07
+### Fixed
+* Fixed an issue where the wrong Imgix API was being used for purging images ([#273](https://github.com/nystudio107/craft-imageoptimize/issues/273))
+
+## 1.6.35 - 2021.07.14
+### Fixed
+* Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name (https://github.com/craftcms/cms/issues/6922) (https://github.com/nystudio107/craft-imageoptimize/issues/289)
+
+## 1.6.34 - 2021.06.10
+### Changed
+* Switched documentation system to VitePress
+* When an asset is replaced, force the recreation of the variants (https://github.com/nystudio107/craft-imageoptimize/issues/283)
+
+### Fixed
+* Fixed an issue where uppercase file suffixes would cause webp image variants to not be created (https://github.com/nystudio107/craft-imageoptimize/issues/277)
+* If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
+* Now store the image sub-folders by name, since the UID can be different per environment (https://github.com/nystudio107/craft-imageoptimize/issues/282)
+
 ## 1.6.33 - 2021.04.23
 ### Added
 * Added a setting to control the amount an image needs to be scaled down for automatic sharpening to be applied (https://github.com/nystudio107/craft-imageoptimize/issues/263)

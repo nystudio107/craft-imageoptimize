@@ -25,6 +25,7 @@ use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
 use craft\errors\SiteNotFoundException;
+use craft\helpers\ElementHelper;
 use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\models\AssetTransform;
@@ -214,7 +215,7 @@ class OptimizedImages extends Component
                             foreach ($subfolders as $subfolder) {
                                 $folder = $asset->getFolder();
                                 while ($folder !== null && !$createVariants) {
-                                    if ($folder->uid === $subfolder) {
+                                    if ($folder->uid === $subfolder || $folder->name === $subfolder) {
                                         Craft::info('Matched subfolder uid: ' . print_r($subfolder, true), __METHOD__);
                                         $createVariants = true;
                                     } else {
@@ -230,7 +231,12 @@ class OptimizedImages extends Component
         // See if we should ignore this type of file
         $sourceType = $asset->getMimeType();
         if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
-            if (\in_array($sourceType, array_values($field->ignoreFilesOfType), false)) {
+            $ignoreTypes = array_values($field->ignoreFilesOfType);
+            // If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
+            if (\in_array('image/svg', $ignoreTypes, false)) {
+                $ignoreTypes[] = 'image/svg+xml';
+            }
+            if (\in_array($sourceType, $ignoreTypes, false)) {
                 $createVariants = false;
             }
         }
@@ -271,6 +277,11 @@ class OptimizedImages extends Component
                 $asset->setFieldValue($field->handle, $field->serializeValue($model));
                 $table = $asset->getContentTable();
                 $column = $asset->getFieldColumnPrefix().$field->handle;
+                // Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name
+                // ref: https://github.com/craftcms/cms/issues/6922
+                if (ImageOptimize::$craft37) {
+                    $column = ElementHelper::fieldColumnFromField($field);
+                }
                 $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
                 Craft::$app->db->createCommand()
                     ->update($table, [

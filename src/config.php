@@ -70,7 +70,7 @@ return [
     'createPlaceholderSilhouettes' => false,
 
     // Controls whether retina images are automatically created with reduced quality
-    // as per https://www.netvlies.nl/tips-updates/design-interactie/design-interactie/retina-revolution/
+    // as per https://www.netvlies.nl/blogs/retina-revolutie-follow
     'lowerQualityRetinaImageVariants' => true,
 
     // Controls whether Optimized Image Variants are created that would be up-scaled

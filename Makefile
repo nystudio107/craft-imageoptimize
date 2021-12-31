@@ -1,4 +1,4 @@
-TAG?=14-alpine
+TAG?=16-alpine
 CONTAINER?=$(shell basename $(CURDIR))-buildchain
 DOCKERRUN=docker container run \
 	--name ${CONTAINER} \
@@ -6,11 +6,11 @@ DOCKERRUN=docker container run \
 	-t \
 	--network plugindev_default \
 	-p 8080:8080 \
-	-v `pwd`:/app \
+	-e CPPFLAGS="-DPNG_ARM_NEON_OPT=0" \
+	-v "${CURDIR}":/app \
 	${CONTAINER}:${TAG}
-DOCSDEST?=../../sites/nystudio107/web/docs/image-optimize
 
-.PHONY: build dev docker docs install npm
+.PHONY: build dev docker install update update-clean npm
 
 build: docker install
 	${DOCKERRUN} \
@@ -24,11 +24,6 @@ docker:
 		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
-docs: docker
-	${DOCKERRUN} \
-		run docs
-	rm -rf ${DOCSDEST}
-	mv ./docs/docs/.vuepress/dist ${DOCSDEST}
 install: docker
 	${DOCKERRUN} \
 		install

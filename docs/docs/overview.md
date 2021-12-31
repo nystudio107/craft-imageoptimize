@@ -1,3 +1,7 @@
+---
+title: ImageOptimize Overview
+description: ImageOptimize Overview documentation for the ImageOptimize plugin. The Transcoder plugin automatically creates & optimizes responsive image transforms, using either native Craft transforms or a service like imgix or Thumbor, with zero template changes
+---
 # ImageOptimize Overview
 
 ![Screenshot](./resources/screenshots/image-optimize-field-composite2.jpg)
@@ -14,9 +18,9 @@ As configured by default, all of these are _lossless_ image optimizations that r
 
 Out of the box, ImageOptimize allows for the optimization of `JPG`, `PNG`, `SVG`, & `GIF` images, but you can add whatever additional types you want. It also supports using [imgix](https://www.imgix.com/), [Thumbor](http://thumbor.org/), or [Sharp JS](https://nystudio107.com/blog/setting-up-your-own-image-transform-service) to create the responsive image transforms.
 
-It's important to create optimized images for frontend delivery, especially for mobile devices. If you want to learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
+It’s important to create optimized images for frontend delivery, especially for mobile devices. To learn more about it, read the [Creating Optimized Images in Craft CMS](https://nystudio107.com/blog/creating-optimized-images-in-craft-cms) article.
 
-Once ImageOptimize is installed, optimized versions of image transforms are created without you having to do anything. This makes it great for client-proofing websites.
+Once ImageOptimize is installed, optimized versions of image transforms are created without you having to do anything. This makes it great for client-proofing sites.
 
 ImageOptimize works equally well with both local and remote assets such as Amazon S3 buckets. It also works great with SPAs, giving you access to your optimized image URLs from GraphQL.
 
