@@ -2,18 +2,10 @@
 
 {% block head %}
     {{ parent() }}
-    {{ craft.imageOptimize.registerCssModules([
-        'vendors.css',
-        'styles.css'
-    ]) }}
-{% endblock %}
-
-{% block foot %}
-    {{ parent() }}
-    {{ craft.imageOptimize.registerJsModules([
-        'runtime.js',
-        'vendors.js',
-        'commons.js',
-        'imageoptimize.js',
-    ]) }}
+    {% set tagOptions = {
+        'depends': [
+            'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
+        ],
+    } %}
+    {{ craft.imageOptimize.register('src/js/ImageOptimize.js', false, tagOptions, tagOptions) }}
 {% endblock %}

@@ -14,7 +14,8 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
-use nystudio107\pluginmanifest\variables\ManifestVariable;
+use nystudio107\pluginvite\variables\ViteVariableInterface;
+use nystudio107\pluginvite\variables\ViteVariableTrait;
 
 use craft\elements\Asset;
 use craft\helpers\Template;
@@ -24,8 +25,10 @@ use craft\helpers\Template;
  * @package   ImageOptimize
  * @since     1.4.0
  */
-class ImageOptimizeVariable extends ManifestVariable
+class ImageOptimizeVariable implements ViteVariableInterface
 {
+    use ViteVariableTrait;
+
     // Public Methods
     // =========================================================================
 

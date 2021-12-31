@@ -29,7 +29,7 @@ class ImageOptimizeAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = '@nystudio107/imageoptimize/assetbundles/imageoptimize/dist';
+        $this->sourcePath = '@nystudio107/imageoptimize/web/assets/dist';
 
         $this->depends = [
             CpAsset::class,

@@ -16,18 +16,13 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 {% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
 
-{{ craft.imageOptimize.registerCssModules([
-    'vendors.css',
-    'styles.css',
-]) }}
-
-{{ craft.imageOptimize.registerJsModules([
-    'runtime.js',
-    'vendors.js',
-    'commons.js',
-    'imageoptimize.js',
-    'field.js',
-]) }}
+{% set tagOptions = {
+    'depends': [
+        'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
+    ],
+} %}
+{{ craft.imageOptimize.register('src/js/ImageOptimize.js', false, tagOptions, tagOptions) }}
+{{ craft.imageOptimize.register('src/js/OptimizedImagesField.js', false, tagOptions, tagOptions) }}
 
 {% import "_includes/forms" as forms %}
 

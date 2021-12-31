@@ -243,15 +243,16 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 var menuBtn;
                 if ($value.data('menubtn')) {
                     menuBtn = $value.data('menubtn');
-                    $menuItem = $(menuBtn.menu.$menuList[1]);
-                    if (disabledDeleteItem) {
-                        $menuItem.find("> li > a").addClass('disabled').disable();
-                    } else {
-                        $menuItem.find("> li > a").removeClass('disabled').enable();
+                    let menuItem = $(menuBtn.menu.$menuList[1]);
+                    if (typeof menuItem !== undefined) {
+                        if (disabledDeleteItem) {
+                            menuItem.find("> li > a").addClass('disabled').disable();
+                        } else {
+                            menuItem.find("> li > a").removeClass('disabled').enable();
+                        }
                     }
                 }
             });
-
         },
 
         addAspectRatioHandlers: function () {
@@ -288,7 +289,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
         addVariantBlock: function(container) {
             var _this = this;
-            $block = $(this.$blockContainer.children()[0]).clone();
+            let $block = $(this.$blockContainer.children()[0]).clone();
             // Reset to default values
             $block.find('.io-select-ar-box').each(function (index, value) {
                 if (index === 0) {
@@ -298,7 +299,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 }
             });
             $block.find('.io-custom-ar-wrapper').hide();
-            field = $block.find('input')[0];
+            let field = $block.find('input')[0];
             $(field).val(1200);
             field = $block.find('input')[1];
             $(field).val(1);
@@ -314,7 +315,6 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 opacity: 1,
                 'margin-bottom': 10
             }, 'fast', $.proxy(function() {
-
                 // Insert the block in the right place
                 if (container) {
                     $block.insertBefore(container);

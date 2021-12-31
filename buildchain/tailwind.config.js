@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     '../src/templates/**/*.{twig,html}',
-    '../src/assetbundles/imageoptimize/src/vue/**/*.{vue,html,js}',
+    './src/vue/**/*.{vue,html}',
   ],
   theme: {
   },
