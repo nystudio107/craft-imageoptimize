@@ -71,35 +71,37 @@ export default Vue.extend({
     },
     sizesDataList: {
       type: Array as PropType<SizesData[]>,
-      default: <SizesData[]>[
-        {
-          numUp: 4,
-          breakpointValue: 1280,
-          breakpointUnits: 'px',
-          rowPaddingValue: 100,
-          rowPaddingUnits: 'px',
-          cellPaddingValue: 20,
-          cellPaddingUnits: 'px',
-        },
-        {
-          numUp: 2,
-          breakpointValue: 1024,
-          breakpointUnits: 'px',
-          rowPaddingValue: 100,
-          rowPaddingUnits: 'px',
-          cellPaddingValue: 20,
-          cellPaddingUnits: 'px',
-        },
-        {
-          numUp: 1,
-          breakpointValue: 768,
-          breakpointUnits: 'px',
-          rowPaddingValue: 100,
-          rowPaddingUnits: 'px',
-          cellPaddingValue: 20,
-          cellPaddingUnits: 'px',
-        },
-      ],
+      default: () => {
+        return <SizesData[]>[
+          {
+            numUp: 4,
+            breakpointValue: 1280,
+            breakpointUnits: 'px',
+            rowPaddingValue: 100,
+            rowPaddingUnits: 'px',
+            cellPaddingValue: 20,
+            cellPaddingUnits: 'px',
+          },
+          {
+            numUp: 2,
+            breakpointValue: 1024,
+            breakpointUnits: 'px',
+            rowPaddingValue: 100,
+            rowPaddingUnits: 'px',
+            cellPaddingValue: 20,
+            cellPaddingUnits: 'px',
+          },
+          {
+            numUp: 1,
+            breakpointValue: 768,
+            breakpointUnits: 'px',
+            rowPaddingValue: 100,
+            rowPaddingUnits: 'px',
+            cellPaddingValue: 20,
+            cellPaddingUnits: 'px',
+          },
+        ];
+      },
     },
   },
   data(): Record<string, unknown> {

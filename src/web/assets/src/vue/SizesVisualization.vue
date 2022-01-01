@@ -80,8 +80,8 @@
             stroke-width="2"
           />
           <hatch-box
-            x="0"
-            y="20"
+            :x=0
+            :y=20
             :width="rowPaddingValue"
             :height="calcHeight(imageWidth) + 80"
             stroke-color="#AAA"
@@ -90,7 +90,7 @@
           />
           <hatch-box
             :x="breakpointValue - rowPaddingValue"
-            :y="20"
+            :y=20
             :width="rowPaddingValue"
             :height="calcHeight(imageWidth) + 80"
             stroke-color="#AAA"
@@ -103,7 +103,7 @@
           >
             <hatch-box
               :x="cellX(n)"
-              :y="40"
+              :y=40
               :width="cellWidth"
               :height="calcHeight(imageWidth) + 40"
               stroke-color="rgb(163, 193, 226)"
