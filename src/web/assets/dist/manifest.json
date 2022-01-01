@@ -1,0 +1,26 @@
+{
+  "src/js/ImageOptimize.js": {
+    "file": "assets/imageoptimize.3e9e7786.js",
+    "src": "src/js/ImageOptimize.js",
+    "isEntry": true,
+    "css": [
+      "assets/imageoptimize.bb199db1.css"
+    ]
+  },
+  "src/js/OptimizedImagesField.js": {
+    "file": "assets/field.6c9115ad.js",
+    "src": "src/js/OptimizedImagesField.js",
+    "isEntry": true
+  },
+  "src/js/Welcome.js": {
+    "file": "assets/welcome.a64ebb66.js",
+    "src": "src/js/Welcome.js",
+    "isEntry": true,
+    "imports": [
+      "_vendor.978d5786.js"
+    ]
+  },
+  "_vendor.978d5786.js": {
+    "file": "assets/vendor.978d5786.js"
+  }
+}

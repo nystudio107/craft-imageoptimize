@@ -41,7 +41,10 @@
 {% block foot %}
     {# include our JavaScript modules #}
     {{ parent() }}
-    {{ craft.imageOptimize.registerJsModules([
-        'welcome.js',
-    ]) }}
+    {% set tagOptions = {
+        'depends': [
+            'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
+        ],
+    } %}
+    {{ craft.imageOptimize.register('src/js/Welcome.js', false, tagOptions, tagOptions) }}
 {% endblock %}
