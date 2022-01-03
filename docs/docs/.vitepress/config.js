@@ -12,7 +12,7 @@ module.exports = {
     themeConfig: {
         repo: 'nystudio107/craft-imageoptimize',
         docsDir: 'docs/docs',
-        docsBranch: 'v1',
+        docsBranch: 'develop',
         algolia: {
             apiKey: '77fb94de306ac61504c501db4bb13a4e',
             indexName: 'image-optimize'
