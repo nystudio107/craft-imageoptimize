@@ -1,5 +1,6 @@
 import { createVuePlugin } from 'vite-plugin-vue2'
 import ViteRestart from 'vite-plugin-restart';
+import { viteExternalsPlugin } from 'vite-plugin-externals'
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import path from 'path';
 
@@ -33,6 +34,9 @@ export default ({ command }) => ({
       ],
     }),
     createVuePlugin(),
+    viteExternalsPlugin({
+      vue: 'Vue',
+    }),
   ],
   publicDir: '../src/web/assets/public',
   resolve: {
