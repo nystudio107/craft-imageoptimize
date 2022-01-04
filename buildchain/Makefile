@@ -9,9 +9,9 @@ DOCKERRUN=docker container run \
 	-v "${CURDIR}"/../:/app \
 	${CONTAINER}:${TAG}
 
-.PHONY: build dev docker install npm
+.PHONY: build dev docker install clean npm
 
-build: docker install
+build: clean docker install
 	${DOCKERRUN} \
 		run build
 dev: docker install
@@ -26,6 +26,9 @@ docker:
 install: docker
 	${DOCKERRUN} \
 		install
+clean:
+	rm -rf node_modules/
+	rm -f package-lock.json
 npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
