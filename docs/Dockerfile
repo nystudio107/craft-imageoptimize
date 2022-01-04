@@ -1,5 +1,5 @@
 ARG TAG=14-alpine
-FROM nystudio107/node-dev-base:$TAG
+FROM node:$TAG
 
 WORKDIR /app/
 

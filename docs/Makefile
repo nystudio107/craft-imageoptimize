@@ -5,7 +5,7 @@ DOCKERRUN=docker container run \
 	--rm \
 	-p 3002:3002 \
 	-t \
-	-v `pwd`:/app \
+	-v "${CURDIR}":/app \
 	${CONTAINER}:${TAG}
 DOCSDEST?=../../../sites/nystudio107/web/docs/image-optimize
 
@@ -34,7 +34,7 @@ install: docker
 lint: docker install
 	${DOCKERRUN} \
 		run docs:lint
-clean: docker
+clean:
 	rm -rf node_modules/
 	rm -f package-lock.json
 npm: docker

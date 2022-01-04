@@ -22,7 +22,7 @@ use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 
-use nystudio107\pluginmanifest\services\ManifestService;
+use nystudio107\pluginvite\services\VitePluginService;
 
 use Craft;
 use craft\base\Field;
@@ -75,7 +75,7 @@ use yii\base\InvalidConfigException;
  * @property PlaceholderService      $placeholder
  * @property OptimizedImagesService  $optimizedImages
  * @property ImageTransformInterface $transformMethod
- * @property ManifestService         $manifest
+ * @property VitePluginService       $vite
  * @property Settings                $settings
  * @method   Settings                getSettings()
  */
@@ -128,11 +128,15 @@ class ImageOptimize extends Plugin
             'optimizedImages' => OptimizedImagesService::class,
             'placeholder' => PlaceholderService::class,
             // Register the manifest service
-            'manifest' => [
-                'class' => ManifestService::class,
+            'vite' => [
+                'class' => VitePluginService::class,
                 'assetClass' => ImageOptimizeAsset::class,
-                'devServerManifestPath' => 'http://craft-imageoptimize-buildchain:8080/',
-                'devServerPublicPath' => 'http://craft-imageoptimize-buildchain:8080/',
+                'useDevServer' => true,
+                'devServerPublic' => 'http://localhost:3001',
+                'serverPublic' => 'http://localhost:8000',
+                'errorEntry' => 'src/js/ImageOptimize.js',
+                'devServerInternal' => 'http://craft-imageoptimize-buildchain:3001',
+                'checkDevServer' => true,
             ],
         ];
 
@@ -297,7 +301,7 @@ class ImageOptimize extends Plugin
                 $variable = $event->sender;
                 $variable->set('imageOptimize', [
                     'class' => ImageOptimizeVariable::class,
-                    'manifestService' => $this->manifest,
+                    'viteService' => $this->vite,
                 ]);
             }
         );

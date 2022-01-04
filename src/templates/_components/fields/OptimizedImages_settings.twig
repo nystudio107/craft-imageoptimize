@@ -18,18 +18,13 @@
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
-{{ craft.imageOptimize.registerCssModules([
-    'vendors.css',
-    'styles.css',
-]) }}
-
-{{ craft.imageOptimize.registerJsModules([
-    'runtime.js',
-    'vendors.js',
-    'commons.js',
-    'imageoptimize.js',
-    'field.js',
-]) }}
+{% set tagOptions = {
+    'depends': [
+        'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
+    ],
+} %}
+{{ craft.imageOptimize.register('src/js/ImageOptimize.js', false, tagOptions, tagOptions) }}
+{{ craft.imageOptimize.register('src/js/OptimizedImagesField.js', false, tagOptions, tagOptions) }}
 
 <div class="field" id="{{ id }}-fields">
 
