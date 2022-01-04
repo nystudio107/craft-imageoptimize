@@ -4,7 +4,7 @@
 ### Changed
 * Updated the buildchain to use Node 16
 * Changed buildchain to Vite from webpack 5
-* Create variants via queue when an asset is moved in Craft >=3.7.1
+* Create variants via queue when an asset is moved in Craft `^3.7.1`
 
 ## 1.6.38 - 2021.11.18
 ### Fixed
