@@ -11,7 +11,7 @@ DOCKERRUN=docker container run \
 
 .PHONY: build dev docker install clean npm
 
-build: clean docker install
+build: docker install
 	${DOCKERRUN} \
 		run build
 dev: docker install
