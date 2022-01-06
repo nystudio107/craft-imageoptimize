@@ -1,3 +1,7 @@
+/* global $ */
+/* global Craft */
+/* global Garnish */
+
 /**
  * Image Optimize plugin for Craft CMS
  *
@@ -58,9 +62,9 @@ function imageLoaded(image) {
     }
 }
 
-;(function ( $, window, document, undefined ) {
+(function ( $, window, document) {
 
-    var pluginName = "ImageOptimizeOptimizedImages",
+    const pluginName = "ImageOptimizeOptimizedImages",
         defaults = {
         };
 
@@ -78,9 +82,7 @@ function imageLoaded(image) {
 
     Plugin.prototype = {
 
-        init: function(id) {
-            var _this = this;
-
+        init: function() {
             $(function () {
 
                 /* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
@@ -110,7 +112,7 @@ function imageLoaded(image) {
         });
     };
 
-})( jQuery, window, document );
+})($, window, document);
 
 Craft.OptimizedImagesInput = Garnish.Base.extend(
     {
@@ -127,7 +129,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         blockSort: null,
         blockSelect: null,
 
-        init: function(id, inputNamePrefix, sizesWrapperId) {
+        init: function(id, inputNamePrefix) {
 
             this.id = id;
             this.inputNamePrefix = inputNamePrefix;
@@ -140,10 +142,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
             this.$addBlockBtnGroupBtns = this.$addBlockBtnGroup.children('.btn');
 
             // Create our action button menus
-            var _this = this;
-            this.$blockContainer.find('> > .actions > .settings').each(function (index, value) {
-                var $value = $(value);
-                var menuBtn;
+            this.$blockContainer.find('> > .actions > .settings').each( (index, value) => {
+                const $value = $(value);
+                let menuBtn;
                 if ($value.data('menubtn')) {
                     menuBtn = $value.data('menubtn');
                 } else {
@@ -151,10 +152,10 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 }
                 menuBtn.menu.settings.onOptionSelect = $.proxy(function(option) {
                     this.onMenuOptionSelect(option, menuBtn);
-                }, _this);
+                }, this);
             });
 
-            var $blocks = this.$blockContainer.children();
+            const $blocks = this.$blockContainer.children();
 
             this.blockSort = new Garnish.DragSort($blocks, {
                 handle: '> .actions > .move',
@@ -168,8 +169,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 }, this)
             });
 
-            this.addListener(this.$addBlockBtnGroupBtns, 'click', function(ev) {
-                var type = $(ev.target).data('type');
+            this.addListener(this.$addBlockBtnGroupBtns, 'click', function() {
                 this.addVariantBlock(null);
             });
 
@@ -178,8 +178,8 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         onMenuOptionSelect: function(option, menuBtn) {
-            var $option = $(option);
-            var container = menuBtn.$btn.closest('.matrixblock');
+            const $option = $(option);
+            const container = menuBtn.$btn.closest('.matrixblock');
 
             switch ($option.data('action')) {
                 case 'add': {
@@ -205,42 +205,42 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         // Re-index all of the variant blocks
         reIndexVariants: function() {
             this.$blockContainer = this.$container.children('.variant-blocks');
-            var $blocks = this.$blockContainer.children();
+            const $blocks = this.$blockContainer.children();
             $blocks.each(function (index, value) {
-                var variantIndex = index;
-                var $value = $(value);
-                var elements = $value.find('div .field, label, input, select');
+                const variantIndex = index;
+                const $value = $(value);
+                const elements = $value.find('div .field, label, input, select');
 
                 // Re-index all of the element attributes
                 $(elements).each(function (index, value) {
                     // id attributes
-                    var str = $(value).attr('id');
+                    let str = $(value).attr('id');
                     if (str) {
-                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex +"-");
+                        str = str.replace(/-([0-9]+)-/g, "-" + variantIndex +"-");
                         $(value).attr('id', str);
                     }
                     // for attributes
                     str = $(value).attr('for');
                     if (str) {
-                        str = str.replace(/\-([0-9]+)\-/g, "-" + variantIndex +"-");
+                        str = str.replace(/-([0-9]+)-/g, "-" + variantIndex +"-");
                         $(value).attr('for', str);
                     }
                     // Name attributes
                     str = $(value).attr('name');
                     if (str) {
-                        str = str.replace(/\[([0-9]+)\]/g, "[" + variantIndex +"]");
+                        str = str.replace(/\[([0-9]+)]/g, "[" + variantIndex +"]");
                         $(value).attr('name', str);
                     }
                 });
             });
-            var disabledDeleteItem = false;
+            let disabledDeleteItem = false;
             // If we only have one block, don't allow it to be deleted
             if ($blocks.length == 1) {
                 disabledDeleteItem = true;
             }
             $blocks.find('> .actions > .settings').each(function (index, value) {
-                var $value = $(value);
-                var menuBtn;
+                const $value = $(value);
+                let menuBtn;
                 if ($value.data('menubtn')) {
                     menuBtn = $value.data('menubtn');
                     let menuItem = $(menuBtn.menu.$menuList[1]);
@@ -257,13 +257,13 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
 
         addAspectRatioHandlers: function () {
             this.addListener($('.lightswitch'), 'click', function(ev) {
-                var $target = $(ev.target);
-                var $block = $target.closest('.matrixblock');
+                const $target = $(ev.target);
+                const $block = $target.closest('.matrixblock');
                 $block.find('.io-aspect-ratio-wrapper').slideToggle();
             });
             this.addListener($('.io-select-ar-box'), 'click', function(ev) {
-                var $target = $(ev.target);
-                var x = $(ev.target).data('x'),
+                const $target = $(ev.target);
+                let x = $(ev.target).data('x'),
                     y = $(ev.target).data('y'),
                     custom = $(ev.target).data('custom'),
                     field, $block;
@@ -288,10 +288,9 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         addVariantBlock: function(container) {
-            var _this = this;
             let $block = $(this.$blockContainer.children()[0]).clone();
             // Reset to default values
-            $block.find('.io-select-ar-box').each(function (index, value) {
+            $block.find('.io-select-ar-box').each( (index, value) => {
                 if (index === 0) {
                     $(value).addClass('io-selected-ar-box');
                 } else {
@@ -324,17 +323,17 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
                 // Update the Garnish UI controls
                 this.blockSort.addItems($block);
                 this.addAspectRatioHandlers();
-                $block.find('.settings').each(function (index, value) {
-                    var $value = $(value),
+                $block.find('.settings').each( (index, value) => {
+                    let $value = $(value),
                         menuBtn,
                         menu;
 
-                    menu = _this.$container.find('.io-menu-clone > .menu').clone();
+                    menu = this.$container.find('.io-menu-clone > .menu').clone();
                     $(menu).insertAfter($value);
                     menuBtn = new Garnish.MenuBtn(value);
 
                     menuBtn.menu.settings.onOptionSelect = $.proxy(function(option) {
-                        _this.onMenuOptionSelect(option, menuBtn);
+                        this.onMenuOptionSelect(option, menuBtn);
                     }, this);
                 });
                 this.reIndexVariants();
@@ -342,15 +341,13 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         },
 
         deleteVariantBlock: function(container) {
-            var _this = this;
-            container.velocity(this.getHiddenBlockCss(container), 'fast', $.proxy(function() {
+            container.velocity(this.getHiddenBlockCss(container), 'fast', $.proxy( () => {
                 container.remove();
-                _this.reIndexVariants();
+                this.reIndexVariants();
             }, this));
         },
 
         resetVariantBlockOrder: function() {
             this.reIndexVariants();
         }
-
     });
