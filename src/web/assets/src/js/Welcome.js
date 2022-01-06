@@ -4,7 +4,7 @@ import ConfettiParty from '@/vue/ConfettiParty.vue';
 new Vue({
     el: "#cp-nav-content",
     components: {
-        'confetti-party': ConfettiParty,
+        ConfettiParty,
     },
     data: {
     },
