@@ -1,5 +1,8 @@
 import { createVuePlugin } from 'vite-plugin-vue2'
 import ViteRestart from 'vite-plugin-restart';
+import externalGlobals from "rollup-plugin-external-globals";
+import eslintPlugin from 'vite-plugin-eslint';
+import StylelintPlugin from 'vite-plugin-stylelint';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import path from 'path';
 
@@ -11,7 +14,6 @@ export default ({ command }) => ({
     manifest: true,
     outDir: '../src/web/assets/dist',
     rollupOptions: {
-      external: ['vue'],
       input: {
         'imageoptimize': 'src/js/ImageOptimize.js',
         'field': 'src/js/OptimizedImagesField.js',
@@ -34,6 +36,11 @@ export default ({ command }) => ({
       ],
     }),
     createVuePlugin(),
+    externalGlobals({
+      'vue': 'Vue',
+    }),
+    eslintPlugin(),
+    StylelintPlugin(),
   ],
   publicDir: '../src/web/assets/public',
   resolve: {
