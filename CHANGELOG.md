@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.40 - UNRELEASED
+### Added
+* Add `.gitattributes` & `CODEOWNERS`
+* Add linting to build
+* Add compression of assets
+* Add bundle visualizer
+
 ## 1.6.39 - 2022.01.04
 ### Changed
 * Updated the buildchain to use Node 16
