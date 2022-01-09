@@ -1,6 +1,9 @@
 import { createVuePlugin } from 'vite-plugin-vue2'
 import ViteRestart from 'vite-plugin-restart';
-import { viteExternalsPlugin } from 'vite-plugin-externals'
+import externalGlobals from "rollup-plugin-external-globals";
+import viteCompression from 'vite-plugin-compression';
+import { visualizer } from 'rollup-plugin-visualizer';
+import eslintPlugin from 'vite-plugin-eslint';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import path from 'path';
 
@@ -34,9 +37,18 @@ export default ({ command }) => ({
       ],
     }),
     createVuePlugin(),
-    viteExternalsPlugin({
-      vue: 'Vue',
+    externalGlobals({
+      'vue': 'Vue',
     }),
+    viteCompression({
+      filter: /\.(js|mjs|json|css|map)$/i
+    }),
+    visualizer({
+      filename: '../src/web/assets/dist/stats.html',
+      template: 'treemap',
+      sourcemap: true,
+    }),
+    eslintPlugin(),
   ],
   publicDir: '../src/web/assets/public',
   resolve: {

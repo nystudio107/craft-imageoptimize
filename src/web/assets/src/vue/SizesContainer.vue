@@ -5,9 +5,9 @@
       instructions="Choose the aspect ratio that the images in this srcset should be displayed in"
     >
       <aspect-ratio-chooser
-        :ratio-x.sync="ratioX"
-        :ratio-y.sync="ratioY"
-        :use-aspect-ratio.sync="useAspectRatio"
+        :ratio-x.sync="containerRatioX"
+        :ratio-y.sync="containerRatioY"
+        :use-aspect-ratio.sync="containerUseAspectRatio"
       />
     </craft-field-wrapper>
     <craft-field-wrapper
@@ -25,7 +25,7 @@
           >
             <sizes-visualization
               :id="id"
-              v-bind.sync="sizesData"
+              v-bind.sync="containerSizesDataList[index]"
               :width-multiplier="widthMultiplier"
               :ratio-x="ratioX"
               :ratio-y="ratioY"
@@ -107,6 +107,10 @@ export default Vue.extend({
   data(): Record<string, unknown> {
     return {
       title: '',
+      containerRatioX: this.ratioX,
+      containerRatioY: this.ratioY,
+      containerUseAspectRatio: this.useAspectRatio,
+      containerSizesDataList: this.sizesDataList,
     }
   },
   computed: {

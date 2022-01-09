@@ -28,7 +28,7 @@ To install the plugin, follow these instructions.
 
         composer require nystudio107/craft-imageoptimize
 
-3. Install the plugin via `./craft install/plugin image-optimize` via the CLI, or in the Control Panel, go to Settings → Plugins and click the “Install” button for Image Optimize.
+3. Install the plugin via `./craft plugin/install image-optimize` via the CLI, or in the Control Panel, go to Settings → Plugins and click the “Install” button for Image Optimize.
 
 You can also install ImageOptimize via the **Plugin Store** in the Craft Control Panel.
 

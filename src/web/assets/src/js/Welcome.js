@@ -1,14 +1,13 @@
-import Confetti from '@/vue/Confetti.vue';
+import Vue from 'vue';
+import ConfettiParty from '@/vue/ConfettiParty.vue';
 
-const vm = new Vue({
+new Vue({
     el: "#cp-nav-content",
     components: {
-        'confetti': Confetti,
+        ConfettiParty,
     },
     data: {
     },
     methods: {
     },
-    mounted() {
-    }
 });

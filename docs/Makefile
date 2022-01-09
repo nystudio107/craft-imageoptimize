@@ -17,7 +17,7 @@ docker:
 		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
-build: clean docker install
+build: docker install
 	${DOCKERRUN} \
 		run docs:build
 	rm -rf ${DOCSDEST}
