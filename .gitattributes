@@ -8,6 +8,8 @@
 /composer.lock export-ignore
 /buildchain/ export-ignore
 /docs/ export-ignore
+/src/web/assets/public/
+/src/web/assets/src/
 /tests/ export-ignore
 
 # Auto detect text files and perform LF normalization
