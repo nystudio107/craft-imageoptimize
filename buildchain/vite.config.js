@@ -1,6 +1,6 @@
 import { createVuePlugin } from 'vite-plugin-vue2'
 import ViteRestart from 'vite-plugin-restart';
-import externalGlobals from "rollup-plugin-external-globals";
+import { viteExternalsPlugin } from 'vite-plugin-externals'
 import viteCompression from 'vite-plugin-compression';
 import { visualizer } from 'rollup-plugin-visualizer';
 import eslintPlugin from 'vite-plugin-eslint';
@@ -37,7 +37,7 @@ export default ({ command }) => ({
       ],
     }),
     createVuePlugin(),
-    externalGlobals({
+    viteExternalsPlugin({
       'vue': 'Vue',
     }),
     viteCompression({
