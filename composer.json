@@ -1,50 +1,50 @@
 {
-    "name": "nystudio107/craft-imageoptimize",
-    "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes.",
-    "type": "craft-plugin",
-    "version": "1.6.40",
-    "keywords": [
-        "craft",
-        "cms",
-        "craftcms",
-        "craft-plugin",
-        "image",
-        "optimize",
-        "image-variants",
-        "optimize-images",
-        "imgix"
-    ],
-    "support": {
-        "docs": "https://nystudio107.com/plugins/imageoptimize/documentation",
-        "issues": "https://nystudio107.com/plugins/imageoptimize/support"
-    },
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "nystudio107",
-            "homepage": "https://nystudio107.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "require": {
-        "craftcms/cms": "^3.1.19",
-        "nystudio107/craft-plugin-vite": "^1.0.0",
-        "nystudio107/craft-imageoptimize-imgix": "^1.2.3",
-        "nystudio107/craft-imageoptimize-sharp": "^1.0.8",
-        "nystudio107/craft-imageoptimize-thumbor": "^1.3.1",
-        "ksubileau/color-thief-php": "^1.3",
-        "mikehaertl/php-shellcommand": "~1.2"
-    },
-    "autoload": {
-        "psr-4": {
-          "nystudio107\\imageoptimize\\": "src/"
-        }
-    },
-    "extra": {
-        "name": "ImageOptimize",
-        "handle": "image-optimize",
-        "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-imageoptimize/v1/CHANGELOG.md",
-        "class": "nystudio107\\imageoptimize\\ImageOptimize"
+  "name": "nystudio107/craft-imageoptimize",
+  "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes.",
+  "type": "craft-plugin",
+  "version": "1.6.40",
+  "keywords": [
+    "craft",
+    "cms",
+    "craftcms",
+    "craft-plugin",
+    "image",
+    "optimize",
+    "image-variants",
+    "optimize-images",
+    "imgix"
+  ],
+  "support": {
+    "docs": "https://nystudio107.com/plugins/imageoptimize/documentation",
+    "issues": "https://nystudio107.com/plugins/imageoptimize/support"
+  },
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "nystudio107",
+      "homepage": "https://nystudio107.com"
     }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+    "craftcms/cms": "^3.1.19",
+    "nystudio107/craft-plugin-vite": "^1.0.0",
+    "nystudio107/craft-imageoptimize-imgix": "^1.2.3",
+    "nystudio107/craft-imageoptimize-sharp": "^1.0.8",
+    "nystudio107/craft-imageoptimize-thumbor": "^1.3.1",
+    "ksubileau/color-thief-php": "^1.3",
+    "mikehaertl/php-shellcommand": "~1.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "nystudio107\\imageoptimize\\": "src/"
+    }
+  },
+  "extra": {
+    "name": "ImageOptimize",
+    "handle": "image-optimize",
+    "changelogUrl": "https://raw.githubusercontent.com/nystudio107/craft-imageoptimize/v1/CHANGELOG.md",
+    "class": "nystudio107\\imageoptimize\\ImageOptimize"
+  }
 }
