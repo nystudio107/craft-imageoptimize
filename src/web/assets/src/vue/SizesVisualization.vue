@@ -5,10 +5,9 @@
         <code><span class="text-gray-500">srcset="</span>example.jpg {{ imageWidth }}w<span class="text-gray-500">"</span></code>
         <code><span class="text-gray-500">sizes="</span>{{ title }}<span class="text-gray-500">"</span></code>
       </div>
-      <div class="preview"></div>
+      <div class="preview" />
     </div>
-    <div class="actions">
-    </div>
+    <div class="actions" />
 
     <div class="fields">
       <div class="flex-fields">

@@ -8,12 +8,12 @@
     ]
   },
   "src/js/OptimizedImagesField.js": {
-    "file": "assets/field.6c9115ad.js",
+    "file": "assets/field.2af423cc.js",
     "src": "src/js/OptimizedImagesField.js",
     "isEntry": true
   },
   "src/js/Welcome.js": {
-    "file": "assets/welcome.a64ebb66.js",
+    "file": "assets/welcome.1e3e4d09.js",
     "src": "src/js/Welcome.js",
     "isEntry": true,
     "imports": [

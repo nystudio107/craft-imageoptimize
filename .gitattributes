@@ -1,0 +1,16 @@
+# Do not export those files in the Composer archive (lighter dependency)
+/.craftplugin export-ignore
+/.gitattributes export-ignore
+/.github/ export-ignore
+/.gitignore export-ignore
+/.scrutinizer.yml export-ignore
+/codeception.yml export-ignore
+/composer.lock export-ignore
+/buildchain/ export-ignore
+/docs/ export-ignore
+/src/web/assets/public/
+/src/web/assets/src/
+/tests/ export-ignore
+
+# Auto detect text files and perform LF normalization
+* text=auto
