@@ -1,14 +1,14 @@
-import { createVuePlugin } from 'vite-plugin-vue2'
+import {createVuePlugin} from 'vite-plugin-vue2'
 import ViteRestart from 'vite-plugin-restart';
-import { viteExternalsPlugin } from 'vite-plugin-externals'
+import {viteExternalsPlugin} from 'vite-plugin-externals'
 import viteCompression from 'vite-plugin-compression';
-import { visualizer } from 'rollup-plugin-visualizer';
+import {visualizer} from 'rollup-plugin-visualizer';
 import eslintPlugin from 'vite-plugin-eslint';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
+import {nodeResolve} from '@rollup/plugin-node-resolve';
 import path from 'path';
 
 // https://vitejs.dev/config/
-export default ({ command }) => ({
+export default ({command}) => ({
   base: command === 'serve' ? '' : '/dist/',
   build: {
     emptyOutDir: true,
@@ -28,12 +28,12 @@ export default ({ command }) => ({
   plugins: [
     nodeResolve({
       moduleDirectories: [
-         path.resolve('./node_modules'),
+        path.resolve('./node_modules'),
       ],
     }),
     ViteRestart({
       reload: [
-          './src/templates/**/*',
+        './src/templates/**/*',
       ],
     }),
     createVuePlugin(),
@@ -48,7 +48,9 @@ export default ({ command }) => ({
       template: 'treemap',
       sourcemap: true,
     }),
-    eslintPlugin(),
+    eslintPlugin({
+      cache: false,
+    }),
   ],
   publicDir: '../src/web/assets/public',
   resolve: {
