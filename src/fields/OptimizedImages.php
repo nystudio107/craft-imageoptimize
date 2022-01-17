@@ -324,7 +324,8 @@ class OptimizedImages extends Field
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
         $sizesWrapperId = Craft::$app->getView()->namespaceInputId('sizes-wrapper');
-        Craft::$app->getView()->registerJs(
+        $view = Craft::$app->getView();
+        $view->registerJs(
             "document.addEventListener('vite-script-loaded',function (e) {" .
             "if (e.detail.path === 'src/js/OptimizedImagesField.js') {" .
             'new Craft.OptimizedImagesInput(' .
@@ -333,7 +334,8 @@ class OptimizedImages extends Field
             '"' . $sizesWrapperId . '"' .
             ');' .
             '}' .
-            '});'
+            '});',
+            $view::POS_HEAD
         );
 
         // Prep our aspect ratios
@@ -501,7 +503,8 @@ class OptimizedImages extends Field
                 $jsonVars .
                 ");" .
                 '}' .
-                '});'
+                '});',
+                $view::POS_HEAD
             );
 
             $settings = ImageOptimize::$plugin->getSettings();
