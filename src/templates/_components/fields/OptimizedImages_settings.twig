@@ -19,6 +19,7 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
 {% set tagOptions = {
+    'type': '',
     'depends': [
         'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
     ],
@@ -94,7 +95,8 @@
             <div class="io-menu-clone" style="display: none;">
                 <div class="menu">
                     <ul class="padded">
-                        <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
+                        <li><a data-icon="plus"
+                               data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
                     </ul>
                     <hr class="padded">
                     <ul class="padded">
@@ -104,7 +106,8 @@
             </div>
             <div class="variant-blocks">
                 {% for variant in field.variants %}
-                    <div class="matrixblock" data-id="{{ loop.index }}" data-type="normal" {% if loop.first %}tabindex="0" {% endif %}style="opacity: 1;">
+                    <div class="matrixblock" data-id="{{ loop.index }}" data-type="normal"
+                         {% if loop.first %}tabindex="0" {% endif %}style="opacity: 1;">
                         <div class="titlebar">
                             <div class="blocktype"></div>
                             <div class="preview"></div>
@@ -114,7 +117,9 @@
                             <a class="settings icon menubtn" title="{{ 'Actions'|t('app') }}" role="button"></a>
                             <div class="menu">
                                 <ul class="padded">
-                                    <li><a data-icon="plus" data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a></li>
+                                    <li><a data-icon="plus"
+                                           data-action="add">{{ "Add {type} above"|t('app', { type: 'variant' }) }}</a>
+                                    </li>
                                 </ul>
                                 <hr class="padded">
                                 <ul class="padded">
@@ -144,9 +149,11 @@
                                 class: 'io-use-aspect-ratio'
                             }) }}
 
-                            <div class="field io-aspect-ratio-wrapper"{% if useAspectRatio != true %} style="display: none;"{% endif %}>
+                            <div
+                                class="field io-aspect-ratio-wrapper"{% if useAspectRatio != true %} style="display: none;"{% endif %}>
                                 <div class="heading">
-                                    <label id="variants-{{ loop.index0 }}-aspectRatio-label" for="variants-{{ loop.index0 }}-aspectRatio">
+                                    <label id="variants-{{ loop.index0 }}-aspectRatio-label"
+                                           for="variants-{{ loop.index0 }}-aspectRatio">
                                         Aspect Ratio
                                     </label>
                                     <div class="instructions"><p>The aspect ratio of the optimized image variant.</p>
@@ -157,10 +164,11 @@
                                     {% set currentAspectRatioX = field.variants[loop.index0]['aspectRatioX'] %}
                                     {% set currentAspectRatioY = field.variants[loop.index0]['aspectRatioY'] %}
                                     <div>
-                                    {% set containerSize = 150 %}
-                                    {% for aspectRatio in aspectRatios %}
+                                        {% set containerSize = 150 %}
+                                        {% for aspectRatio in aspectRatios %}
                                         {% if aspectRatio.break is defined and aspectRatio.break %}
-                                            </div><div>
+                                    </div>
+                                    <div>
                                         {% endif %}
                                         {% set thisAspectRatio = aspectRatio.x / aspectRatio.y %}
                                         {% if aspectRatio.x == currentAspectRatioX and aspectRatio.y == currentAspectRatioY %}
@@ -186,21 +194,32 @@
                                                 {% set selectedClass = 'io-selected-ar-box' %}
                                             {% endif %}
                                         {% endif %}
-                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}" data-y="{{ aspectRatio.y }}" {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
-                                            <svg class="io-select-ar-svg" style="margin: 0 auto; display: block; padding: 0;" height="{{ containerSize }}" width="{{ containerSize }}" preserveAspectRatio="xMidYMid meet">
-                                                <rect x="0" y="0" width="{{ containerSize }}" height="{{ containerSize }}" stroke-width="4" stroke-opacity="0.5" fill-opacity="0.0" stroke-dasharray="5, 5">
+                                        <div class="io-select-ar-box {{ selectedClass }}" data-x="{{ aspectRatio.x }}"
+                                             data-y="{{ aspectRatio.y }}"
+                                             {% if aspectRatio.custom is defined %}data-custom="1"{% endif %}>
+                                            <svg class="io-select-ar-svg"
+                                                 style="margin: 0 auto; display: block; padding: 0;"
+                                                 height="{{ containerSize }}" width="{{ containerSize }}"
+                                                 preserveAspectRatio="xMidYMid meet">
+                                                <rect x="0" y="0" width="{{ containerSize }}"
+                                                      height="{{ containerSize }}" stroke-width="4" stroke-opacity="0.5"
+                                                      fill-opacity="0.0" stroke-dasharray="5, 5">
                                                 </rect>
-                                                <rect x="1" y="1" width="{{ thisWidth }}" height="{{ thisHeight }}" stroke-width="2">
+                                                <rect x="1" y="1" width="{{ thisWidth }}" height="{{ thisHeight }}"
+                                                      stroke-width="2">
                                                 </rect>
-                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}" text-anchor="middle" alignment-baseline="central" font-size="{{ thisFontSize }}">
+                                                <text x="{{ thisWidth / 2 }}" y="{{ thisHeight / 2 }}"
+                                                      text-anchor="middle" alignment-baseline="central"
+                                                      font-size="{{ thisFontSize }}">
                                                     {{ thisText }}
                                                 </text>
                                             </svg>
                                         </div>
-                                    {% endfor %}
+                                        {% endfor %}
                                     </div>
 
-                                    <div class="io-custom-ar-wrapper"{% if selectedAspectRatio is not same as(false) %} style="display: none;"{% endif %}>
+                                    <div
+                                        class="io-custom-ar-wrapper"{% if selectedAspectRatio is not same as(false) %} style="display: none;"{% endif %}>
                                         <!-- aspectRatioX -->
                                         {{ forms.textField({
                                             size: 5,
@@ -288,7 +307,7 @@
 
 {% set js %}
     $('div .io-retina-sizes-wrapper').each(function(){
-        $(this).find('input:checkbox').first().parent().hide();
+    $(this).find('input:checkbox').first().parent().hide();
     });
 {% endset %}
 {% js js %}

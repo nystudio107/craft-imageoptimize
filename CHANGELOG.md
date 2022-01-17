@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.41 - 2022.01.17
+
+### Fixed
+
+* Fixed an issue that could cause the JavaScript to not execute properly, causing the Settings to not appear
+  correctly ([#310](https://github.com/nystudio107/craft-imageoptimize/issues/310))
+
 ## 1.6.40 - 2022.01.12
 
 ### Added

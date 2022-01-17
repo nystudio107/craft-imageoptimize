@@ -40,7 +40,6 @@
     "vite-plugin-compression": "^0.4.0",
     "vite-plugin-externals": "^0.3.2",
     "vite-plugin-restart": "0.0.2",
-    "vite-plugin-stylelint": "^1.1.0",
     "vite-plugin-vue2": "^1.9.0"
   },
   "scripts": {
