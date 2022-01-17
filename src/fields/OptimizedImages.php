@@ -10,12 +10,6 @@
 
 namespace nystudio107\imageoptimize\fields;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
-use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
-use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
-use nystudio107\imageoptimize\models\OptimizedImage;
-
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -26,12 +20,20 @@ use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\models\FieldLayout;
 use craft\validators\ArrayValidator;
-
+use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
+use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
+use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\models\OptimizedImage;
+use ReflectionClass;
+use ReflectionException;
+use Twig\Error\LoaderError;
+use verbb\supertable\fields\SuperTableField;
 use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\Schema;
-
-use verbb\supertable\fields\SuperTableField;
+use function is_array;
+use function is_string;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
 
@@ -50,13 +52,13 @@ class OptimizedImages extends Field
     ];
     const DEFAULT_IMAGE_VARIANTS = [
         [
-            'width'          => 1200,
+            'width' => 1200,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'retinaSizes' => ['1'],
+            'quality' => 82,
+            'format' => 'jpg',
         ],
     ];
 
@@ -220,13 +222,13 @@ class OptimizedImages extends Field
                 // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_MOVE (if using Craft > v3.7.1) treat it as a new asset
                 $scenario = $asset->getScenario();
 
-		$supportsMoveScenario = version_compare(
-			Craft::$app->getVersion(),
-			'3.7.1',
-			'>='
-		) === true;
+                $supportsMoveScenario = version_compare(
+                        Craft::$app->getVersion(),
+                        '3.7.1',
+                        '>='
+                    ) === true;
 
-                if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE) ) {
+                if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
                     /**
                      * If this is a newly uploaded/created Asset, we can save the variants
                      * via a queue job to prevent it from blocking
@@ -254,11 +256,11 @@ class OptimizedImages extends Field
     public function normalizeValue($value, ElementInterface $asset = null)
     {
         // If we're passed in a string, assume it's JSON-encoded, and decode it
-        if (\is_string($value) && !empty($value)) {
+        if (is_string($value) && !empty($value)) {
             $value = Json::decodeIfJson($value);
         }
         // If we're passed in an array, make a model from it
-        if (\is_array($value)) {
+        if (is_array($value)) {
             // Create a new OptimizedImage model and populate it
             $model = new OptimizedImage($value);
         } elseif ($value instanceof OptimizedImage) {
@@ -293,7 +295,7 @@ class OptimizedImages extends Field
                     [
                     ]
                 );
-            } catch (\Twig\Error\LoaderError $e) {
+            } catch (LoaderError $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             } catch (\yii\base\Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
@@ -307,9 +309,9 @@ class OptimizedImages extends Field
         }
 
         try {
-            $reflect = new \ReflectionClass($this);
+            $reflect = new ReflectionClass($this);
             $thisId = $reflect->getShortName();
-        } catch (\ReflectionException $e) {
+        } catch (ReflectionException $e) {
             Craft::error($e->getMessage(), __METHOD__);
             $thisId = 0;
         }
@@ -322,11 +324,17 @@ class OptimizedImages extends Field
         $namespacedId = Craft::$app->getView()->namespaceInputId($id);
         $namespacePrefix = Craft::$app->getView()->namespaceInputName($thisId);
         $sizesWrapperId = Craft::$app->getView()->namespaceInputId('sizes-wrapper');
-        Craft::$app->getView()->registerJs('new Craft.OptimizedImagesInput('.
-            '"'.$namespacedId.'", '.
-            '"'.$namespacePrefix.'",'.
-            '"'.$sizesWrapperId.'"'.
-            ');');
+        Craft::$app->getView()->registerJs(
+            "document.addEventListener('vite-script-loaded',function (e) {" .
+            "if (e.detail.path === 'src/js/OptimizedImagesField.js') {" .
+            'new Craft.OptimizedImagesInput(' .
+            '"' . $namespacedId . '", ' .
+            '"' . $namespacePrefix . '",' .
+            '"' . $sizesWrapperId . '"' .
+            ');' .
+            '}' .
+            '});'
+        );
 
         // Prep our aspect ratios
         $aspectRatios = [];
@@ -348,16 +356,16 @@ class OptimizedImages extends Field
             return Craft::$app->getView()->renderTemplate(
                 'image-optimize/_components/fields/OptimizedImages_settings',
                 [
-                    'field'        => $this,
-                    'settings'     => $settings,
+                    'field' => $this,
+                    'settings' => $settings,
                     'aspectRatios' => $aspectRatios,
-                    'id'           => $id,
-                    'name'         => $this->handle,
-                    'namespace'    => $namespacedId,
+                    'id' => $id,
+                    'name' => $this->handle,
+                    'namespace' => $namespacedId,
                     'fieldVolumes' => $this->getFieldVolumeInfo($this->handle),
                 ]
             );
-        } catch (\Twig\Error\LoaderError $e) {
+        } catch (LoaderError $e) {
             Craft::error($e->getMessage(), __METHOD__);
         } catch (\yii\base\Exception $e) {
             Craft::error($e->getMessage(), __METHOD__);
@@ -365,85 +373,6 @@ class OptimizedImages extends Field
 
         return '';
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getInputHtml($value, ElementInterface $element = null): string
-    {
-        if ($element !== null && $element instanceof Asset && $this->handle !== null) {
-            /** @var Asset $element */
-            // Register our asset bundle
-            try {
-                Craft::$app->getView()->registerAssetBundle(ImageOptimizeAsset::class);
-            } catch (InvalidConfigException $e) {
-                Craft::error($e->getMessage(), __METHOD__);
-            }
-
-            // Get our id and namespace
-            if (ImageOptimize::$craft35) {
-                $id = Html::id($this->handle);
-            } else {
-                $id = Craft::$app->getView()->formatInputId($this->handle);
-            }
-            $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
-
-            // Variables to pass down to our field JavaScript to let it namespace properly
-            $jsonVars = [
-                'id'        => $id,
-                'name'      => $this->handle,
-                'namespace' => $nameSpaceId,
-                'prefix'    => Craft::$app->getView()->namespaceInputId(''),
-            ];
-            $jsonVars = Json::encode($jsonVars);
-            $view = Craft::$app->getView();
-            $view->registerJs("$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(".$jsonVars.");");
-
-            $settings = ImageOptimize::$plugin->getSettings();
-            $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
-
-            // Render the input template
-            try {
-                return Craft::$app->getView()->renderTemplate(
-                    'image-optimize/_components/fields/OptimizedImages_input',
-                    [
-                        'name'           => $this->handle,
-                        'value'          => $value,
-                        'variants'       => $this->variants,
-                        'field'          => $this,
-                        'settings'       => $settings,
-                        'elementId'      => $element->id,
-                        'format'         => $element->getExtension(),
-                        'id'             => $id,
-                        'nameSpaceId'    => $nameSpaceId,
-                        'createVariants' => $createVariants,
-                    ]
-                );
-            } catch (\Twig\Error\LoaderError $e) {
-                Craft::error($e->getMessage(), __METHOD__);
-            } catch (\yii\base\Exception $e) {
-                Craft::error($e->getMessage(), __METHOD__);
-            }
-        }
-
-        // Render an error template, since the field only works when attached to an Asset
-        try {
-            return Craft::$app->getView()->renderTemplate(
-                'image-optimize/_components/fields/OptimizedImages_error',
-                [
-                ]
-            );
-        } catch (\Twig\Error\LoaderError $e) {
-            Craft::error($e->getMessage(), __METHOD__);
-        } catch (\yii\base\Exception $e) {
-            Craft::error($e->getMessage(), __METHOD__);
-        }
-
-        return '';
-    }
-
-    // Protected Methods
-    // =========================================================================
 
     /**
      * Returns an array of asset volumes and their sub-folders
@@ -481,6 +410,9 @@ class OptimizedImages extends Field
         return $result;
     }
 
+    // Protected Methods
+    // =========================================================================
+
     /**
      * See if the passed $volume has an OptimizedImagesField with the handle $fieldHandle
      *
@@ -513,7 +445,7 @@ class OptimizedImages extends Field
      * Transforms an asset folder tree into a source list.
      *
      * @param array $folders
-     * @param bool  $includeNestedFolders
+     * @param bool $includeNestedFolders
      *
      * @return array
      */
@@ -529,5 +461,89 @@ class OptimizedImages extends Field
         }
 
         return $sources;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInputHtml($value, ElementInterface $element = null): string
+    {
+        if ($element !== null && $element instanceof Asset && $this->handle !== null) {
+            /** @var Asset $element */
+            // Register our asset bundle
+            try {
+                Craft::$app->getView()->registerAssetBundle(ImageOptimizeAsset::class);
+            } catch (InvalidConfigException $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
+
+            // Get our id and namespace
+            if (ImageOptimize::$craft35) {
+                $id = Html::id($this->handle);
+            } else {
+                $id = Craft::$app->getView()->formatInputId($this->handle);
+            }
+            $nameSpaceId = Craft::$app->getView()->namespaceInputId($id);
+
+            // Variables to pass down to our field JavaScript to let it namespace properly
+            $jsonVars = [
+                'id' => $id,
+                'name' => $this->handle,
+                'namespace' => $nameSpaceId,
+                'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            ];
+            $jsonVars = Json::encode($jsonVars);
+            $view = Craft::$app->getView();
+            $view->registerJs(
+                "document.addEventListener('vite-script-loaded',function (e) {" .
+                "if (e.detail.path === 'src/js/OptimizedImagesField.js') {" .
+                "$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" .
+                $jsonVars .
+                ");" .
+                '}' .
+                '});'
+            );
+
+            $settings = ImageOptimize::$plugin->getSettings();
+            $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
+
+            // Render the input template
+            try {
+                return Craft::$app->getView()->renderTemplate(
+                    'image-optimize/_components/fields/OptimizedImages_input',
+                    [
+                        'name' => $this->handle,
+                        'value' => $value,
+                        'variants' => $this->variants,
+                        'field' => $this,
+                        'settings' => $settings,
+                        'elementId' => $element->id,
+                        'format' => $element->getExtension(),
+                        'id' => $id,
+                        'nameSpaceId' => $nameSpaceId,
+                        'createVariants' => $createVariants,
+                    ]
+                );
+            } catch (LoaderError $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            } catch (\yii\base\Exception $e) {
+                Craft::error($e->getMessage(), __METHOD__);
+            }
+        }
+
+        // Render an error template, since the field only works when attached to an Asset
+        try {
+            return Craft::$app->getView()->renderTemplate(
+                'image-optimize/_components/fields/OptimizedImages_error',
+                [
+                ]
+            );
+        } catch (LoaderError $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        } catch (\yii\base\Exception $e) {
+            Craft::error($e->getMessage(), __METHOD__);
+        }
+
+        return '';
     }
 }
