@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 1.6.42 - UNRELEASED
+
+### Changed
+
+* Only update variants for an existing asset if the image has been
+  manipulated ([#314](https://github.com/nystudio107/craft-imageoptimize/pull/314))
+
 ## 1.6.41 - 2022.01.17
 
 ### Fixed
