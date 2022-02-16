@@ -2,6 +2,12 @@
 
 ## 1.6.42 - UNRELEASED
 
+### Added
+
+* Added in GQL implementation for `srcsetMinWidth`, `srcsetMaxWidth`, `srcsetMinWidthWebp` & `srcsetMaxWidthWebp`.
+  Updated the documentation to show how these are
+  used ([#315](https://github.com/nystudio107/craft-imageoptimize/pull/315))
+
 ### Changed
 
 * Only update variants for an existing asset if the image has been
