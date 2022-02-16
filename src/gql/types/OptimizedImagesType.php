@@ -50,11 +50,43 @@ class OptimizedImagesType extends ObjectType
                 return $source->srcset($dpr);
                 break;
 
+            // Special-case the `srcsetMinWidth` field with arguments
+            case 'srcsetMinWidth':
+                $width = $arguments['width'] ?? 0;
+                $dpr = $arguments['dpr'] ?? false;
+
+                return $source->srcsetMinWidth($width, $dpr);
+                break;
+
+            // Special-case the `srcsetMaxWidth` field with arguments
+            case 'srcsetMaxWidth':
+                $width = $arguments['width'] ?? 0;
+                $dpr = $arguments['dpr'] ?? false;
+
+                return $source->srcsetMaxWidth($width, $dpr);
+                break;
+
             // Special-case the `srcsetWebp` field with arguments
             case 'srcsetWebp':
                 $dpr = $arguments['dpr'] ?? false;
 
                 return $source->srcsetWebp($dpr);
+                break;
+
+            // Special-case the `srcsetMinWidthWebp` field with arguments
+            case 'srcsetMinWidthWebp':
+                $width = $arguments['width'] ?? 0;
+                $dpr = $arguments['dpr'] ?? false;
+
+                return $source->srcsetMinWidthWebp($width, $dpr);
+                break;
+
+            // Special-case the `srcsetMaxWidthWebp` field with arguments
+            case 'srcsetMaxWidthWebp':
+                $width = $arguments['width'] ?? 0;
+                $dpr = $arguments['dpr'] ?? false;
+
+                return $source->srcsetMaxWidthWebp($width, $dpr);
                 break;
 
             // Special-case the `maxSrcsetWidth` field
