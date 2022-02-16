@@ -164,10 +164,78 @@ class OptimizedImagesGenerator implements GeneratorInterface
                 ],
                 'type' => Type::string(),
             ],
+            'srcsetMinWidth' => [
+                'name' => 'srcsetMinWidth',
+                'description' => 'Return a string of image URLs and their sizes',
+                'args' => [
+                    'width' => [
+                        'name' => 'width',
+                        'type' => Type::int(),
+                        'description' => 'Width of the image'
+                    ],
+                    'dpr' => [
+                        'name' => 'dpr',
+                        'type' => Type::boolean(),
+                        'description' => 'Include dpr images?'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'srcsetMaxWidth' => [
+                'name' => 'srcsetMaxWidth',
+                'description' => 'Return a string of image URLs and their sizes',
+                'args' => [
+                    'width' => [
+                        'name' => 'width',
+                        'type' => Type::int(),
+                        'description' => 'Width of the image'
+                    ],
+                    'dpr' => [
+                        'name' => 'dpr',
+                        'type' => Type::boolean(),
+                        'description' => 'Include dpr images?'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
             'srcsetWebp' => [
                 'name' => 'srcsetWebp',
                 'description' => 'Return a string of webp image URLs and their sizes',
                 'args' => [
+                    'dpr' => [
+                        'name' => 'dpr',
+                        'type' => Type::boolean(),
+                        'description' => 'Include dpr images?'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'srcsetMinWidthWebp' => [
+                'name' => 'srcsetMinWidthWebp',
+                'description' => 'Return a string of webp image URLs and their sizes',
+                'args' => [
+                    'width' => [
+                        'name' => 'width',
+                        'type' => Type::int(),
+                        'description' => 'Width of the image'
+                    ],
+                    'dpr' => [
+                        'name' => 'dpr',
+                        'type' => Type::boolean(),
+                        'description' => 'Include dpr images?'
+                    ],
+                ],
+                'type' => Type::string(),
+            ],
+            'srcsetMaxWidthWebp' => [
+                'name' => 'srcsetMaxWidthWebp',
+                'description' => 'Return a string of webp image URLs and their sizes',
+                'args' => [
+                    'width' => [
+                        'name' => 'width',
+                        'type' => Type::int(),
+                        'description' => 'Width of the image'
+                    ],
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
@@ -191,11 +259,11 @@ class OptimizedImagesGenerator implements GeneratorInterface
         ];
         $optimizedImagesType = GqlEntityRegistry::getEntity($typeName)
             ?: GqlEntityRegistry::createEntity($typeName, new OptimizedImagesType([
-            'name' => $typeName,
-            'description' => 'This entity has all the OptimizedImages properties',
-            'fields' => function () use ($optimizedImagesFields) {
-                return $optimizedImagesFields;
-            },
+                'name' => $typeName,
+                'description' => 'This entity has all the OptimizedImages properties',
+                'fields' => function () use ($optimizedImagesFields) {
+                    return $optimizedImagesFields;
+                },
             ]));
 
         TypeLoader::registerType($typeName, function () use ($optimizedImagesType) {
