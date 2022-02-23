@@ -236,14 +236,16 @@ class OptimizedImages extends Field
                     ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
                 } else {
                     /**
-                     * If it's not a newly uploaded/created Asset, they may have edited
-                     * the image with the ImageEditor, so we need to update the variants
-                     * immediately, so the AssetSelectorHud displays the new images
+                     * If it's not a newly uploaded/created Asset, check to see if the image
+                     * itself is being updated (via the ImageEditor). If so, update the
+                     * variants immediately so the AssetSelectorHud displays the new images
                      */
-                    try {
-                        ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
-                    } catch (Exception $e) {
-                        Craft::error($e->getMessage(), __METHOD__);
+                    if (Craft::$app->getRequest()->getPathInfo() === 'actions/assets/save-image') {
+                        try {
+                            ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
+                        } catch (Exception $e) {
+                            Craft::error($e->getMessage(), __METHOD__);
+                        }
                     }
                 }
             }

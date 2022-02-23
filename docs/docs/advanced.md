@@ -170,6 +170,10 @@ You can access all of the primary OptimizedImages field methods:
       someAsset {
         ...on blog_Asset {
           optimizedImages {
+            srcsetMinWidth(width: 600),
+            srcsetMinWidthWebp(width: 600),
+            srcsetMaxWidth(width: 1200),
+            srcsetMaxWidthWebp(width: 1200),
             optimizedImageUrls,
             optimizedWebPImageUrls,
             variantSourceWidths,
@@ -235,6 +239,10 @@ You can access all of the primary OptimizedImages field methods:
         title
         optimizedImages {
           ...on OptimizedImagesData {
+            srcsetMinWidth(width: 600),
+            srcsetMinWidthWebp(width: 600),
+            srcsetMaxWidth(width: 1200),
+            srcsetMaxWidthWebp(width: 1200),
             optimizedImageUrls,
             optimizedWebPImageUrls,
             variantSourceWidths,

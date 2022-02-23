@@ -1,26 +1,30 @@
 {
-  "src/js/ImageOptimize.js": {
+  "../src/web/assets/src/js/ImageOptimize.js": {
     "file": "assets/imageoptimize.3e9e7786.js",
-    "src": "src/js/ImageOptimize.js",
+    "src": "../src/web/assets/src/js/ImageOptimize.js",
     "isEntry": true,
     "css": [
       "assets/imageoptimize.f78eb2fb.css"
-    ]
+    ],
+    "integrity": "sha384-QSz+CZpW/b1G9OWWcNAkGhYlvTX97l1KID+K31mTX04aOUXGu/gSZSZQEFrV2cMi"
   },
-  "src/js/OptimizedImagesField.js": {
-    "file": "assets/field.2af423cc.js",
-    "src": "src/js/OptimizedImagesField.js",
-    "isEntry": true
+  "../src/web/assets/src/js/OptimizedImagesField.js": {
+    "file": "assets/field.e4e3a473.js",
+    "src": "../src/web/assets/src/js/OptimizedImagesField.js",
+    "isEntry": true,
+    "integrity": "sha384-zRHRCH/8RbDuLEwFTSwr6WFd8gjXZaDbDb+FmgI3gu8fKHsH4YaCszrO9AEW3zxI"
   },
-  "src/js/Welcome.js": {
+  "../src/web/assets/src/js/Welcome.js": {
     "file": "assets/welcome.4826360a.js",
-    "src": "src/js/Welcome.js",
+    "src": "../src/web/assets/src/js/Welcome.js",
     "isEntry": true,
     "imports": [
       "_vendor.978d5786.js"
-    ]
+    ],
+    "integrity": "sha384-jzzKmG0Rw4sUHugu3eTmFXFtc56u4TJSKPym36wWjgpMcUqyuMuHcyq4STXzN//M"
   },
   "_vendor.978d5786.js": {
-    "file": "assets/vendor.978d5786.js"
+    "file": "assets/vendor.978d5786.js",
+    "integrity": "sha384-J7WS7LBhAiAkoLuiQ285ftEX/7LPdfrpoN6RSLQ7G0bqsrAlvnIsG31TXNRrPZqw"
   }
 }
