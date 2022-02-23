@@ -1,17 +1,20 @@
 # ImageOptimize Changelog
 
-## 1.6.42 - UNRELEASED
+## 1.6.42 - 2022.02.23
 
 ### Added
 
 * Added in GQL implementation for `srcsetMinWidth`, `srcsetMaxWidth`, `srcsetMinWidthWebp` & `srcsetMaxWidthWebp`.
-  Updated the documentation to show how these are
-  used ([#315](https://github.com/nystudio107/craft-imageoptimize/pull/315))
+  Updated the documentation to show how these are used ([#315](https://github.com/nystudio107/craft-imageoptimize/pull/315))
 
 ### Changed
 
-* Only update variants for an existing asset if the image has been
-  manipulated ([#314](https://github.com/nystudio107/craft-imageoptimize/pull/314))
+* Only update variants for an existing asset if the image has been manipulated ([#314](https://github.com/nystudio107/craft-imageoptimize/pull/314))
+
+### Fixed
+
+* Use the new Imgix purge API endpoint properly ([#4](https://github.com/nystudio107/craft-imageoptimize-imgix/issues/4))
+* Fixed an issue where corrupted images could result in the Imgix transformer throwing an exception ([#3](https://github.com/nystudio107/craft-imageoptimize-imgix/issues/3)) ([#306](https://github.com/nystudio107/craft-imageoptimize/issues/306))
 
 ## 1.6.41 - 2022.01.17
 
