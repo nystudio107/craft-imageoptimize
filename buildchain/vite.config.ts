@@ -10,7 +10,7 @@ import {nodeResolve} from '@rollup/plugin-node-resolve';
 import * as path from 'path';
 
 // https://vitejs.dev/config/
-export default defineConfig((({command}) => ({
+export default defineConfig(({command}) => ({
   base: command === 'serve' ? '' : '/dist/',
   build: {
     emptyOutDir: true,
