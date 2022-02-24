@@ -301,7 +301,6 @@ class ImageOptimize extends Plugin
                 $variable = $event->sender;
                 $variable->set('imageOptimize', [
                     'class' => ImageOptimizeVariable::class,
-                    'viteService' => $this->vite,
                 ]);
             }
         );
