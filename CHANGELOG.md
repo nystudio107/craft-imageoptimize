@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 1.6.43 - UNRELEASED
+
+### Fixed
+
+* Fixed an issue where an exception could be thrown when running the `craft resave/assets` console command ([#78](https://github.com/nystudio107/craft-imageoptimize/issues/78))
+
 ## 1.6.42 - 2022.02.23
 
 ### Added
