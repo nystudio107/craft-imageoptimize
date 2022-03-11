@@ -240,7 +240,8 @@ class OptimizedImages extends Field
                      * itself is being updated (via the ImageEditor). If so, update the
                      * variants immediately so the AssetSelectorHud displays the new images
                      */
-                    if (Craft::$app->getRequest()->getPathInfo() === 'actions/assets/save-image') {
+                    $request = Craft::$app->getRequest();
+                    if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
                         try {
                             ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
                         } catch (Exception $e) {
@@ -374,95 +375,6 @@ class OptimizedImages extends Field
     }
 
     /**
-     * Returns an array of asset volumes and their sub-folders
-     *
-     * @param string|null $fieldHandle
-     *
-     * @return array
-     * @throws InvalidConfigException
-     */
-    protected function getFieldVolumeInfo($fieldHandle): array
-    {
-        $result = [];
-        if ($fieldHandle !== null) {
-            $volumes = Craft::$app->getVolumes()->getAllVolumes();
-            $assets = Craft::$app->getAssets();
-            foreach ($volumes as $volume) {
-                if (is_subclass_of($volume, Volume::class)) {
-                    /** @var Volume $volume */
-                    if ($this->volumeHasField($volume, $fieldHandle)) {
-                        $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
-                        $result[] = [
-                            'name' => $volume->name,
-                            'handle' => $volume->handle,
-                            'subfolders' => $this->assembleSourceList($tree),
-                        ];
-                    }
-                }
-            }
-        }
-        // If there are too many sub-folders in an Asset volume, don't display them, return an empty array
-        if (count($result) > self::MAX_VOLUME_SUBFOLDERS) {
-            $result = [];
-        }
-
-        return $result;
-    }
-
-    // Protected Methods
-    // =========================================================================
-
-    /**
-     * See if the passed $volume has an OptimizedImagesField with the handle $fieldHandle
-     *
-     * @param Volume $volume
-     *
-     * @param string $fieldHandle
-     *
-     * @return bool
-     * @throws InvalidConfigException
-     */
-    protected function volumeHasField(Volume $volume, string $fieldHandle): bool
-    {
-        $result = false;
-        /** @var FieldLayout $fieldLayout */
-        $fieldLayout = $volume->getFieldLayout();
-        // Loop through the fields in the layout to see if there is an OptimizedImages field
-        if ($fieldLayout) {
-            $fields = $fieldLayout->getFields();
-            foreach ($fields as $field) {
-                if ($field instanceof OptimizedImagesField && $field->handle === $fieldHandle) {
-                    $result = true;
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Transforms an asset folder tree into a source list.
-     *
-     * @param array $folders
-     * @param bool $includeNestedFolders
-     *
-     * @return array
-     */
-    protected function assembleSourceList(array $folders, bool $includeNestedFolders = true): array
-    {
-        $sources = [];
-
-        foreach ($folders as $folder) {
-            $children = $folder->getChildren();
-            foreach ($children as $child) {
-                $sources[$child->name] = $child->name;
-            }
-        }
-
-        return $sources;
-    }
-
-    /**
      * @inheritdoc
      */
     public function getInputHtml($value, ElementInterface $element = null): string
@@ -540,5 +452,94 @@ class OptimizedImages extends Field
         }
 
         return '';
+    }
+
+    // Protected Methods
+    // =========================================================================
+
+    /**
+     * Returns an array of asset volumes and their sub-folders
+     *
+     * @param string|null $fieldHandle
+     *
+     * @return array
+     * @throws InvalidConfigException
+     */
+    protected function getFieldVolumeInfo($fieldHandle): array
+    {
+        $result = [];
+        if ($fieldHandle !== null) {
+            $volumes = Craft::$app->getVolumes()->getAllVolumes();
+            $assets = Craft::$app->getAssets();
+            foreach ($volumes as $volume) {
+                if (is_subclass_of($volume, Volume::class)) {
+                    /** @var Volume $volume */
+                    if ($this->volumeHasField($volume, $fieldHandle)) {
+                        $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
+                        $result[] = [
+                            'name' => $volume->name,
+                            'handle' => $volume->handle,
+                            'subfolders' => $this->assembleSourceList($tree),
+                        ];
+                    }
+                }
+            }
+        }
+        // If there are too many sub-folders in an Asset volume, don't display them, return an empty array
+        if (count($result) > self::MAX_VOLUME_SUBFOLDERS) {
+            $result = [];
+        }
+
+        return $result;
+    }
+
+    /**
+     * See if the passed $volume has an OptimizedImagesField with the handle $fieldHandle
+     *
+     * @param Volume $volume
+     *
+     * @param string $fieldHandle
+     *
+     * @return bool
+     * @throws InvalidConfigException
+     */
+    protected function volumeHasField(Volume $volume, string $fieldHandle): bool
+    {
+        $result = false;
+        /** @var FieldLayout $fieldLayout */
+        $fieldLayout = $volume->getFieldLayout();
+        // Loop through the fields in the layout to see if there is an OptimizedImages field
+        if ($fieldLayout) {
+            $fields = $fieldLayout->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof OptimizedImagesField && $field->handle === $fieldHandle) {
+                    $result = true;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Transforms an asset folder tree into a source list.
+     *
+     * @param array $folders
+     * @param bool $includeNestedFolders
+     *
+     * @return array
+     */
+    protected function assembleSourceList(array $folders, bool $includeNestedFolders = true): array
+    {
+        $sources = [];
+
+        foreach ($folders as $folder) {
+            $children = $folder->getChildren();
+            foreach ($children as $child) {
+                $sources[$child->name] = $child->name;
+            }
+        }
+
+        return $sources;
     }
 }
