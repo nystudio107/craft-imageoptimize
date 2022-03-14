@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.43 - UNRELEASED
+## 1.6.43 - 2022.03.14
 
 ### Fixed
 
