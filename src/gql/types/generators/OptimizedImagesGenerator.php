@@ -29,7 +29,7 @@ class OptimizedImagesGenerator implements GeneratorInterface
     /**
      * @inheritdoc
      */
-    public static function generateTypes($context = null): array
+    public static function generateTypes(mixed $context = null): array
     {
         /** @var OptimizedImages $context */
         $typeName = self::getName($context);

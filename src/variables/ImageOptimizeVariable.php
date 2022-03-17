@@ -63,7 +63,7 @@ class ImageOptimizeVariable implements ViteVariableInterface
      * @param             $height
      * @param string|null $color
      *
-     * @return \Twig_Markup|null
+     * @return \Twig\Markup|null
      */
     public function placeholderBox($width, $height, $color = null)
     {

@@ -149,17 +149,17 @@ class ImageOptimize extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.0';
 
     /**
      * @var bool
      */
-    public $hasCpSection = false;
+    public bool $hasCpSection = false;
 
     /**
      * @var bool
      */
-    public $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     // Public Methods
     // =========================================================================
@@ -199,7 +199,7 @@ class ImageOptimize extends Plugin
     /**
      * @inheritdoc
      */
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
         $view = Craft::$app->getView();
         $namespace = $view->getNamespace();
@@ -218,7 +218,7 @@ class ImageOptimize extends Plugin
     /**
      * @inheritdoc
      */
-    public function settingsHtml()
+    public function settingsHtml(): ?string
     {
         // Get only the user-editable settings
         $settings = $this->getSettings();
@@ -265,7 +265,7 @@ class ImageOptimize extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }
@@ -359,8 +359,8 @@ class ImageOptimize extends Plugin
         // Handler: Assets::EVENT_GET_ASSET_URL
         Event::on(
             Assets::class,
-            Assets::EVENT_GET_ASSET_URL,
-            function (GetAssetUrlEvent $event) {
+            \craft\elements\Asset::EVENT_DEFINE_URL,
+            function (\craft\events\DefineAssetUrlEvent $event) {
                 Craft::debug(
                     'Assets::EVENT_GET_ASSET_URL',
                     __METHOD__
@@ -376,7 +376,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Assets::class,
             Assets::EVENT_GET_ASSET_THUMB_URL,
-            function (GetAssetThumbUrlEvent $event) {
+            function (\craft\events\DefineAssetThumbUrlEvent $event) {
                 Craft::debug(
                     'Assets::EVENT_GET_ASSET_THUMB_URL',
                     __METHOD__
@@ -678,7 +678,7 @@ class ImageOptimize extends Plugin
                 $fieldLayout = $volume->getFieldLayout();
                 // Loop through the fields in the layout to see if it contains our field
                 if ($fieldLayout) {
-                    $fields = $fieldLayout->getFields();
+                    $fields = $fieldLayout->getCustomFields();
                     foreach ($fields as $field) {
                         /** @var Field $field */
                         if ($thisField->handle === $field->handle) {

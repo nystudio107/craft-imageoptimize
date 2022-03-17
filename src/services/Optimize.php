@@ -134,14 +134,14 @@ class Optimize extends Component
     }
 
     /**
-     * Handle responding to EVENT_GET_ASSET_URL events
-     *
-     * @param GetAssetUrlEvent $event
-     *
-     * @return null|string
-     * @throws InvalidConfigException
-     */
-    public function handleGetAssetUrlEvent(GetAssetUrlEvent $event)
+				 * Handle responding to EVENT_GET_ASSET_URL events
+				 *
+				 * @param \craft\events\DefineAssetUrlEvent $event
+				 *
+				 * @return null|string
+				 * @throws InvalidConfigException
+				 */
+				public function handleGetAssetUrlEvent(\craft\events\DefineAssetUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
@@ -195,13 +195,13 @@ class Optimize extends Component
     }
 
     /**
-     * Handle responding to EVENT_GET_ASSET_THUMB_URL events
-     *
-     * @param GetAssetThumbUrlEvent $event
-     *
-     * @return null|string
-     */
-    public function handleGetAssetThumbUrlEvent(GetAssetThumbUrlEvent $event)
+				 * Handle responding to EVENT_GET_ASSET_THUMB_URL events
+				 *
+				 * @param \craft\events\DefineAssetThumbUrlEvent $event
+				 *
+				 * @return null|string
+				 */
+				public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetThumbUrlEvent', __METHOD__);
         $url = $event->url;

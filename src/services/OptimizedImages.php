@@ -330,7 +330,7 @@ class OptimizedImages extends Component
         $fieldLayout = $volume->getFieldLayout();
         // Loop through the fields in the layout to see if there is an OptimizedImages field
         if ($fieldLayout) {
-            $fields = $fieldLayout->getFields();
+            $fields = $fieldLayout->getCustomFields();
             foreach ($fields as $field) {
                 if ($field instanceof OptimizedImagesField) {
                     $needToReSave = true;

@@ -65,7 +65,7 @@ class ResaveOptimizedImages extends BaseJob
     /**
      * @inheritdoc
      */
-    public function execute($queue)
+    public function execute($queue): void
     {
         // Let's save ourselves some trouble and just clear all the caches for this element class
         if (ImageOptimize::$craft35) {
@@ -105,7 +105,7 @@ class ResaveOptimizedImages extends BaseJob
                 // Find each OptimizedImages field and process it
                 $layout = $element->getFieldLayout();
                 if ($layout !== null) {
-                    $fields = $layout->getFields();
+                    $fields = $layout->getCustomFields();
                     /** @var  $field Field */
                     foreach ($fields as $field) {
                         if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
@@ -145,7 +145,7 @@ class ResaveOptimizedImages extends BaseJob
     /**
      * @inheritdoc
      */
-    protected function defaultDescription(): string
+    protected function defaultDescription(): ?string
     {
         return Craft::t('app', 'Resaving {class} elements', [
             'class' => App::humanizeClass(Asset::class),

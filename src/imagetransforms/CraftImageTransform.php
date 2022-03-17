@@ -48,7 +48,7 @@ class CraftImageTransform extends ImageTransform
     /**
      * @inheritDoc
      */
-    public function init()
+    public function init(): void
     {
         $settings = ImageOptimize::$plugin->getSettings();
         // Get our $generateTransformsBeforePageLoad setting
@@ -80,7 +80,7 @@ class CraftImageTransform extends ImageTransform
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): ?string
     {
         $imageProcessors = ImageOptimize::$plugin->optimize->getActiveImageProcessors();
         $variantCreators = ImageOptimize::$plugin->optimize->getActiveVariantCreators();
@@ -97,7 +97,7 @@ class CraftImageTransform extends ImageTransform
      *
      * @return array
      */
-    public function fields()
+    public function fields(): array
     {
         return [];
     }
@@ -105,7 +105,7 @@ class CraftImageTransform extends ImageTransform
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
