@@ -134,14 +134,14 @@ class Optimize extends Component
     }
 
     /**
-				 * Handle responding to EVENT_GET_ASSET_URL events
-				 *
-				 * @param \craft\events\DefineAssetUrlEvent $event
-				 *
-				 * @return null|string
-				 * @throws InvalidConfigException
-				 */
-				public function handleGetAssetUrlEvent(\craft\events\DefineAssetUrlEvent $event)
+     * Handle responding to EVENT_GET_ASSET_URL events
+     *
+     * @param \craft\events\DefineAssetUrlEvent $event
+     *
+     * @return null|string
+     * @throws InvalidConfigException
+     */
+    public function handleGetAssetUrlEvent(\craft\events\DefineAssetUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetUrlEvent', __METHOD__);
         $url = null;
@@ -195,13 +195,13 @@ class Optimize extends Component
     }
 
     /**
-				 * Handle responding to EVENT_GET_ASSET_THUMB_URL events
-				 *
-				 * @param \craft\events\DefineAssetThumbUrlEvent $event
-				 *
-				 * @return null|string
-				 */
-				public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event)
+     * Handle responding to EVENT_GET_ASSET_THUMB_URL events
+     *
+     * @param \craft\events\DefineAssetThumbUrlEvent $event
+     *
+     * @return null|string
+     */
+    public function handleGetAssetThumbUrlEvent(\craft\events\DefineAssetThumbUrlEvent $event)
     {
         Craft::beginProfile('handleGetAssetThumbUrlEvent', __METHOD__);
         $url = $event->url;
@@ -210,7 +210,7 @@ class Optimize extends Component
             if (ImageHelper::canManipulateAsImage($asset->getExtension())) {
                 $transform = new AssetTransform([
                     'width' => $event->width,
-		    'height' => $event->height,
+                    'height' => $event->height,
                     'interlace' => 'line',
                 ]);
                 /** @var ImageTransform $transformMethod */
