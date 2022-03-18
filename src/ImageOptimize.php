@@ -10,6 +10,10 @@
 
 namespace nystudio107\imageoptimize;
 
+use craft\events\AssetEvent;
+use craft\events\ImageTransformerOperationEvent;
+use craft\imagetransforms\ImageTransformer;
+use craft\services\ImageTransforms;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
@@ -358,11 +362,11 @@ class ImageOptimize extends Plugin
     {
         // Handler: Assets::EVENT_GET_ASSET_URL
         Event::on(
-            Assets::class,
-            \craft\elements\Asset::EVENT_DEFINE_URL,
-            function (\craft\events\DefineAssetUrlEvent $event) {
+            Asset::class,
+            Asset::EVENT_DEFINE_URL,
+            function (\craft\events\DefineAssetUrlEvent $event): void {
                 Craft::debug(
-                    'Assets::EVENT_GET_ASSET_URL',
+                    'Asset::EVENT_GET_ASSET_URL',
                     __METHOD__
                 );
                 // Return the URL to the asset URL or null to let Craft handle it
@@ -375,10 +379,10 @@ class ImageOptimize extends Plugin
         // Handler: Assets::EVENT_GET_ASSET_THUMB_URL
         Event::on(
             Assets::class,
-            Assets::EVENT_GET_ASSET_THUMB_URL,
-            function (\craft\events\DefineAssetThumbUrlEvent $event) {
+            Assets::EVENT_DEFINE_THUMB_URL,
+            function (\craft\events\DefineAssetThumbUrlEvent $event): void {
                 Craft::debug(
-                    'Assets::EVENT_GET_ASSET_THUMB_URL',
+                    'Assets::EVENT_DEFINE_THUMB_URL',
                     __METHOD__
                 );
                 // Return the URL to the asset URL or null to let Craft handle it
@@ -388,13 +392,13 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: AssetTransforms::EVENT_GENERATE_TRANSFORM
+        // Handler: ImageTransformer::EVENT_TRANSFORM_IMAGE
         Event::on(
-            AssetTransforms::class,
-            AssetTransforms::EVENT_GENERATE_TRANSFORM,
-            function (GenerateTransformEvent $event) {
+            ImageTransformer::class,
+            ImageTransformer::EVENT_TRANSFORM_IMAGE,
+            function (ImageTransformerOperationEvent $event): void {
                 Craft::debug(
-                    'AssetTransforms::EVENT_GENERATE_TRANSFORM',
+                    'ImageTransformer::EVENT_TRANSFORM_IMAGE',
                     __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
@@ -404,13 +408,13 @@ class ImageOptimize extends Plugin
             }
         );
 
-        // Handler: AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS
+        // Handler: ImageTransformer::EVENT_DELETE_TRANSFORMED_IMAGE
         Event::on(
-            AssetTransforms::class,
-            AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS,
-            function (AssetTransformImageEvent $event) {
+            ImageTransformer::class,
+            ImageTransformer::EVENT_DELETE_TRANSFORMED_IMAGE,
+            function (ImageTransformerOperationEvent $event): void {
                 Craft::debug(
-                    'AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS',
+                    'ImageTransformer::EVENT_DELETE_TRANSFORMED_IMAGE',
                     __METHOD__
                 );
                 // Clean up any stray variant files
