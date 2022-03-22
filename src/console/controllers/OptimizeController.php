@@ -10,10 +10,10 @@
 
 namespace nystudio107\imageoptimize\console\controllers;
 
+use craft\models\Volume;
 use nystudio107\imageoptimize\ImageOptimize;
 
 use Craft;
-use craft\base\Volume;
 use craft\helpers\App;
 use craft\queue\QueueInterface;
 
@@ -106,9 +106,9 @@ class OptimizeController extends Controller
     /**
      * @inheritdoc
      */
-    public function options($actionId): array
+    public function options($actionID): array
     {
-        $options = parent::options($actionId);
+        $options = parent::options($actionID);
         $options[] = 'force';
         $options[] = 'field';
 

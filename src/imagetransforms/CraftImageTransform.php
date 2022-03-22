@@ -61,8 +61,13 @@ class CraftImageTransform extends ImageTransform
     public function getTransformUrl(Asset $asset, $transform)
     {
         // Generate the URLs to the optimized images
-        $assets = Craft::$app->getAssets();
-        $url = $assets->getAssetUrl($asset, $transform, $this->generateTransformsBeforePageLoad);
+        $oldValue = Craft::$app->getConfig()->getGeneral()->generateTransformsBeforePageLoad;
+
+        if ($this->generateTransformsBeforePageLoad) {
+            Craft::$app->getConfig()->getGeneral()->generateTransformsBeforePageLoad = true;
+        }
+        $url = $asset->getUrl($transform);
+        Craft::$app->getConfig()->getGeneral()->generateTransformsBeforePageLoad = $oldValue;
 
         return $url;
     }

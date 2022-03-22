@@ -13,13 +13,14 @@ namespace nystudio107\imageoptimize\fields;
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\base\Volume;
 use craft\elements\Asset;
 use craft\fields\Matrix;
 use craft\helpers\Html;
 use craft\helpers\Json;
 use craft\models\FieldLayout;
+use craft\models\Volume;
 use craft\validators\ArrayValidator;
+use GraphQL\Type\Definition\Type;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
@@ -134,7 +135,7 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -161,7 +162,7 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = parent::rules();
         $rules = array_merge($rules, [
@@ -189,7 +190,7 @@ class OptimizedImages extends Field
      * @inheritdoc
      * @since 1.6.2
      */
-    public function getContentGqlType()
+    public function getContentGqlType(): Type|array
     {
         $typeArray = OptimizedImagesGenerator::generateTypes($this);
 
@@ -212,7 +213,7 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function afterElementSave(ElementInterface $asset, bool $isNew)
+    public function afterElementSave(ElementInterface $asset, bool $isNew): void
     {
         parent::afterElementSave($asset, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
@@ -255,7 +256,7 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function normalizeValue($value, ElementInterface $asset = null)
+    public function normalizeValue($value, ElementInterface $asset = null): mixed
     {
         // If we're passed in a string, assume it's JSON-encoded, and decode it
         if (is_string($value) && !empty($value)) {
@@ -269,7 +270,7 @@ class OptimizedImages extends Field
             $model = $value;
         } else {
             // Just create a new empty model
-            $model = new OptimizedImage(null);
+            $model = new OptimizedImage([]);
         }
 
         return $model;
@@ -286,7 +287,7 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function getSettingsHtml()
+    public function getSettingsHtml(): null|string
     {
         $namespace = Craft::$app->getView()->getNamespace();
         if (strpos($namespace, Matrix::class) !== false || strpos($namespace, SuperTableField::class) !== false) {
@@ -389,7 +390,6 @@ class OptimizedImages extends Field
             $assets = Craft::$app->getAssets();
             foreach ($volumes as $volume) {
                 if (is_subclass_of($volume, Volume::class)) {
-                    /** @var Volume $volume */
                     if ($this->volumeHasField($volume, $fieldHandle)) {
                         $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
                         $result[] = [

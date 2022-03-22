@@ -10,6 +10,8 @@
 
 namespace nystudio107\imageoptimize\services;
 
+use craft\helpers\ImageTransforms as TransformHelper;
+use craft\imagetransforms\ImageTransformer;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\helpers\Image as ImageHelper;
@@ -20,7 +22,6 @@ use Craft;
 use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\base\Field;
-use craft\base\Volume;
 use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
@@ -28,8 +29,9 @@ use craft\errors\SiteNotFoundException;
 use craft\helpers\ElementHelper;
 use craft\helpers\Image;
 use craft\helpers\Json;
-use craft\models\AssetTransform;
+use craft\models\ImageTransform as AssetTransform;
 use craft\models\FieldLayout;
+use craft\models\Volume;
 
 use yii\base\InvalidConfigException;
 
@@ -53,9 +55,9 @@ class OptimizedImages extends Component
      * @param Asset $asset
      * @param array $variants
      *
-     * @return OptimizedImage|null
+     * @return OptimizedImage
      */
-    public function createOptimizedImages(Asset $asset, array $variants = [])
+    public function createOptimizedImages(Asset $asset, array $variants = []): OptimizedImage
     {
         Craft::beginProfile('createOptimizedImages', __METHOD__);
         if (empty($variants)) {
@@ -106,15 +108,14 @@ class OptimizedImages extends Component
                     list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, $retinaSize);
                     // If they want to $force it, set `fileExists` = 0 in the transform index, then delete the transformed image
                     if ($force) {
-                        $transforms = Craft::$app->getAssetTransforms();
+                        $transformer = Craft::createObject(ImageTransformer::class);
+
                         try {
-                            $index = $transforms->getTransformIndex($asset, $transform);
+                            $index = $transformer->getTransformIndex($asset, $transform);
                             $index->fileExists = 0;
-                            $transforms->storeTransformIndexData($index);
-                            $volume = $asset->getVolume();
-                            $transformPath = $asset->folderPath . $transforms->getTransformSubpath($asset, $index);
+                            $transformer->storeTransformIndexData($index);
                             try {
-                                $volume->deleteFile($transformPath);
+                                $transformer->deleteImageTransformFile($asset, $index);
                             } catch (\Throwable $exception) {
                             }
                         } catch (\Throwable $e) {
@@ -323,7 +324,7 @@ class OptimizedImages extends Component
      *
      * @throws InvalidConfigException
      */
-    public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = false)
+public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = false)
     {
         $needToReSave = false;
         /** @var FieldLayout $fieldLayout */
@@ -355,7 +356,6 @@ class OptimizedImages extends Component
                     'siteId' => $siteId,
                     'volumeId' => $volume->id,
                     'status' => null,
-                    'enabledForSite' => false,
                 ],
                 'fieldId' => $fieldId,
                 'force' => $force,
@@ -387,7 +387,6 @@ class OptimizedImages extends Component
             'criteria' => [
                 'id' => $id,
                 'status' => null,
-                'enabledForSite' => false,
             ],
             'force' => $force,
         ]));
@@ -495,7 +494,7 @@ class OptimizedImages extends Component
         // Handle animate .gif images by never changing the format
         $images = Craft::$app->getImages();
         if ($asset->extension === 'gif' && !$images->getIsGd()) {
-            $imageSource = $asset->getTransformSource();
+            $imageSource = TransformHelper::getLocalImageSource($asset);
             try {
                 if (ImageHelper::getIsAnimatedGif($imageSource)) {
                     $transform->format = null;

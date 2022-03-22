@@ -10,10 +10,35 @@
 
 namespace nystudio107\imageoptimize;
 
-use craft\events\AssetEvent;
+use Craft;
+use craft\base\Field;
+use craft\base\Plugin;
+use craft\elements\Asset;
+use craft\events\ElementEvent;
+use craft\events\FieldEvent;
 use craft\events\ImageTransformerOperationEvent;
+use craft\events\PluginEvent;
+use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\events\RegisterUrlRulesEvent;
+use craft\events\ReplaceAssetEvent;
+use craft\events\VolumeEvent;
+use craft\helpers\ArrayHelper;
+use craft\helpers\UrlHelper;
 use craft\imagetransforms\ImageTransformer;
-use craft\services\ImageTransforms;
+use craft\models\FieldLayout;
+use craft\models\Volume;
+use craft\services\Assets;
+use craft\services\Elements;
+use craft\services\Fields;
+use craft\services\Plugins;
+use craft\services\Utilities;
+use craft\services\Volumes;
+use craft\web\Controller;
+use craft\web\twig\variables\CraftVariable;
+use craft\web\UrlManager;
+use craft\web\View;
+use markhuot\CraftQL\CraftQL;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
@@ -25,43 +50,8 @@ use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService
 use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
-
 use nystudio107\pluginvite\services\VitePluginService;
-
-use Craft;
-use craft\base\Field;
-use craft\base\Plugin;
-use craft\base\Volume;
-use craft\elements\Asset;
-use craft\events\AssetTransformImageEvent;
-use craft\events\ElementEvent;
-use craft\events\FieldEvent;
-use craft\events\GetAssetThumbUrlEvent;
-use craft\events\GetAssetUrlEvent;
-use craft\events\GenerateTransformEvent;
-use craft\events\PluginEvent;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterTemplateRootsEvent;
-use craft\events\RegisterUrlRulesEvent;
-use craft\events\ReplaceAssetEvent;
-use craft\events\VolumeEvent;
-use craft\helpers\ArrayHelper;
-use craft\helpers\UrlHelper;
-use craft\models\FieldLayout;
-use craft\services\Assets;
-use craft\services\AssetTransforms;
-use craft\services\Elements;
-use craft\services\Fields;
-use craft\services\Plugins;
-use craft\services\Utilities;
-use craft\services\Volumes;
-use craft\web\twig\variables\CraftVariable;
-use craft\web\Controller;
-use craft\web\UrlManager;
-use craft\web\View;
-
-use markhuot\CraftQL\CraftQL;
-
+use Twig\Error\LoaderError;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -254,7 +244,7 @@ class ImageOptimize extends Plugin
                     'imageTransform' => ImageOptimize::$plugin->transformMethod,
                 ]
             );
-        } catch (\Twig\Error\LoaderError $e) {
+        } catch (LoaderError $e) {
             Craft::error($e->getMessage(), __METHOD__);
         } catch (Exception $e) {
             Craft::error($e->getMessage(), __METHOD__);
@@ -402,7 +392,7 @@ class ImageOptimize extends Plugin
                     __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
-                $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
+                $event->path = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
             }

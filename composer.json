@@ -28,7 +28,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "craftcms/cms": "^4.0.0-beta.2",
+    "craftcms/cms": "^4.0.0-beta.3",
     "nystudio107/craft-plugin-vite": "^4.0.0-beta.1",
     "nystudio107/craft-imageoptimize-imgix": "^1.2.4",
     "nystudio107/craft-imageoptimize-sharp": "^1.0.8",

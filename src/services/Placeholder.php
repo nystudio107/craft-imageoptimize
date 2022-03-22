@@ -10,6 +10,7 @@
 
 namespace nystudio107\imageoptimize\services;
 
+use craft\helpers\ImageTransforms as TransformHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\lib\Potracio;
@@ -241,7 +242,7 @@ class Placeholder extends Component
         $tempPath = '';
 
         if ($asset !== null && Image::canManipulateAsImage($asset->getExtension())) {
-            $imageSource = $asset->getTransformSource();
+            $imageSource = TransformHelper::getLocalImageSource($asset);
             // Scale and crop the placeholder image
             $tempPath = $this->createImageFromPath($imageSource, $width, $height, $quality, $position);
         }
