@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.6.44 - 2022.03.24
+
+### Fixed
+* Fixed a regression due to a PR that could cause image variants to not be regenerated after resaving them
+
 ## 1.6.43 - 2022.03.14
 
 ### Fixed
