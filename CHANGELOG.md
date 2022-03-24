@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 4.0.0-beta.1 - 2022.03.23
+
+### Added
+
+* Initial Craft CMS 4 compatibility
+
 ## 1.6.42 - 2022.02.23
 
 ### Added
