@@ -7,14 +7,12 @@
 
 namespace nystudio107\imageoptimize\gql\types\generators;
 
-use nystudio107\imageoptimize\gql\types\OptimizedImagesType;
-use nystudio107\imageoptimize\fields\OptimizedImages;
-
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
-
 use GraphQL\Type\Definition\Type;
+use nystudio107\imageoptimize\fields\OptimizedImages;
+use nystudio107\imageoptimize\gql\types\OptimizedImagesType;
 
 /**
  * @author    nystudio107
@@ -279,6 +277,6 @@ class OptimizedImagesGenerator implements GeneratorInterface
     public static function getName($context = null): string
     {
         /** @var OptimizedImages $context */
-        return $context->handle.'_OptimizedImages';
+        return $context->handle . '_OptimizedImages';
     }
 }

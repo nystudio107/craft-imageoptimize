@@ -10,20 +10,21 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use craft\helpers\ImageTransforms as TransformHelper;
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\helpers\Color as ColorHelper;
-use nystudio107\imageoptimize\lib\Potracio;
-
+use ColorThief\ColorThief;
 use Craft;
 use craft\base\Component;
 use craft\elements\Asset;
-use craft\errors\ImageException;
 use craft\helpers\Image;
+use craft\helpers\ImageTransforms as TransformHelper;
 use craft\helpers\StringHelper;
 use craft\image\Raster;
-
-use ColorThief\ColorThief;
+use Exception;
+use nystudio107\imageoptimize\helpers\Color as ColorHelper;
+use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\lib\Potracio;
+use Throwable;
+use function function_exists;
+use function strlen;
 
 /**
  * @author    nystudio107
@@ -35,13 +36,13 @@ class Placeholder extends Component
     // Constants
     // =========================================================================
 
-    const PLACEHOLDER_WIDTH = 16;
-    const PLACEHOLDER_QUALITY = 50;
+    protected const PLACEHOLDER_WIDTH = 16;
+    protected const PLACEHOLDER_QUALITY = 50;
 
-    const TEMP_PLACEHOLDER_WIDTH = 300;
-    const TEMP_PLACEHOLDER_QUALITY = 75;
+    protected const TEMP_PLACEHOLDER_WIDTH = 300;
+    protected const TEMP_PLACEHOLDER_QUALITY = 75;
 
-    const MAX_SILHOUETTE_SIZE = 30 * 1024;
+    protected const MAX_SILHOUETTE_SIZE = 30 * 1024;
 
     // Public Properties
     // =========================================================================
@@ -54,33 +55,33 @@ class Placeholder extends Component
      *
      * @param             $width
      * @param             $height
-     * @param string|null $color
+     * @param ?string $color
      *
      * @return string
      */
-    public function generatePlaceholderBox($width, $height, $color = null): string
+    public function generatePlaceholderBox($width, $height, ?string $color = null): string
     {
         $color = $color ?? '#CCC';
         $header = 'data:image/svg+xml,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-            ."width='$width' "
-            ."height='$height' "
-            ."style='background:$color' "
-            ."/>";
+            . "width='$width' "
+            . "height='$height' "
+            . "style='background:$color' "
+            . "/>";
 
-        return $header.ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
+        return $header . ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
     }
 
     /**
      * Generate a base64-encoded placeholder image
      *
-     * @param string            $tempPath
-     * @param float             $aspectRatio
+     * @param string $tempPath
+     * @param float $aspectRatio
      * @param mixed|string|null $position
      *
      * @return string
      */
-    public function generatePlaceholderImage(string $tempPath, float $aspectRatio, $position): string
+    public function generatePlaceholderImage(string $tempPath, float $aspectRatio, mixed $position): string
     {
         Craft::beginProfile('generatePlaceholderImage', __METHOD__);
         Craft::info(
@@ -119,7 +120,7 @@ class Placeholder extends Component
             // Extract the color palette
             try {
                 $palette = ColorThief::getPalette($tempPath, 5);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
 
                 return [];
@@ -139,7 +140,7 @@ class Placeholder extends Component
      *
      * @return float|int|null
      */
-    public function calculateLightness(array $colors)
+    public function calculateLightness(array $colors): float|int|null
     {
         $lightness = null;
         if (!empty($colors)) {
@@ -159,6 +160,7 @@ class Placeholder extends Component
 
         return $lightness === null ? $lightness : (int)$lightness;
     }
+
     /**
      * Generate an SVG image via Potrace
      *
@@ -173,7 +175,7 @@ class Placeholder extends Component
 
         if (!empty($tempPath)) {
             // Potracio depends on `gd` being installed
-            if (\function_exists('imagecreatefromjpeg')) {
+            if (function_exists('imagecreatefromjpeg')) {
                 $pot = new Potracio();
                 $pot->loadImageFromFile($tempPath);
                 $pot->process();
@@ -190,10 +192,10 @@ class Placeholder extends Component
              * If Potracio failed or gd isn't installed, or this is larger
              * than MAX_SILHOUETTE_SIZE bytes, just return a box
              */
-            if (empty($result) || ((\strlen($result) > self::MAX_SILHOUETTE_SIZE) && $settings->capSilhouetteSvgSize)) {
+            if (empty($result) || ((strlen($result) > self::MAX_SILHOUETTE_SIZE) && $settings->capSilhouetteSvgSize)) {
                 $size = getimagesize($tempPath);
                 if ($size !== false) {
-                    list($width, $height) = $size;
+                    [$width, $height] = $size;
                     $result = $this->generatePlaceholderBox($width, $height);
                 }
             }
@@ -207,13 +209,13 @@ class Placeholder extends Component
      * Create a small placeholder image file that the various placerholder
      * generators can use
      *
-     * @param Asset             $asset
-     * @param float             $aspectRatio
+     * @param Asset $asset
+     * @param float $aspectRatio
      * @param mixed|string|null $position
      *
      * @return string
      */
-    public function createTempPlaceholderImage(Asset $asset, float $aspectRatio, $position): string
+    public function createTempPlaceholderImage(Asset $asset, float $aspectRatio, mixed $position): string
     {
         Craft::beginProfile('createTempPlaceholderImage', __METHOD__);
         Craft::info(
@@ -229,19 +231,18 @@ class Placeholder extends Component
     }
 
     /**
-     * @param Asset             $asset
-     * @param int               $width
-     * @param int               $height
-     * @param int               $quality
+     * @param Asset $asset
+     * @param int $width
+     * @param int $height
+     * @param int $quality
      * @param mixed|string|null $position
      *
      * @return string
      */
-    public function createImageFromAsset(Asset $asset, int $width, int $height, int $quality, $position): string
+    public function createImageFromAsset(Asset $asset, int $width, int $height, int $quality, mixed $position): string
     {
         $tempPath = '';
-
-        if ($asset !== null && Image::canManipulateAsImage($asset->getExtension())) {
+        if (Image::canManipulateAsImage($asset->getExtension())) {
             $imageSource = TransformHelper::getLocalImageSource($asset);
             // Scale and crop the placeholder image
             $tempPath = $this->createImageFromPath($imageSource, $width, $height, $quality, $position);
@@ -251,21 +252,22 @@ class Placeholder extends Component
     }
 
     /**
-     * @param string            $filePath
-     * @param int               $width
-     * @param int               $height
-     * @param int               $quality
+     * @param string $filePath
+     * @param int $width
+     * @param int $height
+     * @param int $quality
      * @param mixed|string|null $position
      *
      * @return string
      */
     public function createImageFromPath(
         string $filePath,
-        int $width,
-        int $height,
-        int $quality,
-        $position
-    ): string {
+        int    $width,
+        int    $height,
+        int    $quality,
+        mixed  $position
+    ): string
+    {
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
         /** @var Image $image */
@@ -275,9 +277,9 @@ class Placeholder extends Component
             } else {
                 $image = $images->loadImage($filePath);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Craft::error(
-                'Error creating temporary image: '.$e->getMessage(),
+                'Error creating temporary image: ' . $e->getMessage(),
                 __METHOD__
             );
 
@@ -298,14 +300,14 @@ class Placeholder extends Component
         }
 
         // Save the image out to a temp file, then return its contents
-        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';
-        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true) . '.' . 'jpg';
+        $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
         clearstatcache(true, $tempPath);
         try {
             $image->saveAs($tempPath);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Craft::error(
-                'Error saving temporary image: '.$e->getMessage(),
+                'Error saving temporary image: ' . $e->getMessage(),
                 __METHOD__
             );
         }

@@ -10,9 +10,10 @@ namespace nystudio107\imageoptimize\helpers;
 use Craft;
 use craft\errors\ImageException;
 use craft\helpers\FileHelper;
-
 use Imagine\Gd\Imagine as GdImagine;
 use Imagine\Imagick\Imagine as ImagickImagine;
+use Throwable;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -33,7 +34,7 @@ class Image
      * @return bool
      *
      * @throws ImageException
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public static function getIsAnimatedGif(string $path): bool
     {
@@ -44,26 +45,21 @@ class Image
         // If it's explicitly set, take their word for it.
         if ($extension === 'gd') {
             $instance = new GdImagine();
+        } else if ($extension === 'imagick') {
+            $instance = new ImagickImagine();
+        } else if (Craft::$app->getImages()->getIsGd()) {
+            $instance = new GdImagine();
         } else {
-            if ($extension === 'imagick') {
-                $instance = new ImagickImagine();
-            } else {
-                // Let's try to auto-detect.
-                if (Craft::$app->getImages()->getIsGd()) {
-                    $instance = new GdImagine();
-                } else {
-                    $instance = new ImagickImagine();
-                }
-            }
+            $instance = new ImagickImagine();
         }
 
         $imageService = Craft::$app->getImages();
         if ($imageService->getIsGd()) {
             return false;
         }
-        
+
         if (!is_file($path)) {
-            Craft::error('Tried to load an image at '.$path.', but the file does not exist.', __METHOD__);
+            Craft::error('Tried to load an image at ' . $path . ', but the file does not exist.', __METHOD__);
             throw new ImageException(Craft::t('app', 'No file exists at the given path.'));
         }
 
@@ -77,7 +73,7 @@ class Image
         // Make sure the image says it's an image
         $mimeType = FileHelper::getMimeType($path, null, false);
 
-        if ($mimeType !== null && strpos($mimeType, 'image/') !== 0 && strpos($mimeType, 'application/pdf') !== 0) {
+        if ($mimeType !== null && !str_starts_with($mimeType, 'image/') && !str_starts_with($mimeType, 'application/pdf')) {
             throw new ImageException(Craft::t(
                 'app',
                 'The file “{name}” does not appear to be an image.',
@@ -87,7 +83,7 @@ class Image
 
         try {
             $image = $instance->open($path);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new ImageException(Craft::t(
                 'app',
                 'The file “{path}” does not appear to be an image.',

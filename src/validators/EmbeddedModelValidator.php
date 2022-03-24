@@ -11,7 +11,6 @@
 namespace nystudio107\imageoptimize\validators;
 
 use Craft;
-
 use yii\base\Model;
 use yii\validators\Validator;
 
@@ -33,8 +32,7 @@ class EmbeddedModelValidator extends Validator
         /** @var Model $model */
         $value = $model->$attribute;
 
-        if (!empty($value) && \is_object($value) && $value instanceof Model) {
-            /** @var Model $value */
+        if (!empty($value) && $value instanceof Model) {
             if (!$value->validate()) {
                 $errors = $value->getErrors();
                 foreach ($errors as $attributeError => $valueErrors) {
@@ -43,7 +41,7 @@ class EmbeddedModelValidator extends Validator
                         $model->addError(
                             $attribute,
                             Craft::t('image-optimize', 'Object failed to validate')
-                            .'-'.$attributeError.' - '.$valueError
+                            . '-' . $attributeError . ' - ' . $valueError
                         );
                     }
                 }

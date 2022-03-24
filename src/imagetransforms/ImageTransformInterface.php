@@ -12,7 +12,8 @@ namespace nystudio107\imageoptimize\imagetransforms;
 
 use craft\base\SavableComponentInterface;
 use craft\elements\Asset;
-use craft\models\AssetTransform;
+use craft\models\ImageTransform as CraftImageTransformModel;
+use ReflectionException;
 
 /**
  * @author    nystudio107
@@ -29,7 +30,7 @@ interface ImageTransformInterface extends SavableComponentInterface
      * system directory for the Image Transform's templates
      *
      * @return array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function getTemplatesRoot(): array;
 
@@ -39,32 +40,32 @@ interface ImageTransformInterface extends SavableComponentInterface
     /**
      * Return a URL to a transformed images
      *
-     * @param Asset               $asset
-     * @param AssetTransform|null $transform
+     * @param Asset $asset
+     * @param CraftImageTransformModel|string|array|null $transform
      *
      * @return string|null
      */
-    public function getTransformUrl(Asset $asset, $transform);
+    public function getTransformUrl(Asset $asset, CraftImageTransformModel|string|array|null $transform): ?string;
 
     /**
      * Return a URL to the webp version of the transformed image
      *
-     * @param string              $url
-     * @param Asset               $asset
-     * @param AssetTransform|null $transform
+     * @param string $url
+     * @param Asset $asset
+     * @param CraftImageTransformModel|string|array|null $transform
      *
-     * @return string
+     * @return ?string
      */
-    public function getWebPUrl(string $url, Asset $asset, $transform): string;
+    public function getWebPUrl(string $url, Asset $asset, CraftImageTransformModel|string|array|null $transform): ?string;
 
     /**
      * Return the URL that should be used to purge the Asset
      *
      * @param Asset $asset
      *
-     * @return mixed
+     * @return ?string
      */
-    public function getPurgeUrl(Asset $asset);
+    public function getPurgeUrl(Asset $asset): ?string;
 
     /**
      * Purge the URL from the service's cache
@@ -80,14 +81,14 @@ interface ImageTransformInterface extends SavableComponentInterface
      *
      * @param Asset $asset
      *
-     * @return mixed
+     * @return ?string
      */
-    public function getAssetUri(Asset $asset);
+    public function getAssetUri(Asset $asset): ?string;
 
     /**
      * Prefetch the remote file to prime the cache
      *
      * @param string $url
      */
-    public function prefetchRemoteFile($url);
+    public function prefetchRemoteFile(string $url): void;
 }

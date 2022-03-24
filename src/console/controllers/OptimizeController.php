@@ -10,13 +10,11 @@
 
 namespace nystudio107\imageoptimize\console\controllers;
 
-use craft\models\Volume;
-use nystudio107\imageoptimize\ImageOptimize;
-
 use Craft;
 use craft\helpers\App;
 use craft\queue\QueueInterface;
-
+use nystudio107\imageoptimize\ImageOptimize;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\queue\redis\Queue as RedisQueue;
 
@@ -36,50 +34,47 @@ class OptimizeController extends Controller
      * @var bool Whether image variants should be forced to recreated, even if they already exist on disk
      * @since 1.6.18
      */
-    public $force = false;
+    public bool $force = false;
 
     /**
-     * @var string|null Only resave image variants associated with this field handle
+     * @var string|null Only re-save image variants associated with this field handle
      * @since 1.6.18
      */
-    public $field = null;
+    public ?string $field = null;
 
     // Public Methods
     // =========================================================================
 
     /**
-     * Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
+     * Create all the OptimizedImages Field variants by creating all the responsive image variant transforms
      *
-     * @param string|null $volumeHandle
+     * @param ?string $volumeHandle
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function actionCreate($volumeHandle = null)
+    public function actionCreate(?string $volumeHandle = null): void
     {
-        echo 'Creating optimized image variants'.PHP_EOL;
+        echo 'Creating optimized image variants' . PHP_EOL;
         if ($this->force) {
-            echo 'Forcing optimized image variants creation via --force'.PHP_EOL;
+            echo 'Forcing optimized image variants creation via --force' . PHP_EOL;
         }
 
         $fieldId = null;
         if ($this->field !== null) {
             $field = Craft::$app->getFields()->getFieldByHandle($this->field);
-            if ($field !== null) {
-                $fieldId = $field->id;
-            }
+            $fieldId = $field?->id;
         }
         if ($volumeHandle === null) {
-            // Re-save all of the optimized image variants in all volumes
+            // Re-save all the optimized image variants in all volumes
             ImageOptimize::$plugin->optimizedImages->resaveAllVolumesAssets($fieldId, $this->force);
         } else {
-            // Re-save all of the optimized image variants in a specific volume
+            // Re-save all the optimized image variants in a specific volume
             $volumes = Craft::$app->getVolumes();
             $volume = $volumes->getVolumeByHandle($volumeHandle);
             if ($volume) {
-                /** @var Volume $volume */
                 ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume, $fieldId, $this->force);
             } else {
-                echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
+                echo 'Unknown Asset Volume handle: ' . $volumeHandle . PHP_EOL;
             }
         }
         $this->runCraftQueue();
@@ -88,14 +83,14 @@ class OptimizeController extends Controller
     /**
      * Create a single OptimizedImage for the passed in Asset ID
      *
-     * @param int|null $id
+     * @param ?int $id
      */
-    public function actionCreateAsset($id = null)
+    public function actionCreateAsset(?int $id = null): void
     {
-        echo 'Creating optimized image variants'.PHP_EOL;
+        echo 'Creating optimized image variants' . PHP_EOL;
 
         if ($id === null) {
-            echo 'No Asset ID specified'.PHP_EOL;
+            echo 'No Asset ID specified' . PHP_EOL;
         } else {
             // Re-save a single Asset ID
             ImageOptimize::$plugin->optimizedImages->resaveAsset($id, $this->force);
@@ -118,7 +113,7 @@ class OptimizeController extends Controller
     /**
      *
      */
-    private function runCraftQueue()
+    private function runCraftQueue(): void
     {
         // This might take a while
         App::maxPowerCaptain();

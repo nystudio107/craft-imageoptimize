@@ -10,9 +10,6 @@
 
 namespace nystudio107\imageoptimize\jobs;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
-
 use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
@@ -22,7 +19,8 @@ use craft\elements\Asset;
 use craft\elements\db\ElementQuery;
 use craft\helpers\App;
 use craft\queue\BaseJob;
-
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
+use nystudio107\imageoptimize\ImageOptimize;
 use yii\base\Exception;
 
 /**
@@ -38,26 +36,26 @@ class ResaveOptimizedImages extends BaseJob
     /**
      * @const The number of assets to return in a single paginated query
      */
-    const ASSET_QUERY_PAGE_SIZE = 100;
+    protected const ASSET_QUERY_PAGE_SIZE = 100;
 
     // Properties
     // =========================================================================
 
     /**
-     * @var array|null The element criteria that determines which elements should be resaved
+     * @var ?array The element criteria that determines which elements should be resaved
      */
-    public $criteria;
+    public ?array $criteria = null;
 
     /**
      * @var int|null The id of the field to resave images for, or null for all images
      */
-    public $fieldId;
+    public ?int $fieldId = null;
 
     /**
      * @var bool Whether image variants should be forced to recreated, even if they already exist on disk
      * @since 1.6.18
      */
-    public $force = false;
+    public bool $force = false;
 
     // Public Methods
     // =========================================================================
@@ -68,11 +66,7 @@ class ResaveOptimizedImages extends BaseJob
     public function execute($queue): void
     {
         // Let's save ourselves some trouble and just clear all the caches for this element class
-        if (ImageOptimize::$craft35) {
-            Craft::$app->getElements()->invalidateCachesForElementType(Asset::class);
-        } else {
-            Craft::$app->getTemplateCaches()->deleteCachesByElementType(Asset::class);
-        }
+        Craft::$app->getElements()->invalidateCachesForElementType(Asset::class);
 
         // Now find the affected element IDs
         /** @var ElementQuery $query */
@@ -81,7 +75,7 @@ class ResaveOptimizedImages extends BaseJob
             Craft::configure($query, $this->criteria);
         }
         if (Craft::$app instanceof ConsoleApplication) {
-            echo $this->description.PHP_EOL;
+            echo $this->description . PHP_EOL;
         }
         // Use craft\db\Paginator to paginate the results so we don't exceed any memory limits
         // See batch() and each() discussion here: https://github.com/yiisoft/yii2/issues/8420
@@ -109,7 +103,7 @@ class ResaveOptimizedImages extends BaseJob
                     /** @var  $field Field */
                     foreach ($fields as $field) {
                         if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
-                            if ($this->fieldId === null || $field->id == $this->fieldId) {
+                            if ($this->fieldId === null || $field->id === $this->fieldId) {
                                 if (Craft::$app instanceof ConsoleApplication) {
                                     echo $currentElement . '/' . $totalElements
                                         . ' - processing asset: ' . $element->title

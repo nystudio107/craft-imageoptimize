@@ -10,30 +10,32 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use craft\helpers\ImageTransforms as TransformHelper;
-use craft\imagetransforms\ImageTransformer;
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
-use nystudio107\imageoptimize\helpers\Image as ImageHelper;
-use nystudio107\imageoptimize\models\OptimizedImage;
-use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
-
 use Craft;
 use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
-use craft\errors\ImageException;
+use craft\errors\FsObjectNotFoundException;
+use craft\errors\InvalidFieldException;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\ElementHelper;
 use craft\helpers\Image;
+use craft\helpers\ImageTransforms as TransformHelper;
 use craft\helpers\Json;
-use craft\models\ImageTransform as AssetTransform;
+use craft\imagetransforms\ImageTransformer;
 use craft\models\FieldLayout;
+use craft\models\ImageTransform as AssetTransform;
 use craft\models\Volume;
-
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
+use nystudio107\imageoptimize\helpers\Image as ImageHelper;
+use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
+use nystudio107\imageoptimize\models\OptimizedImage;
+use Throwable;
 use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use function in_array;
 
 /**
  * @author    nystudio107
@@ -56,6 +58,7 @@ class OptimizedImages extends Component
      * @param array $variants
      *
      * @return OptimizedImage
+     * @throws InvalidConfigException
      */
     public function createOptimizedImages(Asset $asset, array $variants = []): OptimizedImage
     {
@@ -75,12 +78,13 @@ class OptimizedImages extends Component
     }
 
     /**
-     * @param Asset          $asset
-     * @param array          $variants
+     * @param Asset $asset
+     * @param array $variants
      * @param OptimizedImage $model
-     * @param boolean        $force
+     * @param bool $force
+     * @throws InvalidConfigException
      */
-    public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model, $force = false)
+    public function populateOptimizedImageModel(Asset $asset, array $variants, OptimizedImage $model, bool $force = false): void
     {
         Craft::beginProfile('populateOptimizedImageModel', __METHOD__);
         $settings = ImageOptimize::$plugin->getSettings();
@@ -100,12 +104,13 @@ class OptimizedImages extends Component
             foreach ($retinaSizes as $retinaSize) {
                 $finalFormat = empty($variant['format']) ? $asset->getExtension() : $variant['format'];
                 // Only try the transform if it's possible
-                if (Image::canManipulateAsImage($finalFormat)
+                if ($asset->height > 0
+                    && Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
-                    && $asset->height > 0) {
+                ) {
                     // Create the transform based on the variant
                     /** @var AssetTransform $transform */
-                    list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, $retinaSize);
+                    [$transform, $aspectRatio] = $this->getTransformFromVariant($asset, $variant, $retinaSize);
                     // If they want to $force it, set `fileExists` = 0 in the transform index, then delete the transformed image
                     if ($force) {
                         $transformer = Craft::createObject(ImageTransformer::class);
@@ -116,10 +121,10 @@ class OptimizedImages extends Component
                             $transformer->storeTransformIndexData($index);
                             try {
                                 $transformer->deleteImageTransformFile($asset, $index);
-                            } catch (\Throwable $exception) {
+                            } catch (Throwable $exception) {
                             }
-                        } catch (\Throwable $e) {
-                            $msg = 'Failed to update transform: '.$e->getMessage();
+                        } catch (Throwable $e) {
+                            $msg = 'Failed to update transform: ' . $e->getMessage();
                             Craft::error($msg, __METHOD__);
                             if (Craft::$app instanceof ConsoleApplication) {
                                 echo $msg . PHP_EOL;
@@ -136,11 +141,10 @@ class OptimizedImages extends Component
                     }
                 } else {
                     $canManipulate = Image::canManipulateAsImage($asset->getExtension());
-                    $msg = 'Could not create transform for: '.$asset->title
-                        .' - Final format: '.$finalFormat
-                        .' - Element extension: '.$asset->getExtension()
-                        .' - canManipulateAsImage: '.$canManipulate
-                        ;
+                    $msg = 'Could not create transform for: ' . $asset->title
+                        . ' - Final format: ' . $finalFormat
+                        . ' - Element extension: ' . $asset->getExtension()
+                        . ' - canManipulateAsImage: ' . $canManipulate;
                     Craft::error(
                         $msg,
                         __METHOD__
@@ -159,9 +163,10 @@ class OptimizedImages extends Component
         // If no image variants were created, populate it with the image itself
         if (empty($model->optimizedImageUrls)) {
             $finalFormat = $asset->getExtension();
-            if (Image::canManipulateAsImage($finalFormat)
+            if ($asset->height > 0
                 && Image::canManipulateAsImage($finalFormat)
-                && $asset->height > 0) {
+                && Image::canManipulateAsImage($finalFormat)
+            ) {
                 $variant = [
                     'width' => $asset->width,
                     'useAspectRatio' => false,
@@ -170,15 +175,14 @@ class OptimizedImages extends Component
                     'retinaSizes' => ['1'],
                     'quality' => 0,
                 ];
-                list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, 1);
+                [$transform, $aspectRatio] = $this->getTransformFromVariant($asset, $variant, 1);
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
             } else {
                 $canManipulate = Image::canManipulateAsImage($asset->getExtension());
-                $msg = 'Could not create transform for: '.$asset->title
-                    .' - Final format: '.$finalFormat
-                    .' - Element extension: '.$asset->getExtension()
-                    .' - canManipulateAsImage: '.$canManipulate
-                    ;
+                $msg = 'Could not create transform for: ' . $asset->title
+                    . ' - Final format: ' . $finalFormat
+                    . ' - Element extension: ' . $asset->getExtension()
+                    . ' - canManipulateAsImage: ' . $canManipulate;
                 Craft::error(
                     $msg,
                     __METHOD__
@@ -234,10 +238,10 @@ class OptimizedImages extends Component
         if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
             $ignoreTypes = array_values($field->ignoreFilesOfType);
             // If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
-            if (\in_array('image/svg', $ignoreTypes, false)) {
+            if (in_array('image/svg', $ignoreTypes, false)) {
                 $ignoreTypes[] = 'image/svg+xml';
             }
-            if (\in_array($sourceType, $ignoreTypes, false)) {
+            if (in_array($sourceType, $ignoreTypes, false)) {
                 $createVariants = false;
             }
         }
@@ -245,14 +249,15 @@ class OptimizedImages extends Component
     }
 
     /**
-     * @param Field            $field
+     * @param Field $field
      * @param ElementInterface $asset
-     * @param boolean          $force
+     * @param bool $force
      *
-     * @throws \yii\db\Exception
+     * @throws Exception
      * @throws InvalidConfigException
+     * @throws InvalidFieldException
      */
-    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset, $force = false)
+    public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset, bool $force = false): void
     {
         /** @var Asset $asset */
         if ($asset instanceof Asset && $field instanceof OptimizedImagesField) {
@@ -265,7 +270,7 @@ class OptimizedImages extends Component
             $model->variantSourceWidths = [];
             $model->placeholderWidth = 0;
             $model->placeholderHeight = 0;
-            if ($asset !== null && $createVariants) {
+            if ($createVariants) {
                 $this->populateOptimizedImageModel(
                     $asset,
                     $field->variants,
@@ -277,12 +282,7 @@ class OptimizedImages extends Component
             if ($field->handle !== null) {
                 $asset->setFieldValue($field->handle, $field->serializeValue($model));
                 $table = $asset->getContentTable();
-                $column = $asset->getFieldColumnPrefix().$field->handle;
-                // Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name
-                // ref: https://github.com/craftcms/cms/issues/6922
-                if (ImageOptimize::$craft37) {
-                    $column = ElementHelper::fieldColumnFromField($field);
-                }
+                $column = ElementHelper::fieldColumnFromField($field);
                 $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
                 Craft::$app->db->createCommand()
                     ->update($table, [
@@ -296,35 +296,32 @@ class OptimizedImages extends Component
     }
 
     /**
-     * Re-save all of the assets in all of the volumes
+     * Re-save all the assets in all the volumes
      *
-     * @param int|null $fieldId only for this specific id
-     * @param boolean Should image variants be forced to be recreated?
+     * @param ?int $fieldId only for this specific id
+     * @param bool Should image variants be forced to be recreated?
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
-    public function resaveAllVolumesAssets($fieldId = null, $force = false)
+    public function resaveAllVolumesAssets(?int $fieldId = null, bool $force = false): void
     {
         $volumes = Craft::$app->getVolumes()->getAllVolumes();
         foreach ($volumes as $volume) {
             if (is_subclass_of($volume, Volume::class)) {
-                /** @var Volume $volume */
                 $this->resaveVolumeAssets($volume, $fieldId, $force);
             }
         }
     }
 
     /**
-     * Re-save all of the Asset elements in the Volume $volume that have an
+     * Re-save all the Asset elements in the Volume $volume that have an
      * OptimizedImages field in the FieldLayout
      *
      * @param Volume $volume for this volume
-     * @param int|null $fieldId only for this specific id
-     * @param boolean Should image variants be forced to be recreated?
-     *
-     * @throws InvalidConfigException
+     * @param ?int $fieldId only for this specific id
+     * @param bool Should image variants be forced to be recreated?
      */
-public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = false)
+    public function resaveVolumeAssets(Volume $volume, ?int $fieldId = null, bool $force = false): void
     {
         $needToReSave = false;
         /** @var FieldLayout $fieldLayout */
@@ -344,7 +341,7 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
             } catch (SiteNotFoundException $e) {
                 $siteId = 0;
                 Craft::error(
-                    'Failed to get primary site: '.$e->getMessage(),
+                    'Failed to get primary site: ' . $e->getMessage(),
                     __METHOD__
                 );
             }
@@ -377,9 +374,9 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
      * Re-save an individual asset
      *
      * @param int $id
-     * @param boolean Should image variants be forced to be recreated?
+     * @param bool Should image variants be forced to be recreated?
      */
-    public function resaveAsset(int $id, $force = false)
+    public function resaveAsset(int $id, bool $force = false): void
     {
         $queue = Craft::$app->getQueue();
         $jobId = $queue->push(new ResaveOptimizedImages([
@@ -440,15 +437,15 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
     // =========================================================================
 
     /**
-     * @param Asset          $element
+     * @param Asset $element
      * @param OptimizedImage $model
      * @param                $aspectRatio
      */
-    protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio)
+    protected function generatePlaceholders(Asset $element, OptimizedImage $model, $aspectRatio): void
     {
         Craft::beginProfile('generatePlaceholders', __METHOD__);
         Craft::info(
-            'generatePlaceholders for: '.print_r($model, true),
+            'generatePlaceholders for: ' . print_r($model, true),
             __METHOD__
         );
         $settings = ImageOptimize::$plugin->getSettings();
@@ -485,6 +482,7 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
      * @param       $retinaSize
      *
      * @return array
+     * @throws FsObjectNotFoundException
      */
     protected function getTransformFromVariant(Asset $asset, $variant, $retinaSize): array
     {
@@ -499,9 +497,7 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
                 if (ImageHelper::getIsAnimatedGif($imageSource)) {
                     $transform->format = null;
                 }
-            } catch (ImageException $e) {
-                Craft::error($e->getMessage(), __METHOD__);
-            } catch (InvalidConfigException $e) {
+            } catch (\Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
             }
         }
@@ -532,13 +528,13 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
     }
 
     /**
-     * @param Asset          $asset
+     * @param Asset $asset
      * @param OptimizedImage $model
      * @param                $transform
      * @param                $variant
      * @param                $aspectRatio
      */
-    protected function addVariantImageToModel(Asset $asset, OptimizedImage $model, $transform, $variant, $aspectRatio)
+    protected function addVariantImageToModel(Asset $asset, OptimizedImage $model, $transform, $variant, $aspectRatio): void
     {
         Craft::beginProfile('addVariantImageToModel', __METHOD__);
         // Generate an image transform url
@@ -547,7 +543,7 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
             $transform
         );
         Craft::info(
-            'URL created: '.print_r($url, true),
+            'URL created: ' . print_r($url, true),
             __METHOD__
         );
         // Update the model
@@ -575,7 +571,7 @@ public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = fal
                 $this->generatePlaceholders($asset, $model, $aspectRatio);
             }
             Craft::info(
-                'Created transforms for variant: '.print_r($variant, true),
+                'Created transforms for variant: ' . print_r($variant, true),
                 __METHOD__
             );
         }

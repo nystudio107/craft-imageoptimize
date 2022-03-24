@@ -10,11 +10,10 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\ImageOptimize;
-
 use Craft;
 use craft\elements\Asset;
-use craft\models\AssetTransform;
+use craft\models\ImageTransform as CraftImageTransformModel;
+use nystudio107\imageoptimize\ImageOptimize;
 
 /**
  * @author    nystudio107
@@ -27,20 +26,20 @@ class CraftImageTransform extends ImageTransform
     // =========================================================================
 
     /**
+     * @var bool
+     */
+    public bool $generateTransformsBeforePageLoad;
+
+    // Public Properties
+    // =========================================================================
+
+    /**
      * @inheritdoc
      */
     public static function displayName(): string
     {
         return Craft::t('image-optimize', 'Craft');
     }
-
-    // Public Properties
-    // =========================================================================
-
-    /**
-     * @var bool
-     */
-    public $generateTransformsBeforePageLoad;
 
     // Public Methods
     // =========================================================================
@@ -58,7 +57,7 @@ class CraftImageTransform extends ImageTransform
     /**
      * @inheritDoc
      */
-    public function getTransformUrl(Asset $asset, $transform)
+    public function getTransformUrl(Asset $asset, CraftImageTransformModel|string|array|null $transform): ?string
     {
         // Generate the URLs to the optimized images
         $oldValue = Craft::$app->getConfig()->getGeneral()->generateTransformsBeforePageLoad;
@@ -75,11 +74,9 @@ class CraftImageTransform extends ImageTransform
     /**
      * @inheritDoc
      */
-    public function getWebPUrl(string $url, Asset $asset, $transform): string
+    public function getWebPUrl(string $url, Asset $asset, CraftImageTransformModel|string|array|null $transform): ?string
     {
-        $url = $this->appendExtension($url, '.webp');
-
-        return $url;
+        return $this->appendExtension($url, '.webp');
     }
 
     /**
@@ -113,9 +110,7 @@ class CraftImageTransform extends ImageTransform
     public function rules(): array
     {
         $rules = parent::rules();
-        $rules = array_merge($rules, [
+        return array_merge($rules, [
         ]);
-
-        return $rules;
     }
 }

@@ -10,14 +10,14 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\helpers\UrlHelper;
-
 use Craft;
 use craft\base\SavableComponent;
 use craft\elements\Asset;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
-use nystudio107\imageoptimize\ImageOptimize;
+use craft\models\ImageTransform as CraftImageTransformModel;
+use nystudio107\imageoptimize\helpers\UrlHelper;
+use ReflectionClass;
 
 /**
  * @author    nystudio107
@@ -47,12 +47,12 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
      */
     public static function getTemplatesRoot(): array
     {
-        $reflect = new \ReflectionClass(static::class);
+        $reflect = new ReflectionClass(static::class);
         $classPath = FileHelper::normalizePath(
-            dirname($reflect->getFileName())
-            . '/../templates'
-        )
-        . DIRECTORY_SEPARATOR;
+                dirname($reflect->getFileName())
+                . '/../templates'
+            )
+            . DIRECTORY_SEPARATOR;
         $id = StringHelper::toKebabCase($reflect->getShortName());
 
         return [$id, $classPath];
@@ -64,29 +64,25 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     /**
      * @inheritdoc
      */
-    public function getTransformUrl(Asset $asset, $transform)
+    public function getTransformUrl(Asset $asset, CraftImageTransformModel|string|array|null $transform): ?string
     {
-        $url = null;
+        return null;
+    }
 
+    /**
+     * @inheritdoc
+     */
+    public function getWebPUrl(string $url, Asset $asset, CraftImageTransformModel|string|array|null $transform): ?string
+    {
         return $url;
     }
 
     /**
      * @inheritdoc
      */
-    public function getWebPUrl(string $url, Asset $asset, $transform): string
+    public function getPurgeUrl(Asset $asset): ?string
     {
-        return $url;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getPurgeUrl(Asset $asset)
-    {
-        $url = null;
-
-        return $url;
+        return null;
     }
 
     /**
@@ -100,19 +96,19 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     /**
      * @inheritdoc
      */
-    public function getAssetUri(Asset $asset)
+    public function getAssetUri(Asset $asset): ?string
     {
         $subPath = $asset->getVolume()->transformSubpath;
         $subPath = StringHelper::removeRight($subPath, '/');
-        $assetPath = $subPath . $asset->getPath();
 
-        return $assetPath;
+        return $subPath . $asset->getPath();
     }
 
     /**
      * @param string $url
+     * @noinspection PhpComposerExtensionStubsInspection
      */
-    public function prefetchRemoteFile($url)
+    public function prefetchRemoteFile(string $url): void
     {
         // Get an absolute URL with protocol that curl will be happy with
         $url = UrlHelper::absoluteUrlWithProtocol($url);
@@ -121,7 +117,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_NOBODY         => 1,
+            CURLOPT_NOBODY => 1,
         ]);
         curl_exec($ch);
         curl_close($ch);
@@ -146,16 +142,15 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
             $new_path = $dirname . DIRECTORY_SEPARATOR . $new_path;
             $new_path = preg_replace('/([^:])(\/{2,})/', '$1/', $new_path);
         }
-        $output = $path['prefix'] . $new_path . $path['suffix'];
 
-        return $output;
+        return $path['prefix'] . $new_path . $path['suffix'];
     }
 
     // Protected Methods
     // =========================================================================
 
     /**
-     * Decompose a url into a prefix, path, and suffix
+     * Decompose a URL into a prefix, path, and suffix
      *
      * @param $pathOrUrl
      *

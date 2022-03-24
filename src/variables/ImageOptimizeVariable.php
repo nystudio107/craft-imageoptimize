@@ -10,15 +10,15 @@
 
 namespace nystudio107\imageoptimize\variables;
 
+use craft\elements\Asset;
+use craft\helpers\Template;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
-
 use nystudio107\pluginvite\variables\ViteVariableInterface;
 use nystudio107\pluginvite\variables\ViteVariableTrait;
-
-use craft\elements\Asset;
-use craft\helpers\Template;
+use Twig\Markup;
+use yii\base\InvalidConfigException;
 
 /**
  * @author    nystudio107
@@ -37,9 +37,9 @@ class ImageOptimizeVariable implements ViteVariableInterface
      *
      * @param array $scriptAttrs
      * @param array $variables
-     * @return string
+     * @return Markup
      */
-    public function renderLazySizesFallbackJs($scriptAttrs = [], $variables = [])
+    public function renderLazySizesFallbackJs(array $scriptAttrs = [], array $variables = []): Markup
     {
         return Template::raw(ImageOptimize::$plugin->optimize->renderLazySizesFallbackJs($scriptAttrs, $variables));
     }
@@ -49,9 +49,9 @@ class ImageOptimizeVariable implements ViteVariableInterface
      *
      * @param array $scriptAttrs
      * @param array $variables
-     * @return string
+     * @return Markup
      */
-    public function renderLazySizesJs($scriptAttrs = [], $variables = [])
+    public function renderLazySizesJs(array $scriptAttrs = [], array $variables = []): Markup
     {
         return Template::raw(ImageOptimize::$plugin->optimize->renderLazySizesJs($scriptAttrs, $variables));
     }
@@ -61,27 +61,29 @@ class ImageOptimizeVariable implements ViteVariableInterface
      *
      * @param             $width
      * @param             $height
-     * @param string|null $color
+     * @param ?string $color
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function placeholderBox($width, $height, $color = null)
+    public function placeholderBox($width, $height, ?string $color = null): Markup
     {
         return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
     }
 
     /**
      * @param Asset $asset
-     * @param array $variants
-     * @param bool  $generatePlaceholders
+     * @param ?array $variants
+     * @param bool $generatePlaceholders
      *
-     * @return OptimizedImage|null
+     * @return ?OptimizedImage
+     * @throws InvalidConfigException
      */
     public function createOptimizedImages(
-        Asset $asset,
-        $variants = null,
-        $generatePlaceholders = false
-    ) {
+        Asset  $asset,
+        ?array $variants = null,
+        bool   $generatePlaceholders = false
+    ): ?OptimizedImage
+    {
         // Override our settings for lengthy operations, since we're doing this via Twig
         ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 
@@ -104,9 +106,9 @@ class ImageOptimizeVariable implements ViteVariableInterface
      * @param mixed $config The Image Transform’s class name, or its config,
      *                      with a `type` value and optionally a `settings` value
      *
-     * @return null|ImageTransformInterface The Image Transform
+     * @return ?ImageTransformInterface The Image Transform
      */
-    public function createImageTransformType($config): ImageTransformInterface
+    public function createImageTransformType($config): ?ImageTransformInterface
     {
         return ImageOptimize::$plugin->optimize->createImageTransformType($config);
     }
@@ -118,6 +120,6 @@ class ImageOptimizeVariable implements ViteVariableInterface
      */
     public function craft31(): bool
     {
-        return ImageOptimize::$craft31;
+        return true;
     }
 }

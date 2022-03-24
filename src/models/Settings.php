@@ -10,16 +10,13 @@
 
 namespace nystudio107\imageoptimize\models;
 
-use nystudio107\imageoptimize\ImageOptimize;
+use craft\base\Model;
+use craft\behaviors\EnvAttributeParserBehavior;
+use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
-
-use craft\base\Model;
-use craft\behaviors\EnvAttributeParserBehavior;
-use craft\validators\ArrayValidator;
-
 use yii\behaviors\AttributeTypecastBehavior;
 
 /**
@@ -34,7 +31,7 @@ class Settings extends Model
     // Constants
     // =========================================================================
 
-    const DEPRECATED_PROPERTIES = [
+    protected const DEPRECATED_PROPERTIES = [
         'generatePlacholders',
         'transformMethod',
         'imgixDomain',
@@ -50,12 +47,12 @@ class Settings extends Model
     /**
      * @var string The image transform class to use for image transforms
      */
-    public $transformClass = CraftImageTransform::class;
+    public string $transformClass = CraftImageTransform::class;
 
     /**
      * @var array Settings for the image transform components
      */
-    public $imageTransformTypeSettings = [];
+    public array $imageTransformTypeSettings = [];
 
     /**
      * @var bool Should the image variants in an Asset Volume be automatically
@@ -64,79 +61,79 @@ class Settings extends Model
      *      the ImageOptimized settings. Set this to false only if you will be
      *      manually using the CLI console command to resave image variants
      */
-    public $automaticallyResaveImageVariants = true;
+    public bool $automaticallyResaveImageVariants = true;
 
     /**
      * @var bool Should image variant be created on Asset save (aka
      *      BeforePageLoad)
      */
-    public $generateTransformsBeforePageLoad = true;
+    public bool $generateTransformsBeforePageLoad = true;
 
     /**
      * @var bool Set to false to disable all placeholder generation
      */
-    public $generatePlaceholders = true;
+    public bool $generatePlaceholders = true;
 
     /**
      * @var bool Controls whether a dominant color palette should be created
      *      for image variants It takes a bit of time, so if you never plan to
      *      use it, you can turn it off
      */
-    public $createColorPalette = true;
+    public bool $createColorPalette = true;
 
     /**
      * @var bool Controls whether SVG placeholder silhouettes should be created
      *      for image variants It takes a bit of time, so if you never plan to
      *      use them, you can turn it off
      */
-    public $createPlaceholderSilhouettes = false;
+    public bool $createPlaceholderSilhouettes = false;
 
     /**
      * @var bool Whether the placeholder silhouette SVGs should be capped at 32Kb in size
      */
-    public $capSilhouetteSvgSize = true;
+    public bool $capSilhouetteSvgSize = true;
 
     /**
      * @var bool Controls whether retina images are automatically created with
      *      reduced quality as per
      *      https://www.netvlies.nl/blogs/retina-revolutie-follow
      */
-    public $lowerQualityRetinaImageVariants = true;
+    public bool $lowerQualityRetinaImageVariants = true;
 
     /**
      * @var bool Controls whether Optimized Image Variants are created that
      *      would be up-scaled to be larger than the original source image
      */
-    public $allowUpScaledImageVariants = false;
+    public bool $allowUpScaledImageVariants = false;
 
     /**
      * @var bool Controls whether images scaled down >= 50% should be
      *      automatically sharpened
      */
-    public $autoSharpenScaledImages = true;
+    public bool $autoSharpenScaledImages = true;
 
     /**
      * @var int The amount an image needs to be scaled down for automatic sharpening
      *      to be applied
      */
-    public $sharpenScaledImagePercentage = 50;
+    public int $sharpenScaledImagePercentage = 50;
 
     /**
      * @var bool Whether to allow limiting the creation of Optimized Image Variants
      *      for images by sub-folders
      */
-    public $assetVolumeSubFolders = true;
+    public bool $assetVolumeSubFolders = true;
 
     /**
      * @var ImageTransformInterface[] The default Image Transform type classes
      */
-    public $defaultImageTransformTypes = [
+    public array $defaultImageTransformTypes = [
     ];
 
     /**
      * @var array Default aspect ratios
      */
-    public $defaultAspectRatios = [
+    public array $defaultAspectRatios = [
         ['x' => 16, 'y' => 9],
         ['x' => 8, 'y' => 5],
         ['x' => 4, 'y' => 3],
@@ -151,49 +148,49 @@ class Settings extends Model
     /**
      * @var array Default variants
      */
-    public $defaultVariants = [
+    public array $defaultVariants = [
         [
-            'width'          => 1200,
+            'width' => 1200,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'retinaSizes' => ['1'],
+            'quality' => 82,
+            'format' => 'jpg',
         ],
         [
-            'width'          => 992,
+            'width' => 992,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'retinaSizes' => ['1'],
+            'quality' => 82,
+            'format' => 'jpg',
         ],
         [
-            'width'          => 768,
+            'width' => 768,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 4.0,
-            'aspectRatioY'   => 3.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 60,
-            'format'         => 'jpg',
+            'aspectRatioX' => 4.0,
+            'aspectRatioY' => 3.0,
+            'retinaSizes' => ['1'],
+            'quality' => 60,
+            'format' => 'jpg',
         ],
         [
-            'width'          => 576,
+            'width' => 576,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 4.0,
-            'aspectRatioY'   => 3.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 60,
-            'format'         => 'jpg',
+            'aspectRatioX' => 4.0,
+            'aspectRatioY' => 3.0,
+            'retinaSizes' => ['1'],
+            'quality' => 60,
+            'format' => 'jpg',
         ],
     ];
 
     /**
      * @var array Active image processors
      */
-    public $activeImageProcessors = [
+    public array $activeImageProcessors = [
         'jpg' => [
             'jpegoptim',
         ],
@@ -211,7 +208,7 @@ class Settings extends Model
     /**
      * @var array Active image variant creators
      */
-    public $activeImageVariantCreators = [
+    public array $activeImageVariantCreators = [
         'jpg' => [
             'cwebp',
         ],
@@ -226,60 +223,60 @@ class Settings extends Model
     /**
      * @var array Preset image processors
      */
-    public $imageProcessors = [
+    public array $imageProcessors = [
         // jpeg optimizers
         'jpegoptim' => [
-            'commandPath'           => '/usr/bin/jpegoptim',
-            'commandOptions'        => '-s',
+            'commandPath' => '/usr/bin/jpegoptim',
+            'commandOptions' => '-s',
             'commandOutputFileFlag' => '',
         ],
-        'mozjpeg'   => [
-            'commandPath'           => '/usr/bin/mozjpeg',
-            'commandOptions'        => '-optimize -copy none',
+        'mozjpeg' => [
+            'commandPath' => '/usr/bin/mozjpeg',
+            'commandOptions' => '-optimize -copy none',
             'commandOutputFileFlag' => '-outfile',
         ],
-        'jpegtran'  => [
-            'commandPath'           => '/usr/bin/jpegtran',
-            'commandOptions'        => '-optimize -copy none',
+        'jpegtran' => [
+            'commandPath' => '/usr/bin/jpegtran',
+            'commandOptions' => '-optimize -copy none',
             'commandOutputFileFlag' => '',
         ],
         // png optimizers
-        'optipng'   => [
-            'commandPath'           => '/usr/bin/optipng',
-            'commandOptions'        => '-o3 -strip all',
+        'optipng' => [
+            'commandPath' => '/usr/bin/optipng',
+            'commandOptions' => '-o3 -strip all',
             'commandOutputFileFlag' => '',
         ],
-        'pngcrush'  => [
-            'commandPath'           => '/usr/bin/pngcrush',
-            'commandOptions'        => '-brute -ow',
+        'pngcrush' => [
+            'commandPath' => '/usr/bin/pngcrush',
+            'commandOptions' => '-brute -ow',
             'commandOutputFileFlag' => '',
         ],
-        'pngquant'  => [
-            'commandPath'           => '/usr/bin/pngquant',
-            'commandOptions'        => '--strip --skip-if-larger',
+        'pngquant' => [
+            'commandPath' => '/usr/bin/pngquant',
+            'commandOptions' => '--strip --skip-if-larger',
             'commandOutputFileFlag' => '',
         ],
         // svg optimizers
-        'svgo'      => [
-            'commandPath'           => '/usr/bin/svgo',
-            'commandOptions'        => '',
+        'svgo' => [
+            'commandPath' => '/usr/bin/svgo',
+            'commandOptions' => '',
             'commandOutputFileFlag' => '',
         ],
         // gif optimizers
-        'gifsicle'  => [
-            'commandPath'           => '/usr/bin/gifsicle',
-            'commandOptions'        => '-O3 -k 256',
+        'gifsicle' => [
+            'commandPath' => '/usr/bin/gifsicle',
+            'commandOptions' => '-O3 -k 256',
             'commandOutputFileFlag' => '',
         ],
     ];
 
-    public $imageVariantCreators = [
+    public array $imageVariantCreators = [
         // webp variant creator
         'cwebp' => [
-            'commandPath'           => '/usr/bin/cwebp',
-            'commandOptions'        => '',
+            'commandPath' => '/usr/bin/cwebp',
+            'commandOptions' => '',
             'commandOutputFileFlag' => '-o',
-            'commandQualityFlag'    => '-q',
+            'commandQualityFlag' => '-q',
             'imageVariantExtension' => 'webp',
         ],
     ];
@@ -374,7 +371,7 @@ class Settings extends Model
     public function fields(): array
     {
         // Only return user-editable settings
-        $fields = [
+        return [
             'transformClass',
             'imageTransformTypeSettings',
             'createColorPalette',
@@ -386,8 +383,6 @@ class Settings extends Model
             'sharpenScaledImagePercentage',
             'assetVolumeSubFolders',
         ];
-
-        return $fields;
     }
 
     /**
@@ -395,23 +390,16 @@ class Settings extends Model
      */
     public function behaviors(): array
     {
-        $craft31Behaviors = [];
-        if (ImageOptimize::$craft31) {
-            $craft31Behaviors = [
-                'parser' => [
-                    'class' => EnvAttributeParserBehavior::class,
-                    'attributes' => [
-                    ],
-                ]
-            ];
-        }
-
-        return array_merge($craft31Behaviors, [
+        return [
             'typecast' => [
                 'class' => AttributeTypecastBehavior::class,
                 // 'attributeTypes' will be composed automatically according to `rules()`
             ],
-        ]);
+            'parser' => [
+                'class' => EnvAttributeParserBehavior::class,
+                'attributes' => [
+                ],
+            ]
+        ];
     }
-
 }
