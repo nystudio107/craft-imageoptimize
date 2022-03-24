@@ -212,43 +212,40 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function afterElementSave(ElementInterface $asset, bool $isNew)
+    public function afterElementSave(ElementInterface $element, bool $isNew)
     {
-        parent::afterElementSave($asset, $isNew);
+        parent::afterElementSave($element, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
-        if ($asset !== null && $asset instanceof Asset && $asset->id !== null) {
-            // If this element is propagating, we don't need to redo the image saving for each site
-            if (!$asset->propagating) {
-                // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_MOVE (if using Craft > v3.7.1) treat it as a new asset
-                $scenario = $asset->getScenario();
+        // If this element is propagating, we don't need to redo the image saving for each site
+        if ($element instanceof Asset && $element->id !== null && !$element->propagating) {
+            // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_MOVE (if using Craft > v3.7.1) treat it as a new asset
+            $scenario = $element->getScenario();
+            $request = Craft::$app->getRequest();
+            $supportsMoveScenario = version_compare(
+                    Craft::$app->getVersion(),
+                    '3.7.1',
+                    '>='
+                ) === true;
 
-                $supportsMoveScenario = version_compare(
-                        Craft::$app->getVersion(),
-                        '3.7.1',
-                        '>='
-                    ) === true;
-
-                if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
-                    /**
-                     * If this is a newly uploaded/created Asset, we can save the variants
-                     * via a queue job to prevent it from blocking
-                     */
-                    ImageOptimize::$plugin->optimizedImages->resaveAsset($asset->id);
-                } else {
-                    /**
-                     * If it's not a newly uploaded/created Asset, check to see if the image
-                     * itself is being updated (via the ImageEditor). If so, update the
-                     * variants immediately so the AssetSelectorHud displays the new images
-                     */
-                    $request = Craft::$app->getRequest();
-                    if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
-                        try {
-                            ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $asset);
-                        } catch (Exception $e) {
-                            Craft::error($e->getMessage(), __METHOD__);
-                        }
-                    }
+            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
+                /**
+                 * If this is a newly uploaded/created Asset, we can save the variants
+                 * via a queue job to prevent it from blocking
+                 */
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+            } else if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
+                /**
+                 * If it's not a newly uploaded/created Asset, check to see if the image
+                 * itself is being updated (via the ImageEditor). If so, update the
+                 * variants immediately so the AssetSelectorHud displays the new images
+                 */
+                try {
+                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
+                } catch (Exception $e) {
+                    Craft::error($e->getMessage(), __METHOD__);
                 }
+            } else {
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
             }
         }
     }
