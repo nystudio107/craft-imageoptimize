@@ -4,6 +4,7 @@
 
 ### Fixed
 * Removed empty `type` on registered script tags, which would prevent them loading via the Vite dev server
+* Fix syntax errors in `OptimizedImagesField.js`
 
 ## 1.6.44 - 2022.03.24
 
