@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.6.45 - UNRELEASED
+
+### Fixed
+* Removed empty `type` on registered script tags, which would prevent them loading via the Vite dev server
+
 ## 1.6.44 - 2022.03.24
 
 ### Fixed
