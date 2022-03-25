@@ -242,7 +242,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         if ($value.data('menubtn')) {
           menuBtn = $value.data('menubtn');
           let menuItem = $(menuBtn.menu.$menuList[1]);
-          if (typeof menuItem !== undefined) {
+          if (typeof menuItem !== "undefined") {
             if (disabledDeleteItem) {
               menuItem.find("> li > a").addClass('disabled').disable();
             } else {

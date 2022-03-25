@@ -4,15 +4,15 @@
     "src": "../src/web/assets/src/js/ImageOptimize.js",
     "isEntry": true,
     "css": [
-      "assets/imageoptimize.f78eb2fb.css"
+      "assets/imageoptimize.5ee61032.css"
     ],
     "integrity": "sha384-QSz+CZpW/b1G9OWWcNAkGhYlvTX97l1KID+K31mTX04aOUXGu/gSZSZQEFrV2cMi"
   },
   "../src/web/assets/src/js/OptimizedImagesField.js": {
-    "file": "assets/field.e4e3a473.js",
+    "file": "assets/field.5cab8a39.js",
     "src": "../src/web/assets/src/js/OptimizedImagesField.js",
     "isEntry": true,
-    "integrity": "sha384-zRHRCH/8RbDuLEwFTSwr6WFd8gjXZaDbDb+FmgI3gu8fKHsH4YaCszrO9AEW3zxI"
+    "integrity": "sha384-RuYNRi5IN+NiZ3tGgSs1S6pcEQ6T6FAeZlugQ8nS+5eVYPEimeTJQ0/KTllBTv/q"
   },
   "../src/web/assets/src/js/Welcome.js": {
     "file": "assets/welcome.4826360a.js",
