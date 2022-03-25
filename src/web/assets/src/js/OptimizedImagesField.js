@@ -53,7 +53,7 @@ function imageLoaded(image) {
   const url = image.src || image.href;
   if (url && url.length > 0) {
     const iTime = performance.getEntriesByName(url)[0];
-    if (iTime !== undefined) {
+    if (typeof iTime !== "undefined") {
       const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
       if (elem) {
         elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
@@ -242,7 +242,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         if ($value.data('menubtn')) {
           menuBtn = $value.data('menubtn');
           let menuItem = $(menuBtn.menu.$menuList[1]);
-          if (typeof menuItem !== undefined) {
+          if (typeof menuItem !== "undefined") {
             if (disabledDeleteItem) {
               menuItem.find("> li > a").addClass('disabled').disable();
             } else {
