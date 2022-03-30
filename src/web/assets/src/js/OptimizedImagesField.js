@@ -53,7 +53,7 @@ function imageLoaded(image) {
   const url = image.src || image.href;
   if (url && url.length > 0) {
     const iTime = performance.getEntriesByName(url)[0];
-    if (iTime !== undefined) {
+    if (typeof iTime !== "undefined") {
       const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
       if (elem) {
         elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
