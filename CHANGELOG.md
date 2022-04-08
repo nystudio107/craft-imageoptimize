@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 4.0.0-beta.3 - 2022.04.08
+### Fixed
+* Fix `ImageTransform::getAssetUri()` to properly handle S3 and other volume sub-directories
+
 ## 4.0.0-beta.2 - 2022.04.08
 ### Fixed
 

@@ -98,10 +98,18 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
      */
     public function getAssetUri(Asset $asset): ?string
     {
-        $subPath = $asset->getVolume()->transformSubpath;
-        $subPath = StringHelper::removeRight($subPath, '/');
+        $volume = $asset->getVolume();
+        $assetPath = $asset->getPath();
 
-        return $subPath . $asset->getPath();
+        // Account for volume types with a subfolder setting
+        // e.g. craftcms/aws-s3, craftcms/google-cloud
+        if ($volume->getFs()->subfolder ?? null) {
+            $subfolder = $volume->getFs()->subfolder;
+            $subfolder = Craft::parseEnv($subfolder);
+            return rtrim($subfolder, '/') . '/' . $assetPath;
+        }
+
+        return $assetPath;
     }
 
     /**
