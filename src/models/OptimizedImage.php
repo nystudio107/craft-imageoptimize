@@ -53,7 +53,7 @@ class OptimizedImage extends Model
     /**
      * @var array An array of the x,y image focal point coords, ranging from 0.0 to 1.0
      */
-    public array $focalPoint;
+    public array $focalPoint = [];
 
     /**
      * @var int The width of the original source image
@@ -83,17 +83,17 @@ class OptimizedImage extends Model
     /**
      * @var int The overall lightness of the image, from 0..100
      */
-    public int $lightness;
+    public int $lightness = 0;
 
     /**
      * @var int The width of the placeholder image
      */
-    public int $placeholderWidth;
+    public int $placeholderWidth = 0;
 
     /**
      * @var int The height of the placeholder image
      */
-    public int $placeholderHeight;
+    public int $placeholderHeight = 0;
 
     /**
      * @var array An array of errors logged when generating the image transforms

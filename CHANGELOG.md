@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 4.0.0-beta.2 - 2022.04.08
+### Fixed
+
+* Fixed an issue with properties not being initialized before being accessed, which would cause image uploads to fail ([#323](https://github.com/nystudio107/craft-imageoptimize/issues/323))
+
 ## 4.0.0-beta.1 - 2022.03.23
 
 ### Added
