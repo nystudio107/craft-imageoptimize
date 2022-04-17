@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 4.0.0-beta.4 - UNRELEASED
+### Changed
+* If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
+
 ## 4.0.0-beta.3 - 2022.04.08
 ### Fixed
 * Fix `ImageTransform::getAssetUri()` to properly handle S3 and other volume sub-directories
