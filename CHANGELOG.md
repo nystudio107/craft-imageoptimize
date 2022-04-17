@@ -1,6 +1,8 @@
 # ImageOptimize Changelog
 
 ## 1.6.45 - UNRELEASED
+### Changed
+* If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
 
 ### Fixed
 * Removed empty `type` on registered script tags, which would prevent them loading via the Vite dev server
