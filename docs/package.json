@@ -17,6 +17,6 @@
     "textlint-rule-stop-words": "^2.0.8",
     "textlint-rule-terminology": "^2.1.4",
     "textlint-rule-write-good": "^1.6.2",
-    "vitepress": "latest"
+    "vitepress": "^0.22.4"
   }
 }
