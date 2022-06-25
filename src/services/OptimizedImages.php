@@ -98,6 +98,7 @@ class OptimizedImages extends Component
 
         foreach ($variants as $variant) {
             $retinaSizes = ['1'];
+            $variant['format'] = empty($variant['format']) ?: $asset->getExtension();
             if (!empty($variant['retinaSizes'])) {
                 $retinaSizes = $variant['retinaSizes'];
             }
