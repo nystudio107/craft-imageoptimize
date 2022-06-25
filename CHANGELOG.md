@@ -4,6 +4,9 @@
 ### Changed
 * If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
 
+### Fixed
+* Set the variant format to the current asset format if it is left empty, otherwise Craft recursively calls `getTransformUrl()` and hangs the queue ([#329]https://github.com/nystudio107/craft-imageoptimize/issues/329) ([#343](https://github.com/nystudio107/craft-imageoptimize/issues/343))
+
 ## 4.0.0-beta.3 - 2022.04.08
 ### Fixed
 * Fix `ImageTransform::getAssetUri()` to properly handle S3 and other volume sub-directories
