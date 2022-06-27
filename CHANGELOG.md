@@ -6,6 +6,7 @@
 
 ### Fixed
 * Set the variant format to the current asset format if it is left empty, otherwise Craft recursively calls `getTransformUrl()` and hangs the queue ([#329]https://github.com/nystudio107/craft-imageoptimize/issues/329) ([#343](https://github.com/nystudio107/craft-imageoptimize/issues/343))
+* Fixed an issue where variants would not resave under certain circumstance due to a typing issue ([#335](https://github.com/nystudio107/craft-imageoptimize/issues/335))
 
 ## 4.0.0-beta.3 - 2022.04.08
 ### Fixed
