@@ -98,12 +98,12 @@ class OptimizedImages extends Component
 
         foreach ($variants as $variant) {
             $retinaSizes = ['1'];
-            $variant['format'] = empty($variant['format']) ?: $asset->getExtension();
             if (!empty($variant['retinaSizes'])) {
                 $retinaSizes = $variant['retinaSizes'];
             }
             foreach ($retinaSizes as $retinaSize) {
                 $finalFormat = empty($variant['format']) ? $asset->getExtension() : $variant['format'];
+                $variant['format'] = $finalFormat;
                 // Only try the transform if it's possible
                 if ($asset->height > 0
                     && Image::canManipulateAsImage($finalFormat)
@@ -175,6 +175,7 @@ class OptimizedImages extends Component
                     'aspectRatioY' => $asset->height,
                     'retinaSizes' => ['1'],
                     'quality' => 0,
+                    'format' => $finalFormat
                 ];
                 [$transform, $aspectRatio] = $this->getTransformFromVariant($asset, $variant, 1);
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
