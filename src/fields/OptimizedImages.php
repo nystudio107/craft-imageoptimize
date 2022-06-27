@@ -445,15 +445,13 @@ class OptimizedImages extends Field
             $volumes = Craft::$app->getVolumes()->getAllVolumes();
             $assets = Craft::$app->getAssets();
             foreach ($volumes as $volume) {
-                if (is_subclass_of($volume, Volume::class)) {
-                    if ($this->volumeHasField($volume, $fieldHandle)) {
-                        $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
-                        $result[] = [
-                            'name' => $volume->name,
-                            'handle' => $volume->handle,
-                            'subfolders' => $this->assembleSourceList($tree),
-                        ];
-                    }
+                if (($volume instanceof Volume) && $this->volumeHasField($volume, $fieldHandle)) {
+                    $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
+                    $result[] = [
+                        'name' => $volume->name,
+                        'handle' => $volume->handle,
+                        'subfolders' => $this->assembleSourceList($tree),
+                    ];
                 }
             }
         }
