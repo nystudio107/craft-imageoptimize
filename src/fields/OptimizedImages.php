@@ -313,7 +313,7 @@ class OptimizedImages extends Field
         $view = Craft::$app->getView();
         $view->registerJs(
             'document.addEventListener("vite-script-loaded", function (e) {' .
-            'if (e.detail.path === "src/web/assets/src/js/OptimizedImagesField.js") {' .
+            'if (e.detail.path === "../src/web/assets/src/js/OptimizedImagesField.js") {' .
             'new Craft.OptimizedImagesInput(' .
             '"' . $namespacedId . '", ' .
             '"' . $namespacePrefix . '",' .
@@ -388,7 +388,7 @@ class OptimizedImages extends Field
             $view = Craft::$app->getView();
             $view->registerJs(
                 'document.addEventListener("vite-script-loaded", function (e) {' .
-                'if (e.detail.path === "src/web/assets/src/js/OptimizedImagesField.js") {' .
+                'if (e.detail.path === "../src/web/assets/src/js/OptimizedImagesField.js") {' .
                 "$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" .
                 $jsonVars .
                 ");" .
