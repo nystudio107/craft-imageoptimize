@@ -1,30 +1,20 @@
 {
   "../src/web/assets/src/js/ImageOptimize.js": {
-    "file": "assets/imageoptimize.3e9e7786.js",
+    "file": "assets/imageoptimize.8669aa97.js",
     "src": "../src/web/assets/src/js/ImageOptimize.js",
     "isEntry": true,
     "css": [
-      "assets/imageoptimize.f78eb2fb.css"
-    ],
-    "integrity": "sha384-QSz+CZpW/b1G9OWWcNAkGhYlvTX97l1KID+K31mTX04aOUXGu/gSZSZQEFrV2cMi"
+      "assets/imageoptimize.4f6c16e8.css"
+    ]
   },
   "../src/web/assets/src/js/OptimizedImagesField.js": {
-    "file": "assets/field.398f8178.js",
+    "file": "assets/field.303d8367.js",
     "src": "../src/web/assets/src/js/OptimizedImagesField.js",
-    "isEntry": true,
-    "integrity": "sha384-HgOqzaxB7EAZsL4ZV+bSyYE/jg+7pvE+eEM3lnQEXwP9UbR6sWSRRf00ppB9pNnP"
+    "isEntry": true
   },
   "../src/web/assets/src/js/Welcome.js": {
-    "file": "assets/welcome.4826360a.js",
+    "file": "assets/welcome.0253fdd4.js",
     "src": "../src/web/assets/src/js/Welcome.js",
-    "isEntry": true,
-    "imports": [
-      "_vendor.978d5786.js"
-    ],
-    "integrity": "sha384-jzzKmG0Rw4sUHugu3eTmFXFtc56u4TJSKPym36wWjgpMcUqyuMuHcyq4STXzN//M"
-  },
-  "_vendor.978d5786.js": {
-    "file": "assets/vendor.978d5786.js",
-    "integrity": "sha384-J7WS7LBhAiAkoLuiQ285ftEX/7LPdfrpoN6RSLQ7G0bqsrAlvnIsG31TXNRrPZqw"
+    "isEntry": true
   }
 }
