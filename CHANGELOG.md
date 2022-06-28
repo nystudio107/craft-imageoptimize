@@ -1,5 +1,14 @@
 # ImageOptimize Changelog
 
+## 1.6.45 - 2022.06.28
+### Changed
+* If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
+
+### Fixed
+* Removed empty `type` on registered script tags, which would prevent them loading via the Vite dev server
+* Fix syntax errors in `OptimizedImagesField.js`
+* Fixed an issue that could cause JavaScript errors for newly created OptimizedImages fields, and in slideouts ([#344](https://github.com/nystudio107/craft-imageoptimize/issues/344))
+
 ## 1.6.44 - 2022.03.24
 
 ### Fixed

@@ -17,10 +17,10 @@
 {% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
 
 {% set tagOptions = {
-    'type': '',
     'depends': [
         'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
     ],
+    'onload': '',
 } %}
 {{ craft.imageOptimize.register('src/js/ImageOptimize.js', false, tagOptions, tagOptions) }}
 {{ craft.imageOptimize.register('src/js/OptimizedImagesField.js', false, tagOptions, tagOptions) }}
@@ -380,8 +380,8 @@
 
         check_webp_feature('lossy', function (feature, result) {
         if (!result) {
-        $('.io-webp-image').each(function( index ) {
-        newSrc =  $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
+        $('.io-webp-image').each(function (index) {
+        newSrc = $(this).closest('.io-field-display-wrapper').find('.io-normal-image').first().attr('src');
         $(this).attr('src', newSrc);
         });
         }

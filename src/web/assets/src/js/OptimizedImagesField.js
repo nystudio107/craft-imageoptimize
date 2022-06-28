@@ -53,7 +53,7 @@ function imageLoaded(image) {
   const url = image.src || image.href;
   if (url && url.length > 0) {
     const iTime = performance.getEntriesByName(url)[0];
-    if (iTime !== undefined) {
+    if (typeof iTime !== "undefined") {
       const elem = image.parentNode.parentNode.parentNode.nextElementSibling.querySelector('.io-file-size');
       if (elem) {
         elem.innerHTML = humanFileSize(iTime.decodedBodySize, true);
@@ -242,7 +242,7 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         if ($value.data('menubtn')) {
           menuBtn = $value.data('menubtn');
           let menuItem = $(menuBtn.menu.$menuList[1]);
-          if (typeof menuItem !== undefined) {
+          if (typeof menuItem !== "undefined") {
             if (disabledDeleteItem) {
               menuItem.find("> li > a").addClass('disabled').disable();
             } else {
@@ -349,3 +349,19 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
       this.reIndexVariants();
     }
   });
+
+// Accept HMR as per: https://vitejs.dev/guide/api-hmr.html
+if (import.meta.hot) {
+  import.meta.hot.accept(() => {
+    console.log("HMR")
+  });
+}
+
+// Re-broadcast the custom `vite-script-loaded` event so that we know that this module has loaded
+// Needed because when <script> tags are appended to the DOM, the `onload` handlers
+// are not executed, which happens in the field Settings page, and in slideouts
+// Do this after the document is ready to ensure proper execution order
+$(document).ready(function () {
+  const e = new CustomEvent('vite-script-loaded', {detail: {path: '../src/web/assets/src/js/OptimizedImagesField.js'}});
+  document.dispatchEvent(e);
+});

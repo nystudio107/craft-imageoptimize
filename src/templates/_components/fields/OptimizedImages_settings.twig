@@ -19,10 +19,10 @@
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
 {% set tagOptions = {
-    'type': '',
     'depends': [
         'nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset'
     ],
+    'onload': '',
 } %}
 {{ craft.imageOptimize.register('src/js/ImageOptimize.js', false, tagOptions, tagOptions) }}
 {{ craft.imageOptimize.register('src/js/OptimizedImagesField.js', false, tagOptions, tagOptions) }}
