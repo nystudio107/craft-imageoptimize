@@ -349,3 +349,16 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
       this.reIndexVariants();
     }
   });
+
+// Accept HMR as per: https://vitejs.dev/guide/api-hmr.html
+if (import.meta.hot) {
+  import.meta.hot.accept(() => {
+    console.log("HMR")
+  });
+}
+
+// Re-broadcast the custom `vite-script-loaded` event so that we know that this module has loaded
+// Needed because when <script> tags are appended to the DOM, the `onload` handlers
+// are not executed, which happens in the field Settings page, and in slideouts
+e = new CustomEvent('vite-script-loaded', {detail: {path: 'src/web/assets/src/js/OptimizedImagesField.js'}});
+document.dispatchEvent(e);
