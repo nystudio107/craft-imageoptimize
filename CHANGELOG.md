@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 4.0.0 - UNRELEASED
+## 4.0.0 - 2022.06.28
 ### Changed
 * If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
 
