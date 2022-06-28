@@ -312,11 +312,15 @@ class OptimizedImages extends Field
         $sizesWrapperId = Craft::$app->getView()->namespaceInputId('sizes-wrapper');
         $view = Craft::$app->getView();
         $view->registerJs(
+            'document.addEventListener("vite-script-loaded", function (e) {' .
+            'if (e.detail.path === "../src/web/assets/src/js/OptimizedImagesField.js") {' .
             'new Craft.OptimizedImagesInput(' .
             '"' . $namespacedId . '", ' .
             '"' . $namespacePrefix . '",' .
             '"' . $sizesWrapperId . '"' .
-            ');'
+            ');' .
+            '}' .
+            '});'
         );
 
         // Prep our aspect ratios
@@ -383,9 +387,13 @@ class OptimizedImages extends Field
             $jsonVars = Json::encode($jsonVars);
             $view = Craft::$app->getView();
             $view->registerJs(
+                'document.addEventListener("vite-script-loaded", function (e) {' .
+                'if (e.detail.path === "../src/web/assets/src/js/OptimizedImagesField.js") {' .
                 "$('#{$nameSpaceId}-field').ImageOptimizeOptimizedImages(" .
                 $jsonVars .
-                ");"
+                ");" .
+                '}' .
+                '});'
             );
 
             $settings = ImageOptimize::$plugin->getSettings();
@@ -445,15 +453,13 @@ class OptimizedImages extends Field
             $volumes = Craft::$app->getVolumes()->getAllVolumes();
             $assets = Craft::$app->getAssets();
             foreach ($volumes as $volume) {
-                if (is_subclass_of($volume, Volume::class)) {
-                    if ($this->volumeHasField($volume, $fieldHandle)) {
-                        $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
-                        $result[] = [
-                            'name' => $volume->name,
-                            'handle' => $volume->handle,
-                            'subfolders' => $this->assembleSourceList($tree),
-                        ];
-                    }
+                if (($volume instanceof Volume) && $this->volumeHasField($volume, $fieldHandle)) {
+                    $tree = $assets->getFolderTreeByVolumeIds([$volume->id]);
+                    $result[] = [
+                        'name' => $volume->name,
+                        'handle' => $volume->handle,
+                        'subfolders' => $this->assembleSourceList($tree),
+                    ];
                 }
             }
         }

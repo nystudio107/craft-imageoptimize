@@ -103,7 +103,7 @@ class ResaveOptimizedImages extends BaseJob
                     /** @var  $field Field */
                     foreach ($fields as $field) {
                         if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
-                            if ($this->fieldId === null || $field->id === $this->fieldId) {
+                            if ($this->fieldId === null || (int)$field->id === (int)$this->fieldId) {
                                 if (Craft::$app instanceof ConsoleApplication) {
                                     echo $currentElement . '/' . $totalElements
                                         . ' - processing asset: ' . $element->title

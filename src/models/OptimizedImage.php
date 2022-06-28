@@ -31,74 +31,74 @@ class OptimizedImage extends Model
     // =========================================================================
 
     /**
-     * @var array An array of optimized image variant URLs
+     * @var ?array An array of optimized image variant URLs
      */
-    public array $optimizedImageUrls = [];
+    public ?array $optimizedImageUrls = [];
 
     /**
-     * @var array An array of optimized .webp image variant URLs
+     * @var ?array An array of optimized .webp image variant URLs
      */
-    public array $optimizedWebPImageUrls = [];
+    public ?array $optimizedWebPImageUrls = [];
 
     /**
-     * @var array An array of the widths of the optimized image variants
+     * @var ?array An array of the widths of the optimized image variants
      */
-    public array $variantSourceWidths = [];
+    public ?array $variantSourceWidths = [];
 
     /**
-     * @var array An array of the heights of the optimized image variants
+     * @var ?array An array of the heights of the optimized image variants
      */
-    public array $variantHeights = [];
+    public ?array $variantHeights = [];
 
     /**
      * @var array An array of the x,y image focal point coords, ranging from 0.0 to 1.0
      */
-    public array $focalPoint = [];
+    public ?array $focalPoint = [];
 
     /**
      * @var int The width of the original source image
      */
-    public int $originalImageWidth = 0;
+    public ?int $originalImageWidth = 0;
 
     /**
-     * @var int The height of the original source image
+     * @var ?int The height of the original source image
      */
-    public int $originalImageHeight = 0;
+    public ?int $originalImageHeight = 0;
 
     /**
-     * @var string The base64 encoded placeholder LQIP image
+     * @var ?string The base64 encoded placeholder LQIP image
      */
-    public string $placeholder = '';
+    public ?string $placeholder = '';
 
     /**
-     * @var string The base64 encoded placeholder LQIP SVG image
+     * @var ?string The base64 encoded placeholder LQIP SVG image
      */
-    public string $placeholderSvg = '';
+    public ?string $placeholderSvg = '';
 
     /**
-     * @var array An array the 5 most dominant colors in the image
+     * @var ?array An array the 5 most dominant colors in the image
      */
-    public array $colorPalette = [];
+    public ?array $colorPalette = [];
 
     /**
-     * @var int The overall lightness of the image, from 0..100
+     * @var ?int The overall lightness of the image, from 0..100
      */
-    public int $lightness = 0;
+    public ?int $lightness = 0;
 
     /**
-     * @var int The width of the placeholder image
+     * @var ?int The width of the placeholder image
      */
-    public int $placeholderWidth = 0;
+    public ?int $placeholderWidth = 0;
 
     /**
-     * @var int The height of the placeholder image
+     * @var ?int The height of the placeholder image
      */
-    public int $placeholderHeight = 0;
+    public ?int $placeholderHeight = 0;
 
     /**
-     * @var array An array of errors logged when generating the image transforms
+     * @var ?array An array of errors logged when generating the image transforms
      */
-    public array $stickyErrors = [];
+    public ?array $stickyErrors = [];
 
     // Public Methods
     // =========================================================================

@@ -1,5 +1,16 @@
 # ImageOptimize Changelog
 
+## 4.0.0 - 2022.06.28
+### Changed
+* If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
+
+### Fixed
+* Set the variant format to the current asset format if it is left empty, otherwise Craft recursively calls `getTransformUrl()` and hangs the queue ([#329]https://github.com/nystudio107/craft-imageoptimize/issues/329) ([#343](https://github.com/nystudio107/craft-imageoptimize/issues/343))
+* Fixed an issue where variants would not resave under certain circumstance due to a typing issue ([#335](https://github.com/nystudio107/craft-imageoptimize/issues/335))
+* Make the properties in the `OptimizedImage` nullable to avoid null property values throwing an exception ([#345](https://github.com/nystudio107/craft-imageoptimize/issues/345))
+* Fixed an issue that caused sub-folders to not appear in the OptimizedImages field settings ([#333](https://github.com/nystudio107/craft-imageoptimize/issues/333))
+* Fixed an issue that could cause JavaScript errors for newly created OptimizedImages fields, and in slideouts ([#344](https://github.com/nystudio107/craft-imageoptimize/issues/344))
+
 ## 4.0.0-beta.3 - 2022.04.08
 ### Fixed
 * Fix `ImageTransform::getAssetUri()` to properly handle S3 and other volume sub-directories
