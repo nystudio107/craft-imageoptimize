@@ -9,6 +9,7 @@
 * Fixed an issue where variants would not resave under certain circumstance due to a typing issue ([#335](https://github.com/nystudio107/craft-imageoptimize/issues/335))
 * Make the properties in the `OptimizedImage` nullable to avoid null property values throwing an exception ([#345](https://github.com/nystudio107/craft-imageoptimize/issues/345))
 * Fixed an issue that caused sub-folders to not appear in the OptimizedImages field settings ([#333](https://github.com/nystudio107/craft-imageoptimize/issues/333))
+* Fixed an issue that could cause JavaScript errors for newly created OptimizedImages fields, and in slideouts ([#344](https://github.com/nystudio107/craft-imageoptimize/issues/344))
 
 ## 4.0.0-beta.3 - 2022.04.08
 ### Fixed
