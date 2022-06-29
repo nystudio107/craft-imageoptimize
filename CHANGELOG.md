@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.46 - 2022.06.29
+### Fixed
+* Fixed an issue that could throw an exception when double-clicking on an asset, due to an incorrect asset bundle path
+
 ## 1.6.45 - 2022.06.28
 ### Changed
 * If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it

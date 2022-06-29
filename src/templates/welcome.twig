@@ -7,7 +7,7 @@
 {% set docsUrl = "https://github.com/nystudio107/craft-imageoptimize/blob/v1/README.md" %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
-{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/nystudio107/imageoptimize/web/assets/dist', true) %}
 
 {% set crumbs = [
     { label: "ImageOptimize", url: url('image-optimize') },
@@ -18,17 +18,24 @@
     <div id="cp-nav-content" class="readable" style="text-align:center; margin:0 auto; padding: 5% 10%;">
         <confetti-party>
         </confetti-party>
-        <img src="{{ baseAssetsUrl ~ '/img/ImageOptimize-icon.svg' }}" width="30%" height="auto" />
+        <img src="{{ baseAssetsUrl ~ '/img/ImageOptimize-icon.svg' }}" width="30%" height="auto"/>
         <h2>Thanks for using ImageOptimize!</h2>
-        <p>ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft CMS assets.</p>
-        <p>It works equally well with native Craft image transforms, and image services like <a href="https://imgix.com" target="_blank" rel="noopener">imgix</a>, with zero template changes.</p>
+        <p>ImageOptimize allows you to automatically create & optimize responsive image transforms from your Craft CMS
+            assets.</p>
+        <p>It works equally well with native Craft image transforms, and image services like <a href="https://imgix.com"
+                                                                                                target="_blank"
+                                                                                                rel="noopener">imgix</a>,
+            with zero template changes.</p>
 
-        <p>We hope you love it! For more information, please <a href="{{ docsUrl }}" target="_blank" rel="noopener">see the documentation</a>.</p>
+        <p>We hope you love it! For more information, please <a href="{{ docsUrl }}" target="_blank" rel="noopener">see
+                the documentation</a>.</p>
         <p>
             &nbsp;
         </p>
         <p>
-            <a href="{{ linkGetStarted }}"><button class="btn submit">Get Started</button></a>
+            <a href="{{ linkGetStarted }}">
+                <button class="btn submit">Get Started</button>
+            </a>
         </p>
     </div>
     <div style="text-align:center; margin:0 auto; padding: 0;">
