@@ -14,7 +14,7 @@
 #}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
-{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/assetbundles/imageoptimize/dist', true) %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/web/assets/dist', true) %}
 
 {% set tagOptions = {
     'depends': [
