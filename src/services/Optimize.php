@@ -152,6 +152,10 @@ class Optimize extends Component
             if (empty($transform)) {
                 $transform = null;
             }
+            // If there's no transform requested, return `null` so other plugins have a crack at it
+            if ($transform === null) {
+                return null;
+            }
             // If we're passed in null, make a dummy AssetTransform model for Thumbor
             // For backwards compatibility
             if ($transform === null && ImageOptimize::$plugin->transformMethod instanceof ThumborImageTransform) {
