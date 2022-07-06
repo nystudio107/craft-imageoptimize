@@ -3,6 +3,8 @@
 ## 4.0.1 - 2022.07.06
 ### Fixed
 * If there's no transform requested, return `null` so other plugins have a crack at it ([#349](https://github.com/nystudio107/craft-imageoptimize/issues/349))
+### Fixed
+* Fixed an issue where calling `generateUrl()` would throw an exception for the Imgix transform method ([#342](https://github.com/nystudio107/craft-imageoptimize/issues/342))
 
 ## 4.0.0 - 2022.06.28
 ### Changed
