@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.47 - 2022.07.06
+### Fixed
+* If there's no transform requested, return `null` so other plugins have a crack at it ([#349](https://github.com/nystudio107/craft-imageoptimize/issues/349))
+
 ## 1.6.46 - 2022.06.29
 ### Fixed
 * Fixed an issue that could throw an exception when double-clicking on an asset, due to an incorrect asset bundle path
