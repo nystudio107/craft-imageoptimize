@@ -31,7 +31,7 @@
   "require": {
     "craftcms/cms": "^4.0.0",
     "nystudio107/craft-plugin-vite": "^4.0.0",
-    "nystudio107/craft-imageoptimize-imgix": "^4.0.0",
+    "nystudio107/craft-imageoptimize-imgix": "^4.0.1",
     "nystudio107/craft-imageoptimize-sharp": "^4.0.0",
     "nystudio107/craft-imageoptimize-thumbor": "^4.0.0",
     "ksubileau/color-thief-php": "^1.3",
