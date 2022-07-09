@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 4.0.1 - 2022.07.06
+## 4.0.1 - 2022.07.08
 ### Fixed
 * If there's no transform requested, return `null` so other plugins have a crack at it ([#349](https://github.com/nystudio107/craft-imageoptimize/issues/349))
 ### Fixed
