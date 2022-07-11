@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.48 - UNRELEASED
+### Fixed
+* Fixed an issue where transforms don't get deleted on remote volumes if the format was set to `auto` ([#341](https://github.com/nystudio107/craft-imageoptimize/issues/341))
+
 ## 1.6.47 - 2022.07.08
 ### Fixed
 * If there's no transform requested, return `null` so other plugins have a crack at it ([#349](https://github.com/nystudio107/craft-imageoptimize/issues/349))
