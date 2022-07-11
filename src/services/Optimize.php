@@ -804,6 +804,7 @@ class Optimize extends Component
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
         $fileFormat = $transformIndex->detectedFormat ?? $transformIndex->format ?? $asset->getExtension();
+        $fileFormat = empty($fileFormat) ? $asset->getExtension() : $fileFormat;
         if (!empty($activeImageVariantCreators[$fileFormat])) {
             // Iterate through all the image variant creators for this format
             $imageVariantCreators = $settings->imageVariantCreators;
