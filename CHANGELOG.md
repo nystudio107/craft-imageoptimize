@@ -3,6 +3,7 @@
 ## 4.0.2 - UNRELEASED
 ### Fixed
 * Fixed an issue where transforms don't get deleted on remote volumes if the format was set to `auto` ([#341](https://github.com/nystudio107/craft-imageoptimize/issues/341))
+* Normalize for lowercase file extensions and normalize `jpeg` -> `jpg` everywhere
 
 ## 4.0.1 - 2022.07.08
 ### Fixed
