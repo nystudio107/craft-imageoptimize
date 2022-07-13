@@ -173,8 +173,14 @@ class Optimize extends Component
                 $assetTransforms = Craft::$app->getAssetTransforms();
                 $transform = $assetTransforms->getTransformByHandle($transform);
             }
-            // If the final format is an SVG, don't attempt to transform it
             $finalFormat = empty($transform['format']) ? $asset->getExtension() : $transform['format'];
+            // Normalize the extension to lowercase, for some transform methods that require this
+            $finalFormat = strtolower($finalFormat);
+            // Special-case for 'jpeg'
+            if ($finalFormat === 'jpeg') {
+                $finalFormat = 'jpg';
+            }
+            // If the final format is an SVG, don't attempt to transform it
             if ($finalFormat === 'svg') {
                 return null;
             }
@@ -215,8 +221,14 @@ class Optimize extends Component
                 ]);
                 /** @var ImageTransform $transformMethod */
                 $transformMethod = ImageOptimize::$plugin->transformMethod;
-                // If the final format is an SVG, don't attempt to transform it
                 $finalFormat = empty($transform['format']) ? $asset->getExtension() : $transform['format'];
+                // Normalize the extension to lowercase, for some transform methods that require this
+                $finalFormat = strtolower($finalFormat);
+                // Special-case for 'jpeg'
+                if ($finalFormat === 'jpeg') {
+                    $finalFormat = 'jpg';
+                }
+                // If the final format is an SVG, don't attempt to transform it
                 if ($finalFormat === 'svg') {
                     return null;
                 }
@@ -802,6 +814,12 @@ class Optimize extends Component
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
         $fileFormat = $transformIndex->detectedFormat ?? $transformIndex->format;
         $fileFormat = empty($fileFormat) ? $asset->getExtension() : $fileFormat;
+        // Normalize the extension to lowercase, for some transform methods that require this
+        $fileFormat = strtolower($fileFormat);
+        // Special-case for 'jpeg'
+        if ($fileFormat === 'jpeg') {
+            $fileFormat = 'jpg';
+        }
         if (!empty($activeImageVariantCreators[$fileFormat])) {
             // Iterate through all of the image variant creators for this format
             $imageVariantCreators = $settings->imageVariantCreators;
