@@ -2,7 +2,7 @@
   "name": "nystudio107/craft-imageoptimize",
   "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes.",
   "type": "craft-plugin",
-  "version": "1.6.47",
+  "version": "1.6.48",
   "keywords": [
     "craft",
     "cms",
@@ -35,6 +35,14 @@
     "nystudio107/craft-imageoptimize-thumbor": "^1.3.1",
     "ksubileau/color-thief-php": "^1.3",
     "mikehaertl/php-shellcommand": "~1.2"
+  },
+  "config": {
+    "allow-plugins": {
+      "craftcms/plugin-installer": true,
+      "yiisoft/yii2-composer": true
+    },
+    "optimize-autoloader": true,
+    "sort-packages": true
   },
   "autoload": {
     "psr-4": {
