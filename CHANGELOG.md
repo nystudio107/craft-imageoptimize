@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
-## 1.6.48 - UNRELEASED
+## 1.6.48 - 2022.07.17
+### Changed
+* Add `allow-plugins` to `composer.json` to allow CI tests to work
+
 ### Fixed
 * Fixed an issue where transforms don't get deleted on remote volumes if the format was set to `auto` ([#341](https://github.com/nystudio107/craft-imageoptimize/issues/341))
 * Normalize for lowercase file extensions and normalize `jpeg` -> `jpg` everywhere
