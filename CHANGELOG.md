@@ -1,5 +1,13 @@
 # ImageOptimize Changelog
 
+## 4.0.2 - 2022.07.17
+### Changed
+* Add `allow-plugins` to `composer.json` to allow CI tests to work
+
+### Fixed
+* Fixed an issue where transforms don't get deleted on remote volumes if the format was set to `auto` ([#341](https://github.com/nystudio107/craft-imageoptimize/issues/341))
+* Normalize for lowercase file extensions and normalize `jpeg` -> `jpg` everywhere
+
 ## 4.0.1 - 2022.07.08
 ### Fixed
 * If there's no transform requested, return `null` so other plugins have a crack at it ([#349](https://github.com/nystudio107/craft-imageoptimize/issues/349))
@@ -11,7 +19,7 @@
 * If there's no transform requested, and we're not using some external service for image transforms, return `null` so other plugins have a crack at it
 
 ### Fixed
-* Set the variant format to the current asset format if it is left empty, otherwise Craft recursively calls `getTransformUrl()` and hangs the queue ([#329]https://github.com/nystudio107/craft-imageoptimize/issues/329) ([#343](https://github.com/nystudio107/craft-imageoptimize/issues/343))
+* Set the variant format to the current asset format if it is left empty, otherwise Craft recursively calls `getTransformUrl()` and hangs the queue ([#329](https://github.com/nystudio107/craft-imageoptimize/issues/329)) ([#343](https://github.com/nystudio107/craft-imageoptimize/issues/343))
 * Fixed an issue where variants would not resave under certain circumstance due to a typing issue ([#335](https://github.com/nystudio107/craft-imageoptimize/issues/335))
 * Make the properties in the `OptimizedImage` nullable to avoid null property values throwing an exception ([#345](https://github.com/nystudio107/craft-imageoptimize/issues/345))
 * Fixed an issue that caused sub-folders to not appear in the OptimizedImages field settings ([#333](https://github.com/nystudio107/craft-imageoptimize/issues/333))
