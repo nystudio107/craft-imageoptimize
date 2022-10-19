@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 4.0.3 - UNRELEASED
+### Fixed
+* Fixed an issue where the `craft image-optimize/optimize/create` CLI command did not properly optimize all images ([#350](https://github.com/nystudio107/craft-imageoptimize/issues/350))
+
 ## 4.0.2 - 2022.07.17
 ### Changed
 * Add `allow-plugins` to `composer.json` to allow CI tests to work
