@@ -309,9 +309,7 @@ class OptimizedImages extends Component
     {
         $volumes = Craft::$app->getVolumes()->getAllVolumes();
         foreach ($volumes as $volume) {
-            if (is_subclass_of($volume, Volume::class)) {
-                $this->resaveVolumeAssets($volume, $fieldId, $force);
-            }
+            $this->resaveVolumeAssets($volume, $fieldId, $force);
         }
     }
 
