@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.49 - UNRELEASED
+### Changed
+* Fixed HMR in local dev with explicit alias that resolves to the actual directory
+
 ## 1.6.48 - 2022.07.17
 ### Changed
 * Add `allow-plugins` to `composer.json` to allow CI tests to work
