@@ -53,12 +53,15 @@ export default defineConfig(({command}) => ({
       cache: false,
     }),
   ],
+  optimizeDeps: {
+    include: ['vue-confetti'],
+  },
   publicDir: '../src/web/assets/public',
   resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-      'vue': 'vue/dist/vue.esm.js',
-    },
+    alias: [
+      {find: '@', replacement: path.resolve(__dirname, '../src/web/assets/src')},
+      {find: 'vue', replacement: 'vue/dist/vue.esm.js'},
+    ],
     preserveSymlinks: true,
   },
   server: {
@@ -66,7 +69,7 @@ export default defineConfig(({command}) => ({
       strict: false
     },
     host: '0.0.0.0',
-    origin: 'http://localhost:3001/',
+    origin: 'http://localhost:3001',
     port: 3001,
     strictPort: true,
   }
