@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -81,7 +81,7 @@ class ResaveOptimizedImages extends BaseJob
             Craft::configure($query, $this->criteria);
         }
         if (Craft::$app instanceof ConsoleApplication) {
-            echo $this->description.PHP_EOL;
+            echo $this->description . PHP_EOL;
         }
         // Use craft\db\Paginator to paginate the results so we don't exceed any memory limits
         // See batch() and each() discussion here: https://github.com/yiisoft/yii2/issues/8420

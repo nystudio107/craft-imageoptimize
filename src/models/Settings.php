@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -153,40 +153,40 @@ class Settings extends Model
      */
     public $defaultVariants = [
         [
-            'width'          => 1200,
+            'width' => 1200,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'retinaSizes' => ['1'],
+            'quality' => 82,
+            'format' => 'jpg',
         ],
         [
-            'width'          => 992,
+            'width' => 992,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 16.0,
-            'aspectRatioY'   => 9.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 82,
-            'format'         => 'jpg',
+            'aspectRatioX' => 16.0,
+            'aspectRatioY' => 9.0,
+            'retinaSizes' => ['1'],
+            'quality' => 82,
+            'format' => 'jpg',
         ],
         [
-            'width'          => 768,
+            'width' => 768,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 4.0,
-            'aspectRatioY'   => 3.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 60,
-            'format'         => 'jpg',
+            'aspectRatioX' => 4.0,
+            'aspectRatioY' => 3.0,
+            'retinaSizes' => ['1'],
+            'quality' => 60,
+            'format' => 'jpg',
         ],
         [
-            'width'          => 576,
+            'width' => 576,
             'useAspectRatio' => true,
-            'aspectRatioX'   => 4.0,
-            'aspectRatioY'   => 3.0,
-            'retinaSizes'    => ['1'],
-            'quality'        => 60,
-            'format'         => 'jpg',
+            'aspectRatioX' => 4.0,
+            'aspectRatioY' => 3.0,
+            'retinaSizes' => ['1'],
+            'quality' => 60,
+            'format' => 'jpg',
         ],
     ];
 
@@ -229,46 +229,46 @@ class Settings extends Model
     public $imageProcessors = [
         // jpeg optimizers
         'jpegoptim' => [
-            'commandPath'           => '/usr/bin/jpegoptim',
-            'commandOptions'        => '-s',
+            'commandPath' => '/usr/bin/jpegoptim',
+            'commandOptions' => '-s',
             'commandOutputFileFlag' => '',
         ],
-        'mozjpeg'   => [
-            'commandPath'           => '/usr/bin/mozjpeg',
-            'commandOptions'        => '-optimize -copy none',
+        'mozjpeg' => [
+            'commandPath' => '/usr/bin/mozjpeg',
+            'commandOptions' => '-optimize -copy none',
             'commandOutputFileFlag' => '-outfile',
         ],
-        'jpegtran'  => [
-            'commandPath'           => '/usr/bin/jpegtran',
-            'commandOptions'        => '-optimize -copy none',
+        'jpegtran' => [
+            'commandPath' => '/usr/bin/jpegtran',
+            'commandOptions' => '-optimize -copy none',
             'commandOutputFileFlag' => '',
         ],
         // png optimizers
-        'optipng'   => [
-            'commandPath'           => '/usr/bin/optipng',
-            'commandOptions'        => '-o3 -strip all',
+        'optipng' => [
+            'commandPath' => '/usr/bin/optipng',
+            'commandOptions' => '-o3 -strip all',
             'commandOutputFileFlag' => '',
         ],
-        'pngcrush'  => [
-            'commandPath'           => '/usr/bin/pngcrush',
-            'commandOptions'        => '-brute -ow',
+        'pngcrush' => [
+            'commandPath' => '/usr/bin/pngcrush',
+            'commandOptions' => '-brute -ow',
             'commandOutputFileFlag' => '',
         ],
-        'pngquant'  => [
-            'commandPath'           => '/usr/bin/pngquant',
-            'commandOptions'        => '--strip --skip-if-larger',
+        'pngquant' => [
+            'commandPath' => '/usr/bin/pngquant',
+            'commandOptions' => '--strip --skip-if-larger',
             'commandOutputFileFlag' => '',
         ],
         // svg optimizers
-        'svgo'      => [
-            'commandPath'           => '/usr/bin/svgo',
-            'commandOptions'        => '',
+        'svgo' => [
+            'commandPath' => '/usr/bin/svgo',
+            'commandOptions' => '',
             'commandOutputFileFlag' => '',
         ],
         // gif optimizers
-        'gifsicle'  => [
-            'commandPath'           => '/usr/bin/gifsicle',
-            'commandOptions'        => '-O3 -k 256',
+        'gifsicle' => [
+            'commandPath' => '/usr/bin/gifsicle',
+            'commandOptions' => '-O3 -k 256',
             'commandOutputFileFlag' => '',
         ],
     ];
@@ -276,10 +276,10 @@ class Settings extends Model
     public $imageVariantCreators = [
         // webp variant creator
         'cwebp' => [
-            'commandPath'           => '/usr/bin/cwebp',
-            'commandOptions'        => '',
+            'commandPath' => '/usr/bin/cwebp',
+            'commandOptions' => '',
             'commandOutputFileFlag' => '-o',
-            'commandQualityFlag'    => '-q',
+            'commandQualityFlag' => '-q',
             'imageVariantExtension' => 'webp',
         ],
     ];

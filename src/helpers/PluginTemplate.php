@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -52,17 +52,18 @@ class PluginTemplate
     /**
      * Render a plugin template
      *
-     * @param string      $templatePath
-     * @param array       $params
+     * @param string $templatePath
+     * @param array $params
      * @param string|null $minifier
      *
      * @return string
      */
     public static function renderPluginTemplate(
         string $templatePath,
-        array $params = [],
+        array  $params = [],
         string $minifier = null
-    ): string {
+    ): string
+    {
         $template = 'image-optimize/' . $templatePath;
         $oldMode = Craft::$app->view->getTemplateMode();
         // Look for the template on the frontend first

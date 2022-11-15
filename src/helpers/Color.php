@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -37,12 +37,12 @@ class Color
         }
 
         if (strlen($htmlCode) === 3) {
-            $htmlCode = $htmlCode[0].$htmlCode[0].$htmlCode[1].$htmlCode[1].$htmlCode[2].$htmlCode[2];
+            $htmlCode = $htmlCode[0] . $htmlCode[0] . $htmlCode[1] . $htmlCode[1] . $htmlCode[2] . $htmlCode[2];
         }
 
-        $r = hexdec($htmlCode[0].$htmlCode[1]);
-        $g = hexdec($htmlCode[2].$htmlCode[3]);
-        $b = hexdec($htmlCode[4].$htmlCode[5]);
+        $r = hexdec($htmlCode[0] . $htmlCode[1]);
+        $g = hexdec($htmlCode[2] . $htmlCode[3]);
+        $b = hexdec($htmlCode[4] . $htmlCode[5]);
 
         return ['r' => $r, 'g' => $g, 'b' => $b];
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -62,19 +62,19 @@ class Placeholder extends Component
         $color = $color ?? '#CCC';
         $header = 'data:image/svg+xml,';
         $content = "<svg xmlns='http://www.w3.org/2000/svg' "
-            ."width='$width' "
-            ."height='$height' "
-            ."style='background:$color' "
-            ."/>";
+            . "width='$width' "
+            . "height='$height' "
+            . "style='background:$color' "
+            . "/>";
 
-        return $header.ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
+        return $header . ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($content);
     }
 
     /**
      * Generate a base64-encoded placeholder image
      *
-     * @param string            $tempPath
-     * @param float             $aspectRatio
+     * @param string $tempPath
+     * @param float $aspectRatio
      * @param mixed|string|null $position
      *
      * @return string
@@ -158,6 +158,7 @@ class Placeholder extends Component
 
         return $lightness === null ? $lightness : (int)$lightness;
     }
+
     /**
      * Generate an SVG image via Potrace
      *
@@ -206,8 +207,8 @@ class Placeholder extends Component
      * Create a small placeholder image file that the various placerholder
      * generators can use
      *
-     * @param Asset             $asset
-     * @param float             $aspectRatio
+     * @param Asset $asset
+     * @param float $aspectRatio
      * @param mixed|string|null $position
      *
      * @return string
@@ -228,10 +229,10 @@ class Placeholder extends Component
     }
 
     /**
-     * @param Asset             $asset
-     * @param int               $width
-     * @param int               $height
-     * @param int               $quality
+     * @param Asset $asset
+     * @param int $width
+     * @param int $height
+     * @param int $quality
      * @param mixed|string|null $position
      *
      * @return string
@@ -250,21 +251,22 @@ class Placeholder extends Component
     }
 
     /**
-     * @param string            $filePath
-     * @param int               $width
-     * @param int               $height
-     * @param int               $quality
+     * @param string $filePath
+     * @param int $width
+     * @param int $height
+     * @param int $quality
      * @param mixed|string|null $position
      *
      * @return string
      */
     public function createImageFromPath(
         string $filePath,
-        int $width,
-        int $height,
-        int $quality,
-        $position
-    ): string {
+        int    $width,
+        int    $height,
+        int    $quality,
+               $position
+    ): string
+    {
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
         /** @var Image $image */
@@ -276,7 +278,7 @@ class Placeholder extends Component
             }
         } catch (\Throwable $e) {
             Craft::error(
-                'Error creating temporary image: '.$e->getMessage(),
+                'Error creating temporary image: ' . $e->getMessage(),
                 __METHOD__
             );
 
@@ -297,14 +299,14 @@ class Placeholder extends Component
         }
 
         // Save the image out to a temp file, then return its contents
-        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true).'.'.'jpg';
-        $tempPath = Craft::$app->getPath()->getTempPath().DIRECTORY_SEPARATOR.$tempFilename;
+        $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true) . '.' . 'jpg';
+        $tempPath = Craft::$app->getPath()->getTempPath() . DIRECTORY_SEPARATOR . $tempFilename;
         clearstatcache(true, $tempPath);
         try {
             $image->saveAs($tempPath);
         } catch (\Throwable $e) {
             Craft::error(
-                'Error saving temporary image: '.$e->getMessage(),
+                'Error saving temporary image: ' . $e->getMessage(),
                 __METHOD__
             );
         }

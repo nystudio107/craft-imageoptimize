@@ -1,6 +1,6 @@
 <?php
 /**
- * Image Optimize plugin for Craft CMS 3.x
+ * Image Optimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -73,15 +73,16 @@ class ImageOptimizeVariable implements ViteVariableInterface
     /**
      * @param Asset $asset
      * @param array $variants
-     * @param bool  $generatePlaceholders
+     * @param bool $generatePlaceholders
      *
      * @return OptimizedImage|null
      */
     public function createOptimizedImages(
         Asset $asset,
-        $variants = null,
-        $generatePlaceholders = false
-    ) {
+              $variants = null,
+              $generatePlaceholders = false
+    )
+    {
         // Override our settings for lengthy operations, since we're doing this via Twig
         ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 

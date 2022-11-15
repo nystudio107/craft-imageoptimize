@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -39,7 +39,7 @@ interface ImageTransformInterface extends SavableComponentInterface
     /**
      * Return a URL to a transformed images
      *
-     * @param Asset               $asset
+     * @param Asset $asset
      * @param AssetTransform|null $transform
      *
      * @return string|null
@@ -49,8 +49,8 @@ interface ImageTransformInterface extends SavableComponentInterface
     /**
      * Return a URL to the webp version of the transformed image
      *
-     * @param string              $url
-     * @param Asset               $asset
+     * @param string $url
+     * @param Asset $asset
      * @param AssetTransform|null $transform
      *
      * @return string
