@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 4.0.3 - UNRELEASED
+### Changed
+* Fixed HMR in local dev with explicit alias that resolves to the actual directory
+
 ### Fixed
 * Fixed an issue where the `craft image-optimize/optimize/create` CLI command did not properly optimize all images ([#350](https://github.com/nystudio107/craft-imageoptimize/issues/350))
 
