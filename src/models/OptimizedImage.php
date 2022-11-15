@@ -715,7 +715,7 @@ class OptimizedImage extends Model
             $match = false;
             switch ($comparison) {
                 case 'width':
-                    if ($variantSourceWidth === $width) {
+                    if ($variantSourceWidth == $width) {
                         $match = true;
                     }
                     break;
