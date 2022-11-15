@@ -10,20 +10,6 @@
 
 namespace nystudio107\imageoptimize;
 
-use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
-use nystudio107\imageoptimize\fields\OptimizedImages;
-use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
-use nystudio107\imageoptimize\listeners\GetCraftQLSchema;
-use nystudio107\imageoptimize\models\Settings;
-use nystudio107\imageoptimize\services\Optimize as OptimizeService;
-use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
-use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
-use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
-use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
-
-use nystudio107\pluginvite\services\VitePluginService;
-
 use Craft;
 use craft\base\Field;
 use craft\base\Plugin;
@@ -32,9 +18,9 @@ use craft\elements\Asset;
 use craft\events\AssetTransformImageEvent;
 use craft\events\ElementEvent;
 use craft\events\FieldEvent;
+use craft\events\GenerateTransformEvent;
 use craft\events\GetAssetThumbUrlEvent;
 use craft\events\GetAssetUrlEvent;
-use craft\events\GenerateTransformEvent;
 use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -51,13 +37,19 @@ use craft\services\Fields;
 use craft\services\Plugins;
 use craft\services\Utilities;
 use craft\services\Volumes;
-use craft\web\twig\variables\CraftVariable;
 use craft\web\Controller;
+use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
-
 use markhuot\CraftQL\CraftQL;
-
+use nystudio107\imageoptimize\fields\OptimizedImages;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\listeners\GetCraftQLSchema;
+use nystudio107\imageoptimize\models\Settings;
+use nystudio107\imageoptimize\services\ServicesTrait;
+use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
+use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -71,16 +63,14 @@ use yii\base\InvalidConfigException;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService         $optimize
- * @property PlaceholderService      $placeholder
- * @property OptimizedImagesService  $optimizedImages
  * @property ImageTransformInterface $transformMethod
- * @property VitePluginService       $vite
- * @property Settings                $settings
- * @method   Settings                getSettings()
  */
 class ImageOptimize extends Plugin
 {
+    // Traits
+    // =========================================================================
+
+    use ServicesTrait;
 
     // Constants
     // =========================================================================
@@ -114,34 +104,6 @@ class ImageOptimize extends Plugin
      * @var bool
      */
     public static $craft37 = false;
-
-    // Static Methods
-    // =========================================================================
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($id, $parent = null, array $config = [])
-    {
-        $config['components'] = [
-            'optimize' => OptimizeService::class,
-            'optimizedImages' => OptimizedImagesService::class,
-            'placeholder' => PlaceholderService::class,
-            // Register the manifest service
-            'vite' => [
-                'class' => VitePluginService::class,
-                'assetClass' => ImageOptimizeAsset::class,
-                'useDevServer' => true,
-                'devServerPublic' => 'http://localhost:3001',
-                'serverPublic' => 'http://localhost:8000',
-                'errorEntry' => 'src/js/ImageOptimize.js',
-                'devServerInternal' => 'http://craft-imageoptimize-buildchain:3001',
-                'checkDevServer' => true,
-            ],
-        ];
-
-        parent::__construct($id, $parent, $config);
-    }
 
     // Public Properties
     // =========================================================================
@@ -210,7 +172,7 @@ class ImageOptimize extends Plugin
         $controller = Craft::$app->controller;
 
         return $controller->renderTemplate('image-optimize/settings/index.twig', [
-            'plugin'       => $this,
+            'plugin' => $this,
             'settingsHtml' => $settingsHtml,
         ]);
     }
@@ -243,8 +205,8 @@ class ImageOptimize extends Plugin
             return Craft::$app->getView()->renderTemplate(
                 'image-optimize/settings/_settings.twig',
                 [
-                    'settings'        => $settings,
-                    'gdInstalled'     => \function_exists('imagecreatefromjpeg'),
+                    'settings' => $settings,
+                    'gdInstalled' => \function_exists('imagecreatefromjpeg'),
                     'imageTransformTypeOptions' => $imageTransformTypeOptions,
                     'allImageTransformTypes' => $allImageTransformTypes,
                     'imageTransform' => ImageOptimize::$plugin->transformMethod,
@@ -627,22 +589,22 @@ class ImageOptimize extends Plugin
             Plugins::class,
             Plugins::EVENT_AFTER_LOAD_PLUGINS,
             function () {
-                    // Install these only after all other plugins have loaded
-                    Event::on(
-                        View::class,
-                        View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
-                        function (RegisterTemplateRootsEvent $e) {
-                            // Register the root directodies
-                            $allImageTransformTypes = ImageOptimize::$plugin->optimize->getAllImageTransformTypes();
-                            /** @var ImageTransformInterface $imageTransformType */
-                            foreach ($allImageTransformTypes as $imageTransformType) {
-                                list($id, $baseDir) = $imageTransformType::getTemplatesRoot();
-                                if (is_dir($baseDir)) {
-                                    $e->roots[$id] = $baseDir;
-                                }
+                // Install these only after all other plugins have loaded
+                Event::on(
+                    View::class,
+                    View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
+                    function (RegisterTemplateRootsEvent $e) {
+                        // Register the root directodies
+                        $allImageTransformTypes = ImageOptimize::$plugin->optimize->getAllImageTransformTypes();
+                        /** @var ImageTransformInterface $imageTransformType */
+                        foreach ($allImageTransformTypes as $imageTransformType) {
+                            list($id, $baseDir) = $imageTransformType::getTemplatesRoot();
+                            if (is_dir($baseDir)) {
+                                $e->roots[$id] = $baseDir;
                             }
                         }
-                    );
+                    }
+                );
             }
         );
     }
