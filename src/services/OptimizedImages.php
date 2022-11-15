@@ -30,6 +30,7 @@ use craft\models\Volume;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\helpers\Image as ImageHelper;
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use Throwable;
@@ -103,7 +104,11 @@ class OptimizedImages extends Component
             }
             foreach ($retinaSizes as $retinaSize) {
                 $finalFormat = empty($variant['format']) ? $asset->getExtension() : $variant['format'];
-                $variant['format'] = $finalFormat;
+                $variantFormat = $finalFormat;
+                if (!ImageOptimize::$plugin->transformMethod instanceof CraftImageTransform) {
+                    $variantFormat = empty($variant['format']) ? null : $variant['format'];
+                }
+                $variant['format'] = $variantFormat;
                 // Only try the transform if it's possible
                 if ($asset->height > 0
                     && Image::canManipulateAsImage($finalFormat)
