@@ -1,6 +1,6 @@
 <?php
 /**
- * Image Optimize plugin for Craft CMS 3.x
+ * Image Optimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
