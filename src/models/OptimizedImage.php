@@ -1,6 +1,6 @@
 <?php
 /**
- * Image Optimize plugin for Craft CMS 3.x
+ * Image Optimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -715,7 +715,7 @@ class OptimizedImage extends Model
             $match = false;
             switch ($comparison) {
                 case 'width':
-                    if ($variantSourceWidth === $width) {
+                    if ($variantSourceWidth == $width) {
                         $match = true;
                     }
                     break;

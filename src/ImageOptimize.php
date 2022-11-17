@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -41,17 +41,13 @@ use craft\web\TemplateResponseBehavior;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
-use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\Settings;
-use nystudio107\imageoptimize\services\Optimize as OptimizeService;
-use nystudio107\imageoptimize\services\OptimizedImages as OptimizedImagesService;
-use nystudio107\imageoptimize\services\Placeholder as PlaceholderService;
+use nystudio107\imageoptimize\services\ServicesTrait;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
-use nystudio107\pluginvite\services\VitePluginService;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -67,15 +63,15 @@ use function function_exists;
  * @package   ImageOptimize
  * @since     1.0.0
  *
- * @property OptimizeService $optimize
- * @property PlaceholderService $placeholder
- * @property OptimizedImagesService $optimizedImages
  * @property ImageTransformInterface $transformMethod
- * @property VitePluginService $vite
- * @property Settings $settings
  */
 class ImageOptimize extends Plugin
 {
+    // Traits
+    // =========================================================================
+
+    use ServicesTrait;
+
     // Static Properties
     // =========================================================================
 
@@ -105,31 +101,6 @@ class ImageOptimize extends Plugin
      * @var bool
      */
     public bool $hasCpSettings = true;
-
-    /**
-     * @inheritdoc
-     */
-    public function __construct($id, $parent = null, array $config = [])
-    {
-        $config['components'] = [
-            'optimize' => OptimizeService::class,
-            'optimizedImages' => OptimizedImagesService::class,
-            'placeholder' => PlaceholderService::class,
-            // Register the manifest service
-            'vite' => [
-                'class' => VitePluginService::class,
-                'assetClass' => ImageOptimizeAsset::class,
-                'useDevServer' => true,
-                'devServerPublic' => 'http://localhost:3001',
-                'serverPublic' => 'http://localhost:8000',
-                'errorEntry' => 'src/js/ImageOptimize.js',
-                'devServerInternal' => 'http://craft-imageoptimize-buildchain:3001',
-                'checkDevServer' => true,
-            ],
-        ];
-
-        parent::__construct($id, $parent, $config);
-    }
 
     // Public Methods
     // =========================================================================
@@ -366,9 +337,12 @@ class ImageOptimize extends Plugin
                     __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
-                $event->path = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
+                $tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
+                if ($tempPath) {
+                    $event->tempPath = $tempPath;
+                }
             }
         );
 

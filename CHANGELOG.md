@@ -1,5 +1,16 @@
 # ImageOptimize Changelog
 
+## 4.0.3 - 2022.11.17
+### Changed
+* Fixed HMR in local dev with explicit alias that resolves to the actual directory
+
+### Fixed
+* Fixed an issue where the `craft image-optimize/optimize/create` CLI command did not properly optimize all images ([#350](https://github.com/nystudio107/craft-imageoptimize/issues/350))
+* Fixed an issue which caused the Imgix `auto` to no longer work for auto format ([#357](https://github.com/nystudio107/craft-imageoptimize/issues/357))
+* Fixed a JavaScript console error in field settings due to Garnish shuffling around how things work for menus
+* Fixed an issue where `srcsetWidth()` wouldn't return the proper variant, due to strict comparison operator ([#327](https://github.com/nystudio107/craft-imageoptimize/issues/327))
+* Fixed an issue where using a transform method other than Craft along with `asset.getUrl()` in your templates could throw an exception ([#363](https://github.com/nystudio107/craft-imageoptimize/issues/363))
+
 ## 4.0.2 - 2022.07.17
 ### Changed
 * Add `allow-plugins` to `composer.json` to allow CI tests to work
