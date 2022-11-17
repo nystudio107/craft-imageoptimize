@@ -1,6 +1,6 @@
 <?php
 /**
- * Image Optimize plugin for Craft CMS 3.x
+ * Image Optimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -179,10 +179,11 @@ class OptimizedImage extends Model
     {
         return $this->srcset($dpr);
     }
+
     /**
      * Return a string of image URLs and their sizes that match $width
      *
-     * @param int  $width
+     * @param int $width
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
@@ -199,7 +200,7 @@ class OptimizedImage extends Model
      * Return a string of image URLs and their sizes that are at least $width
      * or larger
      *
-     * @param int  $width
+     * @param int $width
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
@@ -215,7 +216,7 @@ class OptimizedImage extends Model
     /**
      * Return a string of image URLs and their sizes that are $width or smaller
      *
-     * @param int  $width
+     * @param int $width
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
@@ -285,7 +286,7 @@ class OptimizedImage extends Model
     /**
      * Return a string of webp image URLs and their sizes that match $width
      *
-     * @param int  $width
+     * @param int $width
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
@@ -302,7 +303,7 @@ class OptimizedImage extends Model
      * Return a string of webp image URLs and their sizes that are at least
      * $width or larger
      *
-     * @param int  $width
+     * @param int $width
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
@@ -319,7 +320,7 @@ class OptimizedImage extends Model
      * Return a string of webp image URLs and their sizes that are $width or
      * smaller
      *
-     * @param int  $width
+     * @param int $width
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
@@ -425,15 +426,15 @@ class OptimizedImage extends Model
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
-                'class' => '',
-                'style' => '',
-                'width' => $this->placeholderWidth,
-                'height' => $this->placeholderHeight,
-                'src' => reset($this->optimizedImageUrls),
-                'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
-                'sizes' => '100vw',
-                'loading' => '',
-            ],
+            'class' => '',
+            'style' => '',
+            'width' => $this->placeholderWidth,
+            'height' => $this->placeholderHeight,
+            'src' => reset($this->optimizedImageUrls),
+            'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
+            'sizes' => '100vw',
+            'loading' => '',
+        ],
             $imgAttrs
         );
         // Handle lazy loading
@@ -466,10 +467,10 @@ class OptimizedImage extends Model
         if (!empty($this->optimizedWebPImageUrls)) {
             // Merge the passed in options with the tag attributes
             $attrs = array_merge([
-                    'srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
-                    'type' => 'image/webp',
-                    'sizes' => '100vw',
-                ],
+                'srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
+                'type' => 'image/webp',
+                'sizes' => '100vw',
+            ],
                 $srcsetAttrs
             );
             // Handle lazy loading
@@ -485,9 +486,9 @@ class OptimizedImage extends Model
         if (!empty($this->optimizedImageUrls)) {
             // Merge the passed in options with the tag attributes
             $attrs = array_merge([
-                    'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
-                    'sizes' => '100vw',
-                ],
+                'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
+                'sizes' => '100vw',
+            ],
                 $srcsetAttrs
             );
             // Handle lazy loading
@@ -502,13 +503,13 @@ class OptimizedImage extends Model
         // Handle the img tag
         /** @noinspection SuspiciousAssignmentsInspection */
         $attrs = array_merge([
-                'class' => '',
-                'style' => '',
-                'width' => $this->placeholderWidth,
-                'height' => $this->placeholderHeight,
-                'src' => reset($this->optimizedImageUrls),
-                'loading' => '',
-            ],
+            'class' => '',
+            'style' => '',
+            'width' => $this->placeholderWidth,
+            'height' => $this->placeholderHeight,
+            'src' => reset($this->optimizedImageUrls),
+            'loading' => '',
+        ],
             $imgAttrs
         );
         // Handle lazy loading
@@ -521,7 +522,7 @@ class OptimizedImage extends Model
         $content .= Html::tag('img', '', $attrs);
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
-            ],
+        ],
             $pictureAttrs
         );
         // Remove any empty attributes
@@ -547,7 +548,7 @@ class OptimizedImage extends Model
             return $this->defaultPlaceholderImage();
         }
 
-        return Template::raw($header.rawurlencode($content));
+        return Template::raw($header . rawurlencode($content));
     }
 
     /**
@@ -625,7 +626,7 @@ class OptimizedImage extends Model
             return $this->defaultPlaceholderImage();
         }
 
-        return Template::raw($header.$content);
+        return Template::raw($header . $content);
     }
 
     /**
@@ -653,18 +654,18 @@ class OptimizedImage extends Model
      *  Get the file size of any remote resource (using curl),
      *  either in bytes or - default - as human-readable formatted string.
      *
-     * @author  Stephan Schmitz <eyecatchup@gmail.com>
-     * @license MIT <http://eyecatchup.mit-license.org/>
-     * @url     <https://gist.github.com/eyecatchup/f26300ffd7e50a92bc4d>
-     *
-     * @param   string  $url        Takes the remote object's URL.
-     * @param   boolean $formatSize Whether to return size in bytes or
+     * @param string $url Takes the remote object's URL.
+     * @param boolean $formatSize Whether to return size in bytes or
      *                              formatted.
-     * @param   boolean $useHead    Whether to use HEAD requests. If false,
+     * @param boolean $useHead Whether to use HEAD requests. If false,
      *                              uses GET.
      *
      * @return  int|mixed|string    Returns human-readable formatted size
      *                              or size in bytes (default: formatted).
+     * @author  Stephan Schmitz <eyecatchup@gmail.com>
+     * @license MIT <http://eyecatchup.mit-license.org/>
+     * @url     <https://gist.github.com/eyecatchup/f26300ffd7e50a92bc4d>
+     *
      */
     public function getRemoteFileSize($url, $formatSize = true, $useHead = true)
     {
@@ -741,7 +742,7 @@ class OptimizedImage extends Model
 
     /**
      * @param array $array
-     * @param bool  $dpr
+     * @param bool $dpr
      *
      * @return string
      */
@@ -758,9 +759,9 @@ class OptimizedImage extends Model
                     $descriptor = '3x';
                 }
             } else {
-                $descriptor = $key.'w';
+                $descriptor = $key . 'w';
             }
-            $srcset .= $value.' '.$descriptor.', ';
+            $srcset .= $value . ' ' . $descriptor . ', ';
         }
         $srcset = rtrim($srcset, ', ');
 
@@ -808,7 +809,7 @@ class OptimizedImage extends Model
         switch ($loading) {
             case 'lazy':
             case 'lazySizesFallback':
-            if (isset($attrs['loading'])) {
+                if (isset($attrs['loading'])) {
                     $attrs['loading'] = 'lazy';
                 }
                 break;
@@ -832,7 +833,7 @@ class OptimizedImage extends Model
                     $attrs['data-src'] = $attrs['src'];
                     $attrs['src'] = $this->getLazyLoadSrc($placeHolder);
                 }
-            break;
+                break;
             default:
                 break;
         }

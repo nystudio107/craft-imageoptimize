@@ -1,7 +1,7 @@
 {# @var craft \craft\web\twig\variables\CraftVariable #}
 {#
 /**
- * Image Optimize plugin for Craft CMS 3.x
+ * Image Optimize plugin for Craft CMS
  *
  * Custom `checkboxGroup` input. Checkbox group doesn't allow access to checkbox, therefore we can't control the ID.
  * For this reason we use create the a custom `checkboxGroup` that will use Craft native checkboxes.
@@ -25,7 +25,7 @@
 {%- set name = (name is defined and name ? name~'[]' : null) %}
 
 <div class="checkbox-group"
-        {%- if block('attr') is defined %} {{ block('attr') }}{% endif %}>
+    {%- if block('attr') is defined %} {{ block('attr') }}{% endif %}>
     {%- for key, option in options %}
         {%- if option is not iterable %}
             {%- set option = {label: option, value: key} %}

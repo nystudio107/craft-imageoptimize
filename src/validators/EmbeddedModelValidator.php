@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -43,7 +43,7 @@ class EmbeddedModelValidator extends Validator
                         $model->addError(
                             $attribute,
                             Craft::t('image-optimize', 'Object failed to validate')
-                            .'-'.$attributeError.' - '.$valueError
+                            . '-' . $attributeError . ' - ' . $valueError
                         );
                     }
                 }

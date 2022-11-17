@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -73,10 +73,10 @@ class OptimizedImages extends Component
     }
 
     /**
-     * @param Asset          $asset
-     * @param array          $variants
+     * @param Asset $asset
+     * @param array $variants
      * @param OptimizedImage $model
-     * @param boolean        $force
+     * @param boolean $force
      */
     public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model, $force = false)
     {
@@ -118,7 +118,7 @@ class OptimizedImages extends Component
                             } catch (\Throwable $exception) {
                             }
                         } catch (\Throwable $e) {
-                            $msg = 'Failed to update transform: '.$e->getMessage();
+                            $msg = 'Failed to update transform: ' . $e->getMessage();
                             Craft::error($msg, __METHOD__);
                             if (Craft::$app instanceof ConsoleApplication) {
                                 echo $msg . PHP_EOL;
@@ -135,11 +135,10 @@ class OptimizedImages extends Component
                     }
                 } else {
                     $canManipulate = Image::canManipulateAsImage($asset->getExtension());
-                    $msg = 'Could not create transform for: '.$asset->title
-                        .' - Final format: '.$finalFormat
-                        .' - Element extension: '.$asset->getExtension()
-                        .' - canManipulateAsImage: '.$canManipulate
-                        ;
+                    $msg = 'Could not create transform for: ' . $asset->title
+                        . ' - Final format: ' . $finalFormat
+                        . ' - Element extension: ' . $asset->getExtension()
+                        . ' - canManipulateAsImage: ' . $canManipulate;
                     Craft::error(
                         $msg,
                         __METHOD__
@@ -173,11 +172,10 @@ class OptimizedImages extends Component
                 $this->addVariantImageToModel($asset, $model, $transform, $variant, $aspectRatio);
             } else {
                 $canManipulate = Image::canManipulateAsImage($asset->getExtension());
-                $msg = 'Could not create transform for: '.$asset->title
-                    .' - Final format: '.$finalFormat
-                    .' - Element extension: '.$asset->getExtension()
-                    .' - canManipulateAsImage: '.$canManipulate
-                    ;
+                $msg = 'Could not create transform for: ' . $asset->title
+                    . ' - Final format: ' . $finalFormat
+                    . ' - Element extension: ' . $asset->getExtension()
+                    . ' - canManipulateAsImage: ' . $canManipulate;
                 Craft::error(
                     $msg,
                     __METHOD__
@@ -244,9 +242,9 @@ class OptimizedImages extends Component
     }
 
     /**
-     * @param Field            $field
+     * @param Field $field
      * @param ElementInterface $asset
-     * @param boolean          $force
+     * @param boolean $force
      *
      * @throws \yii\db\Exception
      * @throws InvalidConfigException
@@ -276,7 +274,7 @@ class OptimizedImages extends Component
             if ($field->handle !== null) {
                 $asset->setFieldValue($field->handle, $field->serializeValue($model));
                 $table = $asset->getContentTable();
-                $column = $asset->getFieldColumnPrefix().$field->handle;
+                $column = $asset->getFieldColumnPrefix() . $field->handle;
                 // Special-case for Craft 3.7 or later, with the addition of a suffix to the Field content column name
                 // ref: https://github.com/craftcms/cms/issues/6922
                 if (ImageOptimize::$craft37) {
@@ -343,7 +341,7 @@ class OptimizedImages extends Component
             } catch (SiteNotFoundException $e) {
                 $siteId = 0;
                 Craft::error(
-                    'Failed to get primary site: '.$e->getMessage(),
+                    'Failed to get primary site: ' . $e->getMessage(),
                     __METHOD__
                 );
             }
@@ -441,7 +439,7 @@ class OptimizedImages extends Component
     // =========================================================================
 
     /**
-     * @param Asset          $element
+     * @param Asset $element
      * @param OptimizedImage $model
      * @param                $aspectRatio
      */
@@ -449,7 +447,7 @@ class OptimizedImages extends Component
     {
         Craft::beginProfile('generatePlaceholders', __METHOD__);
         Craft::info(
-            'generatePlaceholders for: '.print_r($model, true),
+            'generatePlaceholders for: ' . print_r($model, true),
             __METHOD__
         );
         $settings = ImageOptimize::$plugin->getSettings();
@@ -533,7 +531,7 @@ class OptimizedImages extends Component
     }
 
     /**
-     * @param Asset          $asset
+     * @param Asset $asset
      * @param OptimizedImage $model
      * @param                $transform
      * @param                $variant
@@ -548,7 +546,7 @@ class OptimizedImages extends Component
             $transform
         );
         Craft::info(
-            'URL created: '.print_r($url, true),
+            'URL created: ' . print_r($url, true),
             __METHOD__
         );
         // Update the model
@@ -576,7 +574,7 @@ class OptimizedImages extends Component
                 $this->generatePlaceholders($asset, $model, $aspectRatio);
             }
             Craft::info(
-                'Created transforms for variant: '.print_r($variant, true),
+                'Created transforms for variant: ' . print_r($variant, true),
                 __METHOD__
             );
         }

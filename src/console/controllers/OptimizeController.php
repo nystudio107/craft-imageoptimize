@@ -1,6 +1,6 @@
 <?php
 /**
- * Image Optimize plugin for Craft CMS 3.x
+ * Image Optimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -56,9 +56,9 @@ class OptimizeController extends Controller
      */
     public function actionCreate($volumeHandle = null)
     {
-        echo 'Creating optimized image variants'.PHP_EOL;
+        echo 'Creating optimized image variants' . PHP_EOL;
         if ($this->force) {
-            echo 'Forcing optimized image variants creation via --force'.PHP_EOL;
+            echo 'Forcing optimized image variants creation via --force' . PHP_EOL;
         }
 
         $fieldId = null;
@@ -79,7 +79,7 @@ class OptimizeController extends Controller
                 /** @var Volume $volume */
                 ImageOptimize::$plugin->optimizedImages->resaveVolumeAssets($volume, $fieldId, $this->force);
             } else {
-                echo 'Unknown Asset Volume handle: '.$volumeHandle.PHP_EOL;
+                echo 'Unknown Asset Volume handle: ' . $volumeHandle . PHP_EOL;
             }
         }
         $this->runCraftQueue();
@@ -92,10 +92,10 @@ class OptimizeController extends Controller
      */
     public function actionCreateAsset($id = null)
     {
-        echo 'Creating optimized image variants'.PHP_EOL;
+        echo 'Creating optimized image variants' . PHP_EOL;
 
         if ($id === null) {
-            echo 'No Asset ID specified'.PHP_EOL;
+            echo 'No Asset ID specified' . PHP_EOL;
         } else {
             // Re-save a single Asset ID
             ImageOptimize::$plugin->optimizedImages->resaveAsset($id, $this->force);

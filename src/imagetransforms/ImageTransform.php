@@ -1,6 +1,6 @@
 <?php
 /**
- * ImageOptimize plugin for Craft CMS 3.x
+ * ImageOptimize plugin for Craft CMS
  *
  * Automatically optimize images after they've been transformed
  *
@@ -49,10 +49,10 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     {
         $reflect = new \ReflectionClass(static::class);
         $classPath = FileHelper::normalizePath(
-            dirname($reflect->getFileName())
-            . '/../templates'
-        )
-        . DIRECTORY_SEPARATOR;
+                dirname($reflect->getFileName())
+                . '/../templates'
+            )
+            . DIRECTORY_SEPARATOR;
         $id = StringHelper::toKebabCase($reflect->getShortName());
 
         return [$id, $classPath];
@@ -112,7 +112,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
             if (ImageOptimize::$craft31) {
                 $subfolder = Craft::parseEnv($subfolder);
             }
-            return rtrim($subfolder, '/').'/'.$assetPath;
+            return rtrim($subfolder, '/') . '/' . $assetPath;
         }
 
         return $assetPath;
@@ -130,7 +130,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FOLLOWLOCATION => 1,
             CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_NOBODY         => 1,
+            CURLOPT_NOBODY => 1,
         ]);
         curl_exec($ch);
         curl_close($ch);

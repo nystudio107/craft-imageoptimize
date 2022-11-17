@@ -11,24 +11,30 @@ DOCKERRUN=docker container run \
 
 .PHONY: build dev docker install clean npm
 
+# Build the production assets
 build: docker install
 	${DOCKERRUN} \
 		run build
+# Start up the dev server
 dev: docker install
 	${DOCKERRUN} \
 		run dev
+# Start the Docker container
 docker:
 	docker build \
 		. \
 		-t ${CONTAINER}:${TAG} \
 		--build-arg TAG=${TAG} \
 		--no-cache
+# Run an npm install
 install: docker
 	${DOCKERRUN} \
 		install
+# Remove node_modules/* & package-lock.json
 clean:
 	rm -rf node_modules/
 	rm -f package-lock.json
+# Run the passed in npm command
 npm: docker
 	${DOCKERRUN} \
 		$(filter-out $@,$(MAKECMDGOALS))
