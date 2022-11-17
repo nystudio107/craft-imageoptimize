@@ -9,6 +9,7 @@
 * Fixed an issue which caused the Imgix `auto` to no longer work for auto format ([#357](https://github.com/nystudio107/craft-imageoptimize/issues/357))
 * Fixed a JavaScript console error in field settings due to Garnish shuffling around how things work for menus
 * Fixed an issue where `srcsetWidth()` wouldn't return the proper variant, due to strict comparison operator ([#327](https://github.com/nystudio107/craft-imageoptimize/issues/327))
+* Fixed an issue where using a transform method other than Craft along with `asset.getUrl()` in your templates could throw an exception ([#363](https://github.com/nystudio107/craft-imageoptimize/issues/363))
 
 ## 4.0.2 - 2022.07.17
 ### Changed
