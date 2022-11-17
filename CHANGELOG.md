@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 4.0.3 - UNRELEASED
+## 4.0.3 - 2022.11.17
 ### Changed
 * Fixed HMR in local dev with explicit alias that resolves to the actual directory
 
