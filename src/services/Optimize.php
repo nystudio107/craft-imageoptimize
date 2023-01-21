@@ -28,12 +28,16 @@ use craft\helpers\Image as ImageHelper;
 use craft\image\Raster;
 use craft\models\ImageTransform as AssetTransform;
 use craft\models\ImageTransformIndex as AssetTransformIndex;
+use Imagine\Image\Box;
+use Imagine\Image\Point;
 use mikehaertl\shellcommand\Command as ShellCommand;
 use nystudio107\imageoptimize\helpers\PluginTemplate as PluginTemplateHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\models\ImageTransform as ImageOptimizeImageTransform;
+use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimizeimgix\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimizesharp\imagetransforms\SharpImageTransform;
 use nystudio107\imageoptimizethumbor\imagetransforms\ThumborImageTransform;
@@ -352,6 +356,94 @@ class Optimize extends Component
             $imageTransformIndex = $event->imageTransformIndex;
             $image = $event->image;
 
+            $transformUsed = $imageTransformIndex->getTransform();
+            if ($transformUsed instanceof ImageOptimizeImageTransform && $image instanceof Raster) {
+                $imagineImage = $image->getImagineImage();
+                $watermarkId = $transformUsed->watermark;
+                if ($watermarkId) {
+                    /** @var Settings $settings */
+                    $settings = ImageOptimize::$plugin->getSettings();
+                    if (!empty($settings->watermarks[$watermarkId])) {
+                        $watermarkSettings = $settings->watermarks[$watermarkId];
+                        $watermarkImageAsset = Asset::findOne($watermarkSettings['watermarkImage']);
+
+                        if ($watermarkImageAsset) {
+                            $imageCopy = $watermarkImageAsset->getCopyOfFile();
+
+                            /** @var Raster $watermarkImage */
+                            $watermarkImage = Craft::$app->getImages()->loadImage($imageCopy, true);
+                            $wmImagine = $watermarkImage->getImagineImage();
+
+                            $imSize = $imagineImage->getSize();
+                            $imWidth = $imSize->getWidth();
+                            $imHeight = $imSize->getHeight();
+                            
+                            if (empty($watermarkSettings['size'])) {
+                                $wmSize = $wmImagine->getSize();
+                                $wmWidth = $wmSize->getWidth();
+                                $wmHeight = $wmSize->getHeight();
+                            } else {
+                                $wmWidth = round($imWidth * $watermarkSettings['size'] / 100);
+                                $wmHeight = round($imHeight * $watermarkSettings['size'] / 100);
+                                $wmImagine->resize(new Box($wmWidth, $wmHeight));
+                            }
+
+                            $wOffset = round($imWidth * $watermarkSettings['offset'] / 100);
+                            $hOffset = round($imHeight * $watermarkSettings['offset'] / 100);
+
+                            switch ($watermarkSettings['position']) {
+                                case 'top-left':
+                                    $xPos = $wOffset;
+                                    $yPos = $hOffset;
+                                    break;
+                                case 'top-center':
+                                    $xPos = round(($imWidth - $wmWidth) / 2);
+                                    $yPos = $hOffset;
+                                    break;
+                                case 'top-right':
+                                    $xPos = $imWidth - $wmWidth - $wOffset;
+                                    $yPos = $hOffset;
+                                    break;
+
+                                case 'center-left':
+                                    $xPos = $wOffset;
+                                    $yPos = round(($imHeight - $wmHeight) / 2);
+                                    break;
+                                case 'center-right':
+                                    $xPos = $imWidth - $wmWidth - $wOffset;
+                                    $yPos = round(($imHeight - $wmHeight) / 2);
+                                    break;
+
+                                case 'bottom-left':
+                                    $xPos = $wOffset;
+                                    $yPos = $imHeight - $wmHeight - $hOffset;
+                                    break;
+                                case 'bottom-center':
+                                    $xPos = round(($imWidth - $wmWidth) / 2);
+                                    $yPos = $imHeight - $wmHeight - $hOffset;
+                                    break;
+                                case 'bottom-right':
+                                    $xPos = $imWidth - $wmWidth - $wOffset;
+                                    $yPos = $imHeight - $wmHeight - $hOffset;
+                                    break;
+
+                                case 'center-center':
+                                default:
+                                    $xPos = round(($imWidth - $wmWidth) / 2);
+                                    $yPos = round(($imHeight - $wmHeight) / 2);
+                                    break;
+                            }
+
+                            $position = new Point($xPos, $yPos);
+                            $imagineImage->paste($wmImagine, $position, $watermarkSettings['opacity']);
+
+                            unlink($imageCopy);
+                        } else {
+                            Craft::info('Unable to load watermark image for asset ' . $watermarkSettings['watermarkImage'], __METHOD__);
+                        }
+                    }
+                }
+            }
             if ($imageTransformIndex->getTransform() !== null) {
                 $this->applyFiltersToImage($imageTransformIndex->getTransform(), $asset, $image);
             }
@@ -360,6 +452,8 @@ class Optimize extends Component
                 $imageTransformIndex,
                 $image
             );
+
+
             $originalFileSize = @filesize($tempPath);
             // Optimize the image
             $this->optimizeImage(

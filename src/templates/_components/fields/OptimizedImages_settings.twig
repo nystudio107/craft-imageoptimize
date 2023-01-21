@@ -294,6 +294,33 @@
                                 options: formatOptions,
                             }) }}
                         </div>
+                        {% if settings.transformClass == 'nystudio107\\imageoptimize\\imagetransforms\\CraftImageTransform' %}
+                            {% set watermarkOptions = [{
+                                    label: 'None',
+                                    value: null
+                                }]
+                            %}
+
+                            {% for id, watermark in settings.watermarks|default([]) %}
+                                {% set watermarkOptions = watermarkOptions|merge([{
+                                    label: watermark.name,
+                                    value: id
+                                }]) %}
+                            {% endfor %}
+
+                            {% if watermarkOptions|length > 1 %}
+                                {{ forms.selectField({
+                                    label: "Image Watermark"|t('app'),
+                                    instructions: "The watermark that the transformed images should use."|t('app'),
+                                    id: 'variants-' ~ loop.index0 ~ '-watermark',
+                                    name: 'variants[' ~ loop.index0 ~ '][watermark]',
+                                    value: (field.variants[loop.index0]['watermark'] ?? null),
+                                    options: watermarkOptions,
+                                }) }}
+                            {% else %}
+                                No watermarks are defined yet.
+                            {% endif %}
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

@@ -25,13 +25,13 @@ use craft\helpers\ImageTransforms as TransformHelper;
 use craft\helpers\Json;
 use craft\imagetransforms\ImageTransformer;
 use craft\models\FieldLayout;
-use craft\models\ImageTransform as AssetTransform;
 use craft\models\Volume;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\helpers\Image as ImageHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
+use nystudio107\imageoptimize\models\ImageTransform;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use Throwable;
 use yii\base\InvalidConfigException;
@@ -115,7 +115,7 @@ class OptimizedImages extends Component
                     && Image::canManipulateAsImage($asset->getExtension())
                 ) {
                     // Create the transform based on the variant
-                    /** @var AssetTransform $transform */
+                    /** @var ImageTransform $transform */
                     [$transform, $aspectRatio] = $this->getTransformFromVariant($asset, $variant, $retinaSize);
                     // If they want to $force it, set `fileExists` = 0 in the transform index, then delete the transformed image
                     if ($force) {
@@ -124,6 +124,7 @@ class OptimizedImages extends Component
                         try {
                             $index = $transformer->getTransformIndex($asset, $transform);
                             $index->fileExists = 0;
+
                             $transformer->storeTransformIndexData($index);
                             try {
                                 $transformer->deleteImageTransformFile($asset, $index);
@@ -492,7 +493,7 @@ class OptimizedImages extends Component
     protected function getTransformFromVariant(Asset $asset, $variant, $retinaSize): array
     {
         $settings = ImageOptimize::$plugin->getSettings();
-        $transform = new AssetTransform();
+        $transform = new ImageTransform();
         $transform->format = $variant['format'] ?? null;
         // Handle animate .gif images by never changing the format
         $images = Craft::$app->getImages();
@@ -529,6 +530,7 @@ class OptimizedImages extends Component
             $transform->interlace = 'line';
         }
 
+        $transform->watermark = $variant['watermark'] ?? [];
         return [$transform, $aspectRatio];
     }
 

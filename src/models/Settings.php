@@ -281,6 +281,8 @@ class Settings extends Model
         ],
     ];
 
+    public array $watermarks = [];
+
     // Public Methods
     // =========================================================================
 
@@ -382,6 +384,7 @@ class Settings extends Model
             'autoSharpenScaledImages',
             'sharpenScaledImagePercentage',
             'assetVolumeSubFolders',
+            'watermarks',
         ];
     }
 

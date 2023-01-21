@@ -1,0 +1,78 @@
+{% import "_includes/forms" as forms %}
+
+{% set id = id|default('new') %}
+
+{% set prefix = "watermarks[" ~ id ~ "]" %}
+{% set positionOptions = [
+    {label: 'Top left', value: 'top-left'},
+    {label: 'Top center', value: 'top-center'},
+    {label: 'Top right', value: 'top-right'},
+    {label: 'Center left', value: 'center-left'},
+    {label: 'Center center', value: 'center-center'},
+    {label: 'Center right', value: 'center-right'},
+    {label: 'Bottom left', value: 'bottom-left'},
+    {label: 'Bottom center', value: 'bottom-center'},
+    {label: 'Bottom right', value: 'bottom-right'},
+]
+%}
+<div class="watermark-edit" data-id="{{ id }}">
+    {{ forms.textField({
+        label: "Watermark name"|t("image-optimize"),
+        name: prefix ~ "[name]",
+        value: watermark.name is defined ? watermark.name : '',
+    }) }}
+
+    {{ forms.selectField({
+        label: "Watermark position"|t('image-optimize'),
+        instructions: "Choose the position of the watermark."|t('image-optimize'),
+        name: prefix ~ "[position]",
+        value: watermark.position is defined ? watermark.position : 'bottom-left',
+        options: positionOptions,
+    }) }}
+
+    {{ forms.textField({
+        label: "Offset"|t("image-optimize"),
+        instructions: "Offset as a percentage of the target image dimension size"|t('image-optimize'),
+        name: prefix ~ "[offset]",
+        size: 5,
+        maxlength: 5,
+        value: watermark.offset|default(5),
+    }) }}
+
+    {{ forms.elementSelectField({
+        label: "Watermark image"|t("image-optimize"),
+        instructions: "The asset to use as the watermark"|t('image-optimize'),
+        jsClass: 'Craft.AssetSelectInput',
+        name: prefix ~ "[watermarkImage]",
+        elements: watermark.watermarkImage is defined ? craft.assets().id(watermark.watermarkImage).all() : [],
+        single: true,
+        elementType: "craft\\elements\\Asset",
+        viewMode: "gallery",
+        class: 'watermarkSelect',
+    }) }}
+
+    {{ forms.textField({
+        label: "Opacity"|t("image-optimize"),
+        instructions: "Opacity as a number on a scale of 0 to 100, where 100 is fully opaque watermark"|t('image-optimize'),
+        name: prefix ~ "[opacity]",
+        size: 5,
+        maxlength: 5,
+        value: watermark.opacity|default(40),
+    }) }}
+
+    {{ forms.textField({
+        label: "Watermark size"|t("image-optimize"),
+        instructions: "Watermark size as a percentage of the target image dimensions. Leave empty to use the original size of the watermak image."|t('image-optimize'),
+        name: prefix ~ "[size]",
+        size: 5,
+        maxlength: 5,
+        value: watermark.size|default(20),
+    }) }}
+
+    <div class="flex">
+        <div class="btngroup">
+            <div class="btn remove-watermark submit right">{{ 'Remove watermark'|t('image-optimize') }}</div>
+        </div>
+    </div>
+    <hr/>
+</div>

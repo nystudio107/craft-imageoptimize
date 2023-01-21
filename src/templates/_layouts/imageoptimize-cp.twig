@@ -1,5 +1,7 @@
 {% extends "_layouts/cp" %}
 
+{% set title = 'ImageOptimize' %}
+
 {% block head %}
     {{ parent() }}
     {% set tagOptions = {
@@ -8,4 +10,22 @@
         ],
     } %}
     {{ craft.imageOptimize.register('src/js/ImageOptimize.js', false, tagOptions, tagOptions) }}
+{% endblock %}
+
+{% set navItems = {
+    settings: { label: "Settings"|t('app'), url: url('settings/plugins/image-optimize') },
+    watermarks: { label: "Watermarks"|t('app'), url: url('settings/plugins/image-optimize#watermarks') },
+} %}
+
+{% block sidebar %}
+    <div id="imageoptimize-nav">
+        {% include "_includes/nav"
+            with {
+            label: title,
+            items: navItems,
+            selectedItem: 'settings',
+        }
+            only
+        %}
+    </div>
 {% endblock %}

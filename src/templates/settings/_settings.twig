@@ -19,7 +19,7 @@
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
 
-<div class="readable">
+<div class="readable imageoptimize-settings">
 
     <!-- transformClass -->
     {{ forms.selectField({
@@ -139,17 +139,94 @@
         'warning': configWarning('assetVolumeSubFolders', 'image-optimize')
     }) }}
 </div>
+<div class="imageoptimize-watermarks hidden">
+    <div class="watermark-container">
+        {% for idx, watermark in settings.watermarks %}
+            {% include 'image-optimize/_includes/_watermark' with {id: idx, watermark: watermark} only %}
+        {% endfor %}
+    </div>
+    <div class="flex">
+        <div class="btngroup">
+            <div class="btn new-watermark submit right">{{ 'New watermark'|t('image-optimize') }}</div>
+        </div>
+    </div>
+    <div class="watermark-template hidden">
+        {% include 'image-optimize/_includes/_watermark' %}
+    </div>
 
+</div>
 {% js %}
     new Craft.AdminTable({
-    tableSelector: '#imageProcessors',
+      tableSelector: '#imageProcessors',
     });
+
     new Craft.AdminTable({
-    tableSelector: '#variantCreators',
+      tableSelector: '#variantCreators',
     });
+
     $('.io-transform-method').change(function(ev) {
-    $('.io-method-settings').hide();
-    var value = 'io-' + Craft.formatInputId($(ev.target).val()) + '-method';
-    $('.' + value).slideDown();
+      $('.io-method-settings').hide();
+      var value = 'io-' + Craft.formatInputId($(ev.target).val()) + '-method';
+      $('.' + value).slideDown();
     });
+
+    $('.new-watermark').on('click', (ev) => {
+      const $template = $('.watermark-template').clone().find('.watermark-edit');
+      let maxId = 0;
+
+      const newId = Math.random().toString(16).slice(2) + Math.random().toString(16).slice(2);
+
+      maxId++;
+      $template.find('select, input').each(function () {
+        const $input = $(this);
+        $input.attr('name', $input.attr('name').replace(/new/, newId)).attr('disabled', false);
+      })
+
+      $template.data('id', newId);
+
+      $('.watermark-container').append($template);
+
+      const $elemSelect = $template.find('.watermarkSelect');
+      const elemSelectId = $elemSelect.attr('id') + '-' + newId;
+      $elemSelect.attr('id', elemSelectId);
+
+      new Craft.AssetSelectInput({
+        id: elemSelectId,
+        name: `settings[watermarks][${newId}][watermarkImage]`,
+        elementType: 'craft\\elements\\Asset',
+        viewMode: 'gallery',
+        single: true,
+        fieldId: `watermarks[${newId}][watermarkImage]`,
+      });
+    })
+
+    $('.imageoptimize-watermarks').on('click', '.remove-watermark', null, function () {
+      $(this).parents('.watermark-edit').remove();
+    })
+
+    $('#imageoptimize-nav').find('a').each(function (idx) {
+      const $el = $(this);
+
+      $el.on('click', (ev) => {
+        const showWatermark = $el.attr('href').match(/\#watermarks/)
+
+        $el.parents('nav').find('a').removeClass('sel');
+        $el.addClass('sel');
+
+        if (showWatermark) {
+          $('.imageoptimize-settings').addClass('hidden');
+          $('.imageoptimize-watermarks').removeClass('hidden');
+          $('body').scroll();
+        } else {
+          $('.imageoptimize-watermarks').addClass('hidden');
+          $('.imageoptimize-settings').removeClass('hidden');
+        }
+
+        ev.stopPropagation();
+        return false;
+      })
+    })
+
+    $('.watermark-template').find('select, input').attr('disabled', true);
+
 {% endjs %}
