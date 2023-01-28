@@ -1,20 +1,24 @@
 {
-  "../src/web/assets/src/js/ImageOptimize.js": {
-    "file": "assets/imageoptimize.8669aa97.js",
-    "src": "../src/web/assets/src/js/ImageOptimize.js",
+  "src/js/ImageOptimize.css": {
+    "file": "assets/ImageOptimize-8e1b9199.css",
+    "src": "src/js/ImageOptimize.css"
+  },
+  "src/js/ImageOptimize.js": {
+    "file": "assets/imageoptimize-f35e9bcb.js",
+    "src": "src/js/ImageOptimize.js",
     "isEntry": true,
     "css": [
-      "assets/imageoptimize.4f6c16e8.css"
+      "assets/ImageOptimize-8e1b9199.css"
     ]
   },
-  "../src/web/assets/src/js/OptimizedImagesField.js": {
-    "file": "assets/field.303d8367.js",
-    "src": "../src/web/assets/src/js/OptimizedImagesField.js",
+  "src/js/Welcome.js": {
+    "file": "assets/welcome-19660258.js",
+    "src": "src/js/Welcome.js",
     "isEntry": true
   },
-  "../src/web/assets/src/js/Welcome.js": {
-    "file": "assets/welcome.8f27d9d5.js",
-    "src": "../src/web/assets/src/js/Welcome.js",
+  "src/js/OptimizedImagesField.js": {
+    "file": "assets/field-f3c78219.js",
+    "src": "src/js/OptimizedImagesField.js",
     "isEntry": true
   }
 }
