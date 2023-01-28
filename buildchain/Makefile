@@ -1,43 +1,38 @@
-TAG?=16-alpine
-CONTAINER?=$(shell basename $(dir $(CURDIR)))-buildchain
-DOCKERRUN=docker container run \
-	--name ${CONTAINER} \
-	--rm \
-	-t \
-	--network plugindev_default \
-	-p 3001:3001 \
-	-v "${CURDIR}"/../:/app \
-	${CONTAINER}:${TAG}
+MAJOR_VERSION?=4
+TAG?=18-alpine
+CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-buildchain
+DEV_PORT?=300${MAJOR_VERSION}
+IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))
+IMAGE_NAME=${CONTAINER}:${TAG}
+DOCKER_RUN=docker container run --rm -it --network plugindev_default -v "${CURDIR}"/../:/app
 
-.PHONY: build dev docker install clean npm
+.PHONY: build clean dev image-build image-check npm ssh
 
-# Build the production assets
-build: docker install
-	${DOCKERRUN} \
-		run build
-# Start up the dev server
-dev: docker install
-	${DOCKERRUN} \
-		run dev
-# Start the Docker container
-docker:
-	docker build \
-		. \
-		-t ${CONTAINER}:${TAG} \
-		--build-arg TAG=${TAG} \
-		--no-cache
-# Run an npm install
-install: docker
-	${DOCKERRUN} \
-		install
-# Remove node_modules/* & package-lock.json
+# Perform a dist build via npm run build
+build: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} run build
+# Remove node_modules/ & package-lock.json
 clean:
 	rm -rf node_modules/
 	rm -f package-lock.json
+# Run the development server via npm run dev
+dev: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DEV_PORT="${DEV_PORT}" -p ${DEV_PORT}:${DEV_PORT} ${IMAGE_NAME} run dev
+# Build the Docker image & run npm install
+image-build:
+	docker build . -t ${IMAGE_NAME} --build-arg TAG=${TAG} --no-cache
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} install
+# Ensure the image has been created
+image-check:
+ifeq ($(IMAGE_INFO), [])
+image-check: image-build
+endif
 # Run the passed in npm command
-npm: docker
-	${DOCKERRUN} \
-		$(filter-out $@,$(MAKECMDGOALS))
+npm: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} $(filter-out $@,$(MAKECMDGOALS)) $(MAKEFLAGS)
+# Open a shell inside of the container
+ssh: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ --entrypoint=/bin/sh ${IMAGE_NAME}
 %:
 	@:
 # ref: https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line

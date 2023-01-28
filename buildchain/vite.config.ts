@@ -1,11 +1,11 @@
+import createVuePlugin from '@vitejs/plugin-vue2';
 import {defineConfig} from 'vite';
-import {createVuePlugin} from 'vite-plugin-vue2'
-import ViteRestart from 'vite-plugin-restart';
-import {viteExternalsPlugin} from 'vite-plugin-externals'
-import viteCompression from 'vite-plugin-compression';
 import {visualizer} from 'rollup-plugin-visualizer';
-import eslintPlugin from 'vite-plugin-eslint';
-import {nodeResolve} from '@rollup/plugin-node-resolve';
+import viteEslintPlugin from 'vite-plugin-eslint';
+import viteCompressionPlugin from 'vite-plugin-compression';
+import {viteExternalsPlugin} from 'vite-plugin-externals';
+import viteRestartPlugin from 'vite-plugin-restart';
+import viteStylelintPlugin from 'vite-plugin-stylelint';
 import * as path from 'path';
 
 // https://vitejs.dev/config/
@@ -27,21 +27,16 @@ export default defineConfig(({command}) => ({
     }
   },
   plugins: [
-    nodeResolve({
-      moduleDirectories: [
-        path.resolve('./node_modules'),
-      ],
-    }),
-    ViteRestart({
+    viteRestartPlugin({
       reload: [
-        './src/templates/**/*',
+        '../src/templates/**/*',
       ],
     }),
     createVuePlugin(),
     viteExternalsPlugin({
       'vue': 'Vue',
     }),
-    viteCompression({
+    viteCompressionPlugin({
       filter: /\.(js|mjs|json|css|map)$/i
     }),
     visualizer({
@@ -49,17 +44,21 @@ export default defineConfig(({command}) => ({
       template: 'treemap',
       sourcemap: true,
     }),
-    eslintPlugin({
+    viteEslintPlugin({
       cache: false,
+      fix: true,
     }),
+    viteStylelintPlugin({
+      fix: true,
+      lintInWorker: true
+    })
   ],
   optimizeDeps: {
     include: ['vue-confetti'],
   },
-  publicDir: '../src/web/assets/public',
   resolve: {
     alias: [
-      {find: '@', replacement: path.resolve(__dirname, '../src/web/assets/src')},
+      {find: '@', replacement: path.resolve(__dirname, './src')},
       {find: 'vue', replacement: 'vue/dist/vue.esm.js'},
     ],
     preserveSymlinks: true,
@@ -69,8 +68,8 @@ export default defineConfig(({command}) => ({
       strict: false
     },
     host: '0.0.0.0',
-    origin: 'http://localhost:3001',
-    port: 3001,
+    origin: 'http://localhost:' + process.env.DEV_PORT,
+    port: parseInt(process.env.DEV_PORT),
     strictPort: true,
   }
 }));
