@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 4.0.4 - UNRELEASED
+### Changed
+* Use dynamic docker container name & port for the `buildchain`
+* Update the `buildchain` to use Vite `^4.0.0`
+
 ## 4.0.3 - 2022.11.17
 ### Changed
 * Fixed HMR in local dev with explicit alias that resolves to the actual directory
