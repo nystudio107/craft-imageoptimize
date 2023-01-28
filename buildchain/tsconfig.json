@@ -2,7 +2,6 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "node_modules",
     "declaration": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
@@ -11,7 +10,7 @@
     "moduleResolution": "node",
     "noEmit": true,
     "noImplicitAny": true,
-    "outDir": "../src/web/assets/dist",
+    "outDir": "../src/web/assets/dist/",
     "paths": {
       "@/*": [
         "./src/*"
@@ -25,11 +24,9 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "target": "esnext",
-    "typeRoots": [
-      "node_modules/@types"
-    ]
   },
   "include": [
+    "./src/**/*.js",
     "./src/**/*.ts",
     "./src/**/*.vue"
   ],
