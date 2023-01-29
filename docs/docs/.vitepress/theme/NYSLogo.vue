@@ -6,18 +6,15 @@
       target="_blank"
       rel="noopener"
     >
-    <img
-        src="/resources/img/nys-logo.svg"
+      <img
+        src="/img/nys-logo.svg"
         aria-label="nystudio107 logo"
-        />
+      />
     </a>
   </div>
 </template>
 
-<script>
-export default {
-  name: "SidebarBottom"
-}
+<script setup>
 </script>
 
 <style scoped>
