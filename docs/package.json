@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.8",
+    "@types/node": "^18.0.0",
     "rollup-plugin-sitemap": "^1.0.3",
     "textlint": "^13.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
