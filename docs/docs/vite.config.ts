@@ -2,16 +2,15 @@ import {defineConfig} from 'vite'
 import SitemapPlugin from 'rollup-plugin-sitemap'
 import VitePressConfig from './.vitepress/config'
 import {DefaultTheme} from "vitepress/types/default-theme";
-import SidebarItem = DefaultTheme.SidebarItem;
 
 const docsSiteBaseUrl = 'https://nystudio107.com'
 const docsBaseUrl = new URL(VitePressConfig.base!, docsSiteBaseUrl).href.replace(/\/$/, '') + '/'
-const siteMapRoutes = VitePressConfig.themeConfig?.sidebar?.map((group: SidebarItem) => {
-  return group.items!.map((items: SidebarItem) => ({
+const siteMapRoutes = VitePressConfig.themeConfig?.sidebar?.map((group: DefaultTheme.SidebarItem) => {
+  return group.items!.map((items: DefaultTheme.SidebarItem) => ({
     path: items.link!.replace(/^\/+/, ''),
     name: items.text
   }));
-}).reduce((prev: SidebarItem[], curr: SidebarItem[]) => {
+}).reduce((prev: DefaultTheme.SidebarItem[], curr: DefaultTheme.SidebarItem[]) => {
   return prev.concat(curr);
 });
 
