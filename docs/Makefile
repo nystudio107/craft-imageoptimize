@@ -12,6 +12,8 @@ DOCKER_RUN=docker container run --rm -it -v "${CURDIR}":/app
 # Perform a dist build via npm run docs:build
 build: image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} run docs:build
+	rm -rf ${DOCS_DEST}
+	mv ./docs/.vitepress/dist ${DOCS_DEST}
 # Remove node_modules/ & package-lock.json
 clean:
 	rm -rf node_modules/
