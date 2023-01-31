@@ -5,6 +5,7 @@
 * Use dynamic docker container name & port for the `buildchain`
 * Update the `buildchain` to use Vite `^4.0.0`
 * Updated docs to use VitePress `^1.0.0-alpha.29`
+* Refactored the docs buildchain to use a dynamic docker container setup
 
 ## 1.6.49 - 2022.11.17
 ### Changed
