@@ -7,7 +7,7 @@
 {% set docsUrl = "https://github.com/nystudio107/craft-imageoptimize/blob/v1/README.md" %}
 
 {% do view.registerAssetBundle("nystudio107\\imageoptimize\\assetbundles\\imageoptimize\\ImageOptimizeAsset") %}
-{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/nystudio107/imageoptimize/web/assets/dist', true) %}
+{% set baseAssetsUrl = view.getAssetManager().getPublishedUrl('@nystudio107/imageoptimize/web/assets/dist', true) %}
 
 {% set crumbs = [
     { label: "ImageOptimize", url: url('image-optimize') },

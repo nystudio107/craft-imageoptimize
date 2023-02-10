@@ -1,45 +1,47 @@
+MAJOR_VERSION?=1
 TAG?=14-alpine
-CONTAINER?=$(shell basename $(dir $(CURDIR)))-docs
-DOCKERRUN=docker container run \
-	--name ${CONTAINER} \
-	--rm \
-	-p 3002:3002 \
-	-t \
-	-v "${CURDIR}":/app \
-	${CONTAINER}:${TAG}
-DOCSDEST?=../../../sites/nystudio107/web/docs/image-optimize
+CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-docs
+DOCS_DEV_PORT?=400${MAJOR_VERSION}
+DOCS_DEST?=../../../sites/nystudio107/web/docs/image-optimize
+IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))
+IMAGE_NAME=${CONTAINER}:${TAG}
+DOCKER_RUN=docker container run --rm -it -v "${CURDIR}":/app
 
-.PHONY: docker build dev fix install lint clean npm
+.PHONY: build clean dev fix image-build image-check lint npm ssh
 
-docker:
-	docker build \
-		. \
-		-t ${CONTAINER}:${TAG} \
-		--build-arg TAG=${TAG} \
-		--no-cache
-build: docker install
-	${DOCKERRUN} \
-		run docs:build
-	rm -rf ${DOCSDEST}
-	mv ./docs/.vitepress/dist ${DOCSDEST}
-dev: docker install
-	${DOCKERRUN} \
-		run docs:dev
-fix: docker install
-	${DOCKERRUN} \
-		run docs:fix
-install: docker
-	${DOCKERRUN} \
-		install
-lint: docker install
-	${DOCKERRUN} \
-		run docs:lint
+# Perform a dist build via npm run docs:build
+build: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} run docs:build
+	rm -rf ${DOCS_DEST}
+	mv ./docs/.vitepress/dist ${DOCS_DEST}
+# Remove node_modules/ & package-lock.json
 clean:
 	rm -rf node_modules/
 	rm -f package-lock.json
-npm: docker
-	${DOCKERRUN} \
-		$(filter-out $@,$(MAKECMDGOALS))
+# Run the development server via npm run docs:dev
+dev: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DOCS_DEV_PORT="${DOCS_DEV_PORT}" -p ${DOCS_DEV_PORT}:${DOCS_DEV_PORT} ${IMAGE_NAME} run docs:dev
+# Fix the docs with textlint via npm run docs:fix
+fix: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} run docs:fix
+# Build the Docker image & run npm install
+image-build:
+	docker build . -t ${IMAGE_NAME} --build-arg TAG=${TAG} --no-cache
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} install
+# Ensure the image has been created
+image-check:
+ifeq ($(IMAGE_INFO), [])
+image-check: image-build
+endif
+# Lint the docs with textlint via npm run docs:lint
+lint: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} run docs:lint
+# Run the passed in npm command
+npm: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} $(filter-out $@,$(MAKECMDGOALS)) $(MAKEFLAGS)
+# Open a shell inside of the container
+ssh: image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ --entrypoint=/bin/sh ${IMAGE_NAME}
 %:
 	@:
 # ref: https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line
