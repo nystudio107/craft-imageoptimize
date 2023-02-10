@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.50 - UNRELEASED
+## 1.6.50 - 2023.02.09
 ### Changed
 * Use dynamic docker container name & port for the `buildchain`
 * Update the `buildchain` to use Vite `^4.0.0`
