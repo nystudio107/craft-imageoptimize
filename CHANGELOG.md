@@ -1,5 +1,12 @@
 # ImageOptimize Changelog
 
+## 4.0.4 - 2023.02.09
+### Changed
+* Use dynamic docker container name & port for the `buildchain`
+* Update the `buildchain` to use Vite `^4.0.0`
+* Updated docs to use VitePress `^1.0.0-alpha.29`
+* Refactored the docs buildchain to use a dynamic docker container setup
+
 ## 4.0.3 - 2022.11.17
 ### Changed
 * Fixed HMR in local dev with explicit alias that resolves to the actual directory
