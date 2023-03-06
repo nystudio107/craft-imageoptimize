@@ -37,6 +37,12 @@ trait ServicesTrait
      */
     public static function config(): array
     {
+        // Constants aren't allowed in traits until PHP >= 8.2, and config() is called before __construct(),
+        // so we can't extract it from the passed in $config
+        $majorVersion = '4';
+        // Dev server container name & port are based on the major version of this plugin
+        $devPort = 3000 + (int)$majorVersion;
+        $versionName = 'v' . $majorVersion;
         return [
             'components' => [
                 'optimize' => OptimizeService::class,
@@ -44,14 +50,13 @@ trait ServicesTrait
                 'placeholder' => PlaceholderService::class,
                 // Register the vite service
                 'vite' => [
-                    'class' => VitePluginService::class,
                     'assetClass' => ImageOptimizeAsset::class,
-                    'useDevServer' => true,
-                    'devServerPublic' => 'http://localhost:3001',
-                    'serverPublic' => 'http://localhost:8000',
-                    'errorEntry' => 'src/js/ImageOptimize.js',
-                    'devServerInternal' => 'http://craft-imageoptimize-buildchain:3001',
                     'checkDevServer' => true,
+                    'class' => VitePluginService::class,
+                    'devServerInternal' => 'http://craft-imageoptimize-' . $versionName . '-buildchain-dev:' . $devPort,
+                    'devServerPublic' => 'http://localhost:' . $devPort,
+                    'errorEntry' => 'src/js/ImageOptimize.js',
+                    'useDevServer' => true,
                 ],
             ]
         ];

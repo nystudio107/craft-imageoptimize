@@ -10,3 +10,7 @@
 .DocSearch {
     --docsearch-primary-color: var(--c-brand) !important;
 }
+
+a > img {
+    display: inline-block;
+}
