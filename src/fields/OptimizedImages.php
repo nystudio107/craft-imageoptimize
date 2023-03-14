@@ -23,6 +23,7 @@ use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
+use nystudio107\imageoptimize\helpers\Plugin as PluginHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use ReflectionClass;
@@ -30,7 +31,6 @@ use ReflectionException;
 use Twig\Error\LoaderError;
 use verbb\supertable\fields\SuperTableField;
 use yii\base\InvalidConfigException;
-use yii\db\Exception;
 use yii\db\Schema;
 use function is_array;
 use function is_string;
@@ -212,7 +212,7 @@ class OptimizedImages extends Field
     /**
      * @inheritdoc
      */
-    public function afterElementSave(ElementInterface $element, bool $isNew)
+    public function afterElementSave(ElementInterface $element, bool $isNew): void
     {
         parent::afterElementSave($element, $isNew);
         // Update our OptimizedImages Field data now that the Asset has been saved
@@ -226,27 +226,45 @@ class OptimizedImages extends Field
                     '3.7.1',
                     '>='
                 ) === true;
-
-            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
-                /**
-                 * If this is a newly uploaded/created Asset, we can save the variants
-                 * via a queue job to prevent it from blocking
-                 */
-                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
-            } else if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
-                /**
-                 * If it's not a newly uploaded/created Asset, check to see if the image
-                 * itself is being updated (via the ImageEditor). If so, update the
-                 * variants immediately so the AssetSelectorHud displays the new images
-                 */
+            /**
+             * If we're saving an entry, and the Blitz plugin is active with cache warming enabled,
+             * update the images immediately so that the proper URLs end up getting cached
+             * by Blitz.
+             */
+            if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/entries/save-entry' && PluginHelper::blitzWarmingActive()) {
                 try {
                     ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
-                } catch (Exception $e) {
+                } catch (\Exception $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
-            } else {
-                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+
+                return;
             }
+            /**
+             * If this is a newly uploaded/created Asset, we can save the variants
+             * via a queue job to prevent it from blocking
+             */
+            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
+
+                return;
+            }
+            /**
+             * If it's not a newly uploaded/created Asset, check to see if the image
+             * itself is being updated (via the ImageEditor). If so, update the
+             * variants immediately so the AssetSelectorHud displays the new images
+             */
+            if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
+                try {
+                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
+                } catch (\Exception $e) {
+                    Craft::error($e->getMessage(), __METHOD__);
+                }
+
+                return;
+            }
+            // By default, just do it via queue job.
+            ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
         }
     }
 
