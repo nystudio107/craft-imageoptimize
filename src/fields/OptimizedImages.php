@@ -24,7 +24,6 @@ use GraphQL\Type\Definition\Type;
 use nystudio107\imageoptimize\assetbundles\imageoptimize\ImageOptimizeAsset;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
-use nystudio107\imageoptimize\helpers\Plugin as PluginHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
 use ReflectionClass;
@@ -220,50 +219,26 @@ class OptimizedImages extends Field
             // If the scenario is Asset::SCENARIO_FILEOPS or Asset::SCENARIO_MOVE (if using Craft > v3.7.1) treat it as a new asset
             $scenario = $element->getScenario();
             $request = Craft::$app->getRequest();
-            $supportsMoveScenario = version_compare(
-                    Craft::$app->getVersion(),
-                    '3.7.1',
-                    '>='
-                ) === true;
-            /**
-             * If we're saving an entry, and the Blitz plugin is active with cache warming enabled,
-             * update the images immediately so that the proper URLs end up getting cached
-             * by Blitz.
-             */
-            if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/entries/save-entry' && PluginHelper::blitzWarmingActive()) {
-                try {
-                    ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
-                } catch (\Exception $e) {
-                    Craft::error($e->getMessage(), __METHOD__);
-                }
-
-                return;
-            }
-            /**
-             * If this is a newly uploaded/created Asset, we can save the variants
-             * via a queue job to prevent it from blocking
-             */
-            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
+            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || $scenario === Asset::SCENARIO_MOVE) {
+                /**
+                 * If this is a newly uploaded/created Asset, we can save the variants
+                 * via a queue job to prevent it from blocking
+                 */
                 ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
-
-                return;
-            }
-            /**
-             * If it's not a newly uploaded/created Asset, check to see if the image
-             * itself is being updated (via the ImageEditor). If so, update the
-             * variants immediately so the AssetSelectorHud displays the new images
-             */
-            if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
+            } else if (!$request->isConsoleRequest && $request->getPathInfo() === 'assets/save-image') {
+                /**
+                 * If it's not a newly uploaded/created Asset, check to see if the image
+                 * itself is being updated (via the ImageEditor). If so, update the
+                 * variants immediately so the AssetSelectorHud displays the new images
+                 */
                 try {
                     ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Craft::error($e->getMessage(), __METHOD__);
                 }
-
-                return;
+            } else {
+                ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
             }
-            // By default, just do it via queue job.
-            ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
         }
     }
 
