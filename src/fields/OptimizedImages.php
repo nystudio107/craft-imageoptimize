@@ -226,20 +226,12 @@ class OptimizedImages extends Field
                     '3.7.1',
                     '>='
                 ) === true;
-            $pathInfo = '';
-            if (!$request->isConsoleRequest) {
-                $pathInfo = $request->getPathInfo();
-            }
             /**
              * If we're saving an entry, and the Blitz plugin is active with cache warming enabled,
              * update the images immediately so that the proper URLs end up getting cached
              * by Blitz.
              */
-            if (
-                !$request->isConsoleRequest
-                && ($pathInfo === 'actions/entries/save-entry' || $pathInfo === 'actions/assets/save-image')
-                && PluginHelper::blitzWarmingActive()
-            ) {
+            if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/entries/save-entry' && PluginHelper::blitzWarmingActive()) {
                 try {
                     ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
                 } catch (\Exception $e) {
@@ -252,11 +244,7 @@ class OptimizedImages extends Field
              * If this is a newly uploaded/created Asset, we can save the variants
              * via a queue job to prevent it from blocking
              */
-            if (
-                $isNew
-                || $scenario === Asset::SCENARIO_FILEOPS
-                || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)
-            ) {
+            if ($isNew || $scenario === Asset::SCENARIO_FILEOPS || ($supportsMoveScenario && $scenario === Asset::SCENARIO_MOVE)) {
                 ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
 
                 return;
@@ -266,10 +254,7 @@ class OptimizedImages extends Field
              * itself is being updated (via the ImageEditor). If so, update the
              * variants immediately so the AssetSelectorHud displays the new images
              */
-            if (
-                !$request->isConsoleRequest
-                && $pathInfo === 'actions/assets/save-image'
-            ) {
+            if (!$request->isConsoleRequest && $request->getPathInfo() === 'actions/assets/save-image') {
                 try {
                     ImageOptimize::$plugin->optimizedImages->updateOptimizedImageFieldData($this, $element);
                 } catch (\Exception $e) {
