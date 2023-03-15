@@ -2,7 +2,6 @@
 
 ## 4.0.5 - UNRELEASED
 ### Changed
-* Regenerate images immediately after saving an entry, if the Blitz plugin is installed, active, and cache warming is on
 
 ## 4.0.4 - 2023.02.09
 ### Changed
