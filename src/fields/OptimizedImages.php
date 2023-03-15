@@ -237,7 +237,7 @@ class OptimizedImages extends Field
              */
             if (
                 !$request->isConsoleRequest
-                && ($pathInfo === 'actions/entries/save-entry' || $pathInfo === 'actions/assets/upload')
+                && ($pathInfo === 'actions/entries/save-entry' || $pathInfo === 'actions/assets/save-image')
                 && PluginHelper::blitzWarmingActive()
             ) {
                 try {
