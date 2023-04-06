@@ -1,7 +1,8 @@
 # ImageOptimize Changelog
 
 ## 4.0.5 - UNRELEASED
-### Changed
+### Fixed
+* Side-step an issue which caused Craft 4.4.x to do unwanted image transform work even when using an external service to do the transforms ([#373](https://github.com/nystudio107/craft-imageoptimize/issues/373)) ([#13018](https://github.com/craftcms/cms/issues/13018))
 
 ## 4.0.4 - 2023.02.09
 ### Changed
