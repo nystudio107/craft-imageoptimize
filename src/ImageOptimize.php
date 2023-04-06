@@ -299,7 +299,7 @@ class ImageOptimize extends Plugin
         // ref: https://github.com/craftcms/cms/issues/13018
         try {
             $ref = new \ReflectionClassConstant(Asset::class, 'EVENT_BEFORE_DEFINE_URL');
-        } catch (\ReflectionException) {
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\ReflectionException) {
             $ref = null;
         }
         $eventName = $ref?->getDeclaringClass()->name === Asset::class
