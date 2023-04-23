@@ -2,6 +2,7 @@
 
 ## 1.6.51 - UNRELEASED
 ### Changed
+* Automate release generation via GitHub action
 
 ## 1.6.50 - 2023.02.09
 ### Changed
