@@ -44,6 +44,12 @@ export default defineConfig({
       {text: 'Store', link: 'https://plugins.craftcms.com/image-optimize'},
       {text: 'Changelog', link: 'https://nystudio107.com/plugins/imageoptimize/changelog'},
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-imageoptimize/issues'},
+      {
+        text: 'v4', items: [
+          {text: 'v4', link: '/'},
+          {text: 'v3', link: 'https://nystudio107.com/docs/image-optimize/v3/'},
+        ],
+      },
     ],
   },
 });

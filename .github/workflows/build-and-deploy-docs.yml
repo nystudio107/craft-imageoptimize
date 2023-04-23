@@ -4,7 +4,7 @@ env:
 on:
   push:
     branches:
-      - v1
+      - v4
     paths:
       - 'docs/**'
   pull_request:
@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [14.x]
+        node-version: [ 14.x ]
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
@@ -35,7 +35,7 @@ jobs:
       - name: rsync deployments
         uses: burnett01/rsync-deployments@4.1
         with:
-          switches: -avzr --delete
+          switches: -avzr
           path: ./dist/
           remote_path: ${{ secrets.NYS_DOCS_ROOT }}${{ env.DOCS_DEST_DIR }}
           remote_host: ${{ secrets.NYS_DEPLOY_REMOTE_HOST }}
