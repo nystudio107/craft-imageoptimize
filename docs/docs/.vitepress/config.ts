@@ -3,7 +3,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'ImageOptimize Plugin',
   description: 'Documentation for the ImageOptimize plugin',
-  base: '/docs/image-optimize/',
+  base: '/docs/image-optimize/v3/',
   lang: 'en-US',
   head: [
     ['meta', {content: 'https://github.com/nystudio107', property: 'og:see_also',}],
@@ -44,6 +44,12 @@ export default defineConfig({
       {text: 'Store', link: 'https://plugins.craftcms.com/image-optimize'},
       {text: 'Changelog', link: 'https://nystudio107.com/plugins/imageoptimize/changelog'},
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-imageoptimize/issues'},
+      {
+        text: 'v3', items: [
+          {text: 'v4', link: 'https://nystudio107.com/docs/image-optimize/'},
+          {text: 'v3', link: '/'},
+        ],
+      },
     ],
   },
 });
