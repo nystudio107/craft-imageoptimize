@@ -295,13 +295,23 @@ class ImageOptimize extends Plugin
      */
     protected function installAssetEventHandlers(): void
     {
-        // Handler: Assets::EVENT_GET_ASSET_URL
+        // Use Asset::EVENT_BEFORE_DEFINE_URL if it's available
+        // ref: https://github.com/craftcms/cms/issues/13018
+        try {
+            $ref = new \ReflectionClassConstant(Asset::class, 'EVENT_BEFORE_DEFINE_URL');
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\ReflectionException) {
+            $ref = null;
+        }
+        $eventName = $ref?->getDeclaringClass()->name === Asset::class
+            ? Asset::EVENT_BEFORE_DEFINE_URL
+            : Asset::EVENT_DEFINE_URL;
+        // Handler: Assets::EVENT_DEFINE_URL
         Event::on(
             Asset::class,
-            Asset::EVENT_DEFINE_URL,
+            $eventName,
             static function (DefineAssetUrlEvent $event): void {
                 Craft::debug(
-                    'Asset::EVENT_GET_ASSET_URL',
+                    'Asset::EVENT_DEFINE_URL',
                     __METHOD__
                 );
                 // Return the URL to the asset URL or null to let Craft handle it
@@ -341,6 +351,8 @@ class ImageOptimize extends Plugin
                     $event
                 );
                 if ($tempPath) {
+                    // Remove the old Craft generated transform that's still sitting in the temp directory.
+                    @unlink($event->tempPath);
                     $event->tempPath = $tempPath;
                 }
             }

@@ -1,5 +1,14 @@
 # ImageOptimize Changelog
 
+## 4.0.5 - 2023.05.19
+### Changed
+* Automate release generation via GitHub action
+* Add versioning to the docs
+
+### Fixed
+* Side-step an issue which caused Craft 4.4.x to do unwanted image transform work even when using an external service to do the transforms ([#373](https://github.com/nystudio107/craft-imageoptimize/issues/373)) ([#13018](https://github.com/craftcms/cms/issues/13018))
+* Remove the old Craft generated transform that's still sitting in the temp directory ([#380](https://github.com/nystudio107/craft-imageoptimize/pull/380))
+
 ## 4.0.4 - 2023.02.09
 ### Changed
 * Use dynamic docker container name & port for the `buildchain`
