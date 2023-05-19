@@ -351,6 +351,8 @@ class ImageOptimize extends Plugin
                     $event
                 );
                 if ($tempPath) {
+                    // Remove the old Craft generated transform that's still sitting in the temp directory.
+                    @unlink($event->tempPath);
                     $event->tempPath = $tempPath;
                 }
             }
