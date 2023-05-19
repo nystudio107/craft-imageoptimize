@@ -360,9 +360,14 @@ class ImageOptimize extends Plugin
                     __METHOD__
                 );
                 // Return the path to the optimized image to _createTransformForAsset()
-                $event->tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
+                $tempPath = ImageOptimize::$plugin->optimize->handleGenerateTransformEvent(
                     $event
                 );
+                if ($tempPath) {
+                    // Remove the old Craft generated transform that's still sitting in the temp directory.
+                    @unlink($event->tempPath);
+                    $event->tempPath = $tempPath;
+                }
             }
         );
 
