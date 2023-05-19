@@ -1,9 +1,12 @@
 # ImageOptimize Changelog
 
-## 1.6.51 - UNRELEASED
+## 1.6.51 - 2023.05.19
 ### Changed
 * Automate release generation via GitHub action
 * Add versioning to the docs
+
+### Fixed
+* Remove the old Craft generated transform that's still sitting in the temp directory ([#380](https://github.com/nystudio107/craft-imageoptimize/pull/380))
 
 ## 1.6.50 - 2023.02.09
 ### Changed
