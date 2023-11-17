@@ -13,7 +13,7 @@ export default defineConfig(({command}) => ({
   base: command === 'serve' ? '' : '/dist/',
   build: {
     emptyOutDir: true,
-    manifest: true,
+    manifest: 'manifest.json',
     outDir: '../src/web/assets/dist',
     rollupOptions: {
       input: {
@@ -21,10 +21,8 @@ export default defineConfig(({command}) => ({
         'field': 'src/js/OptimizedImagesField.js',
         'welcome': 'src/js/Welcome.js',
       },
-      output: {
-        sourcemap: true
-      },
-    }
+    },
+    sourcemap: true
   },
   plugins: [
     viteRestartPlugin({
