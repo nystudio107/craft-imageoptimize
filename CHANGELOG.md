@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.52 - UNRELEASED
+### Added
+* Switch over to Vite `^5.0.0` & Node `^20.0.0` for the buildchain
+
 ## 1.6.51 - 2023.05.19
 ### Changed
 * Automate release generation via GitHub action
