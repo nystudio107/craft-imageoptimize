@@ -42,8 +42,26 @@ class OptimizeController extends Controller
      */
     public ?string $field = null;
 
+    /**
+     * @var bool Should the image generation simply be queued, rather than run immediately?
+     */
+    public bool $queue = false;
+
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritDoc
+     */
+    public function options($actionID): array
+    {
+        $options = parent::options($actionID);
+        return array_merge($options, [
+            'force',
+            'field',
+            'queue',
+        ]);
+    }
 
     /**
      * Create all the OptimizedImages Field variants by creating all the responsive image variant transforms
@@ -77,7 +95,9 @@ class OptimizeController extends Controller
                 echo 'Unknown Asset Volume handle: ' . $volumeHandle . PHP_EOL;
             }
         }
-        $this->runCraftQueue();
+        if (!$this->queue) {
+            $this->runCraftQueue();
+        }
     }
 
     /**
@@ -95,19 +115,9 @@ class OptimizeController extends Controller
             // Re-save a single Asset ID
             ImageOptimize::$plugin->optimizedImages->resaveAsset($id, $this->force);
         }
-        $this->runCraftQueue();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function options($actionID): array
-    {
-        $options = parent::options($actionID);
-        $options[] = 'force';
-        $options[] = 'field';
-
-        return $options;
+        if (!$this->queue) {
+            $this->runCraftQueue();
+        }
     }
 
     /**
