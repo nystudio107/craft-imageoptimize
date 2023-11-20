@@ -2,6 +2,8 @@
 
 ## 4.0.6 - UNRELEASED
 ### Added
+* Added a `--queue` option to the `image-optimize/optimize/create` console command if you want to defer the image generation to be run via queue job, rather than immediately via the console command
+
 * Switch over to Vite `^5.0.0` & Node `^20.0.0` for the buildchain
 
 ## 4.0.5 - 2023.05.19
