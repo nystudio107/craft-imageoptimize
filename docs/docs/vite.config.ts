@@ -1,18 +1,18 @@
 import {defineConfig} from 'vite'
-import SitemapPlugin from 'rollup-plugin-sitemap'
+import { sitemap, Url as SitemapUrl } from '@aminnairi/rollup-plugin-sitemap'
 import VitePressConfig from './.vitepress/config'
 import {DefaultTheme} from "vitepress/types/default-theme";
 
 const docsSiteBaseUrl = 'https://nystudio107.com'
 const docsBaseUrl = new URL(VitePressConfig.base!, docsSiteBaseUrl).href.replace(/\/$/, '') + '/';
-let siteMapRoutes: SiteMapPluginUrls = [];
+let siteMapUrls: SitemapUrl[] = [];
 if (Array.isArray(VitePressConfig.themeConfig?.sidebar)) {
-  siteMapRoutes = VitePressConfig.themeConfig?.sidebar?.map((group: DefaultTheme.SidebarItem) => {
-    return group.items!.map((items: DefaultTheme.SidebarItem) => ({
-      path: items.link!.replace(/^\/+/, '') ?? '',
-      name: items.text ?? ''
+  siteMapUrls = VitePressConfig.themeConfig?.sidebar?.map((group: DefaultTheme.SidebarItem) => {
+    return group.items!.map((items: DefaultTheme.SidebarItem) => (<SitemapUrl>{
+      location: items.link!.replace(/^\/+/, '') ?? '',
+      lastModified: new Date(),
     }));
-  }).reduce((prev: SiteMapPluginUrls, curr: SiteMapPluginUrls) => {
+  }).reduce((prev: SitemapUrl[], curr: SitemapUrl[]) => {
     return prev!.concat(curr!);
   });
 }
@@ -20,10 +20,9 @@ if (Array.isArray(VitePressConfig.themeConfig?.sidebar)) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    SitemapPlugin({
+    sitemap({
       baseUrl: docsBaseUrl,
-      contentBase: './docs/.vitepress/dist',
-      routes: siteMapRoutes,
+      urls: siteMapUrls,
     })
   ],
   server: {
