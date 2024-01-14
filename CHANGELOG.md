@@ -3,6 +3,9 @@
 ## 1.6.52 - UNRELEASED
 ### Added
 * Added a `--queue` option to the `image-optimize/optimize/create` console command if you want to defer the image generation to be run via queue job, rather than immediately via the console command
+
+### Changed
+* Updated docs to use node 20 & a new sitemap plugin
 * Switch over to Vite `^5.0.0` & Node `^20.0.0` for the buildchain
 
 ## 1.6.51 - 2023.05.19
