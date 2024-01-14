@@ -1,8 +1,8 @@
 MAJOR_VERSION?=1
-TAG?=14-alpine
+TAG?=20-alpine
 CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-docs
 DOCS_DEV_PORT?=400${MAJOR_VERSION}
-DOCS_DEST?=../../../sites/nystudio107/web/docs/image-optimize
+DOCS_DEST?=../../../sites/nystudio107/web/docs/image-optimize/v3
 IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))
 IMAGE_NAME=${CONTAINER}:${TAG}
 DOCKER_RUN=docker container run --rm -it -v "${CURDIR}":/app

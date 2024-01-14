@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "docs:build": "npm run docs:fix && npm run docs:lint && vitepress build docs",
     "docs:dev": "vitepress dev docs",
@@ -7,8 +8,8 @@
   },
   "devDependencies": {
     "@textlint-rule/textlint-rule-no-unmatched-pair": "^1.0.8",
-    "@types/node": "^18.0.0",
-    "rollup-plugin-sitemap": "^1.0.3",
+    "@types/node": "^20.0.0",
+    "@aminnairi/rollup-plugin-sitemap": "^0.1.0",
     "textlint": "^13.0.0",
     "textlint-filter-rule-comments": "^1.2.2",
     "textlint-rule-apostrophe": "^1.0.0",
