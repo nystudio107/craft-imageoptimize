@@ -36,6 +36,16 @@
     "ksubileau/color-thief-php": "^1.3",
     "mikehaertl/php-shellcommand": "~1.2"
   },
+  "require-dev": {
+    "craftcms/ecs": "dev-main",
+    "craftcms/phpstan": "dev-main",
+    "craftcms/rector": "dev-main"
+  },
+  "scripts": {
+    "phpstan": "phpstan --ansi --memory-limit=1G",
+    "check-cs": "ecs check --ansi",
+    "fix-cs": "ecs check --fix --ansi"
+  },
   "config": {
     "allow-plugins": {
       "craftcms/plugin-installer": true,
