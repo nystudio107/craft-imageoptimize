@@ -1,6 +1,6 @@
 name: Build and Deploy Docs
 env:
-  DOCS_DEST_DIR: /image-optimize/
+  DOCS_DEST_DIR: /minify/v4/
 on:
   push:
     branches:
@@ -9,7 +9,7 @@ on:
       - 'docs/**'
   pull_request:
     branches:
-      - v1
+      - v4
     paths:
       - 'docs/**'
   workflow_dispatch:
