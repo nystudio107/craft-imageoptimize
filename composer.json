@@ -39,7 +39,10 @@
   "require-dev": {
     "craftcms/ecs": "dev-main",
     "craftcms/phpstan": "dev-main",
-    "craftcms/rector": "dev-main"
+    "craftcms/rector": "dev-main",
+    "markhuot/craftql": "^1.0.0",
+    "nystudio107/craft-minify": "^1.0.0",
+    "verbb/super-table": "^2.7.0"
   },
   "scripts": {
     "phpstan": "phpstan --ansi --memory-limit=1G",
