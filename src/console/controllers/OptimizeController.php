@@ -11,6 +11,7 @@
 namespace nystudio107\imageoptimize\console\controllers;
 
 use Craft;
+use craft\base\Field;
 use craft\helpers\App;
 use craft\queue\QueueInterface;
 use nystudio107\imageoptimize\ImageOptimize;
@@ -79,6 +80,7 @@ class OptimizeController extends Controller
 
         $fieldId = null;
         if ($this->field !== null) {
+            /** @var Field $field */
             $field = Craft::$app->getFields()->getFieldByHandle($this->field);
             $fieldId = $field?->id;
         }
