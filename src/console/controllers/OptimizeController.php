@@ -80,7 +80,7 @@ class OptimizeController extends Controller
 
         $fieldId = null;
         if ($this->field !== null) {
-            /** @var Field $field */
+            /** @var ?Field $field */
             $field = Craft::$app->getFields()->getFieldByHandle($this->field);
             $fieldId = $field?->id;
         }
