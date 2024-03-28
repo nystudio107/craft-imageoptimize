@@ -104,7 +104,7 @@ class Optimize extends Component
         ), SORT_REGULAR);
 
         $event = new RegisterComponentTypesEvent([
-            'types' => $imageTransformTypes
+            'types' => $imageTransformTypes,
         ]);
         $this->trigger(self::EVENT_REGISTER_IMAGE_TRANSFORM_TYPES, $event);
 
@@ -864,9 +864,8 @@ class Optimize extends Component
         Asset $asset,
         AssetTransformIndex $index,
         $outputPath,
-        $uri
-    ): void
-    {
+        $uri,
+    ): void {
         // If the image variant creation succeeded, copy it into place
         if (!empty($outputPath) && is_file($outputPath)) {
             // Figure out the resulting path for the image variant

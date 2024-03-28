@@ -130,7 +130,6 @@ class ResaveOptimizedImages extends BaseJob
             }
             $paginator->currentPage++;
         }
-
     }
 
     // Protected Methods

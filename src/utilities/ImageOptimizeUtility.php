@@ -10,11 +10,10 @@
 
 namespace nystudio107\imageoptimize\utilities;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\assetbundles\imageoptimizeutility\ImageOptimizeUtilityAsset;
-
 use Craft;
+
 use craft\base\Utility;
+use nystudio107\imageoptimize\ImageOptimize;
 
 /**
  * ImageOptimize Utility

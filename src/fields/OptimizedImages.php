@@ -178,7 +178,7 @@ class OptimizedImages extends Field
                     'ignoreFilesOfType',
                     'variants',
                 ],
-                ArrayValidator::class
+                ArrayValidator::class,
             ],
         ]);
     }
@@ -225,7 +225,7 @@ class OptimizedImages extends Field
                  * via a queue job to prevent it from blocking
                  */
                 ImageOptimize::$plugin->optimizedImages->resaveAsset($element->id);
-            } else if (!$request->isConsoleRequest && $request->getPathInfo() === 'assets/save-image') {
+            } elseif (!$request->isConsoleRequest && $request->getPathInfo() === 'assets/save-image') {
                 /**
                  * If it's not a newly uploaded/created Asset, check to see if the image
                  * itself is being updated (via the ImageEditor). If so, update the

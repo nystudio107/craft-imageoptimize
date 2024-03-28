@@ -7,11 +7,11 @@
 
 namespace nystudio107\imageoptimize\gql\types;
 
-use nystudio107\imageoptimize\models\OptimizedImage;
-
 use craft\gql\base\ObjectType;
 
 use GraphQL\Type\Definition\ResolveInfo;
+
+use nystudio107\imageoptimize\models\OptimizedImage;
 
 /**
  * @author    nystudio107

@@ -81,9 +81,8 @@ class ImageOptimizeVariable implements ViteVariableInterface
     public function createOptimizedImages(
         Asset  $asset,
         ?array $variants = null,
-        bool   $generatePlaceholders = false
-    ): ?OptimizedImage
-    {
+        bool   $generatePlaceholders = false,
+    ): ?OptimizedImage {
         // Override our settings for lengthy operations, since we're doing this via Twig
         ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 
