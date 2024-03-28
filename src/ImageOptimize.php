@@ -50,9 +50,11 @@ use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\ServicesTrait;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
+use Twig\Error\LoaderError;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use function function_exists;
 
 /** @noinspection MissingPropertyAnnotationsInspection */
 
@@ -206,13 +208,13 @@ class ImageOptimize extends Plugin
                 'image-optimize/settings/_settings.twig',
                 [
                     'settings' => $settings,
-                    'gdInstalled' => \function_exists('imagecreatefromjpeg'),
+                    'gdInstalled' => function_exists('imagecreatefromjpeg'),
                     'imageTransformTypeOptions' => $imageTransformTypeOptions,
                     'allImageTransformTypes' => $allImageTransformTypes,
                     'imageTransform' => ImageOptimize::$plugin->transformMethod,
                 ]
             );
-        } catch (\Twig\Error\LoaderError $e) {
+        } catch (LoaderError $e) {
             Craft::error($e->getMessage(), __METHOD__);
         } catch (Exception $e) {
             Craft::error($e->getMessage(), __METHOD__);
@@ -237,6 +239,7 @@ class ImageOptimize extends Plugin
      */
     protected function setImageTransformComponent()
     {
+        /** @var Settings $settings */
         $settings = $this->getSettings();
         $definition = array_merge(
             $settings->imageTransformTypeSettings[$settings->transformClass] ?? [],
@@ -484,8 +487,8 @@ class ImageOptimize extends Plugin
                     'Fields::EVENT_AFTER_SAVE_FIELD',
                     __METHOD__
                 );
+                /** @var Settings $settings */
                 $settings = $this->getSettings();
-                /** @var Field $field */
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     $this->checkForOptimizedImagesField($event);
                 }
@@ -502,6 +505,7 @@ class ImageOptimize extends Plugin
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
                         __METHOD__
                     );
+                    /** @var Settings $settings */
                     $settings = $this->getSettings();
                     if ($settings->automaticallyResaveImageVariants) {
                         // After they have changed the settings, resave all of the assets
@@ -520,6 +524,7 @@ class ImageOptimize extends Plugin
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
                     __METHOD__
                 );
+                /** @var Settings $settings */
                 $settings = $this->getSettings();
                 // Only worry about this volume if it's not new
                 if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
@@ -631,17 +636,17 @@ class ImageOptimize extends Plugin
      *
      * @param FieldEvent $event
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function checkForOptimizedImagesField(FieldEvent $event)
     {
         $thisField = $event->field;
         if ($thisField instanceof OptimizedImages) {
             $volumes = Craft::$app->getVolumes()->getAllVolumes();
+            /** @var Volume $volume */
             foreach ($volumes as $volume) {
                 $needToReSave = false;
-                /** @var FieldLayout $fieldLayout */
-                /** @var Volume $volume */
+                /** @var ?FieldLayout $fieldLayout */
                 $fieldLayout = $volume->getFieldLayout();
                 // Loop through the fields in the layout to see if it contains our field
                 if ($fieldLayout) {

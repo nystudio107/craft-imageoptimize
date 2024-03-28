@@ -13,12 +13,13 @@ namespace nystudio107\imageoptimize\models;
 use Craft;
 use craft\base\Model;
 use craft\helpers\Html;
-
 use craft\helpers\Template;
 use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\ImageOptimize;
+use Twig\Markup;
+use function strlen;
 
 /**
  * @author    nystudio107
@@ -86,12 +87,12 @@ class OptimizedImage extends Model
     public $lightness;
 
     /**
-     * @var int The width of the placeholder image
+     * @var ?int The width of the placeholder image
      */
     public $placeholderWidth;
 
     /**
-     * @var int The height of the placeholder image
+     * @var ?int The height of the placeholder image
      */
     public $placeholderHeight;
 
@@ -131,9 +132,9 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function src(int $width = 0): string
+    public function src(int $width = 0): Markup
     {
         if (empty($width)) {
             return Template::raw(reset($this->optimizedImageUrls));
@@ -147,7 +148,7 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return null|string|\Twig\Markup
+     * @return string
      */
     public function getSrc(int $width = 0): string
     {
@@ -160,9 +161,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcset(bool $dpr = false): string
+    public function srcset(bool $dpr = false): Markup
     {
         return Template::raw($this->getSrcsetFromArray($this->optimizedImageUrls, $dpr));
     }
@@ -186,9 +187,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetWidth(int $width, bool $dpr = false): string
+    public function srcsetWidth(int $width, bool $dpr = false): Markup
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
 
@@ -203,9 +204,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetMinWidth(int $width, bool $dpr = false): string
+    public function srcsetMinWidth(int $width, bool $dpr = false): Markup
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
 
@@ -219,9 +220,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetMaxWidth(int $width, bool $dpr = false): string
+    public function srcsetMaxWidth(int $width, bool $dpr = false): Markup
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
 
@@ -234,9 +235,9 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcWebp(int $width = 0): string
+    public function srcWebp(int $width = 0): Markup
     {
         if (empty($width)) {
             return Template::raw(reset($this->optimizedWebPImageUrls));
@@ -263,9 +264,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetWebp(bool $dpr = false): string
+    public function srcsetWebp(bool $dpr = false): Markup
     {
         return Template::raw($this->getSrcsetFromArray($this->optimizedWebPImageUrls, $dpr));
     }
@@ -289,9 +290,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetWidthWebp(int $width, bool $dpr = false): string
+    public function srcsetWidthWebp(int $width, bool $dpr = false): Markup
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
 
@@ -306,9 +307,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetMinWidthWebp(int $width, bool $dpr = false): string
+    public function srcsetMinWidthWebp(int $width, bool $dpr = false): Markup
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
 
@@ -323,9 +324,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return \Twig\Markup|null
+     * @return Markup
      */
-    public function srcsetMaxWidthWebp(int $width, bool $dpr = false): string
+    public function srcsetMaxWidthWebp(int $width, bool $dpr = false): Markup
     {
         $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
 
@@ -385,7 +386,7 @@ class OptimizedImage extends Model
      *
      * @param array $linkAttrs
      *
-     * @return \Twig\Markup
+     * @return Markup
      */
     public function linkPreloadTag($linkAttrs = [])
     {
@@ -419,7 +420,7 @@ class OptimizedImage extends Model
      * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
      * @param array $imgAttrs
      *
-     * @return \Twig\Markup
+     * @return Markup
      */
     public function imgTag($loading = 'eager', $placeHolder = 'box', $imgAttrs = [])
     {
@@ -457,7 +458,7 @@ class OptimizedImage extends Model
      * @param array $srcsetAttrs
      * @param array $imgAttrs
      *
-     * @return \Twig\Markup
+     * @return Markup
      */
     public function pictureTag($loading = 'eager', $placeHolder = 'box', $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [])
     {
@@ -535,7 +536,7 @@ class OptimizedImage extends Model
     /**
      * Return a base64-encoded placeholder image
      *
-     * @return \Twig\Markup|null
+     * @return Markup|null
      */
     public function placeholderImage()
     {
@@ -566,7 +567,7 @@ class OptimizedImage extends Model
     public function placeholderImageSize(): string
     {
         $placeholder = $this->placeholderImage();
-        $contentLength = !empty(\strlen($placeholder)) ? \strlen($placeholder) : 0;
+        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
 
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
@@ -576,7 +577,7 @@ class OptimizedImage extends Model
      *
      * @param string|null $color
      *
-     * @return \Twig\Markup|null
+     * @return Markup|null
      */
     public function placeholderBox(string $color = null)
     {
@@ -605,7 +606,7 @@ class OptimizedImage extends Model
     public function placeholderBoxSize(): string
     {
         $placeholder = $this->placeholderBox();
-        $contentLength = !empty(\strlen($placeholder)) ? \strlen($placeholder) : 0;
+        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
 
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
@@ -613,7 +614,7 @@ class OptimizedImage extends Model
     /**
      * Return a silhouette of the image as an SVG placeholder
      *
-     * @return \Twig\Markup|null
+     * @return Markup|null
      */
     public function placeholderSilhouette()
     {
@@ -644,7 +645,7 @@ class OptimizedImage extends Model
     public function placeholderSilhouetteSize(): string
     {
         $placeholder = $this->placeholderSilhouette();
-        $contentLength = !empty(\strlen($placeholder)) ? \strlen($placeholder) : 0;
+        $contentLength = !empty(strlen($placeholder)) ? strlen($placeholder) : 0;
 
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
@@ -770,9 +771,9 @@ class OptimizedImage extends Model
     /**
      * Return a default placeholder image
      *
-     * @return \Twig\Markup
+     * @return Markup
      */
-    protected function defaultPlaceholderImage(): \Twig\Markup
+    protected function defaultPlaceholderImage(): Markup
     {
         $width = 1;
         $height = 1;

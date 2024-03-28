@@ -11,10 +11,12 @@
 namespace nystudio107\imageoptimize\console\controllers;
 
 use Craft;
+use craft\base\Field;
 use craft\base\Volume;
 use craft\helpers\App;
 use craft\queue\QueueInterface;
 use nystudio107\imageoptimize\ImageOptimize;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\queue\redis\Queue as RedisQueue;
 
@@ -68,7 +70,7 @@ class OptimizeController extends Controller
      *
      * @param string|null $volumeHandle
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionCreate($volumeHandle = null)
     {
@@ -79,6 +81,7 @@ class OptimizeController extends Controller
 
         $fieldId = null;
         if ($this->field !== null) {
+            /** @var Field $field */
             $field = Craft::$app->getFields()->getFieldByHandle($this->field);
             if ($field !== null) {
                 $fieldId = $field->id;
@@ -130,11 +133,12 @@ class OptimizeController extends Controller
     {
         // This might take a while
         App::maxPowerCaptain();
+        /** @var QueueInterface|RedisQueue $queue */
         $queue = Craft::$app->getQueue();
-        if ($queue instanceof QueueInterface) {
-            $queue->run();
-        } elseif ($queue instanceof RedisQueue) {
+        if ($queue instanceof RedisQueue) {
             $queue->run(false);
+        } elseif ($queue instanceof QueueInterface) {
+            $queue->run();
         }
     }
 }

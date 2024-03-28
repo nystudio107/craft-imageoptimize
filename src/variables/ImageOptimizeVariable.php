@@ -13,12 +13,11 @@ namespace nystudio107\imageoptimize\variables;
 use craft\elements\Asset;
 use craft\helpers\Template;
 use nystudio107\imageoptimize\ImageOptimize;
-
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
-
 use nystudio107\pluginvite\variables\ViteVariableInterface;
 use nystudio107\pluginvite\variables\ViteVariableTrait;
+use Twig\Markup;
 
 /**
  * @author    nystudio107
@@ -63,7 +62,7 @@ class ImageOptimizeVariable implements ViteVariableInterface
      * @param             $height
      * @param string|null $color
      *
-     * @return \Twig_Markup|null
+     * @return Markup|null
      */
     public function placeholderBox($width, $height, $color = null)
     {
@@ -81,7 +80,8 @@ class ImageOptimizeVariable implements ViteVariableInterface
         Asset $asset,
               $variants = null,
               $generatePlaceholders = false
-    ) {
+    )
+    {
         // Override our settings for lengthy operations, since we're doing this via Twig
         ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 
@@ -106,7 +106,7 @@ class ImageOptimizeVariable implements ViteVariableInterface
      *
      * @return null|ImageTransformInterface The Image Transform
      */
-    public function createImageTransformType($config): ImageTransformInterface
+    public function createImageTransformType($config): ?ImageTransformInterface
     {
         return ImageOptimize::$plugin->optimize->createImageTransformType($config);
     }

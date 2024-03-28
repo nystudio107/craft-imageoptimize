@@ -15,7 +15,6 @@ use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\Volume;
-
 use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
@@ -30,8 +29,11 @@ use nystudio107\imageoptimize\helpers\Image as ImageHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
 use nystudio107\imageoptimize\models\OptimizedImage;
-
+use nystudio107\imageoptimize\models\Settings;
+use Throwable;
 use yii\base\InvalidConfigException;
+use yii\db\Exception;
+use function in_array;
 
 /**
  * @author    nystudio107
@@ -59,6 +61,7 @@ class OptimizedImages extends Component
     {
         Craft::beginProfile('createOptimizedImages', __METHOD__);
         if (empty($variants)) {
+            /** @var ?Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
                 $variants = $settings->defaultVariants;
@@ -81,6 +84,7 @@ class OptimizedImages extends Component
     public function populateOptimizedImageModel(Asset $asset, $variants, OptimizedImage $model, $force = false)
     {
         Craft::beginProfile('populateOptimizedImageModel', __METHOD__);
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
@@ -100,7 +104,7 @@ class OptimizedImages extends Component
                 // Only try the transform if it's possible
                 if (Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
-                    && $asset->height > 0) {
+                    && (int)$asset->height > 0) {
                     // Create the transform based on the variant
                     /** @var AssetTransform $transform */
                     list($transform, $aspectRatio) = $this->getTransformFromVariant($asset, $variant, $retinaSize);
@@ -109,15 +113,15 @@ class OptimizedImages extends Component
                         $transforms = Craft::$app->getAssetTransforms();
                         try {
                             $index = $transforms->getTransformIndex($asset, $transform);
-                            $index->fileExists = 0;
+                            $index->fileExists = false;
                             $transforms->storeTransformIndexData($index);
                             $volume = $asset->getVolume();
                             $transformPath = $asset->folderPath . $transforms->getTransformSubpath($asset, $index);
                             try {
                                 $volume->deleteFile($transformPath);
-                            } catch (\Throwable $exception) {
+                            } catch (Throwable $exception) {
                             }
-                        } catch (\Throwable $e) {
+                        } catch (Throwable $e) {
                             $msg = 'Failed to update transform: ' . $e->getMessage();
                             Craft::error($msg, __METHOD__);
                             if (Craft::$app instanceof ConsoleApplication) {
@@ -158,8 +162,7 @@ class OptimizedImages extends Component
         if (empty($model->optimizedImageUrls)) {
             $finalFormat = $asset->getExtension();
             if (Image::canManipulateAsImage($finalFormat)
-                && Image::canManipulateAsImage($finalFormat)
-                && $asset->height > 0) {
+                && (int)$asset->height > 0) {
                 $variant = [
                     'width' => $asset->width,
                     'useAspectRatio' => false,
@@ -231,10 +234,10 @@ class OptimizedImages extends Component
         if (!empty($field->ignoreFilesOfType) && $sourceType !== null) {
             $ignoreTypes = array_values($field->ignoreFilesOfType);
             // If `image/svg` is being ignored, add `image/svg+xml` to the mime types to ignore as well
-            if (\in_array('image/svg', $ignoreTypes, false)) {
+            if (in_array('image/svg', $ignoreTypes, false)) {
                 $ignoreTypes[] = 'image/svg+xml';
             }
-            if (\in_array($sourceType, $ignoreTypes, false)) {
+            if (in_array($sourceType, $ignoreTypes, false)) {
                 $createVariants = false;
             }
         }
@@ -246,7 +249,7 @@ class OptimizedImages extends Component
      * @param ElementInterface $asset
      * @param boolean $force
      *
-     * @throws \yii\db\Exception
+     * @throws Exception
      * @throws InvalidConfigException
      */
     public function updateOptimizedImageFieldData(Field $field, ElementInterface $asset, $force = false)
@@ -296,9 +299,9 @@ class OptimizedImages extends Component
      * Re-save all of the assets in all of the volumes
      *
      * @param int|null $fieldId only for this specific id
-     * @param boolean Should image variants be forced to be recreated?
+     * @param bool $force Should image variants be forced to be recreated?
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function resaveAllVolumesAssets($fieldId = null, $force = false)
     {
@@ -317,14 +320,14 @@ class OptimizedImages extends Component
      *
      * @param Volume $volume for this volume
      * @param int|null $fieldId only for this specific id
-     * @param boolean Should image variants be forced to be recreated?
+     * @param bool $force Should image variants be forced to be recreated?
      *
      * @throws InvalidConfigException
      */
     public function resaveVolumeAssets(Volume $volume, $fieldId = null, $force = false)
     {
         $needToReSave = false;
-        /** @var FieldLayout $fieldLayout */
+        /** @var ?FieldLayout $fieldLayout */
         $fieldLayout = $volume->getFieldLayout();
         // Loop through the fields in the layout to see if there is an OptimizedImages field
         if ($fieldLayout) {
@@ -375,7 +378,7 @@ class OptimizedImages extends Component
      * Re-save an individual asset
      *
      * @param int $id
-     * @param boolean Should image variants be forced to be recreated?
+     * @param bool $force Should image variants be forced to be recreated?
      */
     public function resaveAsset(int $id, $force = false)
     {
@@ -450,6 +453,7 @@ class OptimizedImages extends Component
             'generatePlaceholders for: ' . print_r($model, true),
             __METHOD__
         );
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         if ($settings->generatePlaceholders && ImageOptimize::$generatePlaceholders) {
             $placeholder = ImageOptimize::$plugin->placeholder;
@@ -487,6 +491,7 @@ class OptimizedImages extends Component
      */
     protected function getTransformFromVariant(Asset $asset, $variant, $retinaSize): array
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         $transform = new AssetTransform();
         $transform->format = $variant['format'] ?? null;

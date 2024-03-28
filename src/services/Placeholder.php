@@ -13,15 +13,18 @@ namespace nystudio107\imageoptimize\services;
 use ColorThief\ColorThief;
 use Craft;
 use craft\base\Component;
-
 use craft\elements\Asset;
 use craft\helpers\Image;
 use craft\helpers\StringHelper;
 use craft\image\Raster;
+use Exception;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\ImageOptimize;
-
 use nystudio107\imageoptimize\lib\Potracio;
+use nystudio107\imageoptimize\models\Settings;
+use Throwable;
+use function function_exists;
+use function strlen;
 
 /**
  * @author    nystudio107
@@ -117,7 +120,7 @@ class Placeholder extends Component
             // Extract the color palette
             try {
                 $palette = ColorThief::getPalette($tempPath, 5);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Craft::error($e->getMessage(), __METHOD__);
 
                 return [];
@@ -172,7 +175,7 @@ class Placeholder extends Component
 
         if (!empty($tempPath)) {
             // Potracio depends on `gd` being installed
-            if (\function_exists('imagecreatefromjpeg')) {
+            if (function_exists('imagecreatefromjpeg')) {
                 $pot = new Potracio();
                 $pot->loadImageFromFile($tempPath);
                 $pot->process();
@@ -184,12 +187,13 @@ class Placeholder extends Component
                     $result = ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($result);
                 }
             }
+            /** @var Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             /**
              * If Potracio failed or gd isn't installed, or this is larger
              * than MAX_SILHOUETTE_SIZE bytes, just return a box
              */
-            if (empty($result) || ((\strlen($result) > self::MAX_SILHOUETTE_SIZE) && $settings->capSilhouetteSvgSize)) {
+            if (empty($result) || ((strlen($result) > self::MAX_SILHOUETTE_SIZE) && $settings->capSilhouetteSvgSize)) {
                 $size = getimagesize($tempPath);
                 if ($size !== false) {
                     list($width, $height) = $size;
@@ -264,17 +268,17 @@ class Placeholder extends Component
         int    $height,
         int    $quality,
                $position
-    ): string {
+    ): string
+    {
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
-        /** @var Image $image */
         try {
             if (StringHelper::toLowerCase($pathParts['extension']) === 'svg') {
                 $image = $images->loadImage($filePath, true, $width);
             } else {
                 $image = $images->loadImage($filePath);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Craft::error(
                 'Error creating temporary image: ' . $e->getMessage(),
                 __METHOD__
@@ -291,9 +295,11 @@ class Placeholder extends Component
         $image->scaleAndCrop($width, $height, true, $position);
 
         // Strip any EXIF data from the image before trying to save it
-        $imagineImage = $image->getImagineImage();
-        if ($imagineImage) {
-            $imagineImage->strip();
+        if ($image instanceof Raster) {
+            $imagineImage = $image->getImagineImage();
+            if ($imagineImage) {
+                $imagineImage->strip();
+            }
         }
 
         // Save the image out to a temp file, then return its contents
@@ -302,7 +308,7 @@ class Placeholder extends Component
         clearstatcache(true, $tempPath);
         try {
             $image->saveAs($tempPath);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Craft::error(
                 'Error saving temporary image: ' . $e->getMessage(),
                 __METHOD__

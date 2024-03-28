@@ -12,7 +12,6 @@ namespace nystudio107\imageoptimize\jobs;
 
 use Craft;
 use craft\base\ElementInterface;
-
 use craft\base\Field;
 use craft\console\Application as ConsoleApplication;
 use craft\db\Paginator;
@@ -22,7 +21,6 @@ use craft\helpers\App;
 use craft\queue\BaseJob;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\ImageOptimize;
-
 use yii\base\Exception;
 
 /**
@@ -106,7 +104,7 @@ class ResaveOptimizedImages extends BaseJob
                 $layout = $element->getFieldLayout();
                 if ($layout !== null) {
                     $fields = $layout->getFields();
-                    /** @var  $field Field */
+                    /** @var Field $field */
                     foreach ($fields as $field) {
                         if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
                             if ($this->fieldId === null || $field->id == $this->fieldId) {

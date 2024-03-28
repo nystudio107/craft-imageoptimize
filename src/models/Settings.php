@@ -15,11 +15,9 @@ use craft\behaviors\EnvAttributeParserBehavior;
 use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
-
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
-use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
-
+use nystudio107\imageoptimizeimgix\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimizethumbor\imagetransforms\ThumborImageTransform;
 use yii\behaviors\AttributeTypecastBehavior;
 
 /**
