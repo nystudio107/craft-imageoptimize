@@ -48,6 +48,8 @@ use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimize\services\ServicesTrait;
 use nystudio107\imageoptimize\utilities\ImageOptimizeUtility;
 use nystudio107\imageoptimize\variables\ImageOptimizeVariable;
+use ReflectionClassConstant;
+use ReflectionException;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -159,6 +161,7 @@ class ImageOptimize extends Plugin
     public function settingsHtml(): ?string
     {
         // Get only the user-editable settings
+        /** @var Settings $settings */
         $settings = $this->getSettings();
 
         // Get the image transform types
@@ -211,11 +214,8 @@ class ImageOptimize extends Plugin
      */
     protected function setImageTransformComponent(): void
     {
-        /* @var Settings $settings */
+        /** @var Settings $settings */
         $settings = $this->getSettings();
-        if ($settings === null) {
-            return;
-        }
         $definition = array_merge(
             $settings->imageTransformTypeSettings[$settings->transformClass] ?? [],
             ['class' => $settings->transformClass]
@@ -298,8 +298,8 @@ class ImageOptimize extends Plugin
         // Use Asset::EVENT_BEFORE_DEFINE_URL if it's available
         // ref: https://github.com/craftcms/cms/issues/13018
         try {
-            $ref = new \ReflectionClassConstant(Asset::class, 'EVENT_BEFORE_DEFINE_URL');
-        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (\ReflectionException) {
+            $ref = new ReflectionClassConstant(Asset::class, 'EVENT_BEFORE_DEFINE_URL');
+        } /** @noinspection PhpRedundantCatchClauseInspection */ catch (ReflectionException) {
             $ref = null;
         }
         $eventName = $ref?->getDeclaringClass()->name === Asset::class
@@ -469,10 +469,9 @@ class ImageOptimize extends Plugin
                     'Fields::EVENT_AFTER_SAVE_FIELD',
                     __METHOD__
                 );
-                /* @var Settings $settings */
+                /** @var Settings $settings */
                 $settings = $this->getSettings();
-                /** @var Field $field */
-                if (($settings !== null) && !$event->isNew && $settings->automaticallyResaveImageVariants) {
+                if (!$event->isNew && $settings->automaticallyResaveImageVariants) {
                     $this->checkForOptimizedImagesField($event);
                 }
             }
@@ -488,7 +487,7 @@ class ImageOptimize extends Plugin
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
                         __METHOD__
                     );
-                    /* @var Settings $settings */
+                    /** @var ?Settings $settings */
                     $settings = $this->getSettings();
                     if (($settings !== null) && $settings->automaticallyResaveImageVariants) {
                         // After they have changed the settings, resave all the assets
@@ -507,7 +506,7 @@ class ImageOptimize extends Plugin
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
                     __METHOD__
                 );
-                /* @var Settings $settings */
+                /** @var ?Settings $settings */
                 $settings = $this->getSettings();
                 // Only worry about this volume if it's not new
                 if (($settings !== null) && !$event->isNew && $settings->automaticallyResaveImageVariants) {
@@ -609,7 +608,7 @@ class ImageOptimize extends Plugin
             $volumes = Craft::$app->getVolumes()->getAllVolumes();
             foreach ($volumes as $volume) {
                 $needToReSave = false;
-                /** @var FieldLayout $fieldLayout */
+                /** @var ?FieldLayout $fieldLayout */
                 $fieldLayout = $volume->getFieldLayout();
                 // Loop through the fields in the layout to see if it contains our field
                 if ($fieldLayout) {

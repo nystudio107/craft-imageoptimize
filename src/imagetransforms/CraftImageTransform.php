@@ -14,6 +14,7 @@ use Craft;
 use craft\elements\Asset;
 use craft\models\ImageTransform as CraftImageTransformModel;
 use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\models\Settings;
 
 /**
  * @author    nystudio107
@@ -49,6 +50,7 @@ class CraftImageTransform extends ImageTransform
      */
     public function init(): void
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get our $generateTransformsBeforePageLoad setting
         $this->generateTransformsBeforePageLoad = $settings->generateTransformsBeforePageLoad ?? true;

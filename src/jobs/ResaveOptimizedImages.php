@@ -100,7 +100,7 @@ class ResaveOptimizedImages extends BaseJob
                 $layout = $element->getFieldLayout();
                 if ($layout !== null) {
                     $fields = $layout->getCustomFields();
-                    /** @var  $field Field */
+                    /** @var Field $field */
                     foreach ($fields as $field) {
                         if ($field instanceof OptimizedImagesField && $element instanceof Asset) {
                             if ($this->fieldId === null || (int)$field->id === (int)$this->fieldId) {

@@ -26,6 +26,7 @@ use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\gql\types\generators\OptimizedImagesGenerator;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\models\OptimizedImage;
+use nystudio107\imageoptimize\models\Settings;
 use ReflectionClass;
 use ReflectionException;
 use verbb\supertable\fields\SuperTableField;
@@ -140,6 +141,7 @@ class OptimizedImages extends Field
 
         // Handle cases where the plugin has been uninstalled
         if (ImageOptimize::$plugin !== null) {
+            /** @var ?Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
                 if (empty($this->variants)) {
@@ -336,6 +338,7 @@ class OptimizedImages extends Field
         $aspectRatio = ['x' => 2, 'y' => 2, 'custom' => true];
         $aspectRatios[] = $aspectRatio;
         // Get only the user-editable settings
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
 
         // Render the settings template
@@ -396,6 +399,7 @@ class OptimizedImages extends Field
                 '});'
             );
 
+            /** @var Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             $createVariants = ImageOptimize::$plugin->optimizedImages->shouldCreateVariants($this, $element);
 
@@ -482,7 +486,7 @@ class OptimizedImages extends Field
     protected function volumeHasField(Volume $volume, string $fieldHandle): bool
     {
         $result = false;
-        /** @var FieldLayout $fieldLayout */
+        /** @var ?FieldLayout $fieldLayout */
         $fieldLayout = $volume->getFieldLayout();
         // Loop through the fields in the layout to see if there is an OptimizedImages field
         if ($fieldLayout) {

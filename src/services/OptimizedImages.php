@@ -33,6 +33,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
 use nystudio107\imageoptimize\models\OptimizedImage;
+use nystudio107\imageoptimize\models\Settings;
 use Throwable;
 use yii\base\InvalidConfigException;
 use yii\db\Exception;
@@ -65,6 +66,7 @@ class OptimizedImages extends Component
     {
         Craft::beginProfile('createOptimizedImages', __METHOD__);
         if (empty($variants)) {
+            /** @var ?Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             if ($settings) {
                 $variants = $settings->defaultVariants;
@@ -88,6 +90,7 @@ class OptimizedImages extends Component
     public function populateOptimizedImageModel(Asset $asset, array $variants, OptimizedImage $model, bool $force = false): void
     {
         Craft::beginProfile('populateOptimizedImageModel', __METHOD__);
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Empty our the optimized image URLs
         $model->optimizedImageUrls = [];
@@ -110,7 +113,7 @@ class OptimizedImages extends Component
                 }
                 $variant['format'] = $variantFormat;
                 // Only try the transform if it's possible
-                if ($asset->height > 0
+                if ((int)$asset->height > 0
                     && Image::canManipulateAsImage($finalFormat)
                     && Image::canManipulateAsImage($asset->getExtension())
                 ) {
@@ -123,7 +126,7 @@ class OptimizedImages extends Component
 
                         try {
                             $index = $transformer->getTransformIndex($asset, $transform);
-                            $index->fileExists = 0;
+                            $index->fileExists = false;
                             $transformer->storeTransformIndexData($index);
                             try {
                                 $transformer->deleteImageTransformFile($asset, $index);
@@ -169,8 +172,7 @@ class OptimizedImages extends Component
         // If no image variants were created, populate it with the image itself
         if (empty($model->optimizedImageUrls)) {
             $finalFormat = $asset->getExtension();
-            if ($asset->height > 0
-                && Image::canManipulateAsImage($finalFormat)
+            if ((int)$asset->height > 0
                 && Image::canManipulateAsImage($finalFormat)
             ) {
                 $variant = [
@@ -306,7 +308,7 @@ class OptimizedImages extends Component
      * Re-save all the assets in all the volumes
      *
      * @param ?int $fieldId only for this specific id
-     * @param bool Should image variants be forced to be recreated?
+     * @param bool $force Should image variants be forced to be recreated?
      *
      * @throws InvalidConfigException
      */
@@ -324,12 +326,12 @@ class OptimizedImages extends Component
      *
      * @param Volume $volume for this volume
      * @param ?int $fieldId only for this specific id
-     * @param bool Should image variants be forced to be recreated?
+     * @param bool $force Should image variants be forced to be recreated?
      */
     public function resaveVolumeAssets(Volume $volume, ?int $fieldId = null, bool $force = false): void
     {
         $needToReSave = false;
-        /** @var FieldLayout $fieldLayout */
+        /** @var ?FieldLayout $fieldLayout */
         $fieldLayout = $volume->getFieldLayout();
         // Loop through the fields in the layout to see if there is an OptimizedImages field
         if ($fieldLayout) {
@@ -379,7 +381,7 @@ class OptimizedImages extends Component
      * Re-save an individual asset
      *
      * @param int $id
-     * @param bool Should image variants be forced to be recreated?
+     * @param bool $force Should image variants be forced to be recreated?
      */
     public function resaveAsset(int $id, bool $force = false): void
     {
@@ -453,6 +455,7 @@ class OptimizedImages extends Component
             'generatePlaceholders for: ' . print_r($model, true),
             __METHOD__
         );
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         if ($settings->generatePlaceholders && ImageOptimize::$generatePlaceholders) {
             $placeholder = ImageOptimize::$plugin->placeholder;
@@ -491,6 +494,7 @@ class OptimizedImages extends Component
      */
     protected function getTransformFromVariant(Asset $asset, $variant, $retinaSize): array
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         $transform = new AssetTransform();
         $transform->format = $variant['format'] ?? null;

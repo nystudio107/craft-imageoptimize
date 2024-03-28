@@ -93,6 +93,6 @@ class Image
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-        return $extension === 'gif' && $image->layers();
+        return $extension === 'gif' && $image->layers()->count() > 1;
     }
 }

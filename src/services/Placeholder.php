@@ -22,6 +22,7 @@ use Exception;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\lib\Potracio;
+use nystudio107\imageoptimize\models\Settings;
 use Throwable;
 use function function_exists;
 use function strlen;
@@ -187,6 +188,7 @@ class Placeholder extends Component
                     $result = ImageOptimize::$plugin->optimizedImages->encodeOptimizedSVGDataUri($result);
                 }
             }
+            /** @var Settings $settings */
             $settings = ImageOptimize::$plugin->getSettings();
             /**
              * If Potracio failed or gd isn't installed, or this is larger
@@ -266,10 +268,10 @@ class Placeholder extends Component
         int    $height,
         int    $quality,
         mixed  $position,
-    ): string {
+    ): string
+    {
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
-        /** @var Image $image */
         try {
             if (StringHelper::toLowerCase($pathParts['extension']) === 'svg') {
                 $image = $images->loadImage($filePath, true, $width);
@@ -293,10 +295,13 @@ class Placeholder extends Component
         $image->scaleAndCrop($width, $height, true, $position);
 
         // Strip any EXIF data from the image before trying to save it
-        $imagineImage = $image->getImagineImage();
-        if ($imagineImage) {
-            $imagineImage->strip();
+        if ($image instanceof Raster) {
+            $imagineImage = $image->getImagineImage();
+            if ($imagineImage) {
+                $imagineImage->strip();
+            }
         }
+
 
         // Save the image out to a temp file, then return its contents
         $tempFilename = uniqid(pathinfo($pathParts['filename'], PATHINFO_FILENAME), true) . '.' . 'jpg';

@@ -34,6 +34,7 @@ use nystudio107\imageoptimize\ImageOptimize;
 use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransform;
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\models\Settings;
 use nystudio107\imageoptimizeimgix\imagetransforms\ImgixImageTransform;
 use nystudio107\imageoptimizesharp\imagetransforms\SharpImageTransform;
 use nystudio107\imageoptimizethumbor\imagetransforms\ThumborImageTransform;
@@ -236,6 +237,8 @@ class Optimize extends Component
                 }
                 // Generate an image transform url
                 if ($transformMethod->hasProperty('generateTransformsBeforePageLoad')) {
+                    // This is a dynamic property that some image transforms have
+                    /** @phpstan-ignore-next-line */
                     $transformMethod->generateTransformsBeforePageLoad = true;
                 }
                 $url = $transformMethod->getTransformUrl($asset, $transform);
@@ -274,9 +277,6 @@ class Optimize extends Component
     public function renderLazySizesFallbackJs(array $scriptAttrs = [], array $variables = []): string
     {
         $minifier = 'minify';
-        if ($scriptAttrs === null) {
-            $minifier = 'jsMin';
-        }
         $vars = array_merge([
             'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
         ],
@@ -308,9 +308,6 @@ class Optimize extends Component
     public function renderLazySizesJs(array $scriptAttrs = [], array $variables = []): string
     {
         $minifier = 'minify';
-        if ($scriptAttrs === null) {
-            $minifier = 'jsMin';
-        }
         $vars = array_merge([
             'scriptSrc' => 'https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.0/lazysizes.min.js',
         ],
@@ -447,6 +444,7 @@ class Optimize extends Component
     public function optimizeImage(AssetTransformIndex $index, string $tempPath): void
     {
         Craft::beginProfile('optimizeImage', __METHOD__);
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
@@ -497,6 +495,7 @@ class Optimize extends Component
     public function createImageVariants(AssetTransformIndex $index, Asset $asset, string $tempPath, string $uri): void
     {
         Craft::beginProfile('createImageVariants', __METHOD__);
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
@@ -571,6 +570,7 @@ class Optimize extends Component
     public function getActiveImageProcessors(): array
     {
         $result = [];
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active processors for the transform format
         $activeImageProcessors = $settings->activeImageProcessors;
@@ -603,6 +603,7 @@ class Optimize extends Component
     public function getActiveVariantCreators(): array
     {
         $result = [];
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
@@ -637,6 +638,7 @@ class Optimize extends Component
      */
     protected function applyFiltersToImage(AssetTransform $transform, Asset $asset, Image $image): void
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Only try to apply filters to Raster images
         if ($image instanceof Raster) {
@@ -808,6 +810,7 @@ class Optimize extends Component
      */
     protected function cleanupImageVariants(Asset $asset, AssetTransformIndex $transformIndex, string $uri): void
     {
+        /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Get the active image variant creators
         $activeImageVariantCreators = $settings->activeImageVariantCreators;
@@ -865,7 +868,8 @@ class Optimize extends Component
         AssetTransformIndex $index,
         $outputPath,
         $uri,
-    ): void {
+    ): void
+    {
         // If the image variant creation succeeded, copy it into place
         if (!empty($outputPath) && is_file($outputPath)) {
             // Figure out the resulting path for the image variant
