@@ -63,7 +63,7 @@ class Image
         }
         
         if (!is_file($path)) {
-            Craft::error('Tried to load an image at '.$path.', but the file does not exist.', __METHOD__);
+            Craft::error('Tried to load an image at ' . $path . ', but the file does not exist.', __METHOD__);
             throw new ImageException(Craft::t('app', 'No file exists at the given path.'));
         }
 

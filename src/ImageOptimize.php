@@ -258,7 +258,7 @@ class ImageOptimize extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            function(Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('imageOptimize', [
@@ -272,7 +272,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            function(RegisterComponentTypesEvent $event) {
                 Craft::debug(
                     'Fields::EVENT_REGISTER_FIELD_TYPES',
                     __METHOD__
@@ -286,7 +286,7 @@ class ImageOptimize extends Plugin
             Event::on(
                 Utilities::class,
                 Utilities::EVENT_REGISTER_UTILITY_TYPES,
-                function (RegisterComponentTypesEvent $event) {
+                function(RegisterComponentTypesEvent $event) {
                     $event->types[] = ImageOptimizeUtility::class;
                 }
             );
@@ -322,7 +322,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Assets::class,
             Assets::EVENT_GET_ASSET_URL,
-            function (GetAssetUrlEvent $event) {
+            function(GetAssetUrlEvent $event) {
                 Craft::debug(
                     'Assets::EVENT_GET_ASSET_URL',
                     __METHOD__
@@ -338,7 +338,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Assets::class,
             Assets::EVENT_GET_ASSET_THUMB_URL,
-            function (GetAssetThumbUrlEvent $event) {
+            function(GetAssetThumbUrlEvent $event) {
                 Craft::debug(
                     'Assets::EVENT_GET_ASSET_THUMB_URL',
                     __METHOD__
@@ -354,7 +354,7 @@ class ImageOptimize extends Plugin
         Event::on(
             AssetTransforms::class,
             AssetTransforms::EVENT_GENERATE_TRANSFORM,
-            function (GenerateTransformEvent $event) {
+            function(GenerateTransformEvent $event) {
                 Craft::debug(
                     'AssetTransforms::EVENT_GENERATE_TRANSFORM',
                     __METHOD__
@@ -375,7 +375,7 @@ class ImageOptimize extends Plugin
         Event::on(
             AssetTransforms::class,
             AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS,
-            function (AssetTransformImageEvent $event) {
+            function(AssetTransformImageEvent $event) {
                 Craft::debug(
                     'AssetTransforms::EVENT_AFTER_DELETE_TRANSFORMS',
                     __METHOD__
@@ -391,7 +391,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Assets::class,
             Assets::EVENT_BEFORE_REPLACE_ASSET,
-            function (ReplaceAssetEvent $event) {
+            function(ReplaceAssetEvent $event) {
                 Craft::debug(
                     'Assets::EVENT_BEFORE_REPLACE_ASSET',
                     __METHOD__
@@ -410,7 +410,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Assets::class,
             Assets::EVENT_AFTER_REPLACE_ASSET,
-            function (ReplaceAssetEvent $event) {
+            function(ReplaceAssetEvent $event) {
                 Craft::debug(
                     'Assets::EVENT_AFTER_REPLACE_ASSET',
                     __METHOD__
@@ -433,7 +433,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Assets::class,
             Elements::EVENT_BEFORE_SAVE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 Craft::debug(
                     'Elements::EVENT_BEFORE_SAVE_ELEMENT',
                     __METHOD__
@@ -454,7 +454,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Asset::class,
             Elements::EVENT_BEFORE_DELETE_ELEMENT,
-            function (ElementEvent $event) {
+            function(ElementEvent $event) {
                 Craft::debug(
                     'Elements::EVENT_BEFORE_DELETE_ELEMENT',
                     __METHOD__
@@ -479,7 +479,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_AFTER_SAVE_FIELD,
-            function (FieldEvent $event) {
+            function(FieldEvent $event) {
                 Craft::debug(
                     'Fields::EVENT_AFTER_SAVE_FIELD',
                     __METHOD__
@@ -496,7 +496,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
-            function (PluginEvent $event) {
+            function(PluginEvent $event) {
                 if ($event->plugin === $this) {
                     Craft::debug(
                         'Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS',
@@ -515,7 +515,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Volumes::class,
             Volumes::EVENT_AFTER_SAVE_VOLUME,
-            function (VolumeEvent $event) {
+            function(VolumeEvent $event) {
                 Craft::debug(
                     'Volumes::EVENT_AFTER_SAVE_VOLUME',
                     __METHOD__
@@ -536,7 +536,7 @@ class ImageOptimize extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
+            function(PluginEvent $event) {
                 if ($event->plugin === $this) {
                     $request = Craft::$app->getRequest();
                     if ($request->isCpRequest) {
@@ -556,7 +556,7 @@ class ImageOptimize extends Plugin
             Event::on(
                 OptimizedImages::class,
                 GetCraftQLSchema::EVENT_GET_FIELD_SCHEMA,
-                [new GetCraftQLSchema, 'handle']
+                [new GetCraftQLSchema(), 'handle']
             );
         }
     }
@@ -570,7 +570,7 @@ class ImageOptimize extends Plugin
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            function(RegisterUrlRulesEvent $event) {
                 Craft::debug(
                     'UrlManager::EVENT_REGISTER_SITE_URL_RULES',
                     __METHOD__
@@ -593,12 +593,12 @@ class ImageOptimize extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_LOAD_PLUGINS,
-            function () {
+            function() {
                 // Install these only after all other plugins have loaded
                 Event::on(
                     View::class,
                     View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
-                    function (RegisterTemplateRootsEvent $e) {
+                    function(RegisterTemplateRootsEvent $e) {
                         // Register the root directodies
                         $allImageTransformTypes = ImageOptimize::$plugin->optimize->getAllImageTransformTypes();
                         /** @var ImageTransformInterface $imageTransformType */

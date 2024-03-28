@@ -10,11 +10,9 @@
 
 namespace nystudio107\imageoptimize\jobs;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
-
 use Craft;
 use craft\base\ElementInterface;
+
 use craft\base\Field;
 use craft\console\Application as ConsoleApplication;
 use craft\db\Paginator;
@@ -22,6 +20,8 @@ use craft\elements\Asset;
 use craft\elements\db\ElementQuery;
 use craft\helpers\App;
 use craft\queue\BaseJob;
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
+use nystudio107\imageoptimize\ImageOptimize;
 
 use yii\base\Exception;
 
@@ -136,7 +136,6 @@ class ResaveOptimizedImages extends BaseJob
             }
             $paginator->currentPage++;
         }
-
     }
 
     // Protected Methods

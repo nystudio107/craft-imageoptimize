@@ -1,5 +1,7 @@
 <?php
+
 namespace nystudio107\imageoptimize\lib;
+
 /*  Potracio - Port by Otamay (2017) (https://github.com/Otamay/potracio.git)
  * A PHP Port of Potrace (http://potrace.sourceforge.net),
  * ported from https://github.com/kilobtye/potrace. Info below:
@@ -7,25 +9,25 @@ namespace nystudio107\imageoptimize\lib;
  *  Copyright (C) 2001-2013 Peter Selinger.
  *
  * A javascript port of Potrace (http://potrace.sourceforge.net).
- * 
+ *
  * Licensed under the GPL
- * 
+ *
  * Usage
  *   loadImageFromFile(file) : load image from File, JPG for now
- * 
+ *
  *   setParameter({para1: value, ...}) : set parameters
  *     parameters:
  *        turnpolicy ("black" / "white" / "left" / "right" / "minority" / "majority")
- *          how to resolve ambiguities in path decomposition. (default: "minority")       
+ *          how to resolve ambiguities in path decomposition. (default: "minority")
  *        turdsize
  *          suppress speckles of up to this size (default: 2)
  *        optcurve (true / false)
  *          turn on/off curve optimization (default: true)
  *        alphamax
  *          corner threshold parameter (default: 1)
- *        opttolerance 
+ *        opttolerance
  *          curve optimization tolerance (default: 0.2)
- *       
+ *
  *   getSVG(size, opt_type) : return a string of generated SVG image.
  *                                    result_image_size = original_image_size * size
  *                                    optional parameter opt_type can be "curve"
@@ -173,10 +175,10 @@ class Potracio
     public $bm = null;
     public $pathlist = [];
     public $info = [
-        'turnpolicy'   => "majority",
-        'turdsize'     => 50,
-        'optcurve'     => true,
-        'alphamax'     => 1,
+        'turnpolicy' => "majority",
+        'turdsize' => 50,
+        'optcurve' => true,
+        'alphamax' => 1,
         'opttolerance' => 0.4,
     ];
 
@@ -216,7 +218,7 @@ class Potracio
         $bm1 = clone $bm;
         $currentPoint = new Point(0, 0);
 
-        $findNext = function ($point) use ($bm1) {
+        $findNext = function($point) use ($bm1) {
             $i = $bm1->w * $point->y + $point->x;
             while ($i < $bm1->size && $bm1->data[$i] !== 1) {
                 $i++;
@@ -228,7 +230,7 @@ class Potracio
             return 0;
         };
 
-        $majority = function ($x, $y) use ($bm1) {
+        $majority = function($x, $y) use ($bm1) {
             for ($i = 2; $i < 5; $i++) {
                 $ct = 0;
                 for ($a = -$i + 1; $a <= $i - 1; $a++) {
@@ -239,7 +241,7 @@ class Potracio
                 }
                 if ($ct > 0) {
                     return 1;
-                } else if ($ct < 0) {
+                } elseif ($ct < 0) {
                     return 0;
                 }
             }
@@ -247,7 +249,7 @@ class Potracio
             return 0;
         };
 
-        $findPath = function ($point) use ($bm, $bm1, $majority, $info) {
+        $findPath = function($point) use ($bm, $bm1, $majority, $info) {
             $path = new Path();
             $x = $point->x;
             $y = $point->y;
@@ -297,11 +299,11 @@ class Potracio
                         $dirx = $diry;
                         $diry = -$tmp;
                     }
-                } else if ($r) {
+                } elseif ($r) {
                     $tmp = $dirx;
                     $dirx = -$diry;
                     $diry = $tmp;
-                } else if (!$l) {
+                } elseif (!$l) {
                     $tmp = $dirx;
                     $dirx = $diry;
                     $diry = -$tmp;
@@ -311,7 +313,7 @@ class Potracio
             return $path;
         };
 
-        $xorPath = function ($path) use (&$bm1) {
+        $xorPath = function($path) use (&$bm1) {
             $y1 = $path->pt[0]->y;
             $len = $path->len;
 
@@ -345,15 +347,15 @@ class Potracio
     {
         $info = $this->info;
 
-        $mod = function ($a, $n) {
+        $mod = function($a, $n) {
             return $a >= $n ? $a % $n : ($a >= 0 ? $a : $n - 1 - (-1 - $a) % $n);
         };
 
-        $xprod = function ($p1, $p2) {
+        $xprod = function($p1, $p2) {
             return $p1->x * $p2->y - $p1->y * $p2->x;
         };
 
-        $cyclic = function ($a, $b, $c) {
+        $cyclic = function($a, $b, $c) {
             if ($a <= $c) {
                 return ($a <= $b && $b < $c);
             } else {
@@ -361,11 +363,11 @@ class Potracio
             }
         };
 
-        $sign = function ($i) {
+        $sign = function($i) {
             return $i > 0 ? 1 : ($i < 0 ? -1 : 0);
         };
 
-        $quadform = function ($Q, $w) {
+        $quadform = function($Q, $w) {
             $v = array_fill(0, 3, null);
 
             $v[0] = $w->x;
@@ -382,7 +384,7 @@ class Potracio
             return $sum;
         };
 
-        $interval = function ($lambda, $a, $b) {
+        $interval = function($lambda, $a, $b) {
             $res = new Point();
 
             $res->x = $a->x + $lambda * ($b->x - $a->x);
@@ -391,7 +393,7 @@ class Potracio
             return $res;
         };
 
-        $dorth_infty = function ($p0, $p2) use ($sign) {
+        $dorth_infty = function($p0, $p2) use ($sign) {
             $r = new Point();
 
             $r->y = $sign($p2->x - $p0->x);
@@ -400,13 +402,13 @@ class Potracio
             return $r;
         };
 
-        $ddenom = function ($p0, $p2) use ($dorth_infty) {
+        $ddenom = function($p0, $p2) use ($dorth_infty) {
             $r = $dorth_infty($p0, $p2);
 
             return $r->y * ($p2->x - $p0->x) - $r->x * ($p2->y - $p0->y);
         };
 
-        $dpara = function ($p0, $p1, $p2) {
+        $dpara = function($p0, $p1, $p2) {
             $x1 = $p1->x - $p0->x;
             $y1 = $p1->y - $p0->y;
             $x2 = $p2->x - $p0->x;
@@ -415,7 +417,7 @@ class Potracio
             return $x1 * $y2 - $x2 * $y1;
         };
 
-        $cprod = function ($p0, $p1, $p2, $p3) {
+        $cprod = function($p0, $p1, $p2, $p3) {
             $x1 = $p1->x - $p0->x;
             $y1 = $p1->y - $p0->y;
             $x2 = $p3->x - $p2->x;
@@ -424,7 +426,7 @@ class Potracio
             return $x1 * $y2 - $x2 * $y1;
         };
 
-        $iprod = function ($p0, $p1, $p2) {
+        $iprod = function($p0, $p1, $p2) {
             $x1 = $p1->x - $p0->x;
             $y1 = $p1->y - $p0->y;
             $x2 = $p2->x - $p0->x;
@@ -433,7 +435,7 @@ class Potracio
             return $x1 * $x2 + $y1 * $y2;
         };
 
-        $iprod1 = function ($p0, $p1, $p2, $p3) {
+        $iprod1 = function($p0, $p1, $p2, $p3) {
             $x1 = $p1->x - $p0->x;
             $y1 = $p1->y - $p0->y;
             $x2 = $p3->x - $p2->x;
@@ -442,11 +444,11 @@ class Potracio
             return $x1 * $x2 + $y1 * $y2;
         };
 
-        $ddist = function ($p, $q) {
+        $ddist = function($p, $q) {
             return sqrt(($p->x - $q->x) * ($p->x - $q->x) + ($p->y - $q->y) * ($p->y - $q->y));
         };
 
-        $bezier = function ($t, $p0, $p1, $p2, $p3) {
+        $bezier = function($t, $p0, $p1, $p2, $p3) {
             $s = 1 - $t;
             $res = new Point();
 
@@ -456,7 +458,7 @@ class Potracio
             return $res;
         };
 
-        $tangent = function ($p0, $p1, $p2, $p3, $q0, $q1) use ($cprod) {
+        $tangent = function($p0, $p1, $p2, $p3, $q0, $q1) use ($cprod) {
             $A = $cprod($p0, $p1, $q0, $q1);
             $B = $cprod($p1, $p2, $q0, $q1);
             $C = $cprod($p2, $p3, $q0, $q1);
@@ -480,14 +482,14 @@ class Potracio
 
             if ($r1 >= 0 && $r1 <= 1) {
                 return $r1;
-            } else if ($r2 >= 0 && $r2 <= 1) {
+            } elseif ($r2 >= 0 && $r2 <= 1) {
                 return $r2;
             } else {
                 return -1.0;
             }
         };
 
-        $calcSums = function (&$path) {
+        $calcSums = function(&$path) {
             $path->x0 = $path->pt[0]->x;
             $path->y0 = $path->pt[0]->y;
 
@@ -502,7 +504,7 @@ class Potracio
             }
         };
 
-        $calcLon = function (&$path) use ($mod, $xprod, $sign, $cyclic) {
+        $calcLon = function(&$path) use ($mod, $xprod, $sign, $cyclic) {
             $n = $path->len;
             $pt = &$path->pt;
             $pivk = array_fill(0, $n, null);
@@ -556,7 +558,6 @@ class Potracio
                     }
 
                     if (abs($cur->x) <= 1 && abs($cur->y) <= 1) {
-
                     } else {
                         $off->x = $cur->x + (($cur->y >= 0 && ($cur->y > 0 || $cur->x < 0)) ? 1 : -1);
                         $off->y = $cur->y + (($cur->x <= 0 && ($cur->x < 0 || $cur->y < 0)) ? 1 : -1);
@@ -613,9 +614,8 @@ class Potracio
             }
         };
 
-        $bestPolygon = function (&$path) use ($mod) {
-
-            $penalty3 = function ($path, $i, $j) {
+        $bestPolygon = function(&$path) use ($mod) {
+            $penalty3 = function($path, $i, $j) {
                 $n = $path->len;
                 $pt = $path->pt;
                 $sums = $path->sums;
@@ -721,10 +721,8 @@ class Potracio
             }
         };
 
-        $adjustVertices = function (&$path) use ($mod, $quadform) {
-
-            $pointslope = function ($path, $i, $j, &$ctr, &$dir) {
-
+        $adjustVertices = function(&$path) use ($mod, $quadform) {
+            $pointslope = function($path, $i, $j, &$ctr, &$dir) {
                 $n = $path->len;
                 $sums = $path->sums;
                 $r = 0;
@@ -846,7 +844,6 @@ class Potracio
                 }
 
                 while (1) {
-
                     $det = $Q->at(0, 0) * $Q->at(1, 1) - $Q->at(0, 1) * $Q->at(1, 0);
                     if ($det !== 0.0 && $det != 0) {
                         $w->x = (-$Q->at(0, 2) * $Q->at(1, 1) + $Q->at(1, 2) * $Q->at(0, 1)) / $det;
@@ -857,7 +854,7 @@ class Potracio
                     if ($Q->at(0, 0) > $Q->at(1, 1)) {
                         $v[0] = -$Q->at(0, 1);
                         $v[1] = $Q->at(0, 0);
-                    } else if ($Q->at(1, 1)) {
+                    } elseif ($Q->at(1, 1)) {
                         $v[0] = -$Q->at(1, 1);
                         $v[1] = $Q->at(1, 0);
                     } else {
@@ -928,7 +925,7 @@ class Potracio
             }
         };
 
-        $reverse = function (&$path) {
+        $reverse = function(&$path) {
             $curve = &$path->curve;
             $m = $curve->n;
             $v = &$curve->vertex;
@@ -940,7 +937,7 @@ class Potracio
             }
         };
 
-        $smooth = function (&$path) use ($mod, $interval, $ddenom, $dpara, $info) {
+        $smooth = function(&$path) use ($mod, $interval, $ddenom, $dpara, $info) {
             $m = $path->curve->n;
             $curve = &$path->curve;
 
@@ -967,7 +964,7 @@ class Potracio
                 } else {
                     if ($alpha < 0.55) {
                         $alpha = 0.55;
-                    } else if ($alpha > 1) {
+                    } elseif ($alpha > 1) {
                         $alpha = 1;
                     }
                     $p2 = $interval(0.5 + 0.5 * $alpha, $curve->vertex[$i], $curve->vertex[$j]);
@@ -983,8 +980,8 @@ class Potracio
             $curve->alphaCurve = 1;
         };
 
-        $optiCurve = function (&$path) use ($mod, $ddist, $sign, $cprod, $dpara, $interval, $tangent, $bezier, $iprod, $iprod1, $info) {
-            $opti_penalty = function ($path, $i, $j, $res, $opttolerance, $convc, $areac) use ($mod, $ddist, $sign, $cprod, $dpara, $interval, $tangent, $bezier, $iprod, $iprod1) {
+        $optiCurve = function(&$path) use ($mod, $ddist, $sign, $cprod, $dpara, $interval, $tangent, $bezier, $iprod, $iprod1, $info) {
+            $opti_penalty = function($path, $i, $j, $res, $opttolerance, $convc, $areac) use ($mod, $ddist, $sign, $cprod, $dpara, $interval, $tangent, $bezier, $iprod, $iprod1) {
                 $m = $path->curve->n;
                 $curve = $path->curve;
                 $vertex = $curve->vertex;
@@ -1250,9 +1247,8 @@ class Potracio
     {
         $bm = &$this->bm;
         $pathlist = &$this->pathlist;
-        $path = function ($curve) use ($size) {
-
-            $bezier = function ($i) use ($curve, $size) {
+        $path = function($curve) use ($size) {
+            $bezier = function($i) use ($curve, $size) {
                 $b = 'C ' . number_format($curve->c[$i * 3 + 0]->x * $size, 3) . ' ' .
                     number_format($curve->c[$i * 3 + 0]->y * $size, 3) . ',';
                 $b .= number_format($curve->c[$i * 3 + 1]->x * $size, 3) . ' ' .
@@ -1263,7 +1259,7 @@ class Potracio
                 return $b;
             };
 
-            $segment = function ($i) use ($curve, $size) {
+            $segment = function($i) use ($curve, $size) {
                 $s = 'L ' . number_format($curve->c[$i * 3 + 1]->x * $size, 3) . ' ' .
                     number_format($curve->c[$i * 3 + 1]->y * $size, 3) . ' ';
                 $s .= number_format($curve->c[$i * 3 + 2]->x * $size, 3) . ' ' .
@@ -1279,7 +1275,7 @@ class Potracio
             for ($i = 0; $i < $n; $i++) {
                 if ($curve->tag[$i] === "CURVE") {
                     $p .= $bezier($i);
-                } else if ($curve->tag[$i] === "CORNER") {
+                } elseif ($curve->tag[$i] === "CORNER") {
                     $p .= $segment($i);
                 }
             }
@@ -1295,7 +1291,7 @@ class Potracio
         $svg = '<svg id="svg" version="1.1"'
             . ' width="' . $w . '"'
             . ' height="' . $h . '"'
-            . ' style="background-color: ' .$bgColor . '"'
+            . ' style="background-color: ' . $bgColor . '"'
             . ' xmlns="http://www.w3.org/2000/svg">';
         $svg .= '<path d="';
         for ($i = 0; $i < $len; $i++) {
@@ -1316,5 +1312,3 @@ class Potracio
         return $svg;
     }
 }
-
-?>

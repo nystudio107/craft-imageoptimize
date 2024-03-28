@@ -10,15 +10,15 @@
 
 namespace nystudio107\imageoptimize\models;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
-use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
-use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
-
 use craft\base\Model;
 use craft\behaviors\EnvAttributeParserBehavior;
 use craft\validators\ArrayValidator;
+use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\imagetransforms\CraftImageTransform;
+
+use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
+use nystudio107\imageoptimize\imagetransforms\ImgixImageTransform;
+use nystudio107\imageoptimize\imagetransforms\ThumborImageTransform;
 
 use yii\behaviors\AttributeTypecastBehavior;
 
@@ -402,7 +402,7 @@ class Settings extends Model
                     'class' => EnvAttributeParserBehavior::class,
                     'attributes' => [
                     ],
-                ]
+                ],
             ];
         }
 
@@ -413,5 +413,4 @@ class Settings extends Model
             ],
         ]);
     }
-
 }

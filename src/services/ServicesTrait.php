@@ -60,7 +60,7 @@ trait ServicesTrait
                     'errorEntry' => 'src/js/ImageOptimize.js',
                     'useDevServer' => true,
                 ],
-            ]
+            ],
         ], $config);
 
         parent::__construct($id, $parent, $config);

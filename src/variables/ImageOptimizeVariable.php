@@ -10,15 +10,15 @@
 
 namespace nystudio107\imageoptimize\variables;
 
+use craft\elements\Asset;
+use craft\helpers\Template;
 use nystudio107\imageoptimize\ImageOptimize;
+
 use nystudio107\imageoptimize\imagetransforms\ImageTransformInterface;
 use nystudio107\imageoptimize\models\OptimizedImage;
 
 use nystudio107\pluginvite\variables\ViteVariableInterface;
 use nystudio107\pluginvite\variables\ViteVariableTrait;
-
-use craft\elements\Asset;
-use craft\helpers\Template;
 
 /**
  * @author    nystudio107
@@ -81,8 +81,7 @@ class ImageOptimizeVariable implements ViteVariableInterface
         Asset $asset,
               $variants = null,
               $generatePlaceholders = false
-    )
-    {
+    ) {
         // Override our settings for lengthy operations, since we're doing this via Twig
         ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 

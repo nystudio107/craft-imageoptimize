@@ -10,19 +10,18 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\helpers\Color as ColorHelper;
-use nystudio107\imageoptimize\lib\Potracio;
-
+use ColorThief\ColorThief;
 use Craft;
 use craft\base\Component;
+
 use craft\elements\Asset;
-use craft\errors\ImageException;
 use craft\helpers\Image;
 use craft\helpers\StringHelper;
 use craft\image\Raster;
+use nystudio107\imageoptimize\helpers\Color as ColorHelper;
+use nystudio107\imageoptimize\ImageOptimize;
 
-use ColorThief\ColorThief;
+use nystudio107\imageoptimize\lib\Potracio;
 
 /**
  * @author    nystudio107
@@ -265,8 +264,7 @@ class Placeholder extends Component
         int    $height,
         int    $quality,
                $position
-    ): string
-    {
+    ): string {
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
         /** @var Image $image */

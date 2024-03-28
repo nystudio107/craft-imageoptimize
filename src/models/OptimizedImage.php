@@ -10,16 +10,15 @@
 
 namespace nystudio107\imageoptimize\models;
 
-use Composer\Installer\PackageEvent;
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\helpers\UrlHelper;
-use nystudio107\imageoptimize\helpers\Color as ColorHelper;
-
 use Craft;
 use craft\base\Model;
 use craft\helpers\Html;
+
 use craft\helpers\Template;
 use craft\validators\ArrayValidator;
+use nystudio107\imageoptimize\helpers\Color as ColorHelper;
+use nystudio107\imageoptimize\helpers\UrlHelper;
+use nystudio107\imageoptimize\ImageOptimize;
 
 /**
  * @author    nystudio107

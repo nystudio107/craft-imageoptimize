@@ -10,17 +10,12 @@
 
 namespace nystudio107\imageoptimize\services;
 
-use nystudio107\imageoptimize\ImageOptimize;
-use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
-use nystudio107\imageoptimize\helpers\Image as ImageHelper;
-use nystudio107\imageoptimize\models\OptimizedImage;
-use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
-
 use Craft;
 use craft\base\Component;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\base\Volume;
+
 use craft\console\Application as ConsoleApplication;
 use craft\elements\Asset;
 use craft\errors\ImageException;
@@ -30,6 +25,11 @@ use craft\helpers\Image;
 use craft\helpers\Json;
 use craft\models\AssetTransform;
 use craft\models\FieldLayout;
+use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
+use nystudio107\imageoptimize\helpers\Image as ImageHelper;
+use nystudio107\imageoptimize\ImageOptimize;
+use nystudio107\imageoptimize\jobs\ResaveOptimizedImages;
+use nystudio107\imageoptimize\models\OptimizedImage;
 
 use yii\base\InvalidConfigException;
 

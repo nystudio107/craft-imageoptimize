@@ -10,13 +10,13 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\helpers\UrlHelper;
-
 use Craft;
+
 use craft\base\SavableComponent;
 use craft\elements\Asset;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
+use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\ImageOptimize;
 
 /**

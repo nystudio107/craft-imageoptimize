@@ -10,11 +10,10 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\ImageOptimize;
-
 use Craft;
+
 use craft\elements\Asset;
-use craft\models\AssetTransform;
+use nystudio107\imageoptimize\ImageOptimize;
 
 /**
  * @author    nystudio107
