@@ -1,6 +1,6 @@
 name: Build and Deploy Docs
 env:
-  DOCS_DEST_DIR: /minify/v1/
+  DOCS_DEST_DIR: /image-optimize/v1/
 on:
   push:
     branches:
