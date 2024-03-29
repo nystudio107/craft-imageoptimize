@@ -3,7 +3,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'ImageOptimize Plugin',
   description: 'Documentation for the ImageOptimize plugin',
-  base: '/docs/image-optimize/',
+  base: '/docs/image-optimize/v4/',
   lang: 'en-US',
   head: [
     ['meta', {content: 'https://github.com/nystudio107', property: 'og:see_also',}],
@@ -24,7 +24,10 @@ export default defineConfig({
     algolia: {
       appId: 'HVVF81UL1B',
       apiKey: '84793c9eb47412ec6c79ad038c19086e',
-      indexName: 'image-optimize'
+      indexName: 'image-optimize',
+      searchParameters: {
+        facetFilters: ["version:v4"],
+      },
     },
     lastUpdatedText: 'Last Updated',
     sidebar: [
@@ -46,8 +49,9 @@ export default defineConfig({
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-imageoptimize/issues'},
       {
         text: 'v4', items: [
+          {text: 'v5', link: 'https://nystudio107.com/docs/image-optimize/'},
           {text: 'v4', link: '/'},
-          {text: 'v3', link: 'https://nystudio107.com/docs/image-optimize/v3/'},
+          {text: 'v3', link: 'https://nystudio107.com/docs/image-optimize/v1/'},
         ],
       },
     ],
