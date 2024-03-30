@@ -3,7 +3,7 @@ import {defineConfig} from 'vitepress'
 export default defineConfig({
   title: 'ImageOptimize Plugin',
   description: 'Documentation for the ImageOptimize plugin',
-  base: '/docs/image-optimize/v4/',
+  base: '/docs/image-optimize/',
   lang: 'en-US',
   head: [
     ['meta', {content: 'https://github.com/nystudio107', property: 'og:see_also',}],
@@ -18,7 +18,7 @@ export default defineConfig({
     ],
     logo: '/img/plugin-logo.svg',
     editLink: {
-      pattern: 'https://github.com/nystudio107/craft-imageoptimize/edit/develop/docs/docs/:path',
+      pattern: 'https://github.com/nystudio107/craft-imageoptimize/edit/develop-v5/docs/docs/:path',
       text: 'Edit this page on GitHub'
     },
     algolia: {
@@ -26,7 +26,7 @@ export default defineConfig({
       apiKey: '84793c9eb47412ec6c79ad038c19086e',
       indexName: 'image-optimize',
       searchParameters: {
-        facetFilters: ["version:v4"],
+        facetFilters: ["version:v5"],
       },
     },
     lastUpdatedText: 'Last Updated',
@@ -48,10 +48,10 @@ export default defineConfig({
       {text: 'Changelog', link: 'https://nystudio107.com/plugins/imageoptimize/changelog'},
       {text: 'Issues', link: 'https://github.com/nystudio107/craft-imageoptimize/issues'},
       {
-        text: 'v4', items: [
-          {text: 'v5', link: 'https://nystudio107.com/docs/image-optimize/'},
-          {text: 'v4', link: '/'},
-          {text: 'v3', link: 'https://nystudio107.com/docs/image-optimize/v1/'},
+        text: 'v5', items: [
+          {text: 'v5', link: '/'},
+          {text: 'v4', link: 'https://nystudio107.com/docs/image-optimize/v4/'},
+          {text: 'v1', link: 'https://nystudio107.com/docs/image-optimize/v1/'},
         ],
       },
     ],
