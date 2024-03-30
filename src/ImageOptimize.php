@@ -263,7 +263,7 @@ class ImageOptimize extends Plugin
         if (self::$plugin->transformMethod instanceof CraftImageTransform) {
             Event::on(
                 Utilities::class,
-                Utilities::EVENT_REGISTER_UTILITY_TYPES,
+                Utilities::EVENT_REGISTER_UTILITIES,
                 static function(RegisterComponentTypesEvent $event) {
                     $event->types[] = ImageOptimizeUtility::class;
                 }

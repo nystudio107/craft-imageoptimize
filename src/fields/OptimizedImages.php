@@ -281,7 +281,7 @@ class OptimizedImages extends Field
     public function getSettingsHtml(): null|string
     {
         $namespace = Craft::$app->getView()->getNamespace();
-        if (str_contains($namespace, Matrix::class) || str_contains($namespace, SuperTableField::class)) {
+        if (str_contains($namespace, Matrix::class)) {
             // Render an error template, since the field only works when attached to an Asset
             try {
                 return Craft::$app->getView()->renderTemplate(

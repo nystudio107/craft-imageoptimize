@@ -19,10 +19,8 @@ use craft\elements\Asset;
 use craft\errors\FsObjectNotFoundException;
 use craft\errors\InvalidFieldException;
 use craft\errors\SiteNotFoundException;
-use craft\helpers\ElementHelper;
 use craft\helpers\Image;
 use craft\helpers\ImageTransforms as TransformHelper;
-use craft\helpers\Json;
 use craft\imagetransforms\ImageTransformer;
 use craft\models\FieldLayout;
 use craft\models\ImageTransform as AssetTransform;
@@ -287,19 +285,11 @@ class OptimizedImages extends Component
                     $force
                 );
             }
-            // Save our field data directly into the content table
+            // Save the changed data into the element using the Elements service,
+            // rather than saving it directly in the content table
             if ($field->handle !== null) {
-                $asset->setFieldValue($field->handle, $field->serializeValue($model));
-                $table = $asset->getContentTable();
-                $column = ElementHelper::fieldColumnFromField($field);
-                $data = Json::encode($field->serializeValue($asset->getFieldValue($field->handle), $asset));
-                Craft::$app->db->createCommand()
-                    ->update($table, [
-                        $column => $data,
-                    ], [
-                        'elementId' => $asset->getId(),
-                    ], [], false)
-                    ->execute();
+                $asset->setFieldValue($field->handle, $field->serializeValue($model, $asset));
+                Craft::$app->getElements()->saveElement($asset);
             }
         }
     }
