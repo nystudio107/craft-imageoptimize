@@ -121,9 +121,6 @@ class OptimizedImages extends Field
         parent::__construct($config);
     }
 
-    // Public Methods
-    // =========================================================================
-
     /**
      * @inheritdoc
      */
@@ -131,6 +128,33 @@ class OptimizedImages extends Field
     {
         return 'OptimizedImages';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public static function icon(): string
+    {
+        return '@nystudio107/seomatic/icon-mask.svg';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function phpType(): string
+    {
+        return sprintf('\\%s', OptimizedImage::class);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function dbType(): array|string|null
+    {
+        return Schema::TYPE_TEXT;
+    }
+
+    // Public Methods
+    // =========================================================================
 
     /**
      * @inheritdoc
@@ -265,14 +289,6 @@ class OptimizedImages extends Field
         }
 
         return $model;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getContentColumnType(): string
-    {
-        return Schema::TYPE_TEXT;
     }
 
     /**
