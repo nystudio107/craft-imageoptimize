@@ -268,8 +268,7 @@ class Placeholder extends Component
         int    $height,
         int    $quality,
         mixed  $position,
-    ): string
-    {
+    ): string {
         $images = Craft::$app->getImages();
         $pathParts = pathinfo($filePath);
         try {
