@@ -25,6 +25,7 @@ use craft\imagetransforms\ImageTransformer;
 use craft\models\FieldLayout;
 use craft\models\ImageTransform as AssetTransform;
 use craft\models\Volume;
+use craft\records\Element_SiteSettings as Element_SiteSettingsRecord;
 use nystudio107\imageoptimize\fields\OptimizedImages as OptimizedImagesField;
 use nystudio107\imageoptimize\helpers\Image as ImageHelper;
 use nystudio107\imageoptimize\ImageOptimize;
@@ -285,11 +286,33 @@ class OptimizedImages extends Component
                     $force
                 );
             }
-            // Save the changed data into the element using the Elements service,
-            // rather than saving it directly in the content table
+            // Save the changed data directly into the elements_sites.content table
             if ($field->handle !== null) {
                 $asset->setFieldValue($field->handle, $field->serializeValue($model, $asset));
-                Craft::$app->getElements()->saveElement($asset);
+                $fieldLayout = $asset->getFieldLayout();
+                $siteSettingsRecord = Element_SiteSettingsRecord::findOne([
+                    'elementId' => $asset->id,
+                    'siteId' => $asset->siteId,
+                ]);
+                if ($siteSettingsRecord) {
+                    // Set the field values
+                    $content = [];
+                    if ($fieldLayout) {
+                        foreach ($fieldLayout->getCustomFields() as $elementField) {
+                            if ($elementField::dbType() !== null) {
+                                $serializedValue = $elementField->serializeValue($asset->getFieldValue($elementField->handle), $asset);
+                                if ($serializedValue !== null) {
+                                    $content[$field->layoutElement->uid] = $serializedValue;
+                                }
+                            }
+                        }
+                    }
+                    $siteSettingsRecord->content = $content ?: null;
+                    // Save the site settings record
+                    if (!$siteSettingsRecord->save(false)) {
+                        throw new Exception('Couldn’t save elements’ site settings record.');
+                    }
+                }
             }
         }
     }
