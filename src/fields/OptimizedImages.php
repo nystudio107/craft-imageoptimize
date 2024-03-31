@@ -134,7 +134,7 @@ class OptimizedImages extends Field
      */
     public static function icon(): string
     {
-        return '@nystudio107/seomatic/icon-mask.svg';
+        return '@nystudio107/imageoptimize/icon-mask.svg';
     }
 
     /**
