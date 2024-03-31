@@ -297,8 +297,9 @@ class OptimizedImages extends Component
                 ]);
                 // Set the field values
                 if ($siteSettingsRecord && $fieldLayout) {
-                    $siteSettingsRecord->content = Json::decodeIfJson($siteSettingsRecord->content) ?: [];
-                    $siteSettingsRecord->content[$field->layoutElement->uid] = $field->serializeValue($asset->getFieldValue($field->handle), $asset);
+                    $content = Json::decodeIfJson($siteSettingsRecord->content) ?: [];
+                    $content[$field->layoutElement->uid] = $field->serializeValue($asset->getFieldValue($field->handle), $asset);
+                    $siteSettingsRecord->content = $content;
                     // Save the site settings record
                     if (!$siteSettingsRecord->save(false)) {
                         Craft::error('Couldn’t save elements’ site settings record.', __METHOD__);
