@@ -47,6 +47,11 @@ class PictureTag extends BaseImageTag
     public array $imgAttrs = [];
 
     /**
+     * @var OptimizedImage[] array OptimizedImage models to add as art direction
+     */
+    public array $artDirection = [];
+
+    /**
      * @param $config
      */
     public function __construct($config = [])
@@ -62,17 +67,7 @@ class PictureTag extends BaseImageTag
             'loading' => '',
         ];
         // Populate the $srcsetAttrs
-        if (!empty($this->optimizedImage->optimizedWebPImageUrls)) {
-            $this->srcsetAttrs[] = [
-                'srcset' => $this->optimizedImage->getSrcsetFromArray($this->optimizedImage->optimizedWebPImageUrls),
-                'type' => 'image/webp',
-                'sizes' => '100vw',
-            ];
-        }
-        $this->srcsetAttrs[] = [
-            'srcset' => $this->optimizedImage->getSrcsetFromArray($this->optimizedImage->optimizedImageUrls),
-            'sizes' => '100vw',
-        ];
+        $this->populateSrcsetAttrs($this->optimizedImage, []);
         // Populate the $pictureAttrs
         $this->pictureAttrs = [];
     }
@@ -146,6 +141,20 @@ class PictureTag extends BaseImageTag
     }
 
     /**
+     * Add art direction srcsets to the $srcsetAttrs
+     *
+     * @param OptimizedImage $optimizedImage
+     * @param array $srcsetAttrs
+     * @return void
+     */
+    public function artDirection(OptimizedImage $optimizedImage, array $srcsetAttrs = []): PictureTag
+    {
+        $this->populateSrcsetAttrs($optimizedImage, $srcsetAttrs);
+
+        return $this;
+    }
+
+    /**
      * Generate a complete <img> tag for the $optimizedImage OptimizedImage model
      *
      * @return Markup
@@ -182,5 +191,33 @@ class PictureTag extends BaseImageTag
         $tag = Html::tag('picture', $content, $attrs);
 
         return Template::raw($tag);
+    }
+
+    /**
+     * Populate the $srcsetAttrs from the passed in $optimizedImage and $sizes
+     *
+     * @param OptimizedImage $optimizedImage
+     * @param array $srcsetAttrs attributes to add to the $srcsetAttrs array
+     * @return void
+     */
+    protected function populateSrcsetAttrs(OptimizedImage $optimizedImage, array $srcsetAttrs): void
+    {
+        if (!empty($optimizedImage->optimizedWebPImageUrls)) {
+            $this->srcsetAttrs[] = array_merge([
+                'media' => '',
+                'srcset' => $optimizedImage->getSrcsetFromArray($optimizedImage->optimizedWebPImageUrls),
+                'type' => 'image/webp',
+                'sizes' => '100vw',
+                'width' => $optimizedImage->placeholderWidth,
+                'height' => $optimizedImage->placeholderHeight,
+            ], $srcsetAttrs);
+        }
+        $this->srcsetAttrs[] = array_merge([
+            'media' => '',
+            'srcset' => $optimizedImage->getSrcsetFromArray($optimizedImage->optimizedImageUrls),
+            'sizes' => '100vw',
+            'width' => $optimizedImage->placeholderWidth,
+            'height' => $optimizedImage->placeholderHeight,
+        ], $srcsetAttrs);
     }
 }
