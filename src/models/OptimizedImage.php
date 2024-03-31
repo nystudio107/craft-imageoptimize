@@ -422,7 +422,7 @@ class OptimizedImage extends Model
      *
      * @return Markup
      */
-    public function imgTag($loading = 'eager', $placeHolder = 'box', $imgAttrs = [])
+    public function imgTag($loading = 'eager', $placeHolder = 'box', $imgAttrs = []): Markup
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
@@ -460,7 +460,7 @@ class OptimizedImage extends Model
      *
      * @return Markup
      */
-    public function pictureTag($loading = 'eager', $placeHolder = 'box', $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = [])
+    public function pictureTag($loading = 'eager', $placeHolder = 'box', $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = []): Markup
     {
         $content = '';
         // Handle the webp srcset
