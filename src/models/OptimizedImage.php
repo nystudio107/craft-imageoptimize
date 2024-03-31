@@ -18,6 +18,7 @@ use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\ImageOptimize;
+use Twig\Markup;
 use function strlen;
 
 /**
@@ -419,9 +420,9 @@ class OptimizedImage extends Model
      * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
      * @param array $imgAttrs
      *
-     * @return string
+     * @return Markup
      */
-    public function imgTag(string $loading = 'eager', string $placeHolder = 'box', array $imgAttrs = []): string
+    public function imgTag(string $loading = 'eager', string $placeHolder = 'box', array $imgAttrs = []): Markup
     {
         // Merge the passed in options with the tag attributes
         $attrs = array_merge([
@@ -457,9 +458,9 @@ class OptimizedImage extends Model
      * @param array $srcsetAttrs
      * @param array $imgAttrs
      *
-     * @return string
+     * @return Markup
      */
-    public function pictureTag(string $loading = 'eager', string $placeHolder = 'box', array $pictureAttrs = [], array $srcsetAttrs = [], array $imgAttrs = []): string
+    public function pictureTag(string $loading = 'eager', string $placeHolder = 'box', array $pictureAttrs = [], array $srcsetAttrs = [], array $imgAttrs = []): Markup
     {
         $content = '';
         // Handle the webp srcset
