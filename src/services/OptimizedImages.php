@@ -21,6 +21,7 @@ use craft\errors\InvalidFieldException;
 use craft\errors\SiteNotFoundException;
 use craft\helpers\Image;
 use craft\helpers\ImageTransforms as TransformHelper;
+use craft\helpers\Json;
 use craft\imagetransforms\ImageTransformer;
 use craft\models\FieldLayout;
 use craft\models\ImageTransform as AssetTransform;
@@ -296,21 +297,12 @@ class OptimizedImages extends Component
                 ]);
                 if ($siteSettingsRecord) {
                     // Set the field values
-                    $content = [];
                     if ($fieldLayout) {
-                        foreach ($fieldLayout->getCustomFields() as $elementField) {
-                            if ($elementField::dbType() !== null) {
-                                $serializedValue = $elementField->serializeValue($asset->getFieldValue($elementField->handle), $asset);
-                                if ($serializedValue !== null) {
-                                    $content[$field->layoutElement->uid] = $serializedValue;
-                                }
-                            }
-                        }
-                    }
-                    $siteSettingsRecord->content = $content ?: null;
+                        $siteSettingsRecord->content = Json::decodeIfJson($siteSettingsRecord->content) ?: [];
+                        $siteSettingsRecord->content[$field->layoutElement->uid] = $field->serializeValue($asset->getFieldValue($field->handle), $asset);
                     // Save the site settings record
                     if (!$siteSettingsRecord->save(false)) {
-                        throw new Exception('Couldn’t save elements’ site settings record.');
+                        Craft::error('Couldn’t save elements’ site settings record.', __METHOD__);
                     }
                 }
             }
