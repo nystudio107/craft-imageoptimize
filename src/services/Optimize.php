@@ -285,7 +285,7 @@ class Optimize extends Component
             $variables
         );
         $content = PluginTemplateHelper::renderPluginTemplate(
-            'frontend/lazysizes-fallback-js',
+            'frontend/lazysizes-fallback.twig.js',
             $vars,
             $minifier
         );
@@ -317,7 +317,7 @@ class Optimize extends Component
             $variables
         );
         $content = PluginTemplateHelper::renderPluginTemplate(
-            'frontend/lazysizes-js',
+            'frontend/lazysizes.twig.js',
             $vars,
             $minifier
         );
