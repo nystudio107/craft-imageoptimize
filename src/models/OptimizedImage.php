@@ -578,9 +578,6 @@ class OptimizedImage extends Model
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
-    // Protected Methods
-    // =========================================================================
-
     /**
      * @param array $array
      * @param bool $dpr
@@ -607,6 +604,9 @@ class OptimizedImage extends Model
 
         return rtrim($srcset, ', ');
     }
+
+    // Protected Methods
+    // =========================================================================
 
     protected function getSrcsetSubsetArray(array $set, int $width, string $comparison): array
     {

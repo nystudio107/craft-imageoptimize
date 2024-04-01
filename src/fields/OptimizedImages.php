@@ -29,7 +29,6 @@ use nystudio107\imageoptimize\models\OptimizedImage;
 use nystudio107\imageoptimize\models\Settings;
 use ReflectionClass;
 use ReflectionException;
-use verbb\supertable\fields\SuperTableField;
 use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\Schema;
