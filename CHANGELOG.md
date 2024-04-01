@@ -5,6 +5,11 @@
 * Added a `--queue` option to the `image-optimize/optimize/create` console command if you want to defer the image generation to be run via queue job, rather than immediately via the console command
 * Add `phpstan` and `ecs` code linting
 * Add `code-analysis.yaml` GitHub action
+* Add `.imgTag()` to the `OptimizedImage` model, which generates a complete `<img>` tag from the `OptimizedImage`
+* Add `.pictureTag()` to the `OptimizedImage` model, which generates a complete `<picture>` tag from the `OptimizedImage`
+* Add `.linkPreloadTag()` to the `OptimizedImage` model, which generates a complete `<link rel="preload">` tag from the `OptimizedImage`
+* Add `craft.imageOptimize.renderLazySizesJs()` to render the LazySizes JavaScript for lazy loading images
+* Add `craft.imageOptimize.renderLazySizesFallbackJs()` to render the LazySizes JavaScript with a support script that uses LazySizes as a fallback for browsers that don't support the `loading` property
 
 ### Changed
 * Updated docs to use node 20 & a new sitemap plugin
