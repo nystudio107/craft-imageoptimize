@@ -24,32 +24,32 @@ class PictureTag extends BaseImageTag
     /**
      * @var string The loading scheme to use: 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
      */
-    public string $loading = 'eager';
+    public $loading = 'eager';
 
     /**
      * @var string The type of placeholder image to use: 'box', 'color', 'image', 'silhouette'
      */
-    public string $placeholder = 'box';
+    public $placeholder = 'box';
 
     /**
      * @var array array of tag attributes for the <picture> tag
      */
-    public array $pictureAttrs = [];
+    public $pictureAttrs = [];
 
     /**
      * @var array array of tag attributes for the <srcset> tag
      */
-    public array $srcsetAttrs = [];
+    public $srcsetAttrs = [];
 
     /**
      * @var array array of tag attributes for the <img> tag
      */
-    public array $imgAttrs = [];
+    public $imgAttrs = [];
 
     /**
      * @var OptimizedImage[] array OptimizedImage models to add as art direction
      */
-    public array $artDirection = [];
+    public $artDirection = [];
 
     /**
      * @param $config

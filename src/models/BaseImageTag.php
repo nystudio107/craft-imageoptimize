@@ -86,11 +86,15 @@ abstract class BaseImageTag extends BaseTag
     protected function getLazyLoadSrc(string $lazyLoad): string
     {
         $lazyLoad = strtolower($lazyLoad);
-        return match ($lazyLoad) {
-            'image' => $this->optimizedImage->getPlaceholderImage(),
-            'silhouette' => $this->optimizedImage->getPlaceholderSilhouette(),
-            'color' => $this->optimizedImage->getPlaceholderBox($this->colorPalette[0] ?? null),
-            default => $this->optimizedImage->getPlaceholderBox('#CCC'),
-        };
+        switch ($lazyLoad) {
+            case 'image':
+                return $this->optimizedImage->getPlaceholderImage();
+            case 'silhouette':
+                return $this->optimizedImage->getPlaceholderSilhouette();
+            case 'color':
+                return $this->optimizedImage->getPlaceholderBox($this->colorPalette[0] ?? null);
+            default:
+                return $this->optimizedImage->getPlaceholderBox('#CCC');
+        }
     }
 }

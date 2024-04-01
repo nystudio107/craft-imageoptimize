@@ -20,5 +20,5 @@ trait TagTrait
     /**
      * @var ?OptimizedImage
      */
-    public ?OptimizedImage $optimizedImage = null;
+    public $optimizedImage = null;
 }

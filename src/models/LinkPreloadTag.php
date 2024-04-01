@@ -24,7 +24,7 @@ class LinkPreloadTag extends BaseTag
     /**
      * @var array array of tag attributes for the <link rel="preload"> tag
      */
-    public array $linkAttrs = [];
+    public $linkAttrs = [];
 
     /**
      * @param $config

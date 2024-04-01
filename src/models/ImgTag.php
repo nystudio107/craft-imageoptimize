@@ -24,17 +24,17 @@ class ImgTag extends BaseImageTag
     /**
      * @var string The loading scheme to use: 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
      */
-    public string $loading = 'eager';
+    public $loading = 'eager';
 
     /**
      * @var string The type of placeholder image to use: 'box', 'color', 'image', 'silhouette'
      */
-    public string $placeholder = 'box';
+    public $placeholder = 'box';
 
     /**
      * @var array array of tag attributes for the <img> tag
      */
-    public array $imgAttrs = [];
+    public $imgAttrs = [];
 
     /**
      * @param $config
