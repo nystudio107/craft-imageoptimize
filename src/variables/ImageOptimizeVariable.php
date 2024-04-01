@@ -80,8 +80,7 @@ class ImageOptimizeVariable implements ViteVariableInterface
         Asset $asset,
               $variants = null,
               $generatePlaceholders = false
-    )
-    {
+    ) {
         // Override our settings for lengthy operations, since we're doing this via Twig
         ImageOptimize::$generatePlaceholders = $generatePlaceholders;
 

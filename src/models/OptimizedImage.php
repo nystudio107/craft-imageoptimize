@@ -12,7 +12,6 @@ namespace nystudio107\imageoptimize\models;
 
 use Craft;
 use craft\base\Model;
-use craft\helpers\Html;
 use craft\helpers\Template;
 use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
@@ -384,153 +383,31 @@ class OptimizedImage extends Model
      * Generate a complete <link rel="preload"> tag for this OptimizedImages model
      * ref: https://web.dev/preload-responsive-images/#imagesrcset-and-imagesizes
      *
-     * @param array $linkAttrs
-     *
-     * @return Markup
+     * @return LinkPreloadTag
      */
-    public function linkPreloadTag($linkAttrs = [])
+    public function linkPreloadTag(): LinkPreloadTag
     {
-        // Any web browser that supports link rel="preload" as="image" also supports webp, so prefer that
-        $srcset = $this->optimizedImageUrls;
-        if (!empty($this->optimizedWebPImageUrls)) {
-            $srcset = $this->optimizedWebPImageUrls;
-        }
-        // Merge the passed in options with the tag attributes
-        $attrs = array_merge([
-            'rel' => 'preload',
-            'as' => 'image',
-            'href' => reset($srcset),
-            'imagesrcset' => $this->getSrcsetFromArray($srcset),
-            'imagesizes' => '100vw',
-        ],
-            $linkAttrs
-        );
-        // Remove any empty attributes
-        $attrs = array_filter($attrs);
-        // Render the tag
-        $tag = Html::tag('link', '', $attrs);
-
-        return Template::raw($tag);
+        return new LinkPreloadTag(['optimizedImage' => $this]);
     }
 
     /**
-     * Generate a complete <img> tag for this OptimizedImages model
+     * Generate a complete <img> tag for this OptimizedImage model
      *
-     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
-     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
-     * @param array $imgAttrs
-     *
-     * @return Markup
+     * @return ImgTag
      */
-    public function imgTag($loading = 'eager', $placeHolder = 'box', $imgAttrs = []): Markup
+    public function imgTag(): ImgTag
     {
-        // Merge the passed in options with the tag attributes
-        $attrs = array_merge([
-            'class' => '',
-            'style' => '',
-            'width' => $this->placeholderWidth,
-            'height' => $this->placeholderHeight,
-            'src' => reset($this->optimizedImageUrls),
-            'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
-            'sizes' => '100vw',
-            'loading' => '',
-        ],
-            $imgAttrs
-        );
-        // Handle lazy loading
-        if ($loading !== 'eager') {
-            $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
-        }
-        // Remove any empty attributes
-        $attrs = array_filter($attrs);
-        // Render the tag
-        $tag = Html::tag('img', '', $attrs);
-
-        return Template::raw($tag);
+        return new ImgTag(['optimizedImage' => $this]);
     }
 
     /**
-     * Generate a complete <picture> tag for this OptimizedImages model
+     * Generate a complete <picture> tag for this OptimizedImage model
      *
-     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
-     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
-     * @param array $pictureAttrs
-     * @param array $srcsetAttrs
-     * @param array $imgAttrs
-     *
-     * @return Markup
+     * @return PictureTag
      */
-    public function pictureTag($loading = 'eager', $placeHolder = 'box', $pictureAttrs = [], $srcsetAttrs = [], $imgAttrs = []): Markup
+    public function pictureTag(): PictureTag
     {
-        $content = '';
-        // Handle the webp srcset
-        if (!empty($this->optimizedWebPImageUrls)) {
-            // Merge the passed in options with the tag attributes
-            $attrs = array_merge([
-                'srcset' => $this->getSrcsetFromArray($this->optimizedWebPImageUrls),
-                'type' => 'image/webp',
-                'sizes' => '100vw',
-            ],
-                $srcsetAttrs
-            );
-            // Handle lazy loading
-            if ($loading !== 'eager') {
-                $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
-            }
-            // Remove any empty attributes
-            $attrs = array_filter($attrs);
-            // Render the tag
-            $content .= Html::tag('source', '', $attrs);
-        }
-        // Handle the regular srcset
-        if (!empty($this->optimizedImageUrls)) {
-            // Merge the passed in options with the tag attributes
-            $attrs = array_merge([
-                'srcset' => $this->getSrcsetFromArray($this->optimizedImageUrls),
-                'sizes' => '100vw',
-            ],
-                $srcsetAttrs
-            );
-            // Handle lazy loading
-            if ($loading !== 'eager') {
-                $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
-            }
-            // Remove any empty attributes
-            $attrs = array_filter($attrs);
-            // Render the tag
-            $content .= Html::tag('source', '', $attrs);
-        }
-        // Handle the img tag
-        /** @noinspection SuspiciousAssignmentsInspection */
-        $attrs = array_merge([
-            'class' => '',
-            'style' => '',
-            'width' => $this->placeholderWidth,
-            'height' => $this->placeholderHeight,
-            'src' => reset($this->optimizedImageUrls),
-            'loading' => '',
-        ],
-            $imgAttrs
-        );
-        // Handle lazy loading
-        if ($loading !== 'eager') {
-            $attrs = $this->swapLazyLoadAttrs($loading, $placeHolder, $attrs);
-        }
-        // Remove any empty attributes
-        $attrs = array_filter($attrs);
-        // Render the tag
-        $content .= Html::tag('img', '', $attrs);
-        // Merge the passed in options with the tag attributes
-        $attrs = array_merge([
-        ],
-            $pictureAttrs
-        );
-        // Remove any empty attributes
-        $attrs = array_filter($attrs);
-        // Render the tag
-        $tag = Html::tag('picture', $content, $attrs);
-
-        return Template::raw($tag);
+        return new PictureTag(['optimizedImage' => $this]);
     }
 
     /**
@@ -700,6 +577,34 @@ class OptimizedImage extends Model
         return ImageOptimize::$plugin->optimize->humanFileSize($contentLength, 1);
     }
 
+    /**
+     * @param array $array
+     * @param bool $dpr
+     *
+     * @return string
+     */
+    public function getSrcsetFromArray(array $array, bool $dpr = false): string
+    {
+        $srcset = '';
+        foreach ($array as $key => $value) {
+            if ($dpr) {
+                $descriptor = '1x';
+                if (!empty($array[(int)$key / 2])) {
+                    $descriptor = '2x';
+                }
+                if (!empty($array[(int)$key / 3])) {
+                    $descriptor = '3x';
+                }
+            } else {
+                $descriptor = $key . 'w';
+            }
+            $srcset .= $value . ' ' . $descriptor . ', ';
+        }
+        $srcset = rtrim($srcset, ', ');
+
+        return $srcset;
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -738,34 +643,6 @@ class OptimizedImage extends Model
         }
 
         return $subset;
-    }
-
-    /**
-     * @param array $array
-     * @param bool $dpr
-     *
-     * @return string
-     */
-    protected function getSrcsetFromArray(array $array, bool $dpr = false): string
-    {
-        $srcset = '';
-        foreach ($array as $key => $value) {
-            if ($dpr) {
-                $descriptor = '1x';
-                if (!empty($array[(int)$key / 2])) {
-                    $descriptor = '2x';
-                }
-                if (!empty($array[(int)$key / 3])) {
-                    $descriptor = '3x';
-                }
-            } else {
-                $descriptor = $key . 'w';
-            }
-            $srcset .= $value . ' ' . $descriptor . ', ';
-        }
-        $srcset = rtrim($srcset, ', ');
-
-        return $srcset;
     }
 
     /**

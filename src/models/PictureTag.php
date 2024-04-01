@@ -145,7 +145,7 @@ class PictureTag extends BaseImageTag
      *
      * @param OptimizedImage $optimizedImage
      * @param array $srcsetAttrs
-     * @return void
+     * @return PictureTag
      */
     public function artDirection(OptimizedImage $optimizedImage, array $srcsetAttrs = []): PictureTag
     {

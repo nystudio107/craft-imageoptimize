@@ -880,8 +880,7 @@ class Optimize extends Component
         Asset $asset,
         AssetTransformIndex $index,
         $outputPath
-    )
-    {
+    ) {
         // If the image variant creation succeeded, copy it into place
         if (!empty($outputPath) && is_file($outputPath)) {
             // Figure out the resulting path for the image variant
