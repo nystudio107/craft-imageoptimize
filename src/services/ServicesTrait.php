@@ -39,7 +39,7 @@ trait ServicesTrait
     {
         // Constants aren't allowed in traits until PHP >= 8.2, and config() is called before __construct(),
         // so we can't extract it from the passed in $config
-        $majorVersion = '4';
+        $majorVersion = '5';
         // Dev server container name & port are based on the major version of this plugin
         $devPort = 3000 + (int)$majorVersion;
         $versionName = 'v' . $majorVersion;

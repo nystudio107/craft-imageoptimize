@@ -11,78 +11,78 @@
  */
 
 .io-select-ar-box {
-  padding: 0;
-  margin: 5px;
-  display: inline-block;
-  cursor: pointer;
-  fill: #ddd;
-  stroke: #aaa;
+    padding: 0;
+    margin: 1px;
+    display: inline-block;
+    cursor: pointer;
+    fill: #ddd;
+    stroke: #aaa;
 }
 
 .io-select-ar-box text {
-  fill: #aaa;
-  stroke: none;
+    fill: #aaa;
+    stroke: none;
 }
 
 .io-select-ar-svg {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 .io-selected-ar-box {
-  /*
-      box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.075), 0 0 6px rgba(91,157,217, 0.6);
-       */
+    /*
+        box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.075), 0 0 6px rgba(91,157,217, 0.6);
+         */
 }
 
 .io-select-ar-box.io-selected-ar-box {
-  fill: rgb(221 231 242);
-  stroke: rgb(163 193 226);
+    fill: rgb(221 231 242);
+    stroke: rgb(163 193 226);
 }
 
 .io-select-ar-box.io-selected-ar-box text {
-  fill: rgb(163 193 226);
-  stroke: none;
+    fill: rgb(163 193 226);
+    stroke: none;
 }
 
 h4.io-retina-size-badge {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  color: white;
-  background-color: #aaa;
-  border-radius: 5px;
-  padding: 0 5px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: white;
+    background-color: #aaa;
+    border-radius: 5px;
+    padding: 0 5px;
 }
 
 div.io-field-display-wrapper {
-  padding-bottom: 10px;
-  width: 440px;
-  text-align: center;
+    padding-bottom: 10px;
+    width: 440px;
+    text-align: center;
 }
 
 div.io-inline-image-container {
-  display: inline-block;
-  padding-right: 10px;
-  vertical-align: top;
+    display: inline-block;
+    padding-right: 10px;
+    vertical-align: top;
 }
 
 div.io-field-section-container {
-  width: 400px;
-  margin-top: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
+    width: 400px;
+    margin-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
 }
 
 img.io-soft-shadow-img {
-  vertical-align: middle;
-  box-shadow: 0 3px 15px rgb(0 0 0 / 20%);
+    vertical-align: middle;
+    box-shadow: 0 3px 15px rgb(0 0 0 / 20%);
 }
 
 .io-focal-point-wrapper {
-  fill: #aaa;
-  color: #aaa;
+    fill: #aaa;
+    color: #aaa;
 }
 
 .io-focal-point-wrapper > svg {
-  display: inline-block;
+    display: inline-block;
 }

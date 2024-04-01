@@ -1,4 +1,4 @@
-MAJOR_VERSION?=4
+MAJOR_VERSION?=5
 TAG?=20-alpine
 CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-buildchain
 DEV_PORT?=300${MAJOR_VERSION}
