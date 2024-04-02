@@ -37,9 +37,9 @@ class PictureTag extends BaseImageTag
     public $pictureAttrs = [];
 
     /**
-     * @var array array of tag attributes for the <srcset> tag
+     * @var array array of tag attributes for the <source> tags
      */
-    public $srcsetAttrs = [];
+    public $sourceAttrs = [];
 
     /**
      * @var array array of tag attributes for the <img> tag
@@ -66,8 +66,8 @@ class PictureTag extends BaseImageTag
             'src' => reset($this->optimizedImage->optimizedImageUrls),
             'loading' => '',
         ];
-        // Populate the $srcsetAttrs
-        $this->populateSrcsetAttrs($this->optimizedImage, []);
+        // Populate the $sourceAttrs
+        $this->populateSourceAttrs($this->optimizedImage, []);
         // Populate the $pictureAttrs
         $this->pictureAttrs = [];
     }
@@ -112,14 +112,14 @@ class PictureTag extends BaseImageTag
     }
 
     /**
-     * Merge the passed array of tag attributes into $srcsetAttrs
+     * Merge the passed array of tag attributes into $sourceAttrs
      *
      * @param array $value
      * @return $this
      */
-    public function srcsetAttrs(array $value): PictureTag
+    public function sourceAttrs(array $value): PictureTag
     {
-        foreach ($this->srcsetAttrs as &$attrs) {
+        foreach ($this->sourceAttrs as &$attrs) {
             $attrs = array_merge($attrs, $value);
         }
         unset($attrs);
@@ -141,15 +141,15 @@ class PictureTag extends BaseImageTag
     }
 
     /**
-     * Add art direction srcsets to the $srcsetAttrs
+     * Add art direction sources to the $sourceAttrs
      *
      * @param OptimizedImage $optimizedImage
-     * @param array $srcsetAttrs
+     * @param array $sourceAttrs
      * @return PictureTag
      */
-    public function artDirection(OptimizedImage $optimizedImage, array $srcsetAttrs = []): PictureTag
+    public function artDirection(OptimizedImage $optimizedImage, array $sourceAttrs = []): PictureTag
     {
-        $this->populateSrcsetAttrs($optimizedImage, $srcsetAttrs);
+        $this->populateSourceAttrs($optimizedImage, $sourceAttrs);
 
         return $this;
     }
@@ -162,8 +162,8 @@ class PictureTag extends BaseImageTag
     public function render(): Markup
     {
         $content = '';
-        // Handle the <srcset> tag(s)
-        foreach ($this->srcsetAttrs as $attrs) {
+        // Handle the <source> tag(s)
+        foreach ($this->sourceAttrs as $attrs) {
             // Handle lazy loading
             if ($this->loading !== 'eager') {
                 $attrs = $this->swapLazyLoadAttrs($this->loading, $this->placeholder, $attrs);
@@ -194,30 +194,30 @@ class PictureTag extends BaseImageTag
     }
 
     /**
-     * Populate the $srcsetAttrs from the passed in $optimizedImage and $sizes
+     * Populate the $sourceAttrs from the passed in $optimizedImage and $sizes
      *
      * @param OptimizedImage $optimizedImage
-     * @param array $srcsetAttrs attributes to add to the $srcsetAttrs array
+     * @param array $sourceAttrs attributes to add to the $sourceAttrs array
      * @return void
      */
-    protected function populateSrcsetAttrs(OptimizedImage $optimizedImage, array $srcsetAttrs): void
+    protected function populateSourceAttrs(OptimizedImage $optimizedImage, array $sourceAttrs): void
     {
         if (!empty($optimizedImage->optimizedWebPImageUrls)) {
-            $this->srcsetAttrs[] = array_merge([
+            $this->sourceAttrs[] = array_merge([
                 'media' => '',
                 'srcset' => $optimizedImage->getSrcsetFromArray($optimizedImage->optimizedWebPImageUrls),
                 'type' => 'image/webp',
                 'sizes' => '100vw',
                 'width' => $optimizedImage->placeholderWidth,
                 'height' => $optimizedImage->placeholderHeight,
-            ], $srcsetAttrs);
+            ], $sourceAttrs);
         }
-        $this->srcsetAttrs[] = array_merge([
+        $this->sourceAttrs[] = array_merge([
             'media' => '',
             'srcset' => $optimizedImage->getSrcsetFromArray($optimizedImage->optimizedImageUrls),
             'sizes' => '100vw',
             'width' => $optimizedImage->placeholderWidth,
             'height' => $optimizedImage->placeholderHeight,
-        ], $srcsetAttrs);
+        ], $sourceAttrs);
     }
 }
