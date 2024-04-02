@@ -2,7 +2,9 @@
   <div class="matrixblock">
     <div class="titlebar">
       <div class="blocktype">
-        <code><span class="text-gray-500">srcset="</span>example.jpg {{ imageWidth }}w<span class="text-gray-500">"</span></code>
+        <code><span class="text-gray-500">srcset="</span>example.jpg {{ imageWidth }}w<span
+          class="text-gray-500"
+        >"</span></code>
         <code><span class="text-gray-500">sizes="</span>{{ title }}<span class="text-gray-500">"</span></code>
       </div>
       <div class="preview" />
@@ -130,10 +132,10 @@ import HatchBox from '@/vue/HatchBox.vue';
 import ImagePreviewBox from "@/vue/ImagePreviewBox.vue";
 import CraftNumberField from "@/vue/CraftNumberField.vue";
 
-const remPx = 16;
-const emPx = 16;
+//const remPx = 16;
+//const emPx = 16;
 const maxNormalizedWidth = 1000;
-
+/*
 const normalizeUnitsToPx = (value: number, units: string) => {
   let result: number;
   switch (units) {
@@ -151,6 +153,7 @@ const normalizeUnitsToPx = (value: number, units: string) => {
 
   return result;
 }
+*/
 
 export default Vue.extend({
   components: {
@@ -210,8 +213,7 @@ export default Vue.extend({
     },
   },
   data(): Record<string, unknown> {
-    return {
-    }
+    return {}
   },
   computed: {
     breakpointWidth(): string {

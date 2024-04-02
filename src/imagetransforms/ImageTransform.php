@@ -143,7 +143,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     {
         $path = $this->decomposeUrl($pathOrUrl);
         $path_parts = pathinfo($path['path']);
-        $new_path = ($path_parts['filename'] ?? '') . '.' . ($path_parts['extension'] ?? '') . $extension;
+        $new_path = ($path_parts['filename']) . '.' . ($path_parts['extension'] ?? '') . $extension;
         if (!empty($path_parts['dirname']) && $path_parts['dirname'] !== '.') {
             $dirname = $path_parts['dirname'];
             $dirname = $dirname === '/' ? '' : $dirname;

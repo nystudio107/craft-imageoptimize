@@ -45,9 +45,9 @@ class Image
         // If it's explicitly set, take their word for it.
         if ($extension === 'gd') {
             $instance = new GdImagine();
-        } else if ($extension === 'imagick') {
+        } elseif ($extension === 'imagick') {
             $instance = new ImagickImagine();
-        } else if (Craft::$app->getImages()->getIsGd()) {
+        } elseif (Craft::$app->getImages()->getIsGd()) {
             $instance = new GdImagine();
         } else {
             $instance = new ImagickImagine();
@@ -93,6 +93,6 @@ class Image
 
         $extension = pathinfo($path, PATHINFO_EXTENSION);
 
-        return $extension === 'gif' && $image->layers();
+        return $extension === 'gif' && $image->layers()->count() > 1;
     }
 }

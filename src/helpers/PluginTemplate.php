@@ -59,9 +59,8 @@ class PluginTemplate
     public static function renderPluginTemplate(
         string $templatePath,
         array  $params = [],
-        string $minifier = null
-    ): string
-    {
+        string $minifier = null,
+    ): string {
         $template = 'image-optimize/' . $templatePath;
         $oldMode = Craft::$app->view->getTemplateMode();
         // Look for the template on the frontend first
@@ -84,7 +83,6 @@ class PluginTemplate
                 if ($minify) {
                     $htmlText = Minify::$plugin->minify->$minifier($htmlText);
                 }
-
             }
         } catch (\Exception $e) {
             $htmlText = Craft::t(

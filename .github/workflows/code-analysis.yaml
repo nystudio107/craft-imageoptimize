@@ -1,0 +1,40 @@
+name: Code Analysis
+
+on:
+  pull_request: null
+  push:
+    branches:
+      - develop-v4
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  code_analysis:
+    strategy:
+      fail-fast: false
+      matrix:
+        actions:
+          - name: 'PHPStan'
+            run: composer phpstan
+          - name: 'Coding Standards'
+            run: composer fix-cs
+    name: ${{ matrix.actions.name }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - name: Setup PHP
+        id: setup-php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+          extensions: 'ctype,curl,dom,iconv,imagick,intl,json,mbstring,openssl,pcre,pdo,reflection,spl,zip'
+          ini-values: post_max_size=256M, max_execution_time=180, memory_limit=512M
+          tools: composer:v2
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-ansi --no-progress
+      - run: ${{ matrix.actions.run }}

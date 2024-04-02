@@ -1,5 +1,5 @@
 MAJOR_VERSION?=4
-TAG?=14-alpine
+TAG?=20-alpine
 CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-docs
 DOCS_DEV_PORT?=400${MAJOR_VERSION}
 DOCS_DEST?=../../../sites/nystudio107/web/docs/image-optimize

@@ -1,5 +1,5 @@
 MAJOR_VERSION?=4
-TAG?=18-alpine
+TAG?=20-alpine
 CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-buildchain
 DEV_PORT?=300${MAJOR_VERSION}
 IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))

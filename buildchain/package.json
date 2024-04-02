@@ -1,6 +1,7 @@
 {
   "name": "imageoptimize",
   "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes",
+  "type": "module",
   "author": {
     "email": "info@nystudio107.com",
     "name": "nystudio107",
@@ -21,10 +22,10 @@
     "vue-confetti": "^0.4.2"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.0.0",
-    "@typescript-eslint/parser": "^5.0.0",
-    "@types/node": "^18.0.0",
-    "@vitejs/plugin-vue2": "^2.2.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@types/node": "^20.0.0",
+    "@vitejs/plugin-vue2": "^2.3.1",
     "autoprefixer": "^10.4.0",
     "eslint": "^8.0.0",
     "eslint-plugin-vue": "^8.0.0",
@@ -36,12 +37,12 @@
     "stylelint-config-standard-scss": "^3.0.0",
     "stylelint-config-recommended-vue": "^1.0.0",
     "tailwindcss": "^3.0.0",
-    "vite": "^4.0.0",
+    "vite": "^5.0.0",
     "vite-plugin-compression": "^0.5.0",
     "vite-plugin-eslint": "^1.8.0",
     "vite-plugin-externals": "^0.6.0",
-    "vite-plugin-restart": "^0.3.0",
-    "vite-plugin-stylelint": "^4.1.0",
+    "vite-plugin-restart": "^0.4.0",
+    "vite-plugin-stylelint": "^5.2.1",
     "vue-eslint-parser": "^8.0.0"
   },
   "scripts": {

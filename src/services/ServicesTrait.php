@@ -58,7 +58,7 @@ trait ServicesTrait
                     'errorEntry' => 'src/js/ImageOptimize.js',
                     'useDevServer' => true,
                 ],
-            ]
+            ],
         ];
     }
 

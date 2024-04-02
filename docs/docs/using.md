@@ -26,15 +26,15 @@ You can then create as many Optimized Image Variants as you like:
 You can add, delete, and re-order the Optimized Image Variants just like you can Matrix blocks.
 
 For each Optimized Image Variant, set:
- 
- * **Width**: The width of the image, which should correspond to your CSS `@media` query breakpoints or container sizes. For performance, we want to images to be the exact size that they will be displayed on-screen.
- * **Enforce Aspect Ratio**: Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio
- * **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
- * **Retina Sizes**: Check any additional retina sizes to create for this variant. For instance, a `100x60` image with with a `2x` retina size would _also_ create a `200x120` image.
- * **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
- * **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image’s file format. It’s recommended that you set this to `jpg` for most images, for client-proofing purposes.
- 
- Once you have set up your field, add it to your asset Volume’s layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
+
+* **Width**: The width of the image, which should correspond to your CSS `@media` query breakpoints or container sizes. For performance, we want to images to be the exact size that they will be displayed on-screen.
+* **Enforce Aspect Ratio**: Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio
+* **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
+* **Retina Sizes**: Check any additional retina sizes to create for this variant. For instance, a `100x60` image with with a `2x` retina size would _also_ create a `200x120` image.
+* **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
+* **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image’s file format. It’s recommended that you set this to `jpg` for most images, for client-proofing purposes.
+
+Once you have set up your field, add it to your asset Volume’s layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
 
 By default, ImageOptimize automatically will decrease the `quality` setting of retina images, as discussed in the [Retina revolution](https://www.netvlies.nl/blogs/retina-revolutie-follow) article. This allows for increasing the visual quality of the retina images while keeping the file size modest. You can disable this via the `lowerQualityRetinaImageVariants` setting in `config.php`.
 
@@ -228,7 +228,819 @@ The third parameter is the `generatePlacholders` setting, which disables generat
 
 ImageOptimize makes it easy to create responsive images in your frontend templates. There are two primary ways to create responsive images: using the `<img srcset="">` element or using the `<picture>` element.
 
-### Img srcset
+ImageOptimize provides simple but powerful shortcut commands for creating HTML markup from the Optimized Images field, or you can do it manually as well.
+
+Generally speaking, you'll usually want to have CSS like this applied to your images with a class:
+
+```css
+.responsive-img {
+    width: 100%;
+    height: auto;
+}
+```
+
+This allows the images to have `height` and `width` attributes applied to them so the browser can load them without layout shifts, while also fitting appropriately in the container.
+
+### Shortcut Method
+
+ImageOptimize knows all about your images, and so can create the HTML markup for your `<img>` and `<picture>` tags quickly and easily.
+
+#### Using `.imgTag()` to create `<img>` tags
+
+An OptimizedImages field has a `.imgTag()` method that will generate a complete `<img>` tag for you. In its simplest form, it looks like this:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag().render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+     srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+             /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+             /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+             /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     width="1200"
+     height="675"
+     sizes="100vw"
+ >
+```
+
+The `imgTag()` also supports an Element Query-like API that lets you customize the `<img>` tag that is output.
+
+##### The `.imgAttrs()` Parameter
+
+With `.imgAttrs()`, you can add or override any of the HTML attributes that will be included in the `<img>` tag. For example, if you wanted the `sizes` attribute in set to `50vw`, and you wanted to add an `alt` attribute, you'd do the following:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .imgAttrs({
+            'sizes': '50vw',
+            'alt': asset.title,
+        })
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+     srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+             /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+             /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+             /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     width="1200"
+     height="675"
+     alt="Christmas Selfie"
+     sizes="50vw"
+>
+```
+
+Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
+
+##### The `.loading()` Parameter
+
+With `.loading()`, you can control how the image will be loaded.
+
+###### Using `.loading('eager')`
+
+`.loading('eager')` is the default, which causes the image to be loader eagerly.
+
+You'd typically want this for "above the fold" images that should be rendered as soon as possible.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .loading('eager')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+     srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+             /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+             /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+             /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     width="1200"
+     height="675"
+     sizes="100vw"
+ >
+```
+
+###### Using `.loading('lazy')`
+
+`.loading('lazy')` will load the image lazily via native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading) by adding `class="lazyload"` and `loading="lazy"` attributes to the image.
+
+This leverages native browser lazy loading of images, without the need for additional JavaScript code.
+
+You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .loading('lazy')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img class="lazyload"
+     src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+     srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+             /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+             /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+             /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+     width="1200"
+     height="675"
+     sizes="100vw"
+     loading="lazy"
+ >
+```
+
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+
+###### Using `.loading('lazySizes')`
+
+`.loading('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+This allows you to support lazy loading of images even with browsers that don't support native lazy loading.
+
+You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .loading('lazySizes')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img class="lazyload"
+     src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+     width="1200"
+     height="675"
+     style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+     data-sizes="100vw"
+     data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                  /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                  /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                  /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+>
+```
+
+It's expected that you will have loaded the lazysizes library already on the frontend via your JavaScript build system, but if you want ImageOptimize to include the lazysizes JavaScript for you via CDN you can do the following anywhere in the `<body>` of your HTML:
+
+```twig
+    {{ craft.imageOptimize.renderLazySizesJs() }}
+```
+
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+
+###### `.loading('lazySizesFallback')`
+
+`.loading('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
+
+This is the best of both worlds, in terms of using native browser lazy loading if it's available, and falling back on lazysizes JavaScript if it is not.
+
+You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .loading('lazySizesFallback')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img class="lazyload"
+     src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+     width="1200"
+     height="675"
+     style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+     data-sizes="100vw"
+     data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                  /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                  /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                  /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     loading="lazy"
+     data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+>
+```
+
+Then you just need to include the [lazysizes fallback script](https://web.dev/articles/browser-level-image-lazy-loadingS#how_do_i_handle_browsers_that_dont_support_lazy_loading) in your `<body>` tag somewhere with:
+
+```twig
+    {{ craft.imageOptimize.renderLazySizesFallbackJs() }}
+```
+
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+
+##### The `.placeholder()` Parameter
+
+With `.placeholder()`, you can set the type of placeholder image that should be used for lazy loaded images. It can one of the following:
+
+* `'box'` - (default) a simple SVG box that's the same size as the final image
+* `'color'` - a SVG box that uses the predominant color from the image as the backrground color
+* `'image'` - a base64 encoded low quality placeholder image ([LQPI](https://csswizardry.com/2023/09/the-ultimate-lqip-lcp-technique/)) version of the image
+* `'silhouette'` - a generated SVG image that is a silhouette of the actual image
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .placeholder('image')
+        .loading('lazy')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+     srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+             /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+             /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+             /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+     style="background-image: url(data:image/jpeg; base64,%2F9j%2F4AAQSkZJRgABAQEASABIAAD%2F2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P%2F2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P%2FwAARCAAJABADASIAAhEBAxEB%2F8QAFgABAQEAAAAAAAAAAAAAAAAAAgEF%2F8QAIRAAAQQBAwUAAAAAAAAAAAAAAwABAgQSETEyNDVBcXL%2FxAAVAQEBAAAAAAAAAAAAAAAAAAABAv%2FEABgRAAMBAQAAAAAAAAAAAAAAAAABESEi%2F9oADAMBAAIRAxEAPwA3w1zAFXJYlGeWWLOz%2BHUqVRBGWuGzy0I7T3ZZUusH9Jn7jH0yJsKT5P%2FZ): ; background-size: cover;"
+     width="1200"
+     height="675"
+     sizes="100vw"
+>
+```
+
+#### Using `.pictureTag()` to create `<picture>` tags
+
+An OptimizedImages field has a `.pictureTag()` method that will generate a complete `<picture>` tag with embedded `<srcset>` and `<img>` tags for you. In its simplest form, it looks like this:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag().render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+        >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+    >
+</picture>
+```
+
+The `pictureTag()` also supports an Element Query-like API that lets you customize the `<picture>` tag that is output.
+
+##### The `.imgAttrs()` Parameter
+
+With `.imgAttrs()`, you can add or override any of the HTML attributes that will be included in the embedded `<img>` tag. For example, if you wanted to add an `alt` attribute, you'd do the following:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .imgAttrs({
+            'alt': asset.title,
+        })
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+        >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+         alt="Christmas Selfie"
+    >
+</picture>
+```
+
+Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
+
+##### The `.loading()` Parameter
+
+With `.loading()`, you can control how the image will be loaded.
+
+###### Using `.loading('eager')`
+
+`.loading('eager')` is the default, which causes the image to be loader eagerly.
+
+You'd typically want this for "above the fold" images that should be rendered as soon as possible.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .loading('eager')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+    >
+</picture>
+```
+
+###### Using `.loading('lazy')`
+
+`.loading('lazy')` will load the image lazily via native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading) by adding `class="lazyload"` and `loading="lazy"` attributes to the image.
+
+This leverages native browser lazy loading of images, without the need for additional JavaScript code.
+
+You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .loading('lazy')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <img class="lazyload"
+         src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         width="1200"
+         height="675"
+         loading="lazy"
+    >
+</picture>
+```
+
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+
+###### Using `.loading('lazySizes')`
+
+`.loading('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+This allows you to support lazy loading of images even with browsers that don't support native lazy loading.
+
+You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .loading('lazySizes')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                        /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                        /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                        /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            >
+            <source width="1200"
+                    height="675"
+                    data-sizes="100vw"
+                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                                 /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                                 /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                                 /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            >
+            <img class="lazyload"
+                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+                 width="1200"
+                 height="675"
+                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+            >
+</picture>
+```
+
+It's expected that you will have loaded the lazysizes library already on the frontend via your JavaScript build system, but if you want ImageOptimize to include the lazysizes JavaScript for you via CDN you can do the following anywhere in the `<body>` of your HTML:
+
+```twig
+    {{ craft.imageOptimize.renderLazySizesJs() }}
+```
+
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+
+###### `.loading('lazySizesFallback')`
+
+`.loading('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
+
+This is the best of both worlds, in terms of using native browser lazy loading if it's available, and falling back on lazysizes JavaScript if it is not.
+
+You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .loading('lazySizesFallback')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                        /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                        /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                        /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            >
+            <source width="1200"
+                    height="675"
+                    data-sizes="100vw"
+                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                                 /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                                 /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                                 /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            >
+            <img class="lazyload"
+                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+                 width="1200"
+                 height="675"
+                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+                 loading="lazy"
+                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+            >
+</picture>
+```
+
+Then you just need to include the [lazysizes fallback script](https://web.dev/articles/browser-level-image-lazy-loadingS#how_do_i_handle_browsers_that_dont_support_lazy_loading) in your `<body>` tag somewhere with:
+
+```twig
+    {{ craft.imageOptimize.renderLazySizesFallbackJs() }}
+```
+
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+
+##### The `.placeholder()` Parameter
+
+With `.placeholder()`, you can set the type of placeholder image that should be used for lazy loaded images. It can one of the following:
+
+* `'box'` - (default) a simple SVG box that's the same size as the final image
+* `'color'` - a SVG box that uses the predominant color from the image as the backrground color
+* `'image'` - a base64 encoded low quality placeholder image ([LQPI](https://csswizardry.com/2023/09/the-ultimate-lqip-lcp-technique/)) version of the image
+* `'silhouette'` - a generated SVG image that is a silhouette of the actual image
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .placeholder('image')
+        .loading('lazy')
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <img class="lazyload"
+         src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         style="background-image: url(data:image/jpeg; base64,%2F9j%2F4AAQSkZJRgABAQEASABIAAD%2F2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P%2F2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P%2FwAARCAAJABADASIAAhEBAxEB%2F8QAFgABAQEAAAAAAAAAAAAAAAAAAgEF%2F8QAIRAAAQQBAwUAAAAAAAAAAAAAAwABAgQSETEyNDVBcXL%2FxAAVAQEBAAAAAAAAAAAAAAAAAAABAv%2FEABgRAAMBAQAAAAAAAAAAAAAAAAABESEi%2F9oADAMBAAIRAxEAPwA3w1zAFXJYlGeWWLOz%2BHUqVRBGWuGzy0I7T3ZZUusH9Jn7jH0yJsKT5P%2FZ): ; background-size: cover;"
+         width="1200"
+         height="675"
+         loading="lazy"
+    >
+</picture>
+```
+
+##### The `.pictureAttrs()` Parameter
+
+With `.pictureAttrs()`, you can add or override any of the HTML attributes that will be included in the `<picture>` tag. For example, if you wanted to add a `class` attribute to the `<picture>` tag, you'd do the following:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .pictureAttrs({
+            'class': 'some-css-class',
+        })
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture class="some-css-class">
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+        >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+    >
+    <img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+    >
+</picture>
+```
+
+Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
+
+##### The `.sourceAttrs()` Parameter
+
+With `.sourceAttrs()`, you can add or override any of the HTML attributes that will be included in the embedded `<source>` tags. For example, if you wanted to add a `media` attribute, you'd do the following:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .sourceAttrs({
+            'media': '(min-width: 800px)',
+        })
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+            media="(min-width: 800px)"
+        >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            sizes="100vw"
+            media="(min-width: 800px)"
+    >
+    <img src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+    >
+</picture>
+```
+
+Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
+
+##### The `.artDirection()` Parameter
+
+Since each OptimizedImages field can be thought of as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images, if you require art direction where images change aspect ratios at different screen sizes, then you should use another OptimizedImages field for each art direction.
+
+With `.artDirection()`, you can add the `<source>` tags from additional OptimizedImages fields to an output `<picture>` tag. The first argument is the OptimizedImages field, and the second argument is any `sourceAttrs` you want to set on the `<source>` tags:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.pictureTag()
+        .loading('lazy')
+        .sourceAttrs({
+            'media': '(min-width: 800px)',
+            'sizes': '80vw',
+        })
+        .artDirection(asset.mobileOptimizedImagesField, {
+            'media': '(max-width: 799px)',
+            'sizes': '60vw',
+        })
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<picture>
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            media="(min-width: 800px)"
+            sizes="80vw"
+    >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            media="(min-width: 800px)"
+            sizes="80vw"
+    >
+    <source type="image/webp"
+            srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="2133"
+            media="(max-width: 799px)"
+            sizes="60vw"
+    >
+    <source srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="2133"
+            media="(max-width: 799px)"
+            sizes="60vw"
+    >
+    <img class="lazyload"
+         src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         loading="lazy"
+     >
+</picture>
+```
+
+Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
+
+#### Using `.linkPreloadTag()` to create `<link rel="preload">` tags
+
+An OptimizedImages field has a `.linkPreloadTag()` method that will generate a complete `<link rel="preload">` tag for you.
+
+This lets you give the browser hints to [preload image srcsets](https://web.dev/articles/preload-responsive-images#imagesrcset_and_imagesizes) to ensure the important images like above the fold hero images are loaded as quickly as possible.
+
+You'd want these `<link rel="preload">` tags to be rendered somewhere high up in your HTML `<head>` so the browser can start prefetching them ASAP. In its simplest form, it looks like this:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.linkPreloadTag().render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<link href="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp"
+      rel="preload"
+      as="image"
+      imagesrcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                   /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                   /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                   /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+      imagesizes="100vw"
+>
+```
+
+Any browser that supports `<link rel="preload">` tags _also_ supports `.webp` so it will prefer `.webp` images if they are available, but will fall back on the regular images otherwise.
+
+The `linkPreloadTag()` also supports an Element Query-like API that lets you customize the `<link>` tag that is output.
+
+##### The `.linkAttrs()` Parameter
+
+With `.linkAttrs()`, you can add or override any of the HTML attributes that will be included in the `<link rel="preload">` tag. For example, if you wanted to add a `media` attribute, you'd do the following:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.linkPreloadTag()
+        .linkAttrs({
+            'media': '(min-width: 800px)',
+        })
+        .render() }}
+```
+
+Which will generate the following HTML markup for you:
+
+```html
+<link href="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp"
+      rel="preload"
+      as="image"
+      imagesrcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                   /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                   /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                   /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+      imagesizes="100vw"
+      media="(min-width: 800px)"
+>
+```
+
+Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
+
+### Manual Method
+
+You can also manually create your HTML markup for `<img>` and `<picture>` tags as well.
+
+#### Img srcset
 
 To use `<img srcset="">` elements in your templates, you can just do:
 
@@ -282,7 +1094,7 @@ To check to see if `.webp` is supported on the server so you can conditionally i
 {% endif %}
 ```
 
-### Picture Elements
+#### Picture Elements
 
 To use `<picture>` in your templates, you can just do:
 
@@ -336,7 +1148,7 @@ If you’re using the [LazySizes](https://github.com/aFarkas/lazysizes) JavaScri
      </picture>
 ```
 
-### Media Query srcset Sizes
+#### Media Query srcset Sizes
 
 If you need separate `srcset`s to match your media queries, you can use:
 ```twig
@@ -371,12 +1183,12 @@ To mimic the `max-width` media query, you can do:
 ```
 ...to output all variants that match the passed in width or are smaller than the passed in width (which also includes any `2x` or `3x` retina variants).
 
-### Placeholder Images
+#### Placeholder Images
 
-Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`. 
+Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`.
 
 All of the placeholder images are stored in the Optimized Image field itself, so no http request is needed to fetch it, and the inline data used to generate them is very small.
- 
+
 The first is `.placeholderBox()` which displays a simple inline SVG with the background color set to the dominant color of the image:
 
 ![Screenshot](./resources/screenshots/placeholder-image-box.png)
@@ -422,7 +1234,7 @@ If you have `devMode` on, ImageOptimize will log stats for images that it optimi
 2017-03-12 07:49:27 [192.168.10.1][1][-][info][nystudio107\ImageOptimize\services\Optimize::handleGenerateTransformEvent] zappa.png -> Original: 129.5K, Optimized: 100.8K -> Savings: 28.4%
 ```
 
-Image transforms that are scaled down >= 50% are auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`). 
+Image transforms that are scaled down >= 50% are auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`).
 
 ![Screenshot](./resources/screenshots/auto-sharpen.png)
 
@@ -439,8 +1251,8 @@ Here’s an example of what it looks like for images with the transform `Some Tr
 ![Screenshot](./resources/screenshots/image-variants.png)
 
 The savings from using `.webp` can be significant, without sacrificing image quality:
- 
- ![Screenshot](./resources/screenshots/image-variants-filesize.png)
+
+![Screenshot](./resources/screenshots/image-variants-filesize.png)
 
 `webp` also supports transparency, so it can be used as a viable substitute for both `.jpg` and `.png`
 
