@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.52 - UNRELEASED
+## 1.6.52 - 2024.04.02
 ### Added
 * Added a `--queue` option to the `image-optimize/optimize/create` console command if you want to defer the image generation to be run via queue job, rather than immediately via the console command
 * Add `phpstan` and `ecs` code linting
