@@ -7,14 +7,14 @@
 
 namespace nystudio107\imageoptimize\gql\types\generators;
 
-use nystudio107\imageoptimize\gql\types\OptimizedImagesType;
-use nystudio107\imageoptimize\fields\OptimizedImages;
-
 use craft\gql\base\GeneratorInterface;
 use craft\gql\GqlEntityRegistry;
-use craft\gql\TypeLoader;
 
+use craft\gql\TypeLoader;
 use GraphQL\Type\Definition\Type;
+use nystudio107\imageoptimize\fields\OptimizedImages;
+
+use nystudio107\imageoptimize\gql\types\OptimizedImagesType;
 
 /**
  * @author    nystudio107
@@ -135,7 +135,7 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'width' => [
                         'name' => 'width',
                         'type' => Type::int(),
-                        'description' => 'Width of the image'
+                        'description' => 'Width of the image',
                     ],
                 ],
                 'type' => Type::string(),
@@ -147,7 +147,7 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'width' => [
                         'name' => 'width',
                         'type' => Type::int(),
-                        'description' => 'Width of the image'
+                        'description' => 'Width of the image',
                     ],
                 ],
                 'type' => Type::string(),
@@ -159,7 +159,7 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
-                        'description' => 'Include dpr images?'
+                        'description' => 'Include dpr images?',
                     ],
                 ],
                 'type' => Type::string(),
@@ -171,12 +171,12 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'width' => [
                         'name' => 'width',
                         'type' => Type::int(),
-                        'description' => 'Width of the image'
+                        'description' => 'Width of the image',
                     ],
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
-                        'description' => 'Include dpr images?'
+                        'description' => 'Include dpr images?',
                     ],
                 ],
                 'type' => Type::string(),
@@ -188,12 +188,12 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'width' => [
                         'name' => 'width',
                         'type' => Type::int(),
-                        'description' => 'Width of the image'
+                        'description' => 'Width of the image',
                     ],
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
-                        'description' => 'Include dpr images?'
+                        'description' => 'Include dpr images?',
                     ],
                 ],
                 'type' => Type::string(),
@@ -205,7 +205,7 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
-                        'description' => 'Include dpr images?'
+                        'description' => 'Include dpr images?',
                     ],
                 ],
                 'type' => Type::string(),
@@ -217,12 +217,12 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'width' => [
                         'name' => 'width',
                         'type' => Type::int(),
-                        'description' => 'Width of the image'
+                        'description' => 'Width of the image',
                     ],
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
-                        'description' => 'Include dpr images?'
+                        'description' => 'Include dpr images?',
                     ],
                 ],
                 'type' => Type::string(),
@@ -234,12 +234,12 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'width' => [
                         'name' => 'width',
                         'type' => Type::int(),
-                        'description' => 'Width of the image'
+                        'description' => 'Width of the image',
                     ],
                     'dpr' => [
                         'name' => 'dpr',
                         'type' => Type::boolean(),
-                        'description' => 'Include dpr images?'
+                        'description' => 'Include dpr images?',
                     ],
                 ],
                 'type' => Type::string(),
@@ -251,7 +251,7 @@ class OptimizedImagesGenerator implements GeneratorInterface
                     'color' => [
                         'name' => 'color',
                         'type' => Type::string(),
-                        'description' => 'The color for the placeholder box'
+                        'description' => 'The color for the placeholder box',
                     ],
                 ],
                 'type' => Type::string(),
@@ -261,12 +261,12 @@ class OptimizedImagesGenerator implements GeneratorInterface
             ?: GqlEntityRegistry::createEntity($typeName, new OptimizedImagesType([
                 'name' => $typeName,
                 'description' => 'This entity has all the OptimizedImages properties',
-                'fields' => function () use ($optimizedImagesFields) {
+                'fields' => function() use ($optimizedImagesFields) {
                     return $optimizedImagesFields;
                 },
             ]));
 
-        TypeLoader::registerType($typeName, function () use ($optimizedImagesType) {
+        TypeLoader::registerType($typeName, function() use ($optimizedImagesType) {
             return $optimizedImagesType;
         });
 
@@ -279,6 +279,6 @@ class OptimizedImagesGenerator implements GeneratorInterface
     public static function getName($context = null): string
     {
         /** @var OptimizedImages $context */
-        return $context->handle.'_OptimizedImages';
+        return $context->handle . '_OptimizedImages';
     }
 }

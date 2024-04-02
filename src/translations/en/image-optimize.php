@@ -105,5 +105,5 @@ return [
     'This option caps the placeholder silhouette SVG size to 32Kb. If it\'s larger than that, a default SVG box is returned.' => 'This option caps the placeholder silhouette SVG size to 32Kb. If it\'s larger than that, a default SVG box is returned.',
     'This option caps the placeholder silhouette SVG size to 32kB. If it\'s larger than that, a default SVG box is returned.' => 'This option caps the placeholder silhouette SVG size to 32kB. If it\'s larger than that, a default SVG box is returned.',
     'Controls whether retina images are automatically created with reduced quality. <a href=\'https://www.netvlies.nl/blogs/retina-revolutie-follow\' target=\'_blank\'>Learn more</a>.' => 'Controls whether retina images are automatically created with reduced quality. <a href=\'https://www.netvlies.nl/blogs/retina-revolutie-follow\' target=\'_blank\'>Learn more</a>.',
-    'Sharpen Image Percentage' => 'Sharpen Image Percentage'
+    'Sharpen Image Percentage' => 'Sharpen Image Percentage',
 ];

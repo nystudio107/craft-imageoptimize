@@ -1,5 +1,23 @@
 # ImageOptimize Changelog
 
+## 1.6.52 - 2024.04.02
+### Added
+* Added a `--queue` option to the `image-optimize/optimize/create` console command if you want to defer the image generation to be run via queue job, rather than immediately via the console command
+* Add `phpstan` and `ecs` code linting
+* Add `code-analysis.yaml` GitHub action
+* Add `.imgTag()` to the `OptimizedImage` model, which generates a complete `<img>` tag from the `OptimizedImage`
+* Add `.pictureTag()` to the `OptimizedImage` model, which generates a complete `<picture>` tag from the `OptimizedImage`
+* Add `.linkPreloadTag()` to the `OptimizedImage` model, which generates a complete `<link rel="preload">` tag from the `OptimizedImage`
+* Add `craft.imageOptimize.renderLazySizesJs()` to render the LazySizes JavaScript for lazy loading images
+* Add `craft.imageOptimize.renderLazySizesFallbackJs()` to render the LazySizes JavaScript with a support script that uses LazySizes as a fallback for browsers that don't support the `loading` property
+
+### Changed
+* Added **PDF** to the **Ignore Files** field settings ([#364](https://github.com/nystudio107/craft-imageoptimize/issues/364))
+* Updated docs to use node 20 & a new sitemap plugin
+* Switch over to Vite `^5.0.0` & Node `^20.0.0` for the buildchain
+* PHPstan code cleanup
+* ECS code cleanup
+
 ## 1.6.51 - 2023.05.19
 ### Changed
 * Automate release generation via GitHub action

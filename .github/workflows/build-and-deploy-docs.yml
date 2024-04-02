@@ -1,6 +1,6 @@
 name: Build and Deploy Docs
 env:
-  DOCS_DEST_DIR: /image-optimize/v3/
+  DOCS_DEST_DIR: /image-optimize/v1/
 on:
   push:
     branches:
@@ -22,11 +22,11 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [ 14.x ]
+        node-version: [ 20.x ]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
@@ -35,7 +35,7 @@ jobs:
       - name: rsync deployments
         uses: burnett01/rsync-deployments@4.1
         with:
-          switches: -avzr
+          switches: -avzr --delete
           path: ./dist/
           remote_path: ${{ secrets.NYS_DOCS_ROOT }}${{ env.DOCS_DEST_DIR }}
           remote_host: ${{ secrets.NYS_DEPLOY_REMOTE_HOST }}

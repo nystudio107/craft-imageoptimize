@@ -10,13 +10,13 @@
 
 namespace nystudio107\imageoptimize\console\controllers;
 
-use nystudio107\imageoptimize\ImageOptimize;
-
 use Craft;
+use craft\base\Field;
 use craft\base\Volume;
 use craft\helpers\App;
 use craft\queue\QueueInterface;
-
+use nystudio107\imageoptimize\ImageOptimize;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\queue\redis\Queue as RedisQueue;
 
@@ -44,15 +44,33 @@ class OptimizeController extends Controller
      */
     public $field = null;
 
+    /**
+     * @var bool Should the image generation simply be queued, rather than run immediately?
+     */
+    public $queue = false;
+
     // Public Methods
     // =========================================================================
+
+    /**
+     * @inheritDoc
+     */
+    public function options($actionID): array
+    {
+        $options = parent::options($actionID);
+        return array_merge($options, [
+            'force',
+            'field',
+            'queue',
+        ]);
+    }
 
     /**
      * Create all of the OptimizedImages Field variants by creating all of the responsive image variant transforms
      *
      * @param string|null $volumeHandle
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function actionCreate($volumeHandle = null)
     {
@@ -63,6 +81,7 @@ class OptimizeController extends Controller
 
         $fieldId = null;
         if ($this->field !== null) {
+            /** @var Field $field */
             $field = Craft::$app->getFields()->getFieldByHandle($this->field);
             if ($field !== null) {
                 $fieldId = $field->id;
@@ -82,7 +101,9 @@ class OptimizeController extends Controller
                 echo 'Unknown Asset Volume handle: ' . $volumeHandle . PHP_EOL;
             }
         }
-        $this->runCraftQueue();
+        if (!$this->queue) {
+            $this->runCraftQueue();
+        }
     }
 
     /**
@@ -100,19 +121,9 @@ class OptimizeController extends Controller
             // Re-save a single Asset ID
             ImageOptimize::$plugin->optimizedImages->resaveAsset($id, $this->force);
         }
-        $this->runCraftQueue();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function options($actionId): array
-    {
-        $options = parent::options($actionId);
-        $options[] = 'force';
-        $options[] = 'field';
-
-        return $options;
+        if (!$this->queue) {
+            $this->runCraftQueue();
+        }
     }
 
     /**
@@ -122,11 +133,12 @@ class OptimizeController extends Controller
     {
         // This might take a while
         App::maxPowerCaptain();
+        /** @var QueueInterface|RedisQueue $queue */
         $queue = Craft::$app->getQueue();
-        if ($queue instanceof QueueInterface) {
-            $queue->run();
-        } elseif ($queue instanceof RedisQueue) {
+        if ($queue instanceof RedisQueue) {
             $queue->run(false);
+        } elseif ($queue instanceof QueueInterface) {
+            $queue->run();
         }
     }
 }

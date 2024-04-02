@@ -34,16 +34,16 @@ class GetCraftQLSchema
 
         // Primary getter functions
         $fieldObject->addStringField('src')
-            ->arguments(function (\markhuot\CraftQL\Builders\Field $field) {
+            ->arguments(function(\markhuot\CraftQL\Builders\Field $field) {
                 $field->addIntArgument('width');
             })
-            ->resolve(function ($root, $args) {
+            ->resolve(function($root, $args) {
                 return $root->src(@$args['width'] ?: 0);
             });
         $fieldObject->addField('srcUrls')
             ->lists()
             ->type($srcObject)
-            ->resolve(function ($root, $args) {
+            ->resolve(function($root, $args) {
                 $result = [];
                 foreach ($root->optimizedImageUrls as $width => $url) {
                     $result[] = ['width' => $width, 'url' => $url];

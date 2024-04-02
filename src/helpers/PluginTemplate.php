@@ -10,11 +10,11 @@
 
 namespace nystudio107\imageoptimize\helpers;
 
-use nystudio107\minify\Minify;
-
 use Craft;
+
 use craft\helpers\Template;
 use craft\web\View;
+use nystudio107\minify\Minify;
 
 use yii\base\Exception;
 
@@ -62,8 +62,7 @@ class PluginTemplate
         string $templatePath,
         array  $params = [],
         string $minifier = null
-    ): string
-    {
+    ): string {
         $template = 'image-optimize/' . $templatePath;
         $oldMode = Craft::$app->view->getTemplateMode();
         // Look for the template on the frontend first
@@ -86,7 +85,6 @@ class PluginTemplate
                 if ($minify) {
                     $htmlText = Minify::$plugin->minify->$minifier($htmlText);
                 }
-
             }
         } catch (\Exception $e) {
             $htmlText = Craft::t(

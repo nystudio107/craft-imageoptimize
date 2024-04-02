@@ -10,14 +10,14 @@
 
 namespace nystudio107\imageoptimize\imagetransforms;
 
-use nystudio107\imageoptimize\helpers\UrlHelper;
-
 use Craft;
 use craft\base\SavableComponent;
 use craft\elements\Asset;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
+use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\ImageOptimize;
+use ReflectionClass;
 
 /**
  * @author    nystudio107
@@ -47,7 +47,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
      */
     public static function getTemplatesRoot(): array
     {
-        $reflect = new \ReflectionClass(static::class);
+        $reflect = new ReflectionClass(static::class);
         $classPath = FileHelper::normalizePath(
                 dirname($reflect->getFileName())
                 . '/../templates'
@@ -148,7 +148,7 @@ abstract class ImageTransform extends SavableComponent implements ImageTransform
     {
         $path = $this->decomposeUrl($pathOrUrl);
         $path_parts = pathinfo($path['path']);
-        $new_path = ($path_parts['filename'] ?? '') . '.' . ($path_parts['extension'] ?? '') . $extension;
+        $new_path = ($path_parts['filename']) . '.' . ($path_parts['extension'] ?? '') . $extension;
         if (!empty($path_parts['dirname']) && $path_parts['dirname'] !== '.') {
             $dirname = $path_parts['dirname'];
             $dirname = $dirname === '/' ? '' : $dirname;
