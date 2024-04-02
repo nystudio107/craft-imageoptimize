@@ -925,51 +925,51 @@ Which will generate the following HTML markup for you:
 
 ```html
 <picture>
-	<source type="image/webp"
-			srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
-					/assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
-					/assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
-					/assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-			width="1200"
-			height="675"
-			media="(min-width: 800px)"
-			sizes="80vw"
-	>
-	<source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
-					/assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
-					/assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
-					/assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-			width="1200"
-			height="675"
-			media="(min-width: 800px)"
-			sizes="80vw"
-	>
-	<source type="image/webp"
-			srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
-					/assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
-					/assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
-					/assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            media="(min-width: 800px)"
+            sizes="80vw"
+    >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            media="(min-width: 800px)"
+            sizes="80vw"
+    >
+    <source type="image/webp"
+            srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
             width="1200"
             height="2133"
             media="(max-width: 799px)"
             sizes="60vw"
     >
-	<source srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg 576w,
-					/assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg 768w,
-					/assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg 992w,
-					/assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-			width="1200"
-			height="2133"
-			media="(max-width: 799px)"
-			sizes="60vw"
-	>
-	<img class="lazyload"
-		 src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-		 width="1200"
-		 height="675"
-		 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-		 loading="lazy"
-	 >
+    <source srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="2133"
+            media="(max-width: 799px)"
+            sizes="60vw"
+    >
+    <img class="lazyload"
+         src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         loading="lazy"
+     >
 </picture>
 ```
 
