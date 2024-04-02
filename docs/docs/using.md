@@ -26,15 +26,15 @@ You can then create as many Optimized Image Variants as you like:
 You can add, delete, and re-order the Optimized Image Variants just like you can Matrix blocks.
 
 For each Optimized Image Variant, set:
- 
- * **Width**: The width of the image, which should correspond to your CSS `@media` query breakpoints or container sizes. For performance, we want to images to be the exact size that they will be displayed on-screen.
- * **Enforce Aspect Ratio**: Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio
- * **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
- * **Retina Sizes**: Check any additional retina sizes to create for this variant. For instance, a `100x60` image with with a `2x` retina size would _also_ create a `200x120` image.
- * **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
- * **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image’s file format. It’s recommended that you set this to `jpg` for most images, for client-proofing purposes.
- 
- Once you have set up your field, add it to your asset Volume’s layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
+
+* **Width**: The width of the image, which should correspond to your CSS `@media` query breakpoints or container sizes. For performance, we want to images to be the exact size that they will be displayed on-screen.
+* **Enforce Aspect Ratio**: Controls whether or not the aspect ratio should be enforced for this variant. When off, the vertical dimension retains the original image aspect ratio
+* **Aspect Ratio**: Pick an aspect ratio for the image from the available choices, or create your own with the `?` aspect ratio.
+* **Retina Sizes**: Check any additional retina sizes to create for this variant. For instance, a `100x60` image with with a `2x` retina size would _also_ create a `200x120` image.
+* **Quality**: The quality of the generated image; if **Auto** is selected, it will use your `config/general.php` setting for `defaultImageQuality`
+* **Image Format**: The file format of the generated image; if **Auto** is selected, it will use the original image’s file format. It’s recommended that you set this to `jpg` for most images, for client-proofing purposes.
+
+Once you have set up your field, add it to your asset Volume’s layout via **Settings** &rarr; **Assets**, then click on your asset Volume, and click on **Field Layout**.
 
 By default, ImageOptimize automatically will decrease the `quality` setting of retina images, as discussed in the [Retina revolution](https://www.netvlies.nl/blogs/retina-revolutie-follow) article. This allows for increasing the visual quality of the retina images while keeping the file size modest. You can disable this via the `lowerQualityRetinaImageVariants` setting in `config.php`.
 
@@ -265,7 +265,7 @@ Which will generate the following HTML markup for you:
      width="1200"
      height="675"
      sizes="100vw"
- >
+>
 ```
 
 The `imgTag()` also supports an Element Query-like API that lets you customize the `<img>` tag that is output.
@@ -305,7 +305,7 @@ Any attributes with empty values will not be rendered, so you can use that to re
 
 With `.loading()`, you can control how the image will be loaded.
 
-###### Using `.loading('eager')` 
+###### Using `.loading('eager')`
 
 `.loading('eager')` is the default, which causes the image to be loader eagerly.
 
@@ -329,7 +329,7 @@ Which will generate the following HTML markup for you:
      width="1200"
      height="675"
      sizes="100vw"
- >
+>
 ```
 
 ###### Using `.loading('lazy')`
@@ -361,7 +361,7 @@ Which will generate the following HTML markup for you:
      height="675"
      sizes="100vw"
      loading="lazy"
- >
+>
 ```
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
@@ -500,7 +500,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -543,7 +543,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -682,22 +682,22 @@ Which will generate the following HTML markup for you:
                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-            >
-            <source width="1200"
-                    height="675"
-                    data-sizes="100vw"
-                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+    >
+    <source width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                                  /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                                  /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
                                  /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-            >
-            <img class="lazyload"
-                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
-                 width="1200"
-                 height="675"
-                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-            >
+    >
+    <img class="lazyload"
+         src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+    >
 </picture>
 ```
 
@@ -736,23 +736,23 @@ Which will generate the following HTML markup for you:
                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-            >
-            <source width="1200"
-                    height="675"
-                    data-sizes="100vw"
-                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+    >
+    <source width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                                  /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                                  /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
                                  /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-            >
-            <img class="lazyload"
-                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
-                 width="1200"
-                 height="675"
-                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-                 loading="lazy"
-                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-            >
+    >
+    <img class="lazyload"
+         src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         loading="lazy"
+         data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+    >
 </picture>
 ```
 
@@ -837,7 +837,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -881,7 +881,7 @@ Which will generate the following HTML markup for you:
             height="675"
             sizes="100vw"
             media="(min-width: 800px)"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -925,51 +925,51 @@ Which will generate the following HTML markup for you:
 
 ```html
 <picture>
-	<source type="image/webp"
-			srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
-					/assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
-					/assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
-					/assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-			width="1200"
-			height="675"
-			media="(min-width: 800px)"
-			sizes="80vw"
-	>
-	<source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
-					/assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
-					/assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
-					/assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-			width="1200"
-			height="675"
-			media="(min-width: 800px)"
-			sizes="80vw"
-	>
-	<source type="image/webp"
-			srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
-					/assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
-					/assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
-					/assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+    <source type="image/webp"
+            srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+            width="1200"
+            height="675"
+            media="(min-width: 800px)"
+            sizes="80vw"
+    >
+    <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="675"
+            media="(min-width: 800px)"
+            sizes="80vw"
+    >
+    <source type="image/webp"
+            srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
+                    /assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                    /assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                    /assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
             width="1200"
             height="2133"
             media="(max-width: 799px)"
             sizes="60vw"
     >
-	<source srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg 576w,
-					/assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg 768w,
-					/assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg 992w,
-					/assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-			width="1200"
-			height="2133"
-			media="(max-width: 799px)"
-			sizes="60vw"
-	>
-	<img class="lazyload"
-		 src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-		 width="1200"
-		 height="675"
-		 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-		 loading="lazy"
-	 >
+    <source srcset="/assets/site/_576x720_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                    /assets/site/_768x1024_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                    /assets/site/_992x1587_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                    /assets/site/_1200x2133_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+            width="1200"
+            height="2133"
+            media="(max-width: 799px)"
+            sizes="60vw"
+    >
+    <img class="lazyload"
+         src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         loading="lazy"
+    >
 </picture>
 ```
 
@@ -1185,10 +1185,10 @@ To mimic the `max-width` media query, you can do:
 
 #### Placeholder Images
 
-Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`. 
+Image Optimize offers three different flavors of placeholder images you can display while the actual image is being lazy loaded via `lazysizes`.
 
 All of the placeholder images are stored in the Optimized Image field itself, so no http request is needed to fetch it, and the inline data used to generate them is very small.
- 
+
 The first is `.placeholderBox()` which displays a simple inline SVG with the background color set to the dominant color of the image:
 
 ![Screenshot](./resources/screenshots/placeholder-image-box.png)
@@ -1234,7 +1234,7 @@ If you have `devMode` on, ImageOptimize will log stats for images that it optimi
 2017-03-12 07:49:27 [192.168.10.1][1][-][info][nystudio107\ImageOptimize\services\Optimize::handleGenerateTransformEvent] zappa.png -> Original: 129.5K, Optimized: 100.8K -> Savings: 28.4%
 ```
 
-Image transforms that are scaled down >= 50% are auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`). 
+Image transforms that are scaled down >= 50% are auto-sharpened (controllable via the `autoSharpenScaledImages` setting in `config.php`).
 
 ![Screenshot](./resources/screenshots/auto-sharpen.png)
 
@@ -1251,8 +1251,8 @@ Here’s an example of what it looks like for images with the transform `Some Tr
 ![Screenshot](./resources/screenshots/image-variants.png)
 
 The savings from using `.webp` can be significant, without sacrificing image quality:
- 
- ![Screenshot](./resources/screenshots/image-variants-filesize.png)
+
+![Screenshot](./resources/screenshots/image-variants-filesize.png)
 
 `webp` also supports transparency, so it can be used as a viable substitute for both `.jpg` and `.png`
 
