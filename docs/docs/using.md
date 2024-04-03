@@ -126,104 +126,6 @@ Normally ImageOptimize will regenerate image variants if you change an Optimized
 
 If you plan to do this manually via the above console commands, you can disable this behavior via the `automaticallyResaveImageVariants` setting in `config.php`.
 
-## Dynamically creating Optimized Image Variants
-
-To dynamically create Optimized Image Variants in your templates without having to use the Field.
-
-**N.B.:** We recommend _against_ using Image Optimize via Twig if you can avoid it. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you’ll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
-
-To create Optimized Image Variants dynamically in your templates, you can do:
-
-```twig
-{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
-    someAsset,
-    [
-        {
-            'width': 200,
-            'useAspectRatio': true,
-            'aspectRatioX': 1.0,
-            'aspectRatioY': 1.0,
-            'retinaSizes': ['1'],
-            'quality': 82,
-            'format': 'jpg',
-        },
-    ]
-) %}
-
-```
-
-All of these fields are required, and they are analogous to the settings provided by the Field. The `retinaSizes` is an array of multipliers for the retina variants. For instance, if we wanted both normal resolution and 2x variants of the above image, we’d do:
-
-```twig
-{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
-    someAsset,
-    [
-        {
-            'width': 200,
-            'useAspectRatio': true,
-            'aspectRatioX': 1.0,
-            'aspectRatioY': 1.0,
-            'retinaSizes': ['1', '2'],
-            'quality': 82,
-            'format': 'jpg',
-        },
-    ]
-) %}
-
-```
-
-You can create as many Optimized Image Variants as you like, by just including another array of settings. For example, to create both 200x and 400x image variants, we could do:
-
-```twig
-{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
-    someAsset,
-    [
-        {
-            'width': 200,
-            'useAspectRatio': true,
-            'aspectRatioX': 1.0,
-            'aspectRatioY': 1.0,
-            'retinaSizes': ['1'],
-            'quality': 82,
-            'format': 'jpg',
-        },
-        {
-            'width': 400,
-            'useAspectRatio': true,
-            'aspectRatioX': 1.0,
-            'aspectRatioY': 1.0,
-            'retinaSizes': ['1'],
-            'quality': 82,
-            'format': 'jpg',
-        },
-    ]
-) %}
-```
-
-The `optimizedImages` object that is returned to you can be used in your templates as described in the *Displaying images on the frontend* section.
-
-**N.B.:** Because they are lengthy operations, by default the generation of the dominant color palette and the generation of the placeholder silhouette are off. You can enable them via an additional parameter passed down to `craft.imageOptimize.createOptimizedImages`:
-
-```twig
-{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
-    someAsset,
-    [
-        {
-            'width': 200,
-            'useAspectRatio': true,
-            'aspectRatioX': 1.0,
-            'aspectRatioY': 1.0,
-            'retinaSizes': ['1'],
-            'quality': 82,
-            'format': 'jpg',
-        },
-    ],
-    true,
-) %}
-```
-
-The third parameter is the `generatePlacholders` setting, which disables generating all placeholders and dominant color palette extraction.
-
 ## Displaying images on the frontend
 
 ImageOptimize makes it easy to create responsive images in your frontend templates. There are two primary ways to create responsive images: using the `<img srcset="">` element or using the `<picture>` element.
@@ -245,6 +147,28 @@ This allows the images to have `height` and `width` attributes applied to them s
 
 ImageOptimize knows all about your images, and so can create the HTML markup for your `<img>` and `<picture>` tags quickly and easily.
 
+It uses a synthesis of modern best practices to generate the tags in an optimal way, without you having to worry about the details, or maintain a myriad of out of date Twig template partials.
+
+All of the tag methods below support an Element Query-like chained syntax that lets you customize them:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag()
+        .loading('lazy')
+        .render() }}
+```
+
+...or you can pass the config into them as an object if you prefer that method:
+
+```twig
+    {% set asset = entry.myAssetField.one() %}
+    {{ asset.optimizedImagesField.imgTag({
+        'loading': 'lazy',
+        }).render() }}
+```
+
+Either way, the result is the same, so pick whichever method you prefer. The example presented below will use the chained syntax.
+
 #### Using `.imgTag()` to create `<img>` tags
 
 An OptimizedImages field has a `.imgTag()` method that will generate a complete `<img>` tag for you. In its simplest form, it looks like this:
@@ -265,7 +189,7 @@ Which will generate the following HTML markup for you:
      width="1200"
      height="675"
      sizes="100vw"
- >
+>
 ```
 
 The `imgTag()` also supports an Element Query-like API that lets you customize the `<img>` tag that is output.
@@ -303,7 +227,12 @@ Any attributes with empty values will not be rendered, so you can use that to re
 
 ##### The `.loading()` Parameter
 
-With `.loading()`, you can control how the image will be loaded.
+With `.loading()`, you can control how the image will be loaded.It can one of the following:
+
+* `'eager'` - (default) load the image normally (no lazy loading)
+* `'lazy'` - us the browser's built-in lazy loading via the `loading="lazy"` attribute
+* `'lazySizes'` - use the lazysizes JavaScript library for lazy loading the image
+* `'lazySizesFallback'` - use the browser's built-in lazy loading, falling back on the lazysizes JavaScript library if the browser doesn't support native lazy loading
 
 ###### Using `.loading('eager')`
 
@@ -329,7 +258,7 @@ Which will generate the following HTML markup for you:
      width="1200"
      height="675"
      sizes="100vw"
- >
+>
 ```
 
 ###### Using `.loading('lazy')`
@@ -361,7 +290,7 @@ Which will generate the following HTML markup for you:
      height="675"
      sizes="100vw"
      loading="lazy"
- >
+>
 ```
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
@@ -500,7 +429,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -543,7 +472,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -682,22 +611,22 @@ Which will generate the following HTML markup for you:
                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-            >
-            <source width="1200"
-                    height="675"
-                    data-sizes="100vw"
-                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+    >
+    <source width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                                  /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                                  /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
                                  /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-            >
-            <img class="lazyload"
-                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
-                 width="1200"
-                 height="675"
-                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-            >
+    >
+    <img class="lazyload"
+         src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+    >
 </picture>
 ```
 
@@ -733,26 +662,26 @@ Which will generate the following HTML markup for you:
             height="675"
             data-sizes="100vw"
             data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
-                        /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
-                        /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
-                        /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-            >
-            <source width="1200"
-                    height="675"
-                    data-sizes="100vw"
-                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
-                                 /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
-                                 /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
-                                 /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-            >
-            <img class="lazyload"
-                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
-                 width="1200"
-                 height="675"
-                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-                 loading="lazy"
-                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-            >
+                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+    >
+    <source width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+    >
+    <img class="lazyload"
+         src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         loading="lazy"
+         data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+    >
 </picture>
 ```
 
@@ -837,7 +766,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -881,7 +810,7 @@ Which will generate the following HTML markup for you:
             height="675"
             sizes="100vw"
             media="(min-width: 800px)"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -969,7 +898,7 @@ Which will generate the following HTML markup for you:
          height="675"
          style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
          loading="lazy"
-     >
+    >
 </picture>
 ```
 
@@ -1265,5 +1194,103 @@ If you have `devMode` on, ImageOptimize will log stats for images that it create
 ```
 2017-09-10 07:28:23 [192.168.10.1][1][-][info][nystudio107\imageoptimize\services\Optimize::createImageVariants] painted-face_170903_02341359b54c06c953b6.23303620.jpg -> painted-face_170903_02341359b54c06c953b6.23303620.jpg.webp -> Original: 36.9K, Variant: 12.8K -> Savings: 65.3%
 ```
+
+## Dynamically creating Optimized Image Variants
+
+To dynamically create Optimized Image Variants in your templates without having to use the Field.
+
+**N.B.:** We recommend _against_ using Image Optimize via Twig if you can avoid it. If you create the Optimized Image Variants in your templates, the image transforms, placeholder images, and color palette extraction will all be done at pageload time. This means you’ll miss out on the advantages of using the OptimizedImages field, where all of that computation is done when an Asset is saved.
+
+To create Optimized Image Variants dynamically in your templates, you can do:
+
+```twig
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ]
+) %}
+
+```
+
+All of these fields are required, and they are analogous to the settings provided by the Field. The `retinaSizes` is an array of multipliers for the retina variants. For instance, if we wanted both normal resolution and 2x variants of the above image, we’d do:
+
+```twig
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1', '2'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ]
+) %}
+
+```
+
+You can create as many Optimized Image Variants as you like, by just including another array of settings. For example, to create both 200x and 400x image variants, we could do:
+
+```twig
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+        {
+            'width': 400,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ]
+) %}
+```
+
+The `optimizedImages` object that is returned to you can be used in your templates as described in the *Displaying images on the frontend* section.
+
+**N.B.:** Because they are lengthy operations, by default the generation of the dominant color palette and the generation of the placeholder silhouette are off. You can enable them via an additional parameter passed down to `craft.imageOptimize.createOptimizedImages`:
+
+```twig
+{% set optimizedImages = craft.imageOptimize.createOptimizedImages(
+    someAsset,
+    [
+        {
+            'width': 200,
+            'useAspectRatio': true,
+            'aspectRatioX': 1.0,
+            'aspectRatioY': 1.0,
+            'retinaSizes': ['1'],
+            'quality': 82,
+            'format': 'jpg',
+        },
+    ],
+    true,
+) %}
+```
+
+The third parameter is the `generatePlacholders` setting, which disables generating all placeholders and dominant color palette extraction.
 
 Brought to you by [nystudio107](https://nystudio107.com)
