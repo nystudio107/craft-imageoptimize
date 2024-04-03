@@ -265,7 +265,7 @@ Which will generate the following HTML markup for you:
      width="1200"
      height="675"
      sizes="100vw"
- >
+>
 ```
 
 The `imgTag()` also supports an Element Query-like API that lets you customize the `<img>` tag that is output.
@@ -303,7 +303,12 @@ Any attributes with empty values will not be rendered, so you can use that to re
 
 ##### The `.loading()` Parameter
 
-With `.loading()`, you can control how the image will be loaded.
+With `.loading()`, you can control how the image will be loaded.It can one of the following:
+
+* `'eager'` - (default) load the image normally (no lazy loading)
+* `'lazy'` - us the browser's built-in lazy loading via the `loading="lazy"` attribute
+* `'lazySizes'` - use the lazysizes JavaScript library for lazy loading the image
+* `'lazySizesFallback'` - use the browser's built-in lazy loading, falling back on the lazysizes JavaScript library if the browser doesn't support native lazy loading
 
 ###### Using `.loading('eager')`
 
@@ -329,7 +334,7 @@ Which will generate the following HTML markup for you:
      width="1200"
      height="675"
      sizes="100vw"
- >
+>
 ```
 
 ###### Using `.loading('lazy')`
@@ -361,7 +366,7 @@ Which will generate the following HTML markup for you:
      height="675"
      sizes="100vw"
      loading="lazy"
- >
+>
 ```
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
@@ -500,7 +505,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -543,7 +548,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -682,22 +687,22 @@ Which will generate the following HTML markup for you:
                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-            >
-            <source width="1200"
-                    height="675"
-                    data-sizes="100vw"
-                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+    >
+    <source width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                                  /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                                  /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
                                  /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-            >
-            <img class="lazyload"
-                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
-                 width="1200"
-                 height="675"
-                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-            >
+    >
+    <img class="lazyload"
+         src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+    >
 </picture>
 ```
 
@@ -733,26 +738,26 @@ Which will generate the following HTML markup for you:
             height="675"
             data-sizes="100vw"
             data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg.webp 576w,
-                        /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
-                        /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
-                        /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
-            >
-            <source width="1200"
-                    height="675"
-                    data-sizes="100vw"
-                    data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
-                                 /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
-                                 /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
-                                 /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
-            >
-            <img class="lazyload"
-                 src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
-                 width="1200"
-                 height="675"
-                 style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
-                 loading="lazy"
-                 data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
-            >
+                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg.webp 768w,
+                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg.webp 992w,
+                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg.webp 1200w"
+    >
+    <source width="1200"
+            height="675"
+            data-sizes="100vw"
+            data-srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
+                         /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
+                         /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
+                         /assets/site/_1200x675_crop_center-center_82_line/christmas-selfie.jpg 1200w"
+    >
+    <img class="lazyload"
+         src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E"
+         width="1200"
+         height="675"
+         style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
+         loading="lazy"
+         data-src="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg"
+    >
 </picture>
 ```
 
@@ -837,7 +842,7 @@ Which will generate the following HTML markup for you:
             width="1200"
             height="675"
             sizes="100vw"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -881,7 +886,7 @@ Which will generate the following HTML markup for you:
             height="675"
             sizes="100vw"
             media="(min-width: 800px)"
-        >
+    >
     <source srcset="/assets/site/_576x432_crop_center-center_60_line/christmas-selfie.jpg 576w,
                     /assets/site/_768x576_crop_center-center_60_line/christmas-selfie.jpg 768w,
                     /assets/site/_992x558_crop_center-center_82_line/christmas-selfie.jpg 992w,
@@ -969,7 +974,7 @@ Which will generate the following HTML markup for you:
          height="675"
          style="background-image: url(data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%271200%27 height=%27675%27 style=%27background:%23CCC%27 /%3E); background-size: cover;"
          loading="lazy"
-     >
+    >
 </picture>
 ```
 
