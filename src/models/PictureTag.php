@@ -24,7 +24,7 @@ class PictureTag extends BaseImageTag
     /**
      * @var string The loading scheme to use: 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
      */
-    public $loading = 'eager';
+    public $loadingStrategy = 'eager';
 
     /**
      * @var string The type of placeholder image to use: 'box', 'color', 'image', 'silhouette'
@@ -45,11 +45,6 @@ class PictureTag extends BaseImageTag
      * @var array array of tag attributes for the <img> tag
      */
     public $imgAttrs = [];
-
-    /**
-     * @var OptimizedImage[] array OptimizedImage models to add as art direction
-     */
-    public $artDirection = [];
 
     /**
      * @param $config
@@ -78,9 +73,9 @@ class PictureTag extends BaseImageTag
      * @param string $value
      * @return $this
      */
-    public function loading(string $value): PictureTag
+    public function loadingStrategy(string $value): PictureTag
     {
-        $this->loading = $value;
+        $this->loadingStrategy = $value;
 
         return $this;
     }
@@ -147,7 +142,7 @@ class PictureTag extends BaseImageTag
      * @param array $sourceAttrs
      * @return PictureTag
      */
-    public function artDirection(OptimizedImage $optimizedImage, array $sourceAttrs = []): PictureTag
+    public function addSourceFrom(OptimizedImage $optimizedImage, array $sourceAttrs = []): PictureTag
     {
         $this->populateSourceAttrs($optimizedImage, $sourceAttrs);
 
@@ -165,8 +160,8 @@ class PictureTag extends BaseImageTag
         // Handle the <source> tag(s)
         foreach ($this->sourceAttrs as $attrs) {
             // Handle lazy loading
-            if ($this->loading !== 'eager') {
-                $attrs = $this->swapLazyLoadAttrs($this->loading, $this->placeholder, $attrs);
+            if ($this->loadingStrategy !== 'eager') {
+                $attrs = $this->swapLazyLoadAttrs($this->loadingStrategy, $this->placeholder, $attrs);
             }
             // Remove any empty attributes
             $attrs = array_filter($attrs);
@@ -176,8 +171,8 @@ class PictureTag extends BaseImageTag
         // Handle the <img> tag
         $attrs = $this->imgAttrs;
         // Handle lazy loading
-        if ($this->loading !== 'eager') {
-            $attrs = $this->swapLazyLoadAttrs($this->loading, $this->placeholder, $attrs);
+        if ($this->loadingStrategy !== 'eager') {
+            $attrs = $this->swapLazyLoadAttrs($this->loadingStrategy, $this->placeholder, $attrs);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
