@@ -382,31 +382,34 @@ class OptimizedImage extends Model
      * Generate a complete <link rel="preload"> tag for this OptimizedImages model
      * ref: https://web.dev/preload-responsive-images/#imagesrcset-and-imagesizes
      *
+     * @param array $config
      * @return LinkPreloadTag
      */
-    public function linkPreloadTag(): LinkPreloadTag
+    public function linkPreloadTag(array $config = []): LinkPreloadTag
     {
-        return new LinkPreloadTag(['optimizedImage' => $this]);
+        return new LinkPreloadTag(array_merge($config, ['optimizedImage' => $this]));
     }
 
     /**
      * Generate a complete <img> tag for this OptimizedImage model
      *
+     * @param array $config
      * @return ImgTag
      */
-    public function imgTag(): ImgTag
+    public function imgTag(array $config = []): ImgTag
     {
-        return new ImgTag(['optimizedImage' => $this]);
+        return new ImgTag(array_merge($config, ['optimizedImage' => $this]));
     }
 
     /**
      * Generate a complete <picture> tag for this OptimizedImage model
      *
+     * @param array $config
      * @return PictureTag
      */
-    public function pictureTag(): PictureTag
+    public function pictureTag(array $config = []): PictureTag
     {
-        return new PictureTag(['optimizedImage' => $this]);
+        return new PictureTag(array_merge($config, ['optimizedImage' => $this]));
     }
 
     /**
