@@ -1,8 +1,11 @@
 # ImageOptimize Changelog
 
-## 5.0.0-beta.2 - UNRELEASED
+## 5.0.0-beta.2 - 2024.04.04
 ### Added
 * Added the ability to pass in a config array to `.imgTag()`, `.pictureTag()` and `.linkPreloadTag()`
+
+### Changed
+* Changed `.loading()` → `.loadingStrategy()`, `.artDirection()` → `addSourceFrom()`
 
 ## 5.0.0-beta.1 - 2024.04.02
 ### Added
