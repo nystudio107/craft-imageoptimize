@@ -154,7 +154,7 @@ All of the tag methods below support an Element Query-like chained syntax that l
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag()
-        .loading('lazy')
+        .loadingStrategy('lazy')
         .render() }}
 ```
 
@@ -163,7 +163,7 @@ All of the tag methods below support an Element Query-like chained syntax that l
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag({
-        'loading': 'lazy',
+        'loadingStrategy': 'lazy',
         }).render() }}
 ```
 
@@ -225,25 +225,25 @@ Which will generate the following HTML markup for you:
 
 Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
 
-##### The `.loading()` Parameter
+##### The `.loadingStrategy()` Parameter
 
-With `.loading()`, you can control how the image will be loaded.It can one of the following:
+With `.loadingStrategy()`, you can control how the image will be loaded.It can one of the following:
 
 * `'eager'` - (default) load the image normally (no lazy loading)
 * `'lazy'` - us the browser's built-in lazy loading via the `loading="lazy"` attribute
 * `'lazySizes'` - use the lazysizes JavaScript library for lazy loading the image
 * `'lazySizesFallback'` - use the browser's built-in lazy loading, falling back on the lazysizes JavaScript library if the browser doesn't support native lazy loading
 
-###### Using `.loading('eager')`
+###### Using `.loadingStrategy('eager')`
 
-`.loading('eager')` is the default, which causes the image to be loader eagerly.
+`.loadingStrategy('eager')` is the default, which causes the image to be loader eagerly.
 
 You'd typically want this for "above the fold" images that should be rendered as soon as possible.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag()
-        .loading('eager')
+        .loadingStrategy('eager')
         .render() }}
 ```
 
@@ -261,9 +261,9 @@ Which will generate the following HTML markup for you:
 >
 ```
 
-###### Using `.loading('lazy')`
+###### Using `.loadingStrategy('lazy')`
 
-`.loading('lazy')` will load the image lazily via native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading) by adding `class="lazyload"` and `loading="lazy"` attributes to the image.
+`.loadingStrategy('lazy')` will load the image lazily via native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading) by adding `class="lazyload"` and `loading="lazy"` attributes to the image.
 
 This leverages native browser lazy loading of images, without the need for additional JavaScript code.
 
@@ -272,7 +272,7 @@ You'd typically want this for "below the fold" images that the browser can load 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag()
-        .loading('lazy')
+        .loadingStrategy('lazy')
         .render() }}
 ```
 
@@ -295,9 +295,9 @@ Which will generate the following HTML markup for you:
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
-###### Using `.loading('lazySizes')`
+###### Using `.loadingStrategy('lazySizes')`
 
-`.loading('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+`.loadingStrategy('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
 
 This allows you to support lazy loading of images even with browsers that don't support native lazy loading.
 
@@ -306,7 +306,7 @@ You'd typically want this for "below the fold" images that the browser can load 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag()
-        .loading('lazySizes')
+        .loadingStrategy('lazySizes')
         .render() }}
 ```
 
@@ -335,9 +335,9 @@ It's expected that you will have loaded the lazysizes library already on the fro
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
-###### `.loading('lazySizesFallback')`
+###### `.loadingStrategy('lazySizesFallback')`
 
-`.loading('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
+`.loadingStrategy('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
 
 This is the best of both worlds, in terms of using native browser lazy loading if it's available, and falling back on lazysizes JavaScript if it is not.
 
@@ -346,7 +346,7 @@ You'd typically want this for "below the fold" images that the browser can load 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag()
-        .loading('lazySizesFallback')
+        .loadingStrategy('lazySizesFallback')
         .render() }}
 ```
 
@@ -389,7 +389,7 @@ With `.placeholder()`, you can set the type of placeholder image that should be 
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.imgTag()
         .placeholder('image')
-        .loading('lazy')
+        .loadingStrategy('lazy')
         .render() }}
 ```
 
@@ -491,20 +491,20 @@ Which will generate the following HTML markup for you:
 
 Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
 
-##### The `.loading()` Parameter
+##### The `.loadingStrategy()` Parameter
 
-With `.loading()`, you can control how the image will be loaded.
+With `.loadingStrategy()`, you can control how the image will be loaded.
 
-###### Using `.loading('eager')`
+###### Using `.loadingStrategy('eager')`
 
-`.loading('eager')` is the default, which causes the image to be loader eagerly.
+`.loadingStrategy('eager')` is the default, which causes the image to be loader eagerly.
 
 You'd typically want this for "above the fold" images that should be rendered as soon as possible.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.pictureTag()
-        .loading('eager')
+        .loadingStrategy('eager')
         .render() }}
 ```
 
@@ -536,9 +536,9 @@ Which will generate the following HTML markup for you:
 </picture>
 ```
 
-###### Using `.loading('lazy')`
+###### Using `.loadingStrategy('lazy')`
 
-`.loading('lazy')` will load the image lazily via native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading) by adding `class="lazyload"` and `loading="lazy"` attributes to the image.
+`.loadingStrategy('lazy')` will load the image lazily via native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading) by adding `class="lazyload"` and `loading="lazy"` attributes to the image.
 
 This leverages native browser lazy loading of images, without the need for additional JavaScript code.
 
@@ -547,7 +547,7 @@ You'd typically want this for "below the fold" images that the browser can load 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.pictureTag()
-        .loading('lazy')
+        .loadingStrategy('lazy')
         .render() }}
 ```
 
@@ -584,9 +584,9 @@ Which will generate the following HTML markup for you:
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
-###### Using `.loading('lazySizes')`
+###### Using `.loadingStrategy('lazySizes')`
 
-`.loading('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+`.loadingStrategy('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
 
 This allows you to support lazy loading of images even with browsers that don't support native lazy loading.
 
@@ -595,7 +595,7 @@ You'd typically want this for "below the fold" images that the browser can load 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.pictureTag()
-        .loading('lazySizes')
+        .loadingStrategy('lazySizes')
         .render() }}
 ```
 
@@ -638,9 +638,9 @@ It's expected that you will have loaded the lazysizes library already on the fro
 
 Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
-###### `.loading('lazySizesFallback')`
+###### `.loadingStrategy('lazySizesFallback')`
 
-`.loading('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
+`.loadingStrategy('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
 
 This is the best of both worlds, in terms of using native browser lazy loading if it's available, and falling back on lazysizes JavaScript if it is not.
 
@@ -649,7 +649,7 @@ You'd typically want this for "below the fold" images that the browser can load 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.pictureTag()
-        .loading('lazySizesFallback')
+        .loadingStrategy('lazySizesFallback')
         .render() }}
 ```
 
@@ -706,7 +706,7 @@ With `.placeholder()`, you can set the type of placeholder image that should be 
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.pictureTag()
         .placeholder('image')
-        .loading('lazy')
+        .loadingStrategy('lazy')
         .render() }}
 ```
 
@@ -829,21 +829,21 @@ Which will generate the following HTML markup for you:
 
 Any attributes with empty values will not be rendered, so you can use that to remove any of the prepopulated attributes should you need to.
 
-##### The `.artDirection()` Parameter
+##### The `.addSourceFrom()` Parameter
 
 Since each OptimizedImages field can be thought of as encapsulating a [srcset](https://cloudfour.com/thinks/responsive-images-101-part-4-srcset-width-descriptors/) for your images, if you require art direction where images change aspect ratios at different screen sizes, then you should use another OptimizedImages field for each art direction.
 
-With `.artDirection()`, you can add the `<source>` tags from additional OptimizedImages fields to an output `<picture>` tag. The first argument is the OptimizedImages field, and the second argument is any `sourceAttrs` you want to set on the `<source>` tags:
+With `.addSourceFrom()`, you can add the `<source>` tags from additional OptimizedImages fields to an output `<picture>` tag for art direction purposes. The first argument is the OptimizedImages field to pull the art direction `srcset` from, and the second argument is any `sourceAttrs` you want to set on the `<source>` tags:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
     {{ asset.optimizedImagesField.pictureTag()
-        .loading('lazy')
+        .loadingStrategy('lazy')
         .sourceAttrs({
             'media': '(min-width: 800px)',
             'sizes': '80vw',
         })
-        .artDirection(asset.mobileOptimizedImagesField, {
+        .addSourceFrom(asset.mobileOptimizedImagesField, {
             'media': '(max-width: 799px)',
             'sizes': '60vw',
         })
