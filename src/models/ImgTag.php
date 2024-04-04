@@ -24,7 +24,7 @@ class ImgTag extends BaseImageTag
     /**
      * @var string The loading scheme to use: 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
      */
-    public $loading = 'eager';
+    public $loadingStrategy = 'eager';
 
     /**
      * @var string The type of placeholder image to use: 'box', 'color', 'image', 'silhouette'
@@ -61,9 +61,9 @@ class ImgTag extends BaseImageTag
      * @param string $value
      * @return $this
      */
-    public function loading(string $value): ImgTag
+    public function loadingStrategy(string $value): ImgTag
     {
-        $this->loading = $value;
+        $this->loadingStrategy = $value;
 
         return $this;
     }
@@ -103,8 +103,8 @@ class ImgTag extends BaseImageTag
     {
         $attrs = $this->imgAttrs;
         // Handle lazy loading
-        if ($this->loading !== 'eager') {
-            $attrs = $this->swapLazyLoadAttrs($this->loading, $this->placeholder, $attrs);
+        if ($this->loadingStrategy !== 'eager') {
+            $attrs = $this->swapLazyLoadAttrs($this->loadingStrategy, $this->placeholder, $attrs);
         }
         // Remove any empty attributes
         $attrs = array_filter($attrs);
