@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 5.0.0 - 2024.04.15
+### Added
+* Stable release for Craft CMS 5
+
 ## 5.0.0-beta.2 - 2024.04.04
 ### Added
 * Added the ability to pass in a config array to `.imgTag()`, `.pictureTag()` and `.linkPreloadTag()`
