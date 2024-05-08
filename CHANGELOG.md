@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 5.0.1 - UNRELEASED
+### Fixed
+* Fixed an issue where field content was not propagated to other sites on multi-site installs, causing missing images
+
 ## 5.0.0 - 2024.04.15
 ### Added
 * Stable release for Craft CMS 5
