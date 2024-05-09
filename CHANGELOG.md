@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 4.0.8 - UNRELEASED
+## 4.0.8 - 2024.05.09
 ### Fixed
 * Fixed an issue where the `.imgTag()` and `.pictureTag()` would output and invalid `style` attribute for lazy loaded images ([#400](https://github.com/nystudio107/craft-imageoptimize/issues/400))
 
