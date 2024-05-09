@@ -1,5 +1,11 @@
 # ImageOptimize Changelog
 
+## 5.0.1 - 2024.05.09
+### Fixed
+* Fixed an issue where field content was not propagated to other sites on multi-site installs, causing missing images
+* Fixed an issue where the `.imgTag()` and `.pictureTag()` would output and invalid `style` attribute for lazy loaded images ([#400](https://github.com/nystudio107/craft-imageoptimize/issues/400))
+* Fixed an issue where the Subpath wasn't being included for remote volumes like S3 & Google Cloud ([#403](https://github.com/nystudio107/craft-imageoptimize/issues/403))
+
 ## 5.0.0 - 2024.04.15
 ### Added
 * Stable release for Craft CMS 5

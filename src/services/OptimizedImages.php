@@ -291,18 +291,20 @@ class OptimizedImages extends Component
             if ($field->handle !== null) {
                 $asset->setFieldValue($field->handle, $field->serializeValue($model, $asset));
                 $fieldLayout = $asset->getFieldLayout();
-                $siteSettingsRecord = Element_SiteSettingsRecord::findOne([
+                $siteSettingsRecords = Element_SiteSettingsRecord::findAll([
                     'elementId' => $asset->id,
-                    'siteId' => $asset->siteId,
                 ]);
-                // Set the field values
-                if ($siteSettingsRecord && $fieldLayout) {
-                    $content = Json::decodeIfJson($siteSettingsRecord->content) ?: [];
-                    $content[$field->layoutElement->uid] = $field->serializeValue($asset->getFieldValue($field->handle), $asset);
-                    $siteSettingsRecord->content = $content;
-                    // Save the site settings record
-                    if (!$siteSettingsRecord->save(false)) {
-                        Craft::error('Couldn’t save elements’ site settings record.', __METHOD__);
+                // Update it for all of the sites
+                foreach ($siteSettingsRecords as $siteSettingsRecord) {
+                    // Set the field values
+                    if ($siteSettingsRecord && $fieldLayout) {
+                        $content = Json::decodeIfJson($siteSettingsRecord->content) ?: [];
+                        $content[$field->layoutElement->uid] = $field->serializeValue($asset->getFieldValue($field->handle), $asset);
+                        $siteSettingsRecord->content = $content;
+                        // Save the site settings record
+                        if (!$siteSettingsRecord->save(false)) {
+                            Craft::error('Couldn’t save elements’ site settings record.', __METHOD__);
+                        }
                     }
                 }
             }
