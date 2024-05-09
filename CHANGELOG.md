@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.54 - UNRELEASED
+### Fixed
+* Fixed an issue where the `.imgTag()` and `.pictureTag()` would output and invalid `style` attribute for lazy loaded images ([#400](https://github.com/nystudio107/craft-imageoptimize/issues/400))
+
 ## 1.6.53 - 2024.04.04
 ### Added
 * Added the ability to pass in a config array to `.imgTag()`, `.pictureTag()` and `.linkPreloadTag()`
