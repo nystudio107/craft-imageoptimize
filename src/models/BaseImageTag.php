@@ -35,10 +35,11 @@ abstract class BaseImageTag extends BaseTag
         }
         // Set the style on this element to be the placeholder image as the background-image
         if (isset($attrs['style']) && !empty($attrs['src'])) {
-            $attrs['style'] = trim(
-                $attrs['style'] .
-                'background-image:url(' . $this->getLazyLoadSrc($placeHolder) . '); background-size: cover;'
-            );
+            if (empty($attrs['style'])) {
+                $attrs['style'] = [];
+            }
+            $attrs['style']['background-image'] = 'url(' . $this->getLazyLoadSrc($placeHolder) . ')';
+            $attrs['style']['background-size'] = 'cover';
         }
         // Handle attributes that lazy  and lazySizesFallback have in common
         switch ($loading) {
