@@ -3,6 +3,7 @@
 ## 5.0.1 - UNRELEASED
 ### Fixed
 * Fixed an issue where field content was not propagated to other sites on multi-site installs, causing missing images
+* Fixed an issue where the `.imgTag()` and `.pictureTag()` would output and invalid `style` attribute for lazy loaded images ([#400](https://github.com/nystudio107/craft-imageoptimize/issues/400))
 
 ## 5.0.0 - 2024.04.15
 ### Added
