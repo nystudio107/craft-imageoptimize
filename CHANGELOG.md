@@ -3,6 +3,7 @@
 ## 1.6.55 - UNRELEASED
 ### Fixed
 * Fixed an issue where `srcsetMaxWidth()` could return incorrect results ([#407](https://github.com/nystudio107/craft-imageoptimize/issues/407))
+* Fixed an issue where the data-uri for inline SVG styles were incorrect in some browsers because the spaces were not URL-encoded ([#408](https://github.com/nystudio107/craft-imageoptimize/issues/408))
 
 ## 1.6.54 - 2024.05.09
 ### Fixed
