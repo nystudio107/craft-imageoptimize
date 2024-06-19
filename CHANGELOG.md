@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 5.0.2 - 2024.06.19
+### Fixed
+* Fixed an issue where `srcsetMaxWidth()` could return incorrect results ([#407](https://github.com/nystudio107/craft-imageoptimize/issues/407))
+* Fixed an issue where the data-uri for inline SVG styles were incorrect in some browsers because the spaces were not URL-encoded ([#408](https://github.com/nystudio107/craft-imageoptimize/issues/408))
+
 ## 5.0.1 - 2024.05.09
 ### Fixed
 * Fixed an issue where field content was not propagated to other sites on multi-site installs, causing missing images

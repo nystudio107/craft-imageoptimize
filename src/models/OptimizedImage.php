@@ -618,6 +618,9 @@ class OptimizedImage extends Model
         if (empty($this->variantSourceWidths)) {
             return $subset;
         }
+        // Sort the arrays by numeric key
+        ksort($set, SORT_NUMERIC);
+        sort($this->variantSourceWidths, SORT_NUMERIC);
         foreach ($this->variantSourceWidths as $variantSourceWidth) {
             $match = false;
             switch ($comparison) {
