@@ -420,8 +420,6 @@ class OptimizedImages extends Component
         $replacements = [
             // remove newlines
             '/%0A/' => '',
-            // put spaces back in
-            '/%20/' => ' ',
             // put equals signs back in
             '/%3D/' => '=',
             // put colons back in
