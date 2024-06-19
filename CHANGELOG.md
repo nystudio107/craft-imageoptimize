@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 4.0.9 - UNRELEASED
+## 4.0.9 - 2024.06.19
 ### Fixed
 * Fixed an issue where `srcsetMaxWidth()` could return incorrect results ([#407](https://github.com/nystudio107/craft-imageoptimize/issues/407))
 * Fixed an issue where the data-uri for inline SVG styles were incorrect in some browsers because the spaces were not URL-encoded ([#408](https://github.com/nystudio107/craft-imageoptimize/issues/408))
