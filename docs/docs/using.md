@@ -293,7 +293,7 @@ Which will generate the following HTML markup for you:
 >
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, so the placeholder image will be visible until the actual image loads.
 
 ###### Using `.loadingStrategy('lazySizes')`
 
@@ -333,7 +333,7 @@ It's expected that you will have loaded the lazysizes library already on the fro
     {{ craft.imageOptimize.renderLazySizesJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, so the placeholder image will be visible until the actual image loads.
 
 ###### `.loadingStrategy('lazySizesFallback')`
 
@@ -374,7 +374,7 @@ Then you just need to include the [lazysizes fallback script](https://web.dev/ar
     {{ craft.imageOptimize.renderLazySizesFallbackJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, so the placeholder image will be visible until the actual image loads.
 
 ##### The `.placeholder()` Parameter
 
@@ -582,7 +582,7 @@ Which will generate the following HTML markup for you:
 </picture>
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, so the placeholder image will be visible until the actual image loads.
 
 ###### Using `.loadingStrategy('lazySizes')`
 
@@ -636,7 +636,7 @@ It's expected that you will have loaded the lazysizes library already on the fro
     {{ craft.imageOptimize.renderLazySizesJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, so the placeholder image will be visible until the actual image loads.
 
 ###### `.loadingStrategy('lazySizesFallback')`
 
@@ -691,7 +691,7 @@ Then you just need to include the [lazysizes fallback script](https://web.dev/ar
     {{ craft.imageOptimize.renderLazySizesFallbackJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, so the placeholder image will be visible until the actual image loads.
 
 ##### The `.placeholder()` Parameter
 
