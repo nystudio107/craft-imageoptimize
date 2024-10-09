@@ -2,7 +2,7 @@
   "name": "nystudio107/craft-imageoptimize",
   "description": "Automatically create & optimize responsive image transforms, using either native Craft transforms or a service like imgix, with zero template changes.",
   "type": "craft-plugin",
-  "version": "1.6.55",
+  "version": "1.6.56",
   "keywords": [
     "craft",
     "cms",

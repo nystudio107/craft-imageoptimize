@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 1.6.56 - UNRELEASED
+### Fixed
+* Don't add image variants if no variant creator for them exists ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
+
 ## 1.6.55 - 2024.06.19
 ### Fixed
 * Fixed an issue where `srcsetMaxWidth()` could return incorrect results ([#407](https://github.com/nystudio107/craft-imageoptimize/issues/407))
