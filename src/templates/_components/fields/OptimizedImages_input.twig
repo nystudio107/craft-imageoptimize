@@ -107,7 +107,7 @@
                                 {% set markerWidth = 4 %}
                                 {% set markerHeight = 4 %}
                                 {% set lineY = 12 %}
-                                <svg class="inline-block" width="{{ thisWidth }}" height="20px">
+                                <svg style="margin: auto;" width="{{ thisWidth }}" height="20px">
                                     <marker id="{{ name }}startarrow" markerWidth="{{ markerWidth }}"
                                             markerHeight="{{ markerHeight }}"
                                             refX="{{ markerWidth }}" refY="{{ markerHeight / 2 }}" orient="auto">
@@ -149,6 +149,7 @@
                                         <a href="{{ thisUrl ~ cacheBustString }}" target="_blank">
                                             <div style="position: relative;">
                                                 <img class="io-soft-shadow-img io-preview-image {{ imageClass }}"
+                                                     style="margin: auto;"
                                                      src="{{ thisUrl ~ cacheBustString }}" height="{{ thisHeight }}"
                                                      width="{{ thisWidth }}"/>
                                                 {% if (retinaSizes |length) > 1 %}
