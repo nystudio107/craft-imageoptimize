@@ -1,20 +1,23 @@
 {
   "src/js/ImageOptimize.js": {
-    "css": [
-      "assets/imageoptimize-uHuJ3RCG.css"
-    ],
-    "file": "assets/imageoptimize-_a7XUQNz.js",
+    "file": "assets/imageoptimize-Dh9bVn7I.js",
+    "name": "imageoptimize",
+    "src": "src/js/ImageOptimize.js",
     "isEntry": true,
-    "src": "src/js/ImageOptimize.js"
+    "css": [
+      "assets/imageoptimize-C4e4ndEI.css"
+    ]
   },
   "src/js/OptimizedImagesField.js": {
-    "file": "assets/field-ksmA947x.js",
-    "isEntry": true,
-    "src": "src/js/OptimizedImagesField.js"
+    "file": "assets/field-D_XkB3eu.js",
+    "name": "field",
+    "src": "src/js/OptimizedImagesField.js",
+    "isEntry": true
   },
   "src/js/Welcome.js": {
-    "file": "assets/welcome-wSnJNq17.js",
-    "isEntry": true,
-    "src": "src/js/Welcome.js"
+    "file": "assets/welcome-6wts_eyH.js",
+    "name": "welcome",
+    "src": "src/js/Welcome.js",
+    "isEntry": true
   }
 }
