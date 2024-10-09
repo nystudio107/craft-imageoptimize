@@ -298,7 +298,10 @@ class OptimizedImages extends Component
                 foreach ($siteSettingsRecords as $siteSettingsRecord) {
                     // Set the field values
                     if ($siteSettingsRecord && $fieldLayout) {
-                        $content = Json::decodeIfJson($siteSettingsRecord->content) ?: [];
+                        $content = Json::decodeIfJson($siteSettingsRecord->content);
+                        if (!is_array($content)) {
+                            $content = [];
+                        }
                         $content[$field->layoutElement->uid] = $field->serializeValue($asset->getFieldValue($field->handle), $asset);
                         $siteSettingsRecord->content = $content;
                         // Save the site settings record
