@@ -3,6 +3,7 @@
 ## 1.6.56 - UNRELEASED
 ### Fixed
 * Don't add image variants if no variant creator for them exists ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
+* Don't apply background placeholder CSS to images that may be transparent like SVGs or GIFs ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
 
 ## 1.6.55 - 2024.06.19
 ### Fixed
