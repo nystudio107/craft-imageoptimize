@@ -3,6 +3,8 @@
 ## 5.0.3 - UNRELEASED
 ### Fixed
 * Don't add image variants if no variant creator for them exists ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
+* Fix a visual issue with the sizing arrows for Optimized Image fields
+* Don't apply background placeholder CSS to images that may be transparent like SVGs or GIFs ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
 
 ## 5.0.2 - 2024.06.19
 ### Fixed
