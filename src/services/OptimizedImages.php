@@ -566,21 +566,10 @@ class OptimizedImages extends Component
                 $asset,
                 $transform
             );
-            // Only add the variant URLs if a creator for them exists
-            /** @var Settings $settings */
-            $settings = ImageOptimize::$plugin->getSettings();
-            $activeImageVariantCreators = $settings->activeImageVariantCreators;
-            try {
-                $fileFormat = $asset->getFormat();
-            } catch (Throwable $e) {
-                $fileFormat = '';
-            }
-            $fileFormat = strtolower($fileFormat);
-            // Special-case for 'jpeg'
-            if ($fileFormat === 'jpeg') {
-                $fileFormat = 'jpg';
-            }
-            if (!empty($activeImageVariantCreators[$fileFormat])) {
+            // If the original image is an SVG, don't add a variant for it
+            $path = parse_url($url, PHP_URL_PATH);
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+            if ($extension !== 'svg') {
                 $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;
             }
             //ImageOptimize::$plugin->transformMethod->prefetchRemoteFile($webPUrl);
