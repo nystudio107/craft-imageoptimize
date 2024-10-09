@@ -297,7 +297,7 @@ class OptimizedImages extends Component
                 // Update it for all of the sites
                 foreach ($siteSettingsRecords as $siteSettingsRecord) {
                     // Set the field values
-                    if ($siteSettingsRecord && $fieldLayout) {
+                    if ($fieldLayout) {
                         $content = Json::decodeIfJson($siteSettingsRecord->content);
                         if (!is_array($content)) {
                             $content = [];
