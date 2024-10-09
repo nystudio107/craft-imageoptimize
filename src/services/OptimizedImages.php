@@ -570,7 +570,7 @@ class OptimizedImages extends Component
             $settings = ImageOptimize::$plugin->getSettings();
             $activeImageVariantCreators = $settings->activeImageVariantCreators;
             try {
-                $fileFormat = $asset->getFormat();
+                $fileFormat = $asset->getExtension();
             } catch (Throwable $e) {
                 $fileFormat = '';
             }
