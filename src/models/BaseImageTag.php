@@ -38,8 +38,13 @@ abstract class BaseImageTag extends BaseTag
             if (empty($attrs['style'])) {
                 $attrs['style'] = [];
             }
-            $attrs['style']['background-image'] = 'url(' . $this->getLazyLoadSrc($placeHolder) . ')';
-            $attrs['style']['background-size'] = 'cover';
+            // If the original image is an SVG or gif, don't add the placeholder box CSS so that transparency works as intended
+            $path = parse_url($attrs['src'], PHP_URL_PATH);
+            $extension = pathinfo($path, PATHINFO_EXTENSION);
+            if ($extension !== 'svg' && $extension !== 'gif') {
+                $attrs['style']['background-image'] = 'url(' . $this->getLazyLoadSrc($placeHolder) . ')';
+                $attrs['style']['background-size'] = 'cover';
+            }
         }
         // Handle attributes that lazy  and lazySizesFallback have in common
         switch ($loading) {
