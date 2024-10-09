@@ -132,7 +132,7 @@ ImageOptimize makes it easy to create responsive images in your frontend templat
 
 ImageOptimize provides simple but powerful shortcut commands for creating HTML markup from the Optimized Images field, or you can do it manually as well.
 
-Generally speaking, you'll usually want to have CSS like this applied to your images with a class:
+Generally speaking, you’ll usually want to have CSS like this applied to your images with a class:
 
 ```css
 .responsive-img {
@@ -196,7 +196,7 @@ The `imgTag()` also supports an Element Query-like API that lets you customize t
 
 ##### The `.imgAttrs()` Parameter
 
-With `.imgAttrs()`, you can add or override any of the HTML attributes that will be included in the `<img>` tag. For example, if you wanted the `sizes` attribute in set to `50vw`, and you wanted to add an `alt` attribute, you'd do the following:
+With `.imgAttrs()`, you can add or override any of the HTML attributes that will be included in the `<img>` tag. For example, if you wanted the `sizes` attribute in set to `50vw`, and you wanted to add an `alt` attribute, you’d do the following:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -230,15 +230,15 @@ Any attributes with empty values will not be rendered, so you can use that to re
 With `.loadingStrategy()`, you can control how the image will be loaded.It can one of the following:
 
 * `'eager'` - (default) load the image normally (no lazy loading)
-* `'lazy'` - us the browser's built-in lazy loading via the `loading="lazy"` attribute
+* `'lazy'` - us the browser’s built-in lazy loading via the `loading="lazy"` attribute
 * `'lazySizes'` - use the lazysizes JavaScript library for lazy loading the image
-* `'lazySizesFallback'` - use the browser's built-in lazy loading, falling back on the lazysizes JavaScript library if the browser doesn't support native lazy loading
+* `'lazySizesFallback'` - use the browser’s built-in lazy loading, falling back on the lazysizes JavaScript library if the browser doesn’t support native lazy loading
 
 ###### Using `.loadingStrategy('eager')`
 
 `.loadingStrategy('eager')` is the default, which causes the image to be loader eagerly.
 
-You'd typically want this for "above the fold" images that should be rendered as soon as possible.
+You’d typically want this for "above the fold" images that should be rendered as soon as possible.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -267,7 +267,7 @@ Which will generate the following HTML markup for you:
 
 This leverages native browser lazy loading of images, without the need for additional JavaScript code.
 
-You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -293,15 +293,15 @@ Which will generate the following HTML markup for you:
 >
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage’s placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
 ###### Using `.loadingStrategy('lazySizes')`
 
-`.loadingStrategy('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+`.loadingStrategy('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
-This allows you to support lazy loading of images even with browsers that don't support native lazy loading.
+This allows you to support lazy loading of images even with browsers that don’t support native lazy loading.
 
-You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -327,21 +327,21 @@ Which will generate the following HTML markup for you:
 >
 ```
 
-It's expected that you will have loaded the lazysizes library already on the frontend via your JavaScript build system, but if you want ImageOptimize to include the lazysizes JavaScript for you via CDN you can do the following anywhere in the `<body>` of your HTML:
+It’s expected that you will have loaded the lazysizes library already on the frontend via your JavaScript build system, but if you want ImageOptimize to include the lazysizes JavaScript for you via CDN you can do the following anywhere in the `<body>` of your HTML:
 
 ```twig
     {{ craft.imageOptimize.renderLazySizesJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage’s placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
 ###### `.loadingStrategy('lazySizesFallback')`
 
-`.loadingStrategy('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
+`.loadingStrategy('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn’t support native lazy loading.
 
-This is the best of both worlds, in terms of using native browser lazy loading if it's available, and falling back on lazysizes JavaScript if it is not.
+This is the best of both worlds, in terms of using native browser lazy loading if it’s available, and falling back on lazysizes JavaScript if it is not.
 
-You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -374,13 +374,13 @@ Then you just need to include the [lazysizes fallback script](https://web.dev/ar
     {{ craft.imageOptimize.renderLazySizesFallbackJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage’s placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
 ##### The `.placeholder()` Parameter
 
 With `.placeholder()`, you can set the type of placeholder image that should be used for lazy loaded images. It can one of the following:
 
-* `'box'` - (default) a simple SVG box that's the same size as the final image
+* `'box'` - (default) a simple SVG box that’s the same size as the final image
 * `'color'` - a SVG box that uses the predominant color from the image as the backrground color
 * `'image'` - a base64 encoded low quality placeholder image ([LQPI](https://csswizardry.com/2023/09/the-ultimate-lqip-lcp-technique/)) version of the image
 * `'silhouette'` - a generated SVG image that is a silhouette of the actual image
@@ -449,7 +449,7 @@ The `pictureTag()` also supports an Element Query-like API that lets you customi
 
 ##### The `.imgAttrs()` Parameter
 
-With `.imgAttrs()`, you can add or override any of the HTML attributes that will be included in the embedded `<img>` tag. For example, if you wanted to add an `alt` attribute, you'd do the following:
+With `.imgAttrs()`, you can add or override any of the HTML attributes that will be included in the embedded `<img>` tag. For example, if you wanted to add an `alt` attribute, you’d do the following:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -499,7 +499,7 @@ With `.loadingStrategy()`, you can control how the image will be loaded.
 
 `.loadingStrategy('eager')` is the default, which causes the image to be loader eagerly.
 
-You'd typically want this for "above the fold" images that should be rendered as soon as possible.
+You’d typically want this for "above the fold" images that should be rendered as soon as possible.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -542,7 +542,7 @@ Which will generate the following HTML markup for you:
 
 This leverages native browser lazy loading of images, without the need for additional JavaScript code.
 
-You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -582,15 +582,15 @@ Which will generate the following HTML markup for you:
 </picture>
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage’s placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
 ###### Using `.loadingStrategy('lazySizes')`
 
-`.loadingStrategy('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+`.loadingStrategy('lazySizes')` will load the image lazily via the [lazysizes](https://github.com/aFarkas/lazysizes) library. You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
-This allows you to support lazy loading of images even with browsers that don't support native lazy loading.
+This allows you to support lazy loading of images even with browsers that don’t support native lazy loading.
 
-You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -630,21 +630,21 @@ Which will generate the following HTML markup for you:
 </picture>
 ```
 
-It's expected that you will have loaded the lazysizes library already on the frontend via your JavaScript build system, but if you want ImageOptimize to include the lazysizes JavaScript for you via CDN you can do the following anywhere in the `<body>` of your HTML:
+It’s expected that you will have loaded the lazysizes library already on the frontend via your JavaScript build system, but if you want ImageOptimize to include the lazysizes JavaScript for you via CDN you can do the following anywhere in the `<body>` of your HTML:
 
 ```twig
     {{ craft.imageOptimize.renderLazySizesJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage’s placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
 ###### `.loadingStrategy('lazySizesFallback')`
 
-`.loadingStrategy('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn't support native lazy loading.
+`.loadingStrategy('lazySizesFallback')` will load the image lazily via the native browser [lazing loading](https://web.dev/articles/browser-level-image-lazy-loading), but will fall back on using the [lazysizes](https://github.com/aFarkas/lazysizes) library if the browser doesn’t support native lazy loading.
 
-This is the best of both worlds, in terms of using native browser lazy loading if it's available, and falling back on lazysizes JavaScript if it is not.
+This is the best of both worlds, in terms of using native browser lazy loading if it’s available, and falling back on lazysizes JavaScript if it is not.
 
-You'd typically want this for "below the fold" images that the browser can load lazily as needed.
+You’d typically want this for "below the fold" images that the browser can load lazily as needed.
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -691,13 +691,13 @@ Then you just need to include the [lazysizes fallback script](https://web.dev/ar
     {{ craft.imageOptimize.renderLazySizesFallbackJs() }}
 ```
 
-Note that it sets the background image to the OptimizedImage's placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
+Note that it sets the background image to the OptimizedImage’s placeholder via the `style` attribute, sp the placeholder image will be visible until the actual image loads.
 
 ##### The `.placeholder()` Parameter
 
 With `.placeholder()`, you can set the type of placeholder image that should be used for lazy loaded images. It can one of the following:
 
-* `'box'` - (default) a simple SVG box that's the same size as the final image
+* `'box'` - (default) a simple SVG box that’s the same size as the final image
 * `'color'` - a SVG box that uses the predominant color from the image as the backrground color
 * `'image'` - a base64 encoded low quality placeholder image ([LQPI](https://csswizardry.com/2023/09/the-ultimate-lqip-lcp-technique/)) version of the image
 * `'silhouette'` - a generated SVG image that is a silhouette of the actual image
@@ -743,7 +743,7 @@ Which will generate the following HTML markup for you:
 
 ##### The `.pictureAttrs()` Parameter
 
-With `.pictureAttrs()`, you can add or override any of the HTML attributes that will be included in the `<picture>` tag. For example, if you wanted to add a `class` attribute to the `<picture>` tag, you'd do the following:
+With `.pictureAttrs()`, you can add or override any of the HTML attributes that will be included in the `<picture>` tag. For example, if you wanted to add a `class` attribute to the `<picture>` tag, you’d do the following:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -786,7 +786,7 @@ Any attributes with empty values will not be rendered, so you can use that to re
 
 ##### The `.sourceAttrs()` Parameter
 
-With `.sourceAttrs()`, you can add or override any of the HTML attributes that will be included in the embedded `<source>` tags. For example, if you wanted to add a `media` attribute, you'd do the following:
+With `.sourceAttrs()`, you can add or override any of the HTML attributes that will be included in the embedded `<source>` tags. For example, if you wanted to add a `media` attribute, you’d do the following:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -910,7 +910,7 @@ An OptimizedImages field has a `.linkPreloadTag()` method that will generate a c
 
 This lets you give the browser hints to [preload image srcsets](https://web.dev/articles/preload-responsive-images#imagesrcset_and_imagesizes) to ensure the important images like above the fold hero images are loaded as quickly as possible.
 
-You'd want these `<link rel="preload">` tags to be rendered somewhere high up in your HTML `<head>` so the browser can start prefetching them ASAP. In its simplest form, it looks like this:
+You’d want these `<link rel="preload">` tags to be rendered somewhere high up in your HTML `<head>` so the browser can start prefetching them ASAP. In its simplest form, it looks like this:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -937,7 +937,7 @@ The `linkPreloadTag()` also supports an Element Query-like API that lets you cus
 
 ##### The `.linkAttrs()` Parameter
 
-With `.linkAttrs()`, you can add or override any of the HTML attributes that will be included in the `<link rel="preload">` tag. For example, if you wanted to add a `media` attribute, you'd do the following:
+With `.linkAttrs()`, you can add or override any of the HTML attributes that will be included in the `<link rel="preload">` tag. For example, if you wanted to add a `media` attribute, you’d do the following:
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
