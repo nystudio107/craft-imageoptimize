@@ -565,8 +565,24 @@ class OptimizedImages extends Component
                 $asset,
                 $transform
             );
+            // Only add the variant URLs if a creator for them exists
+            /** @var Settings $settings */
+            $settings = ImageOptimize::$plugin->getSettings();
+            $activeImageVariantCreators = $settings->activeImageVariantCreators;
+            try {
+                $fileFormat = $asset->getFormat();
+            } catch (Throwable $e) {
+                $fileFormat = '';
+            }
+            $fileFormat = strtolower($fileFormat);
+            // Special-case for 'jpeg'
+            if ($fileFormat === 'jpeg') {
+                $fileFormat = 'jpg';
+            }
+            if (!empty($activeImageVariantCreators[$fileFormat])) {
+                $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;
+            }
             //ImageOptimize::$plugin->transformMethod->prefetchRemoteFile($webPUrl);
-            $model->optimizedWebPImageUrls[$transform->width] = $webPUrl;
             $model->focalPoint = $asset->focalPoint;
             $model->originalImageWidth = $asset->width;
             $model->originalImageHeight = $asset->height;
