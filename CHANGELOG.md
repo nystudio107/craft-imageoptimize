@@ -1,6 +1,9 @@
 # ImageOptimize Changelog
 
 ## 5.0.3 - UNRELEASED
+## Changed
+* Allow for empty `alt` tags for screen readers as per WCAG ([411](https://github.com/nystudio107/craft-imageoptimize/issues/411))
+
 ### Fixed
 * Don't add image variants if no variant creator for them exists ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
 * Fix a visual issue with the sizing arrows for Optimized Image fields
