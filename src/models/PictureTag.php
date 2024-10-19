@@ -174,13 +174,8 @@ class PictureTag extends BaseImageTag
         if ($this->loadingStrategy !== 'eager') {
             $attrs = $this->swapLazyLoadAttrs($this->loadingStrategy, $this->placeholder, $attrs);
         }
-
-        // Remove any empty attributes except the alt attribute
-        $attrs = array_filter($attrs, function($value, $key) {
-            // Keep the 'alt' attribute even if it's empty
-            return $key === 'alt' || !empty($value);
-        }, ARRAY_FILTER_USE_BOTH);
-
+        // Remove any empty attributes
+        $attrs = $this->filterEmptyAttributes($attrs);
         // Render the tag
         $content .= Html::tag('img', '', $attrs);
         // Handle the <picture> tag
