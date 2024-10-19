@@ -24,6 +24,11 @@ abstract class BaseTag extends Model implements TagInterface
     use TagTrait;
 
     /**
+     * Attributes that are allowed to be an empty string
+     */
+    protected const ALLOWED_EMPTY_ATTRS = ['alt'];
+
+    /**
      * @return string
      */
     public function __toString(): string
@@ -39,5 +44,19 @@ abstract class BaseTag extends Model implements TagInterface
     public function render(): Markup
     {
         return Template::raw('');
+    }
+
+    /**
+     * Filter out attributes with empty values in them, so they don't get rendered
+     *
+     * @param array $attrs
+     * @return array
+     */
+    public function filterEmptyAttributes(array $attrs): array
+    {
+        return array_filter($attrs, static function($value, $key) {
+            // Keep certain attributes even if they are empty
+            return in_array($key, self::ALLOWED_EMPTY_ATTRS, true) || !empty($value);
+        }, ARRAY_FILTER_USE_BOTH);
     }
 }

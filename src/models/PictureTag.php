@@ -175,7 +175,7 @@ class PictureTag extends BaseImageTag
             $attrs = $this->swapLazyLoadAttrs($this->loadingStrategy, $this->placeholder, $attrs);
         }
         // Remove any empty attributes
-        $attrs = array_filter($attrs);
+        $attrs = $this->filterEmptyAttributes($attrs);
         // Render the tag
         $content .= Html::tag('img', '', $attrs);
         // Handle the <picture> tag

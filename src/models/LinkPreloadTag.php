@@ -70,7 +70,7 @@ class LinkPreloadTag extends BaseTag
     {
         $attrs = $this->linkAttrs;
         // Remove any empty attributes
-        $attrs = array_filter($attrs);
+        $attrs = $this->filterEmptyAttributes($attrs);
         // Render the tag
         $tag = Html::tag('link', '', $attrs);
 
