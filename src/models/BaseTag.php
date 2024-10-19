@@ -54,9 +54,7 @@ abstract class BaseTag extends Model implements TagInterface
      */
     public function filterEmptyAttributes(array $attrs): array
     {
-        return array_filter($attrs, static function($value, $key) {
-            // Keep certain attributes even if they are empty
-            return in_array($key, self::ALLOWED_EMPTY_ATTRS, true) || !empty($value);
-        }, ARRAY_FILTER_USE_BOTH);
+        // Keep certain attributes even if they are empty
+        return array_filter($attrs, static fn($value, $key) => in_array($key, self::ALLOWED_EMPTY_ATTRS, true) || !empty($value), ARRAY_FILTER_USE_BOTH);
     }
 }
