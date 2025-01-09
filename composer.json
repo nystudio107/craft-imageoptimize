@@ -55,6 +55,10 @@
       "yiisoft/yii2-composer": true
     },
     "optimize-autoloader": true,
+    "platform": {
+      "php": "7.2.5"
+    },
+    "platform-check": false,
     "sort-packages": true
   },
   "autoload": {
