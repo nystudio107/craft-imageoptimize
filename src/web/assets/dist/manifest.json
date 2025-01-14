@@ -1,11 +1,11 @@
 {
   "src/js/ImageOptimize.js": {
-    "file": "assets/imageoptimize-Bo66eV8I.js",
+    "file": "assets/imageoptimize-CNbALZZb.js",
     "name": "imageoptimize",
     "src": "src/js/ImageOptimize.js",
     "isEntry": true,
     "css": [
-      "assets/imageoptimize-DzjeTIVz.css"
+      "assets/imageoptimize-V2K960AB.css"
     ]
   },
   "src/js/OptimizedImagesField.js": {
@@ -15,7 +15,7 @@
     "isEntry": true
   },
   "src/js/Welcome.js": {
-    "file": "assets/welcome-6wts_eyH.js",
+    "file": "assets/welcome-vpHVVEeH.js",
     "name": "welcome",
     "src": "src/js/Welcome.js",
     "isEntry": true
