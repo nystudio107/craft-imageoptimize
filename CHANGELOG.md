@@ -1,8 +1,9 @@
 # ImageOptimize Changelog
 
-## 5.0.4 - UNRELEASED
+## 5.0.4 - 2025.01.13
 ## Fixed
 * Don't try to apply filters to assets that are seemingly corrupt, and have a `0` width or `0` height ([#383](https://github.com/nystudio107/craft-imageoptimize/issues/383))
+* Fixed `srcset` width filtering ([](https://github.com/nystudio107/craft-imageoptimize/pull/416))
 
 ## 5.0.3 - 2024.10.21
 ## Changed
