@@ -641,7 +641,7 @@ class Optimize extends Component
         /** @var Settings $settings */
         $settings = ImageOptimize::$plugin->getSettings();
         // Only try to apply filters to Raster images
-        if ($image instanceof Raster) {
+        if ($image instanceof Raster && $asset->getWidth() > 0 && $asset->getHeight() > 0) {
             $imagineImage = $image->getImagineImage();
             // Handle auto-sharpening scaled down images
             if ($imagineImage !== null && $settings->autoSharpenScaledImages) {
