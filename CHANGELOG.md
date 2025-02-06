@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.58 - UNRELEASED
+## 1.6.58 - 2025.02.06
 ## Fixed
 * Reverted `srcset` width filtering ([#416](https://github.com/nystudio107/craft-imageoptimize/pull/416)) to address ([#418](https://github.com/nystudio107/craft-imageoptimize/issues/418))
 
