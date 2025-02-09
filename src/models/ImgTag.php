@@ -27,7 +27,7 @@ class ImgTag extends BaseImageTag
     public $loadingStrategy = 'eager';
 
     /**
-     * @var string The type of placeholder image to use: 'box', 'color', 'image', 'silhouette'
+     * @var string The type of placeholder image to use: 'box', 'color', 'image', 'silhouette', or 'none'
      */
     public $placeholder = 'box';
 
@@ -53,6 +53,20 @@ class ImgTag extends BaseImageTag
             'sizes' => '100vw',
             'loading' => '',
         ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function init(): void
+    {
+        parent::init();
+        // If the original image is an SVG or gif, don't add the placeholder box CSS so that transparency works as intended
+        $path = parse_url($this->imgAttrs['src'], PHP_URL_PATH);
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        if ($extension === 'svg' || $extension === 'gif') {
+            $this->placeholder = 'none';
+        }
     }
 
     /**
