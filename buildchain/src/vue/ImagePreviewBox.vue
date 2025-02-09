@@ -1,10 +1,10 @@
 <template>
   <g>
     <polyline
+      :fill="fillColor"
       :points="pointsForImagePoly()"
       :stroke="strokeColor"
       :stroke-width="strokeWidth"
-      :fill="fillColor"
       style="transition: point 2s ease;"
     />
 
@@ -15,19 +15,19 @@
     >
       <arrow-line
         v-if="showArrow"
+        :fill-color="'rgb(221, 231, 242)'"
         :label="width + 'w'"
         :stroke-color="'rgb(163, 193, 226)'"
-        :fill-color="'rgb(221, 231, 242)'"
       />
     </svg>
 
     <svg
       v-if="showImage"
-      :x="placeholderX()"
-      y="10"
       :width="placeholderWidth()"
+      :x="placeholderX()"
       viewBox="0 0 185 170"
       xmlns="http://www.w3.org/2000/svg"
+      y="10"
     >
       <path
         :fill="strokeColor"
@@ -39,10 +39,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from "vue";
 import ArrowLine from '@/vue/ArrowLine.vue';
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     'arrow-line': ArrowLine,
   },
@@ -96,7 +96,7 @@ export default Vue.extend({
       default: true,
     }
   },
-  data(): Record<string, unknown> {
+  data() {
     return {
       id: null,
     }
