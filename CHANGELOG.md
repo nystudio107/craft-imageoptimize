@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 5.0.6 - UNRELEASED
+## Changed
+* Update buildchain to Vite 6 & Tailwind CSS 4
+
 ## 5.0.5 - 2025.02.06
 ## Fixed
 * Reverted `srcset` width filtering ([#416](https://github.com/nystudio107/craft-imageoptimize/pull/416)) to address ([#418](https://github.com/nystudio107/craft-imageoptimize/issues/418))
