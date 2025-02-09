@@ -241,12 +241,14 @@ Craft.OptimizedImagesInput = Garnish.Base.extend(
         let menuBtn;
         if ($value.data('menubtn')) {
           menuBtn = $value.data('menubtn');
-          let menuItem = $(menuBtn.menu.$menuList[1]);
-          if (typeof menuItem !== "undefined") {
-            if (disabledDeleteItem) {
-              menuItem.find("> li > a").addClass('disabled').disable();
-            } else {
-              menuItem.find("> li > a").removeClass('disabled').enable();
+          if (typeof menuBtn.menu.$options !== "undefined") {
+            let menuItem = $(menuBtn.menu.$options[1]);
+            if (typeof menuItem !== "undefined") {
+              if (disabledDeleteItem) {
+                menuItem.addClass('disabled').disable();
+              } else {
+                menuItem.removeClass('disabled').enable();
+              }
             }
           }
         }

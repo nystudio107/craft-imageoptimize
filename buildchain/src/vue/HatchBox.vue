@@ -2,35 +2,36 @@
   <g>
     <pattern
       :id="`diagonalHatch${id}`"
+      height="4"
       patternUnits="userSpaceOnUse"
       width="4"
-      height="4"
     >
       <path
+        :stroke="hatchColor"
+        :stroke-width="hatchWidth"
         d="M-1,1 l2,-2
            M0,4 l4,-4
            M3,5 l2,-2"
-        :stroke="hatchColor"
-        :stroke-width="hatchWidth"
       />
     </pattern>
 
     <rect
-      :x="x"
-      :y="y"
-      :width="width"
+      :fill="`url(#diagonalHatch${id})`"
       :height="height"
       :stroke="strokeColor"
       :stroke-width="strokeWidth"
-      :fill="`url(#diagonalHatch${id})`"
+      :width="width"
+      :x="x"
+      :y="y"
     />
   </g>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from "vue";
+import {nanoid} from 'nanoid'
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     x: {
       type: Number,
@@ -65,13 +66,13 @@ export default Vue.extend({
       default: 1,
     }
   },
-  data(): Record<string, unknown> {
+  data() {
     return {
-      id: null,
+      id: '',
     }
   },
   mounted(): void {
-    this.id = this._uid
+    this.id = nanoid();
   },
   methods: {}
 });

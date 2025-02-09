@@ -1,8 +1,8 @@
 <template>
   <div>
     <craft-field-wrapper
-      label="Aspect Ratio"
       instructions="Choose the aspect ratio that the images in this srcset should be displayed in"
+      label="Aspect Ratio"
     >
       <aspect-ratio-chooser
         :ratio-x.sync="containerRatioX"
@@ -11,8 +11,8 @@
       />
     </craft-field-wrapper>
     <craft-field-wrapper
-      label="Image srcset"
       instructions="Describe how the images will be laid out on the page for each CSS breakpoint"
+      label="Image srcset"
     >
       <div
         class="matrix"
@@ -26,10 +26,10 @@
             <sizes-visualization
               :id="id"
               v-bind.sync="containerSizesDataList[index]"
-              :width-multiplier="widthMultiplier"
               :ratio-x="ratioX"
               :ratio-y="ratioY"
               :use-aspect-ratio="useAspectRatio"
+              :width-multiplier="widthMultiplier"
             />
           </div>
         </div>
@@ -39,14 +39,14 @@
 </template>
 
 <script lang="ts">
-import Vue, { PropType } from 'vue';
+import {defineComponent, PropType} from 'vue';
 import SizesVisualization from '@/vue/SizesVisualization.vue';
 import AspectRatioChooser from '@/vue/AspectRatioChooser.vue';
 import CraftFieldWrapper from '@/vue/CraftFieldWrapper.vue';
 
 const maxNormalizedWidth = 1000;
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     'aspect-ratio-chooser': AspectRatioChooser,
     'sizes-visualization': SizesVisualization,
@@ -102,7 +102,7 @@ export default Vue.extend({
       ],
     },
   },
-  data(): Record<string, unknown> {
+  data() {
     return {
       title: '',
       containerRatioX: this.ratioX,
@@ -112,9 +112,9 @@ export default Vue.extend({
     }
   },
   computed: {
-    widthMultiplier():number {
+    widthMultiplier(): number {
       let largest = 0;
-      largest = Math.max(...this.sizesDataList.map((sizesData:SizesData) => parseInt(sizesData.breakpointValue)));
+      largest = Math.max(...this.sizesDataList.map((sizesData: SizesData) => sizesData.breakpointValue));
 
       return largest > maxNormalizedWidth ? maxNormalizedWidth / largest : 1;
     }
