@@ -3,21 +3,21 @@
     <aspect-ratio-box
       v-for="aspectRatio in aspectRatios"
       :key="aspectRatio.ratioX + ':' + aspectRatio.ratioY"
-      :selected="(ratioX === aspectRatio.ratioX) && (ratioY === aspectRatio.ratioY)"
+      :container-size="80"
       :ratio-x="aspectRatio.ratioX"
       :ratio-y="aspectRatio.ratioY"
+      :selected="(ratioX === aspectRatio.ratioX) && (ratioY === aspectRatio.ratioY)"
       :use-aspect-ratio="aspectRatio.useAspectRatio"
-      :container-size="80"
       v-on="$listeners"
     />
   </div>
 </template>
 
 <script lang="ts">
-import Vue, {PropType} from 'vue';
+import {defineComponent, PropType} from 'vue';
 import AspectRatioBox from '@/vue/AspectRatioBox.vue';
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     'aspect-ratio-box': AspectRatioBox,
   },
@@ -86,7 +86,7 @@ export default Vue.extend({
       ]
     },
   },
-  data(): Record<string, unknown> {
+  data() {
     return {}
   },
   methods: {}
