@@ -1,10 +1,11 @@
-MAJOR_VERSION?=1
-TAG?=20-alpine
+MAJOR_VERSION?=3
+TAG?=22-alpine
 CONTAINER?=$(shell basename $(dir $(CURDIR)))-v${MAJOR_VERSION}-buildchain
 DEV_PORT?=300${MAJOR_VERSION}
 IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))
 IMAGE_NAME=${CONTAINER}:${TAG}
-DOCKER_RUN=docker container run --rm -it --network plugindev_default -v "${CURDIR}"/../:/app
+DOCKER_NETWORK?=plugindev_default
+DOCKER_RUN=docker container run --rm -it --network "${DOCKER_NETWORK}" -v "${CURDIR}"/../:/app
 
 .PHONY: build clean dev image-build image-check npm ssh
 

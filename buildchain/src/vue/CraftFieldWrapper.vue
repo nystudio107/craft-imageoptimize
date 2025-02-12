@@ -1,9 +1,9 @@
 <template>
   <div
     :id="id + '-field'"
-    class="field"
-    :class="classes"
     :aria-describedby="id + '-field-instructions'"
+    :class="classes"
+    class="field"
   >
     <div class="heading">
       <label
@@ -23,15 +23,16 @@
       </p>
     </div>
     <div class="input ltr">
-      <slot />
+      <slot/>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from "vue";
+import {nanoid} from "nanoid";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -46,13 +47,13 @@ export default Vue.extend({
       default: () => [],
     }
   },
-  data(): Record<string, unknown> {
+  data() {
     return {
-      id: null,
+      id: '',
     }
   },
   mounted(): void {
-    this.id = this._uid;
+    this.id = nanoid();
   },
   methods: {}
 });

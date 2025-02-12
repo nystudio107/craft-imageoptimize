@@ -1,16 +1,23 @@
 # ImageOptimize Changelog
 
+## 1.6.59 - 2025.02.12
+### Added
+* Added the `.placeholder('none')` parameter to allow specifying that no placeholder background image CSS should be used for lazy loaded images (useful for transparent PNGs) ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
+
+### Changed
+* Update buildchain to Vite 6 & Tailwind CSS 4
+
 ## 1.6.58 - 2025.02.06
-## Fixed
+### Fixed
 * Reverted `srcset` width filtering ([#416](https://github.com/nystudio107/craft-imageoptimize/pull/416)) to address ([#418](https://github.com/nystudio107/craft-imageoptimize/issues/418))
 
 ## 1.6.57 - 2025.01.13
-## Fixed
+### Fixed
 * Don't try to apply filters to assets that are seemingly corrupt, and have a `0` width or `0` height ([#383](https://github.com/nystudio107/craft-imageoptimize/issues/383))
 * Fixed `srcset` width filtering ([#416](https://github.com/nystudio107/craft-imageoptimize/pull/416))
 
 ## 1.6.56 - 2024.10.21
-## Changed
+### Changed
 * Allow for empty `alt` tags for screen readers as per WCAG ([411](https://github.com/nystudio107/craft-imageoptimize/issues/411))
 
 ### Fixed
