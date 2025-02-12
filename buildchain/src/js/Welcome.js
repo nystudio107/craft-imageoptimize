@@ -6,8 +6,6 @@ new Vue({
   components: {
     ConfettiParty,
   },
-  data: {},
-  methods: {},
 });
 
 // Accept HMR as per: https://vitejs.dev/guide/api-hmr.html

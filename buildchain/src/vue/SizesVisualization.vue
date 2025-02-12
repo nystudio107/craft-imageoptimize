@@ -7,64 +7,64 @@
         >"</span></code>
         <code><span class="text-gray-500">sizes="</span>{{ title }}<span class="text-gray-500">"</span></code>
       </div>
-      <div class="preview" />
+      <div class="preview"/>
     </div>
-    <div class="actions" />
+    <div class="actions"/>
 
     <div class="fields">
       <div class="flex-fields">
         <craft-number-field
-          :value="breakpointValue"
-          :size="10"
-          :min="300"
           :max="2560"
+          :min="300"
+          :size="10"
+          :value="breakpointValue"
           field="breakpointValue"
-          name="types[breakpointValue]"
+          instructions=""
           label="CSS breakpoint"
-          instructions=""
+          name="types[breakpointValue]"
           v-on="$listeners"
         />
 
         <craft-number-field
-          :value="numUp"
-          :size="5"
-          :min="1"
           :max="8"
+          :min="1"
+          :size="5"
+          :value="numUp"
           field="numUp"
-          name="types[numUp]"
+          instructions=""
           label="Images per row"
-          instructions=""
+          name="types[numUp]"
           v-on="$listeners"
         />
 
         <craft-number-field
+          :max="1000"
+          :min="0"
+          :size="10"
           :value="rowPaddingValue"
-          :size="10"
-          :min="0"
-          :max="1000"
           field="rowPaddingValue"
-          name="types[rowPaddingValue]"
-          label="Row Padding"
           instructions=""
+          label="Row Padding"
+          name="types[rowPaddingValue]"
           v-on="$listeners"
         />
 
         <craft-number-field
-          :value="cellPaddingValue"
-          :size="10"
-          :min="0"
           :max="1000"
+          :min="0"
+          :size="10"
+          :value="cellPaddingValue"
           field="cellPaddingValue"
-          name="types[cellPaddingValue]"
-          label="Cell Padding"
           instructions=""
+          label="Cell Padding"
+          name="types[cellPaddingValue]"
           v-on="$listeners"
         />
       </div>
       <div class="field">
         <svg
-          :width="breakpointWidth"
           :viewBox="'0 0 ' + breakpointValue + ' ' + (calcHeight(imageWidth) + 100)"
+          :width="breakpointWidth"
           preserveAspectRatio="none"
           xmlns="http://www.w3.org/2000/svg"
         >
@@ -72,51 +72,51 @@
             :label="breakpointValue + breakpointUnits"
           />
           <rect
-            x="1"
-            y="20"
-            :width="breakpointValue - 2"
             :height="calcHeight(imageWidth) + 80"
+            :width="breakpointValue - 2"
+            :x="1"
+            :y="20"
             fill="#DDD"
             stroke="#AAA"
             stroke-width="2"
           />
           <hatch-box
-            x="0"
-            y="20"
-            :width="rowPaddingValue"
             :height="calcHeight(imageWidth) + 80"
-            stroke-color="#AAA"
             :stroke-width="2"
+            :width="rowPaddingValue"
+            :x="0"
+            :y="20"
             hatch-color="#AAA"
+            stroke-color="#AAA"
           />
           <hatch-box
+            :height="calcHeight(imageWidth) + 80"
+            :stroke-width="2"
+            :width="rowPaddingValue"
             :x="breakpointValue - rowPaddingValue"
             :y="20"
-            :width="rowPaddingValue"
-            :height="calcHeight(imageWidth) + 80"
-            stroke-color="#AAA"
-            :stroke-width="2"
             hatch-color="#AAA"
+            stroke-color="#AAA"
           />
           <svg
             v-for="(n,i) in numUp"
             :key="'svg' + i"
           >
             <hatch-box
+              :height="calcHeight(imageWidth) + 40"
+              :stroke-width="2"
+              :width="cellWidth"
               :x="cellX(n)"
               :y="40"
-              :width="cellWidth"
-              :height="calcHeight(imageWidth) + 40"
-              stroke-color="rgb(163, 193, 226)"
-              :stroke-width="2"
               hatch-color="rgb(163, 193, 226)"
+              stroke-color="rgb(163, 193, 226)"
             />
             <image-preview-box
-              :x="imageX(n)"
-              :y="60"
-              :width="imageWidth"
               :height="calcHeight(imageWidth)"
               :sawtooth="!useAspectRatio"
+              :width="imageWidth"
+              :x="imageX(n)"
+              :y="60"
             />
           </svg>
         </svg>
@@ -126,7 +126,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from "vue";
 import ArrowLine from '@/vue/ArrowLine.vue';
 import HatchBox from '@/vue/HatchBox.vue';
 import ImagePreviewBox from "@/vue/ImagePreviewBox.vue";
@@ -155,7 +155,7 @@ const normalizeUnitsToPx = (value: number, units: string) => {
 }
 */
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     'image-preview-box': ImagePreviewBox,
     'craft-number-field': CraftNumberField,
@@ -212,7 +212,7 @@ export default Vue.extend({
       default: 'px',
     },
   },
-  data(): Record<string, unknown> {
+  data() {
     return {}
   },
   computed: {

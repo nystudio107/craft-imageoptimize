@@ -1,60 +1,60 @@
 <template>
   <svg
-    width="100%"
     height="20px"
+    width="100%"
     xmlns="http://www.w3.org/2000/svg"
   >
     <marker
       :id="`${ id }startArrow`"
-      :markerWidth="markerWidth"
       :markerHeight="markerHeight"
+      :markerWidth="markerWidth"
       :refX="markerWidth"
       :refY="markerHeight / 2"
       orient="auto"
     >
       <polygon
-        :points="`${ markerWidth } 0, ${ markerWidth } ${ markerHeight }, 0 ${ markerHeight / 2 }`"
         :fill="strokeColor"
+        :points="`${ markerWidth } 0, ${ markerWidth } ${ markerHeight }, 0 ${ markerHeight / 2 }`"
       />
     </marker>
     <marker
       :id="`${ id }endArrow`"
-      :markerWidth="markerWidth"
       :markerHeight="markerHeight"
+      :markerWidth="markerWidth"
       :refX="markerWidth"
       :refY="markerHeight / 2"
-      orient="auto"
       markerUnits="strokeWidth"
+      orient="auto"
     >
       <polygon
-        :points="`0 0, ${ markerWidth } ${ markerHeight / 2 }, 0 ${ markerHeight }`"
         :fill="strokeColor"
+        :points="`0 0, ${ markerWidth } ${ markerHeight / 2 }, 0 ${ markerHeight }`"
       />
     </marker>
     <line
-      :x1="markerWidth * 2"
-      :y1="lineY"
-      x2="100%"
-      :y2="lineY"
-      :stroke="strokeColor"
-      stroke-width="2"
       :marker-end="`url(#${ id }endArrow)`"
       :marker-start="`url(#${ id }startArrow)`"
+      :stroke="strokeColor"
+      :x1="markerWidth * 2"
+      :y1="lineY"
+      :y2="lineY"
+      stroke-width="2"
+      x2="100%"
     />
     <text
-      x="50%"
-      :y="lineY + 4"
-      text-anchor="middle"
       :stroke="fillColor"
+      :y="lineY + 4"
       stroke-width="5"
+      text-anchor="middle"
+      x="50%"
     >
       {{ label }}
     </text>
     <text
-      x="50%"
+      :fill="strokeColor"
       :y="lineY + 4"
       text-anchor="middle"
-      :fill="strokeColor"
+      x="50%"
     >
       {{ label }}
     </text>
@@ -62,9 +62,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import {defineComponent} from "vue";
+import {nanoid} from "nanoid";
 
-export default Vue.extend({
+export default defineComponent({
   props: {
     label: {
       type: String,
@@ -79,16 +80,16 @@ export default Vue.extend({
       default: '#FFF',
     }
   },
-  data(): Record<string, unknown> {
+  data() {
     return {
-      id: null,
+      id: '',
       markerWidth: 4,
       markerHeight: 4,
       lineY: 12,
     }
   },
   mounted(): void {
-    this.id = this._uid
+    this.id = nanoid();
   },
   methods: {}
 });

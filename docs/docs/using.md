@@ -384,6 +384,7 @@ With `.placeholder()`, you can set the type of placeholder image that should be 
 * `'color'` - a SVG box that uses the predominant color from the image as the backrground color
 * `'image'` - a base64 encoded low quality placeholder image ([LQPI](https://csswizardry.com/2023/09/the-ultimate-lqip-lcp-technique/)) version of the image
 * `'silhouette'` - a generated SVG image that is a silhouette of the actual image
+* `'none'` - don’t use any placeholder background image at all (useful for transparent PNGs)
 
 ```twig
     {% set asset = entry.myAssetField.one() %}
@@ -701,6 +702,7 @@ With `.placeholder()`, you can set the type of placeholder image that should be 
 * `'color'` - a SVG box that uses the predominant color from the image as the backrground color
 * `'image'` - a base64 encoded low quality placeholder image ([LQPI](https://csswizardry.com/2023/09/the-ultimate-lqip-lcp-technique/)) version of the image
 * `'silhouette'` - a generated SVG image that is a silhouette of the actual image
+* `'none'` - don’t use any placeholder background image at all (useful for transparent PNGs)
 
 ```twig
     {% set asset = entry.myAssetField.one() %}

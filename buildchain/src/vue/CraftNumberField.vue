@@ -1,21 +1,21 @@
 <template>
   <craft-field-wrapper
-    :label="label"
-    :instructions="instructions"
     :classes="['width-25']"
+    :instructions="instructions"
+    :label="label"
   >
     <input
       :id="id"
-      :name="name"
-      :value="value"
-      :size="size"
-      :min="min"
-      :max="max"
       :class="inputClasses"
-      class="text"
-      type="number"
+      :max="max"
+      :min="min"
+      :name="name"
+      :size="size"
+      :value="value"
       autocomplete="off"
+      class="text"
       step="1"
+      type="number"
       @input="validateInput($event)"
     >
     <ul
@@ -33,10 +33,11 @@
 </template>
 
 <script lang="ts">
-import Vue, {PropType} from 'vue';
+import {defineComponent, PropType} from 'vue';
 import CraftFieldWrapper from '@/vue/CraftFieldWrapper.vue';
+import {nanoid} from "nanoid";
 
-export default Vue.extend({
+export default defineComponent({
   components: {
     'craft-field-wrapper': CraftFieldWrapper,
   },
@@ -78,14 +79,14 @@ export default Vue.extend({
       default: () => [],
     }
   },
-  data(): Record<string, unknown> {
+  data() {
     return {
-      id: null,
+      id: '',
       inputErrors: this.errors,
     }
   },
   computed: {
-    inputClasses(): array {
+    inputClasses(): string[] {
       let result = [];
       if (this.inputErrors.length) {
         result.push('error');
@@ -95,11 +96,12 @@ export default Vue.extend({
     }
   },
   mounted(): void {
-    this.id = this._uid;
+    this.id = nanoid();
   },
   methods: {
-    validateInput(e:Event): void {
-      let val = e.target.value;
+    validateInput(e: Event): void {
+      const target = e.target as HTMLInputElement;
+      let val = parseInt(target.value);
       this.inputErrors = [];
       if (val < this.min) {
         this.inputErrors.push('Too small');
@@ -107,7 +109,7 @@ export default Vue.extend({
       if (val > this.max) {
         this.inputErrors.push('Too big');
       }
-      this.$emit('update:' + this.field, parseInt(val));
+      this.$emit('update:' + this.field, val);
     }
   }
 });
