@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 1.6.59 - UNRELEASED
+## 1.6.59 - 2025.02.12
 ### Added
 * Added the `.placeholder('none')` parameter to allow specifying that no placeholder background image CSS should be used for lazy loaded images (useful for transparent PNGs) ([#410](https://github.com/nystudio107/craft-imageoptimize/issues/410))
 
