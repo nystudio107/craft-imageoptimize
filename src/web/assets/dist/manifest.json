@@ -1,11 +1,11 @@
 {
   "src/js/ImageOptimize.js": {
-    "file": "assets/imageoptimize-PfOp0DEj.js",
+    "file": "assets/imageoptimize-DH0TX4OA.js",
     "name": "imageoptimize",
     "src": "src/js/ImageOptimize.js",
     "isEntry": true,
     "css": [
-      "assets/imageoptimize-BZ5-uOZJ.css"
+      "assets/imageoptimize-DvYWO4Zy.css"
     ]
   },
   "src/js/OptimizedImagesField.js": {
