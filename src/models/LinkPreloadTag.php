@@ -27,11 +27,11 @@ class LinkPreloadTag extends BaseTag
     public $linkAttrs = [];
 
     /**
-     * @param $config
+     * @inheritDoc
      */
-    public function __construct($config = [])
+    public function init(): void
     {
-        parent::__construct($config);
+        parent::init();
         // Any web browser that supports link rel="preload" as="image" also supports webp, so prefer that
         $srcset = $this->optimizedImage->optimizedImageUrls;
         if (!empty($this->optimizedImage->optimizedWebPImageUrls)) {
