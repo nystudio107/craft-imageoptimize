@@ -37,11 +37,11 @@ class ImgTag extends BaseImageTag
     public array $imgAttrs = [];
 
     /**
-     * @param $config
+     * @inheritDoc
      */
-    public function __construct($config = [])
+    public function init(): void
     {
-        parent::__construct($config);
+        parent::init();
         // Populate the $imageAttrs
         $this->imgAttrs = [
             'class' => '',
@@ -53,14 +53,6 @@ class ImgTag extends BaseImageTag
             'sizes' => '100vw',
             'loading' => '',
         ];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function init(): void
-    {
-        parent::init();
         // If the original image is an SVG or gif, don't add the placeholder box CSS so that transparency works as intended
         $path = parse_url($this->imgAttrs['src'], PHP_URL_PATH);
         $extension = pathinfo($path, PATHINFO_EXTENSION);
