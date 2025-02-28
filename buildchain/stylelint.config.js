@@ -5,9 +5,28 @@ export default {
     "stylelint-config-standard-scss"
   ],
   "rules": {
+    // For TailwindCSS @apply directive
+    "at-rule-no-deprecated": {
+      "ignoreAtRules": [
+        "apply"
+      ],
+    },
+    // For TailwindCSS theme() function properties
+    "declaration-property-value-no-unknown": {
+      "ignoreProperties": [
+        "/^theme/"
+      ],
+    },
+    // For TailwindCSS theme() function
+    "function-no-unknown": {
+      "ignoreFunctions": [
+        "theme"
+      ]
+    },
     "scss/at-rule-no-unknown": [
       true,
       {
+        // For TailwindCSS custom @ directives
         "ignoreAtRules": [
           "theme",
           "source",
