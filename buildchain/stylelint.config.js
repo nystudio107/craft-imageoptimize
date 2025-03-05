@@ -6,23 +6,33 @@ export default {
   ],
   "rules": {
     // For TailwindCSS @apply directive
-    "at-rule-no-deprecated": {
-      "ignoreAtRules": [
-        "apply"
-      ],
-    },
+    "at-rule-no-deprecated": [
+      true,
+      {
+        "ignoreAtRules": [
+          "apply"
+        ],
+      }
+    ],
     // For TailwindCSS theme() function properties
-    "declaration-property-value-no-unknown": {
-      "ignoreProperties": [
-        "/^theme/"
-      ],
-    },
+    "declaration-property-value-no-unknown": [
+      true,
+      {
+        "ignoreProperties": {
+          "/.+/": "/^.*?theme/"
+        }
+      },
+    ],
     // For TailwindCSS theme() function
-    "function-no-unknown": {
-      "ignoreFunctions": [
-        "theme"
-      ]
-    },
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": [
+          "screen",
+          "theme"
+        ]
+      },
+    ],
     "scss/at-rule-no-unknown": [
       true,
       {
@@ -33,18 +43,23 @@ export default {
           "utility",
           "variant",
           "custom-variant",
-          "apply",
-          "reference",
-          "config",
           "plugin",
+          "tailwind",
+          "apply",
+          "layer",
+          "config",
+          "variants",
+          "responsive",
+          "screen"
         ]
       }
     ],
+    "no-descending-specificity": null,
     "no-invalid-position-at-import-rule": null,
+    "import-notation": null,
     "block-no-empty": null,
     "selector-id-pattern": null,
     "selector-class-pattern": null,
-    "no-descending-specificity": null,
     "font-family-no-missing-generic-family-keyword": null
   }
 }
