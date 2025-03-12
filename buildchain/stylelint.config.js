@@ -2,7 +2,8 @@
 export default {
   "extends": [
     "stylelint-config-recommended",
-    "stylelint-config-standard-scss"
+    "stylelint-config-standard-scss",
+    "stylelint-config-recommended-vue"
   ],
   "rules": {
     // For TailwindCSS @apply directive
