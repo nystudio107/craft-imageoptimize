@@ -5,7 +5,6 @@ import tailwindcss from "@tailwindcss/vite";
 import {visualizer} from 'rollup-plugin-visualizer';
 import viteCompressionPlugin from 'vite-plugin-compression';
 import {viteExternalsPlugin} from 'vite-plugin-externals';
-import viteRestartPlugin from 'vite-plugin-restart';
 import * as path from 'path';
 
 // https://vitejs.dev/config/
@@ -25,11 +24,6 @@ export default defineConfig(({command}) => ({
     sourcemap: true
   },
   plugins: [
-    viteRestartPlugin({
-      reload: [
-        '../src/templates/**/*',
-      ],
-    }),
     createVuePlugin(),
     viteExternalsPlugin({
       'vue': 'Vue',
