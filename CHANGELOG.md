@@ -1,5 +1,9 @@
 # ImageOptimize Changelog
 
+## 4.0.15 - UNRELEASED
+### Fixed
+* Prevent Duplicate optimization queue jobs created when resaving assets ([#433](https://github.com/nystudio107/craft-imageoptimize/issues/433))
+
 ## 4.0.14 - 2025.02.13
 ### Fixed
 * Fixed an issue where an exception could be thrown using the default "shortcut" syntax due to a regression ([#422](https://github.com/nystudio107/craft-imageoptimize/issues/422))
