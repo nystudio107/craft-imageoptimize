@@ -1,6 +1,6 @@
 # ImageOptimize Changelog
 
-## 5.0.8 - UNRELEASED
+## 5.0.8 - 2026.08.06
 ### Fixed
 * Prevent Duplicate optimization queue jobs created when resaving assets ([#433](https://github.com/nystudio107/craft-imageoptimize/issues/433))
 * Fix srcsetWidth methods to properly handle retina variants ([#432](https://github.com/nystudio107/craft-imageoptimize/pull/432)) closes ([#431](https://github.com/nystudio107/craft-imageoptimize/issues/431))
