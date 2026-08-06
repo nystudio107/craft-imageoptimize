@@ -625,8 +625,8 @@ class OptimizedImage extends Model
             $sourceWidth = null;
             foreach (array_unique($this->variantSourceWidths) as $variantSourceWidth) {
                 // Check if actualWidth is 1x, 2x, or 3x of this variantSourceWidth
-                if ($actualWidth == $variantSourceWidth || 
-                    $actualWidth == $variantSourceWidth * 2 || 
+                if ($actualWidth == $variantSourceWidth ||
+                    $actualWidth == $variantSourceWidth * 2 ||
                     $actualWidth == $variantSourceWidth * 3) {
                     $sourceWidth = $variantSourceWidth;
                     break;
