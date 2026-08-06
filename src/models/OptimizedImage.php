@@ -17,7 +17,6 @@ use craft\validators\ArrayValidator;
 use nystudio107\imageoptimize\helpers\Color as ColorHelper;
 use nystudio107\imageoptimize\helpers\UrlHelper;
 use nystudio107\imageoptimize\ImageOptimize;
-use Twig\Markup;
 use function strlen;
 
 /**
@@ -29,7 +28,7 @@ class OptimizedImage extends Model
 {
     // Public Properties
     // =========================================================================
-
+    
     /**
      * @var string[] An array of optimized image variant URLs
      */
@@ -131,9 +130,9 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return Markup
+     * @return string
      */
-    public function src(int $width = 0): Markup
+    public function src(int $width = 0): string
     {
         if (empty($width)) {
             return Template::raw(reset($this->optimizedImageUrls));
@@ -160,9 +159,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcset(bool $dpr = false): Markup
+    public function srcset(bool $dpr = false): string
     {
         return Template::raw($this->getSrcsetFromArray($this->optimizedImageUrls, $dpr));
     }
@@ -186,11 +185,11 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetWidth(int $width, bool $dpr = false): Markup
+    public function srcsetWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -203,11 +202,11 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetMinWidth(int $width, bool $dpr = false): Markup
+    public function srcsetMinWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -219,11 +218,11 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetMaxWidth(int $width, bool $dpr = false): Markup
+    public function srcsetMaxWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -234,9 +233,9 @@ class OptimizedImage extends Model
      *
      * @param int $width
      *
-     * @return Markup
+     * @return string
      */
-    public function srcWebp(int $width = 0): Markup
+    public function srcWebp(int $width = 0): string
     {
         if (empty($width)) {
             return Template::raw(reset($this->optimizedWebPImageUrls));
@@ -263,9 +262,9 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetWebp(bool $dpr = false): Markup
+    public function srcsetWebp(bool $dpr = false): string
     {
         return Template::raw($this->getSrcsetFromArray($this->optimizedWebPImageUrls, $dpr));
     }
@@ -289,11 +288,11 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetWidthWebp(int $width, bool $dpr = false): Markup
+    public function srcsetWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -306,11 +305,11 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetMinWidthWebp(int $width, bool $dpr = false): Markup
+    public function srcsetMinWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -323,11 +322,11 @@ class OptimizedImage extends Model
      * @param bool $dpr Whether to generate 1x, 2x srcsets vs the normal XXXw
      *                  srcsets
      *
-     * @return Markup
+     * @return string
      */
-    public function srcsetMaxWidthWebp(int $width, bool $dpr = false): Markup
+    public function srcsetMaxWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -416,9 +415,9 @@ class OptimizedImage extends Model
     /**
      * Return a base64-encoded placeholder image
      *
-     * @return Markup|null
+     * @return string
      */
-    public function placeholderImage()
+    public function placeholderImage(): string
     {
         $header = 'data:image/jpeg;base64,';
         if (!empty($this->placeholder)) {
@@ -438,7 +437,7 @@ class OptimizedImage extends Model
      */
     public function getPlaceholderImage(): string
     {
-        return (string)$this->placeholderImage();
+        return $this->placeholderImage();
     }
 
     /**
@@ -457,9 +456,9 @@ class OptimizedImage extends Model
      *
      * @param string|null $color
      *
-     * @return Markup|null
+     * @return string
      */
-    public function placeholderBox(string $color = null)
+    public function placeholderBox(?string $color = null): string
     {
         $width = $this->placeholderWidth ?? 1;
         $height = $this->placeholderHeight ?? 1;
@@ -475,7 +474,7 @@ class OptimizedImage extends Model
      */
     public function getPlaceholderBox(string $color = null): string
     {
-        return (string)$this->placeholderBox($color);
+        return $this->placeholderBox($color);
     }
 
     /**
@@ -494,9 +493,9 @@ class OptimizedImage extends Model
     /**
      * Return a silhouette of the image as an SVG placeholder
      *
-     * @return Markup|null
+     * @return string
      */
-    public function placeholderSilhouette()
+    public function placeholderSilhouette(): string
     {
         $header = 'data:image/svg+xml,';
         if (!empty($this->placeholderSvg)) {
@@ -516,7 +515,7 @@ class OptimizedImage extends Model
      */
     public function getPlaceholderSilhouette(): string
     {
-        return (string)$this->placeholderSilhouette();
+        return $this->placeholderSilhouette();
     }
 
     /**
@@ -535,23 +534,25 @@ class OptimizedImage extends Model
      *  either in bytes or - default - as human-readable formatted string.
      *
      * @param string $url Takes the remote object's URL.
-     * @param boolean $formatSize Whether to return size in bytes or
+     * @param bool $formatSize Whether to return size in bytes or
      *                              formatted.
-     * @param boolean $useHead Whether to use HEAD requests. If false,
+     * @param bool $useHead Whether to use HEAD requests. If false,
      *                              uses GET.
      *
-     * @return  int|mixed|string    Returns human-readable formatted size
+     * @return  mixed    Returns human-readable formatted size
      *                              or size in bytes (default: formatted).
-     * @author  Stephan Schmitz <eyecatchup@gmail.com>
+     * @noinspection PhpComposerExtensionStubsInspection*@author  Stephan Schmitz <eyecatchup@gmail.com>
      * @license MIT <http://eyecatchup.mit-license.org/>
      * @url     <https://gist.github.com/eyecatchup/f26300ffd7e50a92bc4d>
      *
+     * @noinspection PhpComposerExtensionStubsInspection
      */
-    public function getRemoteFileSize($url, $formatSize = true, $useHead = true)
+    public function getRemoteFileSize(string $url, bool $formatSize = true, bool $useHead = true): mixed
     {
         // Get an absolute URL with protocol that curl will be happy with
         $url = UrlHelper::absoluteUrlWithProtocol($url);
         $ch = curl_init($url);
+        /** @noinspection CurlSslServerSpoofingInspection */
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_FOLLOWLOCATION => 1,
@@ -603,50 +604,70 @@ class OptimizedImage extends Model
             }
             $srcset .= $value . ' ' . $descriptor . ', ';
         }
-        $srcset = rtrim($srcset, ', ');
 
-        return $srcset;
+        return rtrim($srcset, ', ');
     }
 
     // Protected Methods
     // =========================================================================
 
-    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison): array
+    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison, bool $dpr = false): array
     {
         $subset = [];
-        $index = 0;
         if (empty($this->variantSourceWidths)) {
             return $subset;
         }
-        // Sort the arrays by numeric key
-        ksort($set, SORT_NUMERIC);
-        // Sort the arrays by numeric key
-        sort($this->variantSourceWidths, SORT_NUMERIC);
-        foreach ($this->variantSourceWidths as $variantSourceWidth) {
+
+        // For each actual width in the set, check if its source width matches
+        foreach ($set as $actualWidth => $url) {
+            // Find which variantSourceWidth this actualWidth belongs to
+            // Since retina variants are multiples (1x, 2x, 3x), we need to find the base width
+            $sourceWidth = null;
+            foreach (array_unique($this->variantSourceWidths) as $variantSourceWidth) {
+                // Check if actualWidth is 1x, 2x, or 3x of this variantSourceWidth
+                if ($actualWidth == $variantSourceWidth ||
+                    $actualWidth == $variantSourceWidth * 2 ||
+                    $actualWidth == $variantSourceWidth * 3) {
+                    $sourceWidth = $variantSourceWidth;
+                    break;
+                }
+            }
+
+            if ($sourceWidth === null) {
+                continue;
+            }
+
+            // Now check if this sourceWidth matches our comparison criteria
             $match = false;
             switch ($comparison) {
                 case 'width':
-                    if ($variantSourceWidth == $width) {
+                    if ($sourceWidth == $width) {
                         $match = true;
                     }
                     break;
 
                 case 'minwidth':
-                    if ($variantSourceWidth >= $width) {
+                    if ($sourceWidth >= $width) {
                         $match = true;
                     }
                     break;
 
                 case 'maxwidth':
-                    if ($variantSourceWidth <= $width) {
+                    if ($sourceWidth <= $width) {
                         $match = true;
                     }
                     break;
             }
+
             if ($match) {
-                $subset += array_slice($set, $index, 1, true);
+                // When DPR mode is disabled (using 'w' descriptors), only include 1x variants
+                // When DPR mode is enabled (using 'x' descriptors), include all retina variants
+                if (!$dpr && $actualWidth != $sourceWidth) {
+                    // Skip retina variants (2x, 3x) when not in DPR mode
+                    continue;
+                }
+                $subset[$actualWidth] = $url;
             }
-            $index++;
         }
 
         return $subset;
@@ -655,104 +676,14 @@ class OptimizedImage extends Model
     /**
      * Return a default placeholder image
      *
-     * @return Markup
+     * @return string
      */
-    protected function defaultPlaceholderImage(): Markup
+    protected function defaultPlaceholderImage(): string
     {
         $width = 1;
         $height = 1;
         $color = '#CCC';
 
         return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
-    }
-
-    /**
-     * Swap the tag attributes to work with lazy loading
-     * ref: https://web.dev/native-lazy-loading/#how-do-i-handle-browsers-that-don't-yet-support-native-lazy-loading
-     *
-     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
-     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
-     * @param array $attrs
-     *
-     * @return array
-     */
-    protected function swapLazyLoadAttrs(string $loading, string $placeHolder, array $attrs): array
-    {
-        // Set the class and loading attributes
-        if (isset($attrs['class'])) {
-            $attrs['class'] = trim($attrs['class'] . ' lazyload');
-        }
-        // Set the style on this element to be the placeholder image as the background-image
-        if (isset($attrs['style']) && !empty($attrs['src'])) {
-            $attrs['style'] = trim(
-                $attrs['style'] .
-                'background-image:url(' . $this->getLazyLoadSrc($placeHolder) . '); background-size: cover;'
-            );
-        }
-        // Handle attributes that lazy  and lazySizesFallback have in common
-        switch ($loading) {
-            case 'lazy':
-            case 'lazySizesFallback':
-                if (isset($attrs['loading'])) {
-                    $attrs['loading'] = 'lazy';
-                }
-                break;
-            default:
-                break;
-        }
-        // Handle attributes that lazySizes and lazySizesFallback have in common
-        switch ($loading) {
-            case 'lazySizes':
-            case 'lazySizesFallback':
-                // Only swap to data- attributes if they want the LazySizes fallback
-                if (!empty($attrs['sizes'])) {
-                    $attrs['data-sizes'] = $attrs['sizes'];
-                    $attrs['sizes'] = '';
-                }
-                if (!empty($attrs['srcset'])) {
-                    $attrs['data-srcset'] = $attrs['srcset'];
-                    $attrs['srcset'] = '';
-                }
-                if (!empty($attrs['src'])) {
-                    $attrs['data-src'] = $attrs['src'];
-                    $attrs['src'] = $this->getLazyLoadSrc($placeHolder);
-                }
-                break;
-            default:
-                break;
-        }
-
-        return $attrs;
-    }
-
-    /**
-     * Return a lazy loading placeholder image based on the passed in $lazyload setting
-     *
-     * @param string $lazyLoad
-     *
-     * @return string
-     */
-    protected function getLazyLoadSrc(string $lazyLoad): string
-    {
-        $result = '';
-        if (is_string($lazyLoad)) {
-            $lazyLoad = strtolower($lazyLoad);
-        }
-        switch ($lazyLoad) {
-            case 'image':
-                $result = $this->getPlaceholderImage();
-                break;
-            case 'silhouette':
-                $result = $this->getPlaceholderSilhouette();
-                break;
-            case 'color':
-                $result = $this->getPlaceholderBox($this->colorPalette[0] ?? null);
-                break;
-            default:
-                $result = $this->getPlaceholderBox('#CCC');
-                break;
-        }
-
-        return $result;
     }
 }
