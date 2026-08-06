@@ -189,7 +189,7 @@ class OptimizedImage extends Model
      */
     public function srcsetWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -206,7 +206,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMinWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -222,7 +222,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMaxWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -292,7 +292,7 @@ class OptimizedImage extends Model
      */
     public function srcsetWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -309,7 +309,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMinWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -326,7 +326,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMaxWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -611,42 +611,63 @@ class OptimizedImage extends Model
     // Protected Methods
     // =========================================================================
 
-    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison): array
+    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison, bool $dpr = false): array
     {
         $subset = [];
-        $index = 0;
         if (empty($this->variantSourceWidths)) {
             return $subset;
         }
-        // Sort the arrays by numeric key
-        ksort($set, SORT_NUMERIC);
-        // Sort the arrays by numeric key
-        sort($this->variantSourceWidths, SORT_NUMERIC);
-        foreach ($this->variantSourceWidths as $variantSourceWidth) {
+        
+        // For each actual width in the set, check if its source width matches
+        foreach ($set as $actualWidth => $url) {
+            // Find which variantSourceWidth this actualWidth belongs to
+            // Since retina variants are multiples (1x, 2x, 3x), we need to find the base width
+            $sourceWidth = null;
+            foreach (array_unique($this->variantSourceWidths) as $variantSourceWidth) {
+                // Check if actualWidth is 1x, 2x, or 3x of this variantSourceWidth
+                if ($actualWidth == $variantSourceWidth || 
+                    $actualWidth == $variantSourceWidth * 2 || 
+                    $actualWidth == $variantSourceWidth * 3) {
+                    $sourceWidth = $variantSourceWidth;
+                    break;
+                }
+            }
+            
+            if ($sourceWidth === null) {
+                continue;
+            }
+            
+            // Now check if this sourceWidth matches our comparison criteria
             $match = false;
             switch ($comparison) {
                 case 'width':
-                    if ($variantSourceWidth == $width) {
+                    if ($sourceWidth == $width) {
                         $match = true;
                     }
                     break;
 
                 case 'minwidth':
-                    if ($variantSourceWidth >= $width) {
+                    if ($sourceWidth >= $width) {
                         $match = true;
                     }
                     break;
 
                 case 'maxwidth':
-                    if ($variantSourceWidth <= $width) {
+                    if ($sourceWidth <= $width) {
                         $match = true;
                     }
                     break;
             }
+            
             if ($match) {
-                $subset += array_slice($set, $index, 1, true);
+                // When DPR mode is disabled (using 'w' descriptors), only include 1x variants
+                // When DPR mode is enabled (using 'x' descriptors), include all retina variants
+                if (!$dpr && $actualWidth != $sourceWidth) {
+                    // Skip retina variants (2x, 3x) when not in DPR mode
+                    continue;
+                }
+                $subset[$actualWidth] = $url;
             }
-            $index++;
         }
 
         return $subset;
