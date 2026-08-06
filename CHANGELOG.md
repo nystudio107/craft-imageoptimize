@@ -3,6 +3,7 @@
 ## 4.0.15 - UNRELEASED
 ### Fixed
 * Prevent Duplicate optimization queue jobs created when resaving assets ([#433](https://github.com/nystudio107/craft-imageoptimize/issues/433))
+* Fix srcsetWidth methods to properly handle retina variants ([#432](https://github.com/nystudio107/craft-imageoptimize/pull/432)) closes ([#431](https://github.com/nystudio107/craft-imageoptimize/issues/431))
 
 ## 4.0.14 - 2025.02.13
 ### Fixed
