@@ -189,7 +189,7 @@ class OptimizedImage extends Model
      */
     public function srcsetWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'width', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -206,7 +206,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMinWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'minwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -222,7 +222,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMaxWidth(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedImageUrls, $width, 'maxwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -292,7 +292,7 @@ class OptimizedImage extends Model
      */
     public function srcsetWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'width', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -309,7 +309,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMinWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'minwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -326,7 +326,7 @@ class OptimizedImage extends Model
      */
     public function srcsetMaxWidthWebp(int $width, bool $dpr = false): string
     {
-        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth');
+        $subset = $this->getSrcsetSubsetArray($this->optimizedWebPImageUrls, $width, 'maxwidth', $dpr);
 
         return Template::raw($this->getSrcsetFromArray($subset, $dpr));
     }
@@ -611,42 +611,63 @@ class OptimizedImage extends Model
     // Protected Methods
     // =========================================================================
 
-    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison): array
+    protected function getSrcsetSubsetArray(array $set, int $width, string $comparison, bool $dpr = false): array
     {
         $subset = [];
-        $index = 0;
         if (empty($this->variantSourceWidths)) {
             return $subset;
         }
-        // Sort the arrays by numeric key
-        ksort($set, SORT_NUMERIC);
-        // Sort the source widths by numeric key
-        sort($this->variantSourceWidths, SORT_NUMERIC);
-        foreach ($this->variantSourceWidths as $variantSourceWidth) {
+
+        // For each actual width in the set, check if its source width matches
+        foreach ($set as $actualWidth => $url) {
+            // Find which variantSourceWidth this actualWidth belongs to
+            // Since retina variants are multiples (1x, 2x, 3x), we need to find the base width
+            $sourceWidth = null;
+            foreach (array_unique($this->variantSourceWidths) as $variantSourceWidth) {
+                // Check if actualWidth is 1x, 2x, or 3x of this variantSourceWidth
+                if ($actualWidth == $variantSourceWidth ||
+                    $actualWidth == $variantSourceWidth * 2 ||
+                    $actualWidth == $variantSourceWidth * 3) {
+                    $sourceWidth = $variantSourceWidth;
+                    break;
+                }
+            }
+
+            if ($sourceWidth === null) {
+                continue;
+            }
+
+            // Now check if this sourceWidth matches our comparison criteria
             $match = false;
             switch ($comparison) {
                 case 'width':
-                    if ($variantSourceWidth == $width) {
+                    if ($sourceWidth == $width) {
                         $match = true;
                     }
                     break;
 
                 case 'minwidth':
-                    if ($variantSourceWidth >= $width) {
+                    if ($sourceWidth >= $width) {
                         $match = true;
                     }
                     break;
 
                 case 'maxwidth':
-                    if ($variantSourceWidth <= $width) {
+                    if ($sourceWidth <= $width) {
                         $match = true;
                     }
                     break;
             }
+
             if ($match) {
-                $subset += array_slice($set, $index, 1, true);
+                // When DPR mode is disabled (using 'w' descriptors), only include 1x variants
+                // When DPR mode is enabled (using 'x' descriptors), include all retina variants
+                if (!$dpr && $actualWidth != $sourceWidth) {
+                    // Skip retina variants (2x, 3x) when not in DPR mode
+                    continue;
+                }
+                $subset[$actualWidth] = $url;
             }
-            $index++;
         }
 
         return $subset;
@@ -664,82 +685,5 @@ class OptimizedImage extends Model
         $color = '#CCC';
 
         return Template::raw(ImageOptimize::$plugin->placeholder->generatePlaceholderBox($width, $height, $color));
-    }
-
-    /**
-     * Swap the tag attributes to work with lazy loading
-     * ref: https://web.dev/native-lazy-loading/#how-do-i-handle-browsers-that-don't-yet-support-native-lazy-loading
-     *
-     * @param string $loading 'eager', 'lazy', 'lazySizes', 'lazySizesFallback'
-     * @param string $placeHolder 'box', 'color', 'image', 'silhouette'
-     * @param array $attrs
-     *
-     * @return array
-     */
-    protected function swapLazyLoadAttrs(string $loading, string $placeHolder, array $attrs): array
-    {
-        // Set the class and loading attributes
-        if (isset($attrs['class'])) {
-            $attrs['class'] = trim($attrs['class'] . ' lazyload');
-        }
-        // Set the style on this element to be the placeholder image as the background-image
-        if (isset($attrs['style']) && !empty($attrs['src'])) {
-            $attrs['style'] = trim(
-                $attrs['style'] .
-                'background-image:url(' . $this->getLazyLoadSrc($placeHolder) . '); background-size: cover;'
-            );
-        }
-        // Handle attributes that lazy  and lazySizesFallback have in common
-        switch ($loading) {
-            case 'lazy':
-            case 'lazySizesFallback':
-                if (isset($attrs['loading'])) {
-                    $attrs['loading'] = 'lazy';
-                }
-                break;
-            default:
-                break;
-        }
-        // Handle attributes that lazySizes and lazySizesFallback have in common
-        switch ($loading) {
-            case 'lazySizes':
-            case 'lazySizesFallback':
-                // Only swap to data- attributes if they want the LazySizes fallback
-                if (!empty($attrs['sizes'])) {
-                    $attrs['data-sizes'] = $attrs['sizes'];
-                    $attrs['sizes'] = '';
-                }
-                if (!empty($attrs['srcset'])) {
-                    $attrs['data-srcset'] = $attrs['srcset'];
-                    $attrs['srcset'] = '';
-                }
-                if (!empty($attrs['src'])) {
-                    $attrs['data-src'] = $attrs['src'];
-                    $attrs['src'] = $this->getLazyLoadSrc($placeHolder);
-                }
-                break;
-            default:
-                break;
-        }
-
-        return $attrs;
-    }
-
-    /**
-     * Return a lazy loading placeholder image based on the passed in $lazyload setting
-     *
-     * @param string $lazyLoad
-     *
-     * @return string
-     */
-    protected function getLazyLoadSrc(string $lazyLoad): string
-    {
-        $lazyLoad = strtolower($lazyLoad);
-        return match ($lazyLoad) {
-            'image' => $this->getPlaceholderImage(),
-            'silhouette' => $this->getPlaceholderSilhouette(),
-            'color' => $this->getPlaceholderBox($this->colorPalette[0] ?? null),
-            default => $this->getPlaceholderBox('#CCC'),
-        };
     }
 }
