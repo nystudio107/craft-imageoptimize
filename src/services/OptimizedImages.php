@@ -45,8 +45,13 @@ class OptimizedImages extends Component
     // Constants
     // =========================================================================
 
-    // Public Properties
+    // Protected Properties
     // =========================================================================
+
+    /**
+     * @var array IDs of assets that have already been added to the queue
+     */
+    protected static $processedIds = [];
 
     // Public Methods
     // =========================================================================
@@ -382,6 +387,11 @@ class OptimizedImages extends Component
      */
     public function resaveAsset(int $id, $force = false)
     {
+        if (in_array($id, self::$processedIds, true)) {
+            return;
+        }
+        self::$processedIds[] = $id;
+
         $queue = Craft::$app->getQueue();
         $jobId = $queue->push(new ResaveOptimizedImages([
             'description' => Craft::t('image-optimize', 'Optimizing image id {id}', ['id' => $id]),

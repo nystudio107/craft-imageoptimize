@@ -1,5 +1,10 @@
 # ImageOptimize Changelog
 
+## 1.6.61 - 2026.08.06
+### Fixed
+* Prevent Duplicate optimization queue jobs created when resaving assets ([#433](https://github.com/nystudio107/craft-imageoptimize/issues/433))
+* Fix srcsetWidth methods to properly handle retina variants ([#432](https://github.com/nystudio107/craft-imageoptimize/pull/432)) closes ([#431](https://github.com/nystudio107/craft-imageoptimize/issues/431))
+
 ## 1.6.60 - 2025.02.13
 ### Fixed
 * Fixed an issue where an exception could be thrown using the default "shortcut" syntax due to a regression ([#422](https://github.com/nystudio107/craft-imageoptimize/issues/422))

@@ -42,7 +42,6 @@
     "vite-plugin-checker": "^0.8.0",
     "vite-plugin-compression": "^0.5.0",
     "vite-plugin-externals": "^0.6.0",
-    "vite-plugin-restart": "^0.4.0",
     "vue-tsc": "^2.0.0"
   },
   "scripts": {

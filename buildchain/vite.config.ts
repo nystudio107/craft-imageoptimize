@@ -5,7 +5,6 @@ import tailwindcss from "@tailwindcss/vite";
 import {visualizer} from 'rollup-plugin-visualizer';
 import viteCompressionPlugin from 'vite-plugin-compression';
 import {viteExternalsPlugin} from 'vite-plugin-externals';
-import viteRestartPlugin from 'vite-plugin-restart';
 import * as path from 'path';
 
 // https://vitejs.dev/config/
@@ -25,11 +24,6 @@ export default defineConfig(({command}) => ({
     sourcemap: true
   },
   plugins: [
-    viteRestartPlugin({
-      reload: [
-        '../src/templates/**/*',
-      ],
-    }),
     createVuePlugin(),
     viteExternalsPlugin({
       'vue': 'Vue',
@@ -54,12 +48,10 @@ export default defineConfig(({command}) => ({
         }
       },
       stylelint: {
-        lintCommand: 'stylelint ./src/**/*.{css} --allow-empty-input --fix',
+        lintCommand: 'stylelint ./src/**/*.{css,scss,sass,pcss} --fix',
         dev: {
           overrideConfig: {
-            allowEmptyInput: true,
             cache: true,
-            fix: false
           }
         }
       },
@@ -81,7 +73,7 @@ export default defineConfig(({command}) => ({
     // Allow cross-origin requests -- https://github.com/vitejs/vite/security/advisories/GHSA-vg6x-rcgg-rjx6
     allowedHosts: true,
     cors: {
-      origin: /https?:\/\/([A-Za-z0-9\-\.]+)?(localhost|\.local|\.test|\.site)(?::\d+)?$/
+      origin: /https?:\/\/([A-Za-z0-9\-\.]+)?(localhost|\.local|\.ddev\.test|\.site)(?::\d+)?$/
     },
     fs: {
       strict: false
